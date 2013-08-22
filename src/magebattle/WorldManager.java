@@ -1,0 +1,219 @@
+/*    This file is part of JMageBattle.
+
+    JMageBattle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    JMageBattle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
+
+package magebattle;
+
+import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.input.InputManager;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.Trigger;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.network.Client;
+import com.jme3.network.Server;
+import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import java.util.HashMap;
+import magebattle.messages.syncmessages.AddEntityMessage;
+import magebattle.messages.syncmessages.RemoveEntityMessage;
+import magebattle.spells.Spell;
+import magebattle.util.EntityFactory;
+
+/**
+ *
+ * @author william
+ */
+public class WorldManager extends AbstractAppState {
+
+    private final static Trigger LEFT_CLICK = new MouseButtonTrigger(MouseInput.BUTTON_LEFT);
+    private final static String MAPPING_CLICK = "Click";
+    // TODO: Add new starting locations
+    // TODO: Read locations from terrain
+    public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
+        new Vector3f(10.0f, 0, 10.0f), new Vector3f(-10.0f, 0, -10.0f)
+    };
+    private Node worldRoot;
+    private HashMap<Long, Spatial> entities = new HashMap<Long, Spatial>();
+    private SyncManager syncManager;
+    private int idCounter = 0;
+    private Server server;
+    private Client client;
+
+    public WorldManager() {
+    }
+    private SimpleApplication app;
+    private AssetManager assetManager;
+    private InputManager inputManager;
+    private PhysicsSpace space;
+    private ViewPort viewPort;
+    private Node rootNode;
+    private Camera cam;
+    private EntityFactory entityFactory;
+
+    private ServerWorldCollisionListener serverCollisionListener = null;
+
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        System.out.println("Initializing WorldManager");
+        super.initialize(stateManager, app);
+        this.app = (SimpleApplication) app;
+        this.rootNode = this.app.getRootNode();
+        this.assetManager = this.app.getAssetManager();
+        this.inputManager = this.app.getInputManager();
+        this.viewPort = this.app.getViewPort();
+        this.space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
+
+        this.cam = this.app.getCamera();
+
+        this.syncManager = this.app.getStateManager().getState(SyncManager.class);
+
+        this.server = this.syncManager.getServer();
+        this.client = this.syncManager.getClient();
+
+        if (this.isServer())
+        {
+            this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
+            this.space.addCollisionListener(this.serverCollisionListener);
+        }
+        this.entityFactory = new EntityFactory(this.assetManager, this);
+        Spell.initSpells(assetManager, this);
+        System.out.println("Initialized WorldManager");
+    }
+
+    public void preloadModels(String[] modelNames) {
+        for (String path : modelNames) {
+            this.assetManager.loadModel(path);
+        }
+    }
+
+    public void loadLevel() {
+        this.worldRoot = (Node) this.assetManager.loadModel("Scenes/basicArena.j3o");
+
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
+        this.worldRoot.addLight(sun);
+    }
+
+    public void attachLevel() {
+        this.space.addAll(this.worldRoot);
+        this.rootNode.attachChild(this.worldRoot);
+
+        this.cam.setLocation(new Vector3f(0.0f, 120.0f, -20.0f));
+        this.cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+
+    }
+
+    /**
+     * Adds new entity on server
+     *
+     * @param typeId
+     * @param location
+     * @param rotation
+     * @return entity id
+     */
+    public long addNewEntity(String typeId, Vector3f location, Quaternion rotation) {
+        ++this.idCounter;
+        this.addEntity(this.idCounter, typeId, location, rotation);
+        return this.idCounter;
+    }
+
+    public void addEntity(long id, String modelPath, Vector3f location, Quaternion rotation) {
+        if (this.isServer()) {
+            this.syncManager.broadcast(new AddEntityMessage(id, modelPath, location, rotation));
+        }
+
+        Spatial entitySpatial = this.entityFactory.createEntityById(modelPath);
+        this.setEntityTranslation(entitySpatial, location, rotation);
+        entitySpatial.setUserData("player-id", -1l);
+        entitySpatial.setUserData("entity-id", id);
+        this.entities.put(id, entitySpatial);
+        this.syncManager.addObject(id, entitySpatial);
+        this.space.addAll(entitySpatial);
+        this.worldRoot.attachChild(entitySpatial);
+    }
+
+    private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {
+        if (entityModel.getControl(RigidBodyControl.class) != null) {
+            entityModel.getControl(RigidBodyControl.class).setPhysicsLocation(location);
+            entityModel.getControl(RigidBodyControl.class).setPhysicsRotation(rotation.toRotationMatrix());
+        } else if (entityModel.getControl(BetterCharacterControl.class) != null) {
+            entityModel.getControl(BetterCharacterControl.class).warp(location);
+            entityModel.setLocalTranslation(location);
+            entityModel.getControl(BetterCharacterControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).multLocal(1, 0, 1).normalizeLocal());
+//        } else if (entityModel.getControl(VehicleControl.class) != null) {
+//            entityModel.getControl(VehicleControl.class).setPhysicsLocation(location);
+//            entityModel.getControl(VehicleControl.class).setPhysicsRotation(rotation.toRotationMatrix());
+        } else {
+            entityModel.setLocalTranslation(location);
+            entityModel.setLocalRotation(rotation);
+        }
+    }
+
+    public void removeEntity(long id) {
+        if (this.isServer()) {
+            this.syncManager.broadcast(new RemoveEntityMessage(id));
+        }
+        this.syncManager.removeEntity(id);
+        Spatial spatial = this.entities.remove(id);
+        if (spatial == null) {
+            return;
+        }
+        spatial.removeFromParent();
+        this.space.removeAll(spatial);
+    }
+
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
+    }
+
+    public SyncManager getSyncManager() {
+        return this.syncManager;
+    }
+
+    public boolean isServer() {
+        return this.server != null;
+    }
+
+    public boolean isClient() {
+        return this.client != null;
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        this.rootNode.detachChild(this.worldRoot);
+    }
+
+    public Node getWorldRoot() {
+        return this.worldRoot;
+    }
+
+    public Spatial getEntity(long id) {
+        return this.entities.get(id);
+    }
+}

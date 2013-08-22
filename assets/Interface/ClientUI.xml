@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    <style id="my-listbox-item-style" base="nifty-listbox-item">
+        <effect>
+            <onCustom name="updateScrollpanelPositionToDisplayElement" target="listBoxStatic" oneShot="true" />
+        </effect>
+    </style>
+    
+    <screen id="null" controller="magebattle.ClientMain">
+    </screen>
+  
+    
+    <screen id="main_menu" controller="magebattle.ClientMain">
+        <layer id="layer" childLayout="center">
+            <panel id="panel" height="300px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <effect>
+                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="1500"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                </effect>
+                <text style="nifty-label" text="Welcome to jMageBattle!" >
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                    </effect>
+                </text>
+                <text style="nifty-label" text=""/>
+                <image align="center" valign="center" filename="Interface/Images/logo.gif" >
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                    </effect>
+                </image>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="Enter Username" valign="center"/>
+                <control id="username_text" name="textfield" align="center" valign="center" width="60%">
+                    <interact onEnter="connect()"/>
+                </control>
+                <text style="nifty-label" text=""/>
+                <control id="start_button" name="button" label="Start Game" align="center">
+                    <interact onClick="connect()"/>
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                    </effect>
+                </control>
+                <text style="nifty-label" text=""/>
+                <text id="status_text" font="aurulent-sans-16.fnt" color="#ffff" text="" align="center" valign="center" >
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                    </effect>
+                </text>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="lobby" controller="magebattle.ClientMain">
+        <layer id="layer" childLayout="vertical">
+            <panel id="panel" childLayout="horizontal">
+                <panel id="players_panel" height="100%" width="320px" valign="center" style="nifty-panel" childLayout="vertical">
+                    <text style="nifty-label" text="Players" valign="center"/>
+                    <panel id="panel" childLayout="horizontal">
+                        <control id="players_list" name="listBox" horizontal="false" width="*" height="100%" childLayout="vertical" visibleToMouse="true">
+
+                        </control>
+                    </panel>
+                </panel>
+                <panel id="maps_panel" height="100%" width="300px" valign="center" style="nifty-panel" childLayout="vertical">
+                    <text style="nifty-label" text="Available Maps" valign="center"/>
+                    <panel id="panel" childLayout="horizontal">
+                        <control id="maps_list" name="listBox" horizontal="false" height="100%" childLayout="vertical" visibleToMouse="true">
+                            <panel id="panel" childLayout="vertical" visibleToMouse="true" width="100%" padding="20px" >
+                            </panel>
+                        </control>
+                    </panel>
+                    <text style="nifty-label" text="" valign="center"/>
+                    <control id="start_server_button" name="button" label="Start Game" align="center">
+                        <interact onClick="sendStartGameRequest()"/>
+                    </control>
+                </panel>
+                <effect>
+                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                </effect>
+            </panel>
+            <panel id="bottom_panel" childLayout="horizontal" style="nifty-panel" height="30%">
+                <panel id="chat_panel" childLayout="vertical">
+                    <control id="chat_list" name="listBox" horizontal="false" height="*" childLayout="vertical" visibleToMouse="true">
+
+                    </control>
+                    <panel id="chat_bottom_bar" childLayout="horizontal">
+                        <control id="chat_text" name="textfield" valign="center">
+                            <interact onEnter="sendChat()"/>
+                        </control>
+                        <control id="send_button" name="button" label="send" valign="center">
+                            <interact onClick="sendChat()"/>
+                        </control>
+                    </panel>
+                </panel>
+                <effect>
+                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                </effect>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="load_level" controller="magebattle.ClientMain">
+        <layer id="layer" childLayout="center">
+            <panel id="panel" height="140px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <effect>
+                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                </effect>
+                <text style="nifty-label" text="Loading Level" />
+                <text style="nifty-label" text=""/>
+                <text id="status_text" font="aurulent-sans-16.fnt" color="#ffff" text="Loading..." align="center" valign="center" />
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="default_hud" controller="magebattle.ClientMain">
+        <layer id="layer" childLayout="vertical">
+<!--            <panel id="panel_top" childLayout="horizontal">
+                <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">                  
+                </panel>                
+            </panel>            
+			
+            <panel id="panel_bottom" childLayout="horizontal" width="100%"  height="80px" style="nifty-panel" align="left"valign="center">                
+            </panel>-->
+        </layer>
+    </screen>
+</nifty>
