@@ -32,4 +32,4 @@ Thanks to friends for giving ideas.
 
 ## License ##
 
-JMageBattle is GPLv3 licensed, except for two
+JMageBattle is GPLv3 licensed, except for two files that I copied from MonkeyZone
