@@ -1,0 +1,6 @@
+*.blend1
+*.blend2
+
+build
+dist
+nbproject/private
