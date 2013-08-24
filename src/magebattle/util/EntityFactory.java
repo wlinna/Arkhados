@@ -55,7 +55,7 @@ public class EntityFactory {
 
         } else if ("Fireball".equals(id)) {
             Spell spell = Spell.getSpells().get(id);
-            entity = spell.getNodeClone();
+            entity = spell.buildNode();
         }
         assert entity != null;
         return entity;

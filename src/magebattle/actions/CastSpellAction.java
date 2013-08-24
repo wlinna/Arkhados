@@ -45,17 +45,27 @@ public class CastSpellAction extends EntityAction {
         if ("Fireball".equals(spell.getName())) {
             // TODO: Add spell casting time and animation
 
-            final SphereCollisionShape collisionSphere = (SphereCollisionShape)this.spell.getNode().getControl(RigidBodyControl.class).getCollisionShape();
+            final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
+
+
+            super.spatial.getControl(BetterCharacterControl.class).setViewDirection(viewDirection);
+
+            long projectileId = this.worldManager.addNewEntity(this.spell.getName(), new Vector3f(super.spatial.getLocalTranslation()), Quaternion.IDENTITY);
+            Spatial projectile = this.worldManager.getEntity(projectileId);
+
+            final SphereCollisionShape collisionSphere = (SphereCollisionShape)projectile.getControl(RigidBodyControl.class).getCollisionShape();
 
             // FIXME: Get radius of BetterCharacterControl's capsule
             final float radius = collisionSphere.getRadius() * 2.0f;
-//            final Vector3f viewDirection = super.spatial.getControl(BetterCharacterControl.class).getViewDirection().normalize().multLocal(radius);
-            final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal().multLocal(radius);
-            super.spatial.getControl(BetterCharacterControl.class).setViewDirection(viewDirection);
-            Vector3f projectileLocation = super.spatial.getLocalTranslation().add(viewDirection).addLocal(0.0f, 10.0f, 0.0f);
 
-            long projectileId = this.worldManager.addNewEntity(this.spell.getName(), projectileLocation, Quaternion.IDENTITY);
-            Spatial projectile = this.worldManager.getEntity(projectileId);
+
+//            final Vector3f viewDirection = super.spatial.getControl(BetterCharacterControl.class).getViewDirection().normalize().multLocal(radius);
+
+            RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
+            body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius)).addLocal(0.0f, 10.0f, 0.0f)) ;
+
+
+
             // HACK: IMPORTANT! This must be changed to more generic ASAP
             projectile.getControl(ProjectileControl.class).setTarget(targetLocation);
 

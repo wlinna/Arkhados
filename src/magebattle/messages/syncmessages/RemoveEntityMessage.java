@@ -27,12 +27,19 @@ import magebattle.WorldManager;
 public class RemoveEntityMessage extends AbstractSyncMessage {
 
     private long entityId;
+    private String reason = "";
 
     public RemoveEntityMessage() {
     }
 
     public RemoveEntityMessage(long entityId) {
         this.entityId = entityId;
+        super.setSyncId(-1);
+    }
+
+    public RemoveEntityMessage(long entityId, String reason) {
+        this.entityId = entityId;
+        this.reason = reason;
         super.setSyncId(-1);
     }
 
@@ -43,6 +50,6 @@ public class RemoveEntityMessage extends AbstractSyncMessage {
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
-        worldManager.removeEntity(entityId);
+        worldManager.removeEntity(entityId, reason);
     }
 }

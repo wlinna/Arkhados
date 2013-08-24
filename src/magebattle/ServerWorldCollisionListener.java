@@ -46,11 +46,11 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
         if (event.getNodeA().getControl(ProjectileControl.class) != null) {
             projectileA = (Node) event.getNodeA();
-            this.worldManager.removeEntity((Long) projectileA.getUserData("entity-id"));
+            this.worldManager.removeEntity((Long) projectileA.getUserData("entity-id"), "collision");
         }
         if (event.getNodeB().getControl(ProjectileControl.class) != null) {
             projectileB = (Node) event.getNodeB();
-            this.worldManager.removeEntity((Long) projectileB.getUserData("entity-id"));
+            this.worldManager.removeEntity((Long) projectileB.getUserData("entity-id"), "collision");
         }
 
     }

@@ -1,18 +1,17 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle;
 
 import com.jme3.app.Application;
@@ -38,6 +37,8 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
+import magebattle.controls.EntityEventControl;
+import magebattle.entityevents.RemovalEventAction;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
 import magebattle.spells.Spell;
@@ -73,7 +74,6 @@ public class WorldManager extends AbstractAppState {
     private Node rootNode;
     private Camera cam;
     private EntityFactory entityFactory;
-
     private ServerWorldCollisionListener serverCollisionListener = null;
 
     @Override
@@ -94,8 +94,7 @@ public class WorldManager extends AbstractAppState {
         this.server = this.syncManager.getServer();
         this.client = this.syncManager.getClient();
 
-        if (this.isServer())
-        {
+        if (this.isServer()) {
             this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
             this.space.addCollisionListener(this.serverCollisionListener);
         }
@@ -173,14 +172,25 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public void removeEntity(long id) {
+    public void removeEntity(long id, String reason) {
         if (this.isServer()) {
-            this.syncManager.broadcast(new RemoveEntityMessage(id));
+            this.syncManager.broadcast(new RemoveEntityMessage(id, reason));
         }
         this.syncManager.removeEntity(id);
         Spatial spatial = this.entities.remove(id);
         if (spatial == null) {
             return;
+        }
+
+        if (this.isClient()) {
+            if (!"".equals(reason)) {
+                EntityEventControl eventControl = spatial.getControl(EntityEventControl.class);
+                if (eventControl != null) {
+                    eventControl.getOnRemoval().exec(this, reason);
+                }
+
+            }
+
         }
         spatial.removeFromParent();
         this.space.removeAll(spatial);

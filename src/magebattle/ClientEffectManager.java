@@ -17,12 +17,17 @@ package magebattle;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.network.Message;
+import com.jme3.network.MessageListener;
 
 /**
  *
  * @author william
  */
-public class ClientEffectManager extends AbstractAppState {
+public class ClientEffectManager extends AbstractAppState implements MessageListener {
+    private WorldManager worldManager;
+
+
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -36,6 +41,11 @@ public class ClientEffectManager extends AbstractAppState {
         //TODO: implement behavior during runtime
     }
 
+    public void messageReceived(Object source, Message m) {
+
+    }
+
+
     @Override
     public void cleanup() {
         super.cleanup();
@@ -43,4 +53,5 @@ public class ClientEffectManager extends AbstractAppState {
         //e.g. remove all spatials from rootNode
         //this is called on the OpenGL thread after the AppState has been detached
     }
+
 }
