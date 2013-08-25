@@ -1,23 +1,14 @@
 # JMageBattle #
 
-JMageBattle is MOBA game where mages cast spells to kill each other.
+JMageBattle is fast paced MOBA game where mages cast entirely skill based spells to kill each other.
 It's programmed in Java with JMonkeyEngine 3.
 
-Gameplay is highly influenced by Warcraft III mod called "Warlock Brawl".
-
-I'm bit new to Java and JMonkeyEngine and I'm developing JMageBattle
-only on my free time so progress may be slow. However, I've been able
-to develop JMageBattle little bit every day.
 
 **NOTE:** This is my initial commit. I will add more information later.
 
 ## Credits ##
 
 William Linna for programming.
-
-Thanks for Warlock Brawl -developers for making one of my favourite
-Warcraft III -mod. Because of Warlock Brawl, I decided to start
-developing JMageBattle. http://www.warlockbrawl.com/
 
 Thanks for MonkeyZone developers for providing example multiplayer
 game. I copied two source files from it and made small changes. I
