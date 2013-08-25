@@ -1,18 +1,17 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle.controls;
 
 import com.jme3.bullet.control.RigidBodyControl;
@@ -39,22 +38,16 @@ public class ProjectileControl extends AbstractControl {
     private RigidBodyControl rigidBodyControl;
     private Vector3f startingLocation = null;
     private float age = 0.0f;
-
     private static WorldManager worldManager;
-
-
-
     private static final float timeToLive = 3.0f;
 
-
-
     public void setTarget(Vector3f target) {
-        this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).normalizeLocal().multLocal((Float)super.getSpatial().getUserData("speed-movement"));
-        this.direction.y = 0.0f;
+        this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
+                .normalizeLocal().multLocal((Float)super.getSpatial().getUserData("speed-movement"));
+
         this.rigidBodyControl.setLinearVelocity(this.direction);
         this.rigidBodyControl.setGravity(Vector3f.ZERO);
         if (this.startingLocation == null) {
-
         }
     }
 
@@ -67,14 +60,15 @@ public class ProjectileControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         if (this.direction == null) {
+//            this.rigidBodyControl.setGravity(Vector3f.ZERO);
             return;
         }
         this.age += tpf;
         if (this.age > ProjectileControl.timeToLive) {
-            ProjectileControl.worldManager.removeEntity((Long)super.spatial.getUserData("entity-id"), "expiration");
+            ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData("entity-id"), "expiration");
         }
         Vector3f v = this.rigidBodyControl.getLinearVelocity();
-        System.out.println(String.format("%f %f %f", v.x, v.y, v.z));
+
 
     }
 

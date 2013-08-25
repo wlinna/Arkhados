@@ -87,6 +87,8 @@ public class WorldManager extends AbstractAppState {
         this.viewPort = this.app.getViewPort();
         this.space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
 
+        this.space.enableDebug(this.assetManager);
+
         this.cam = this.app.getCamera();
 
         this.syncManager = this.app.getStateManager().getState(SyncManager.class);

@@ -94,7 +94,7 @@ public class Spell {
                 Material material = new Material(Spell.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 material.setColor("Color", ColorRGBA.Yellow);
                 node.setMaterial(material);
-                node.setUserData("speed-movement", 60.0f);
+                node.setUserData("speed-movement", 50.0f);
                 node.setUserData("mass", 30.0f);
 
                 if (Spell.worldManager.isClient()) {
