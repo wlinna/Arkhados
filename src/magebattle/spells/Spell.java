@@ -147,9 +147,10 @@ public class Spell {
                 }
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
-//        spell.spatial.
                 node.addControl(new RigidBodyControl(collisionShape, (Float)node.getUserData("mass")));
                 node.addControl(new ProjectileControl());
+
+                node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
 
                 return node;
             }

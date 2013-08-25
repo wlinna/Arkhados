@@ -21,7 +21,6 @@ import com.jme3.scene.Spatial;
 import magebattle.WorldManager;
 import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterAnimationControl;
-import magebattle.controls.CharacterMovementControl;
 import magebattle.controls.SpellCastControl;
 import magebattle.spells.Spell;
 
@@ -46,8 +45,10 @@ public class EntityFactory {
             entity = this.assetManager.loadModel("Models/" + id + ".j3o");
             entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 20.0f);
             entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
+            float radius = 5.0f;
+            entity.setUserData("radius", radius);
 
-            entity.addControl(new BetterCharacterControl(5.0f, 12.0f, 75.0f));
+            entity.addControl(new BetterCharacterControl(radius, 20.0f, 75.0f));
 //            entity.addControl(new CharacterMovementControl());
             entity.addControl(new CharacterAnimationControl());
             entity.addControl(new ActionQueueControl());

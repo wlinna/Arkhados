@@ -1,18 +1,17 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle.actions;
 
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -30,6 +29,7 @@ import magebattle.spells.Spell;
  * @author william
  */
 public class CastSpellAction extends EntityAction {
+
     private final Spell spell;
     private final Vector3f targetLocation;
     private final WorldManager worldManager;
@@ -45,32 +45,27 @@ public class CastSpellAction extends EntityAction {
         if ("Fireball".equals(spell.getName())) {
             // TODO: Add spell casting time and animation
 
+            float characterRadius = super.spatial.getUserData("radius");
             final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-
 
             super.spatial.getControl(BetterCharacterControl.class).setViewDirection(viewDirection);
 
-            long projectileId = this.worldManager.addNewEntity(this.spell.getName(), new Vector3f(super.spatial.getLocalTranslation()), Quaternion.IDENTITY);
+
+            long projectileId = this.worldManager.addNewEntity(this.spell.getName(), super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f), Quaternion.IDENTITY);
             Spatial projectile = this.worldManager.getEntity(projectileId);
 
-            final SphereCollisionShape collisionSphere = (SphereCollisionShape)projectile.getControl(RigidBodyControl.class).getCollisionShape();
+            final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
 
             // FIXME: Get radius of BetterCharacterControl's capsule
-            final float radius = collisionSphere.getRadius() * 2.0f;
-
-
-//            final Vector3f viewDirection = super.spatial.getControl(BetterCharacterControl.class).getViewDirection().normalize().multLocal(radius);
+            final float radius = collisionSphere.getRadius() * 1.0f;
 
             RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
-            body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius)).addLocal(0.0f, 10.0f, 0.0f)) ;
-
-
+            body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
 
             // HACK: IMPORTANT! This must be changed to more generic ASAP
-            projectile.getControl(ProjectileControl.class).setTarget(targetLocation);
+            projectile.getControl(ProjectileControl.class).setTarget(this.targetLocation);
 
         }
         return false;
     }
-
 }
