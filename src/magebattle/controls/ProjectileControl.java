@@ -27,6 +27,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import magebattle.WorldManager;
 
 /**
  *
@@ -37,11 +38,21 @@ public class ProjectileControl extends AbstractControl {
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
     private Vector3f startingLocation = null;
+    private float age = 0.0f;
+
+    private static WorldManager worldManager;
+
+
+
+    private static final float timeToLive = 3.0f;
+
+
 
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).normalizeLocal().multLocal((Float)super.getSpatial().getUserData("speed-movement"));
         this.direction.y = 0.0f;
         this.rigidBodyControl.setLinearVelocity(this.direction);
+        this.rigidBodyControl.setGravity(Vector3f.ZERO);
         if (this.startingLocation == null) {
 
         }
@@ -51,7 +62,6 @@ public class ProjectileControl extends AbstractControl {
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);
-        this.rigidBodyControl.setGravity(Vector3f.ZERO);
     }
 
     @Override
@@ -59,6 +69,12 @@ public class ProjectileControl extends AbstractControl {
         if (this.direction == null) {
             return;
         }
+        this.age += tpf;
+        if (this.age > ProjectileControl.timeToLive) {
+            ProjectileControl.worldManager.removeEntity((Long)super.spatial.getUserData("entity-id"), "expiration");
+        }
+        Vector3f v = this.rigidBodyControl.getLinearVelocity();
+        System.out.println(String.format("%f %f %f", v.x, v.y, v.z));
 
     }
 
@@ -92,5 +108,9 @@ public class ProjectileControl extends AbstractControl {
 
     public RigidBodyControl getRigidBodyControl() {
         return this.rigidBodyControl;
+    }
+
+    public static void setWorldManager(WorldManager worldManager) {
+        ProjectileControl.worldManager = worldManager;
     }
 }

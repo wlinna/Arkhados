@@ -50,6 +50,8 @@ public class Spell {
         Spell.assetManager = assetManager;
         Spell.worldManager = worldManager;
 
+        ProjectileControl.setWorldManager(worldManager);
+
         Spell fireball = initFireBall();
         Spells.put(fireball.getName(), fireball);
 
