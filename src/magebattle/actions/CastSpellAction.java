@@ -23,6 +23,7 @@ import com.jme3.scene.Spatial;
 import magebattle.WorldManager;
 import magebattle.controls.ProjectileControl;
 import magebattle.spells.Spell;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -45,7 +46,7 @@ public class CastSpellAction extends EntityAction {
         if ("Fireball".equals(spell.getName())) {
             // TODO: Add spell casting time and animation
 
-            float characterRadius = super.spatial.getUserData("radius");
+            float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
             final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
 
             super.spatial.getControl(BetterCharacterControl.class).setViewDirection(viewDirection);

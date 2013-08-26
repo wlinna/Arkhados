@@ -43,6 +43,7 @@ import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
 import magebattle.spells.Spell;
 import magebattle.util.EntityFactory;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -149,8 +150,8 @@ public class WorldManager extends AbstractAppState {
 
         Spatial entitySpatial = this.entityFactory.createEntityById(modelPath);
         this.setEntityTranslation(entitySpatial, location, rotation);
-        entitySpatial.setUserData("player-id", -1l);
-        entitySpatial.setUserData("entity-id", id);
+        entitySpatial.setUserData(UserDataStrings.PLAYER_ID, -1l);
+        entitySpatial.setUserData(UserDataStrings.ENTITY_ID, id);
         this.entities.put(id, entitySpatial);
         this.syncManager.addObject(id, entitySpatial);
         this.space.addAll(entitySpatial);
@@ -165,9 +166,6 @@ public class WorldManager extends AbstractAppState {
             entityModel.getControl(BetterCharacterControl.class).warp(location);
             entityModel.setLocalTranslation(location);
             entityModel.getControl(BetterCharacterControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).multLocal(1, 0, 1).normalizeLocal());
-//        } else if (entityModel.getControl(VehicleControl.class) != null) {
-//            entityModel.getControl(VehicleControl.class).setPhysicsLocation(location);
-//            entityModel.getControl(VehicleControl.class).setPhysicsRotation(rotation.toRotationMatrix());
         } else {
             entityModel.setLocalTranslation(location);
             entityModel.setLocalRotation(rotation);

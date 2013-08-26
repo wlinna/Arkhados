@@ -27,6 +27,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import magebattle.WorldManager;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -43,7 +44,7 @@ public class ProjectileControl extends AbstractControl {
 
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
-                .normalizeLocal().multLocal((Float)super.getSpatial().getUserData("speed-movement"));
+                .normalizeLocal().multLocal((Float)super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
 
         this.rigidBodyControl.setLinearVelocity(this.direction);
         this.rigidBodyControl.setGravity(Vector3f.ZERO);
@@ -65,7 +66,7 @@ public class ProjectileControl extends AbstractControl {
         }
         this.age += tpf;
         if (this.age > ProjectileControl.timeToLive) {
-            ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData("entity-id"), "expiration");
+            ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
         Vector3f v = this.rigidBodyControl.getLinearVelocity();
 

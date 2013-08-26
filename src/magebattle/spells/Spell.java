@@ -35,6 +35,7 @@ import magebattle.controls.ProjectileControl;
 import magebattle.controls.TimedExistenceControl;
 import magebattle.entityevents.RemovalEventAction;
 import magebattle.util.NodeBuilder;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -94,8 +95,8 @@ public class Spell {
                 Material material = new Material(Spell.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 material.setColor("Color", ColorRGBA.Yellow);
                 node.setMaterial(material);
-                node.setUserData("speed-movement", 50.0f);
-                node.setUserData("mass", 30.0f);
+                node.setUserData(UserDataStrings.SPEED_MOVEMENT, 50.0f);
+                node.setUserData(UserDataStrings.MASS, 30.0f);
 
                 if (Spell.worldManager.isClient()) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
@@ -147,7 +148,7 @@ public class Spell {
                 }
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
-                node.addControl(new RigidBodyControl(collisionShape, (Float)node.getUserData("mass")));
+                node.addControl(new RigidBodyControl(collisionShape, (Float)node.getUserData(UserDataStrings.MASS)));
                 node.addControl(new ProjectileControl());
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
