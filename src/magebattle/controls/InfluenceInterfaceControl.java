@@ -18,12 +18,14 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
+import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -32,7 +34,13 @@ import java.io.IOException;
 public class InfluenceInterfaceControl extends AbstractControl {
 
     public void doDamage(float dmg) {
-        
+        Float health = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        health = FastMath.clamp(health - dmg, 0, health);
+        super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (health == 0) {
+            // TODO: Implement death
+        }
+
     }
     @Override
     protected void controlUpdate(float tpf) {

@@ -22,6 +22,8 @@ package magebattle.util;
 public class UserDataStrings {
     public final static String SPEED_MOVEMENT = "speed-movement";
     public final static String SPEED_ROTATION = "speed-rotation";
+    public final static String HEALTH_CURRENT = "health-current";
+    public final static String HEALTH_MAX = "health-max";
     public final static String ENTITY_ID = "entity-id";
     public final static String PLAYER_ID = "player-id";
     public final static String RADIUS = "radius";
