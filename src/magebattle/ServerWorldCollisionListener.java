@@ -16,6 +16,7 @@ package magebattle;
 
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import magebattle.controls.InfluenceInterfaceControl;
@@ -65,5 +66,6 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
+
     }
 }

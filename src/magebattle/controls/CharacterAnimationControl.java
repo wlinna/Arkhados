@@ -38,7 +38,7 @@ public class CharacterAnimationControl extends AbstractControl {
 
     private Spatial character;
     private AnimControl animControl;
-    private BetterCharacterControl characterControl;
+    private CharacterPhysicsControl characterControl;
     private CharacterMovementControl movementControl;
     private AnimChannel channel;
 
@@ -51,7 +51,7 @@ public class CharacterAnimationControl extends AbstractControl {
         super.setSpatial(spatial);
         this.character = super.getSpatial();
         this.animControl = this.character.getControl(AnimControl.class);
-        this.characterControl = character.getControl(BetterCharacterControl.class);
+        this.characterControl = character.getControl(CharacterPhysicsControl.class);
         this.movementControl = character.getControl(CharacterMovementControl.class);
 
         this.channel = this.animControl.createChannel();

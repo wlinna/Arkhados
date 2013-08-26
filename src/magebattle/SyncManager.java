@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.Callable;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.ProjectileControl;
 import magebattle.messages.syncmessages.AbstractSyncMessage;
 import magebattle.messages.syncmessages.SyncCharacterMessage;
@@ -95,7 +96,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
 
             Spatial spatial = (Spatial) entry.getValue();
 
-            BetterCharacterControl characterControl = spatial.getControl(BetterCharacterControl.class);
+            CharacterPhysicsControl characterControl = spatial.getControl(CharacterPhysicsControl.class);
             if (characterControl != null) {
                 SyncCharacterMessage syncMessage = new SyncCharacterMessage(entry.getKey(), entry.getValue());
                 this.broadcast(syncMessage);

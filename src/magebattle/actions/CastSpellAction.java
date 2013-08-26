@@ -21,6 +21,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import magebattle.WorldManager;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.ProjectileControl;
 import magebattle.spells.Spell;
 import magebattle.util.UserDataStrings;
@@ -49,7 +50,7 @@ public class CastSpellAction extends EntityAction {
             float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
             final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
 
-            super.spatial.getControl(BetterCharacterControl.class).setViewDirection(viewDirection);
+            super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
 
             long projectileId = this.worldManager.addNewEntity(this.spell.getName(), super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f), Quaternion.IDENTITY);

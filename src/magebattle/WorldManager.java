@@ -37,6 +37,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.EntityEventControl;
 import magebattle.entityevents.RemovalEventAction;
 import magebattle.messages.syncmessages.AddEntityMessage;
@@ -162,10 +163,10 @@ public class WorldManager extends AbstractAppState {
         if (entityModel.getControl(RigidBodyControl.class) != null) {
             entityModel.getControl(RigidBodyControl.class).setPhysicsLocation(location);
             entityModel.getControl(RigidBodyControl.class).setPhysicsRotation(rotation.toRotationMatrix());
-        } else if (entityModel.getControl(BetterCharacterControl.class) != null) {
-            entityModel.getControl(BetterCharacterControl.class).warp(location);
+        } else if (entityModel.getControl(CharacterPhysicsControl.class) != null) {
+            entityModel.getControl(CharacterPhysicsControl.class).warp(location);
             entityModel.setLocalTranslation(location);
-            entityModel.getControl(BetterCharacterControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).multLocal(1, 0, 1).normalizeLocal());
+            entityModel.getControl(CharacterPhysicsControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).multLocal(1, 0, 1).normalizeLocal());
         } else {
             entityModel.setLocalTranslation(location);
             entityModel.setLocalRotation(rotation);

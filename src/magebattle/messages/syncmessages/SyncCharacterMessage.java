@@ -22,6 +22,7 @@ import com.jme3.scene.Spatial;
 import magebattle.actions.RunToAction;
 import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterMovementControl;
+import magebattle.controls.CharacterPhysicsControl;
 
 /**
  *
@@ -41,8 +42,8 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         super(id);
         Spatial spatial = (Spatial) object;
         this.location.set(spatial.getLocalTranslation());
-        this.walkDirection.set(spatial.getControl(BetterCharacterControl.class).getWalkDirection());
-        this.viewDirection.set(spatial.getControl(BetterCharacterControl.class).getViewDirection());
+        this.walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
+        this.viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
     }
 
     public void readData(CharacterMovementControl control) {
@@ -51,7 +52,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(BetterCharacterControl.class).warp(this.location);
+        character.getControl(CharacterPhysicsControl.class).warp(this.location);
 //        character.getControl(CharacterMovementControl.class).runTo(this.location.add(this.walkDirection));
         ActionQueueControl actionQueue = character.getControl(ActionQueueControl.class);
 //        if (actionQueue.getCurrent() instanceof RunToAction) {
@@ -60,7 +61,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
 //        } else {
             actionQueue.clear();
             actionQueue.enqueueAction(new RunToAction(this.location.addLocal(this.walkDirection)));
-            character.getControl(BetterCharacterControl.class).setViewDirection(this.viewDirection);
+            character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
 //        }
     }
 }

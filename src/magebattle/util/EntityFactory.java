@@ -21,6 +21,7 @@ import com.jme3.scene.Spatial;
 import magebattle.WorldManager;
 import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterAnimationControl;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.controls.SpellCastControl;
 import magebattle.spells.Spell;
@@ -50,7 +51,7 @@ public class EntityFactory {
             entity.setUserData(UserDataStrings.RADIUS, radius);
             entity.setUserData(UserDataStrings.HEALTH_CURRENT, 100.0f);
 
-            entity.addControl(new BetterCharacterControl(radius, 20.0f, 75.0f));
+            entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 //            entity.addControl(new CharacterMovementControl());
             entity.addControl(new CharacterAnimationControl());
             entity.addControl(new ActionQueueControl());

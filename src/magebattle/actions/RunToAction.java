@@ -19,6 +19,7 @@ import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.util.UserDataStrings;
 
 /**
@@ -27,7 +28,7 @@ import magebattle.util.UserDataStrings;
  */
 public class RunToAction extends EntityAction {
 
-    private BetterCharacterControl physicsControl;
+    private CharacterPhysicsControl physicsControl;
     private Vector3f targetLocation;
     private final float arrivalRangeSquared = FastMath.sqr(1.0f);
 
@@ -57,7 +58,7 @@ public class RunToAction extends EntityAction {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        this.physicsControl = spatial.getControl(BetterCharacterControl.class);
+        this.physicsControl = spatial.getControl(CharacterPhysicsControl.class);
         assert this.physicsControl != null;
     }
 

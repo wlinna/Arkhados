@@ -21,6 +21,7 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
 import magebattle.actions.RunToAction;
 import magebattle.controls.ActionQueueControl;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.messages.syncmessages.AbstractSyncMessage;
 
 /**
@@ -43,7 +44,7 @@ public class UcRunToMessage extends AbstractSyncMessage {
     public void applyData(Object target) {
         Node character = (Node) target;
 //        CharacterMovementControl movementControl = character.getControl(CharacterMovementControl.class);
-        BetterCharacterControl characterControl = character.getControl(BetterCharacterControl.class);
+        CharacterPhysicsControl characterControl = character.getControl(CharacterPhysicsControl.class);
 
         if (characterControl != null) {
             character.getControl(ActionQueueControl.class).clear();

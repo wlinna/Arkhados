@@ -40,7 +40,7 @@ public class CharacterMovementControl extends AbstractControl {
     /**
      * This is just reference to spatials location
      */
-    private BetterCharacterControl physicsControl;
+    private CharacterPhysicsControl physicsControl;
     private Spatial character;
     private final float arrivalRangeSquared = FastMath.sqr(1.0f);
 
@@ -49,7 +49,7 @@ public class CharacterMovementControl extends AbstractControl {
         super.setSpatial(spatial);
         this.character = spatial;
         this.physicsControl = this.character
-                .getControl(BetterCharacterControl.class);
+                .getControl(CharacterPhysicsControl.class);
         assert this.physicsControl != null;
     }
 
@@ -93,7 +93,7 @@ public class CharacterMovementControl extends AbstractControl {
         return this.spatial.getLocalTranslation();
     }
 
-    public BetterCharacterControl getPhysicsControl() {
+    public CharacterPhysicsControl getPhysicsControl() {
         return this.physicsControl;
     }
 
