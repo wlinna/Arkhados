@@ -37,6 +37,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         Float health = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
         health = FastMath.clamp(health - dmg, 0, health);
         super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        System.out.println(health);
         if (health == 0) {
             // TODO: Implement death
         }

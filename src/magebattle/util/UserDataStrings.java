@@ -28,4 +28,5 @@ public class UserDataStrings {
     public final static String PLAYER_ID = "player-id";
     public final static String RADIUS = "radius";
     public final static String MASS = "mass";
+    public final static String DAMAGE = "damage";
 }

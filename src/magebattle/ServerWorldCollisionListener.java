@@ -18,7 +18,9 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.controls.ProjectileControl;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -35,23 +37,33 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     }
 
     public void collision(PhysicsCollisionEvent event) {
-        Node projectileA = null;
-        Node projectileB = null;
+
 
         Spatial staticA = null;
         Spatial staticB = null;
 
-        Spatial characterA = null;
-        Spatial characterB = null;
+        InfluenceInterfaceControl characterA = event.getNodeA().getControl(InfluenceInterfaceControl.class);
+        InfluenceInterfaceControl characterB = event.getNodeB().getControl(InfluenceInterfaceControl.class);
 
-        if (event.getNodeA().getControl(ProjectileControl.class) != null) {
-            projectileA = (Node) event.getNodeA();
-            this.worldManager.removeEntity((Long) projectileA.getUserData("entity-id"), "collision");
+        ProjectileControl projectileA = event.getNodeA().getControl(ProjectileControl.class);
+        ProjectileControl projectileB = event.getNodeB().getControl(ProjectileControl.class);
+
+        if (projectileA != null) {
+            if (characterB != null) {
+                this.projectileCharacterCollision(projectileA, characterB);
+            }
+            this.worldManager.removeEntity((Long) projectileA.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
         }
-        if (event.getNodeB().getControl(ProjectileControl.class) != null) {
-            projectileB = (Node) event.getNodeB();
-            this.worldManager.removeEntity((Long) projectileB.getUserData("entity-id"), "collision");
+        if (projectileB != null) {
+            if (characterA != null) {
+                this.projectileCharacterCollision(projectileB, characterA);
+            }
+            this.worldManager.removeEntity((Long) projectileB.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
         }
 
+    }
+
+    private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
+        character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
     }
 }

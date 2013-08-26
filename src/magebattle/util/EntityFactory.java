@@ -21,6 +21,7 @@ import com.jme3.scene.Spatial;
 import magebattle.WorldManager;
 import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterAnimationControl;
+import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.controls.SpellCastControl;
 import magebattle.spells.Spell;
 
@@ -54,6 +55,7 @@ public class EntityFactory {
             entity.addControl(new CharacterAnimationControl());
             entity.addControl(new ActionQueueControl());
             entity.addControl(new SpellCastControl(this.worldManager));
+            entity.addControl(new InfluenceInterfaceControl());
 
         } else if ("Fireball".equals(id)) {
             Spell spell = Spell.getSpells().get(id);

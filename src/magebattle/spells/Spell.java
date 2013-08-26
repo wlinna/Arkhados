@@ -97,6 +97,7 @@ public class Spell {
                 node.setMaterial(material);
                 node.setUserData(UserDataStrings.SPEED_MOVEMENT, 50.0f);
                 node.setUserData(UserDataStrings.MASS, 30.0f);
+                node.setUserData(UserDataStrings.DAMAGE, 20.0f);
 
                 if (Spell.worldManager.isClient()) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
