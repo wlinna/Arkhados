@@ -59,8 +59,6 @@ public class CharacterAnimationControl extends AbstractControl {
 
     }
 
-
-
     @Override
     protected void controlUpdate(float tpf) {
         if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {

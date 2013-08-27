@@ -52,6 +52,7 @@ public class EntityFactory {
             entity.setUserData(UserDataStrings.HEALTH_CURRENT, 100.0f);
 
             entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
+            entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
 //            entity.addControl(new CharacterMovementControl());
             entity.addControl(new CharacterAnimationControl());
             entity.addControl(new ActionQueueControl());
