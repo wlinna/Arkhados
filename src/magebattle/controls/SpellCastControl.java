@@ -56,6 +56,9 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public void cast(final String spellName, Vector3f targetLocation) {
+        if (!this.enabled) {
+            return;
+        }
 //        if (cooldowns.get(name) <= 0.0f) {
         // TODO: make character run close enough before casting
 //            Integer level = this.levels.get(name);

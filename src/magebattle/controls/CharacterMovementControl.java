@@ -55,6 +55,10 @@ public class CharacterMovementControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        if ((Float)super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT) == 0.0f)
+        {
+            this.setEnabled(false);
+        }
         Vector3f direction = this.currentTargetLocation
                 .subtract(this.character.getLocalTranslation());
         float lengthSquared = direction.lengthSquared();

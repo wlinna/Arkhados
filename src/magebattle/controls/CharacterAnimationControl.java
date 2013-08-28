@@ -56,16 +56,16 @@ public class CharacterAnimationControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        if ((Float) super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT) == 0.0f) {
-            this.channel.setAnim("Die");
-            this.channel.setLoopMode(LoopMode.DontLoop);
-            this.setEnabled(false);
-        }
-        else if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
+        if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
             this.channel.setSpeed(1.0f);
         } else {
             this.channel.setSpeed(0.0f);
         }
+    }
+    public void death() {
+        this.channel.setAnim("Die");
+        this.channel.setLoopMode(LoopMode.DontLoop);
+        super.setEnabled(false);
     }
 
     @Override

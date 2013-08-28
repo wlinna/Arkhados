@@ -38,11 +38,18 @@ public class InfluenceInterfaceControl extends AbstractControl {
         health = FastMath.clamp(health - dmg, 0, health);
         super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         System.out.println(health);
-        if (health == 0) {
-            // TODO: Implement death
+        if (health == 0.0f) {
+            this.death();
         }
 
     }
+
+    public void death() {
+        super.spatial.getControl(CharacterAnimationControl.class).death();
+        super.spatial.getControl(ActionQueueControl.class).setEnabled(false);
+        super.spatial.getControl(SpellCastControl.class).setEnabled(false);
+    }
+
     @Override
     protected void controlUpdate(float tpf) {
     }
