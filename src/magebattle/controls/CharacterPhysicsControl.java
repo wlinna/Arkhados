@@ -33,7 +33,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     @Override
-    public void prePhysicsTick(PhysicsSpace space, float tpf) {        
+    public void prePhysicsTick(PhysicsSpace space, float tpf) {
         if (impulseToApply != null) {
             this.rigidBody.applyImpulse(this.impulseToApply.setY(10.0f), Vector3f.ZERO);
             this.impulseToApply = null;

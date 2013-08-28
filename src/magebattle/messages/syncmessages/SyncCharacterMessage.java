@@ -22,6 +22,8 @@ import magebattle.actions.RunToAction;
 import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterMovementControl;
 import magebattle.controls.CharacterPhysicsControl;
+import magebattle.controls.InfluenceInterfaceControl;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -33,6 +35,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
     private Vector3f location = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Vector3f viewDirection = new Vector3f();
+    private float health;
 
     public SyncCharacterMessage() {
     }
@@ -43,6 +46,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         this.location.set(spatial.getLocalTranslation());
         this.walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
         this.viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
+        this.health = (Float)spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
     }
 
     public void readData(CharacterMovementControl control) {
@@ -51,6 +55,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
+        character.getControl(InfluenceInterfaceControl.class).setHealth(this.health);
         character.getControl(CharacterPhysicsControl.class).warp(this.location);
 //        character.getControl(CharacterMovementControl.class).runTo(this.location.add(this.walkDirection));
         ActionQueueControl actionQueue = character.getControl(ActionQueueControl.class);

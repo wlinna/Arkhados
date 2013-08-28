@@ -33,18 +33,34 @@ import magebattle.util.UserDataStrings;
  */
 public class InfluenceInterfaceControl extends AbstractControl {
 
-    public void doDamage(float dmg) {
+    private boolean dead = false;
+    /**
+     * Do damage to character (damage can be mitigated).
+     * @param damage
+     */
+    public void doDamage(float damage) {
+        if (this.dead) {
+            return;
+        }
         Float health = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        health = FastMath.clamp(health - dmg, 0, health);
+        health = FastMath.clamp(health - damage, 0, health);
         super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-        System.out.println(health);
         if (health == 0.0f) {
             this.death();
         }
-
+    }
+    public void setHealth(float health) {
+        super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (this.dead) {
+            return;
+        }
+        else if (health == 0.0) {
+            this.death();
+        }
     }
 
     public void death() {
+        this.dead = true;
         super.spatial.getControl(CharacterAnimationControl.class).death();
         super.spatial.getControl(ActionQueueControl.class).setEnabled(false);
         super.spatial.getControl(SpellCastControl.class).setEnabled(false);
