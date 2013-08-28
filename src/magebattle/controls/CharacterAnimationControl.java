@@ -1,22 +1,22 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle.controls;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.LoopMode;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -29,6 +29,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -36,23 +37,17 @@ import java.io.IOException;
  */
 public class CharacterAnimationControl extends AbstractControl {
 
-    private Spatial character;
     private AnimControl animControl;
     private CharacterPhysicsControl characterControl;
     private CharacterMovementControl movementControl;
     private AnimChannel channel;
 
-
-    public CharacterAnimationControl() {
-    }
-
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        this.character = super.getSpatial();
-        this.animControl = this.character.getControl(AnimControl.class);
-        this.characterControl = character.getControl(CharacterPhysicsControl.class);
-        this.movementControl = character.getControl(CharacterMovementControl.class);
+        this.animControl = super.spatial.getControl(AnimControl.class);
+        this.characterControl = super.spatial.getControl(CharacterPhysicsControl.class);
+        this.movementControl = super.spatial.getControl(CharacterMovementControl.class);
 
         this.channel = this.animControl.createChannel();
         this.channel.setAnim("Walk");
@@ -61,10 +56,14 @@ public class CharacterAnimationControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
-            this.channel.setSpeed(1.0f);
+        if ((Float) super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT) == 0.0f) {
+            this.channel.setAnim("Die");
+            this.channel.setLoopMode(LoopMode.DontLoop);
+            this.setEnabled(false);
         }
-        else {
+        else if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
+            this.channel.setSpeed(1.0f);
+        } else {
             this.channel.setSpeed(0.0f);
         }
     }

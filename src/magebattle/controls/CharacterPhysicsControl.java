@@ -36,7 +36,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
 
         if (impulseToApply != null) {
-            System.out.println(String.format("%f %f %f", impulseToApply.x, impulseToApply.y, impulseToApply.z));
             this.rigidBody.applyImpulse(this.impulseToApply.setY(10.0f), Vector3f.ZERO);
             this.impulseToApply = null;
         }

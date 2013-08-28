@@ -68,7 +68,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
-        Vector3f impulse = character.getSpatial().getLocalTranslation().subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(10000.0f);
+        Vector3f impulse = character.getSpatial().getLocalTranslation()
+                .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(10000.0f);
         character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
 
 //        character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(Vector3f.UNIT_Y.mult(2000.0f));
