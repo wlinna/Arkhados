@@ -30,6 +30,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
+import magebattle.controls.CharacterPhysicsControl;
 import magebattle.util.UserDataStrings;
 
 /**
@@ -76,9 +77,10 @@ public class ClientHudManager extends AbstractAppState {
         BitmapText hpBar = new BitmapText(this.guiFont);
 
         hpBar.setSize(this.guiFont.getCharSet().getRenderedSize());
-//        hpBar.setBox(new Rectangle(0f, 0f, 30f, 10f));
+        hpBar.setBox(new Rectangle(0f, 0f, 30f, 10f));
         hpBar.setColor(ColorRGBA.Red);
-//        hpBar.setAlignment(BitmapFont.Align.Center);
+        hpBar.setAlignment(BitmapFont.Align.Center);
+        hpBar.center();
         this.guiNode.attachChild(hpBar);
         hpBar.setQueueBucket(RenderQueue.Bucket.Gui);
         this.hpBars.add(hpBar);
@@ -92,9 +94,11 @@ public class ClientHudManager extends AbstractAppState {
             hpBar.setText("");
             return;
         }
-        Vector3f characterScreenLocation = this.cam.getScreenCoordinates(character.getWorldTranslation());
-        System.out.println(String.format("%f %f %f", characterScreenLocation.x, characterScreenLocation.y, characterScreenLocation.z));
-        Vector3f hpBarLocation = this.cam.getScreenCoordinates(character.getLocalTranslation()).setZ(0f);
+//        Vector3f characterScreenLocation = this.cam.getScreenCoordinates(character.getControl(CharacterPhysicsControl.class).getPhysicsLocation());
+//        System.out.println(String.format("%f %f %f", characterScreenLocation.x, characterScreenLocation.y, characterScreenLocation.z));
+
+        // TODO: Implement better method to get character's head's location
+        Vector3f hpBarLocation = this.cam.getScreenCoordinates(character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
 
