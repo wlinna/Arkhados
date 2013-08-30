@@ -39,6 +39,7 @@ import magebattle.messages.ChatMessage;
 import magebattle.messages.MessageUtils;
 import magebattle.messages.PlayerDataTableMessage;
 import magebattle.messages.ServerLoginMessage;
+import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
@@ -70,14 +71,19 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private SyncManager syncManager;
     private BulletAppState bulletState;
     private UserCommandManager userCommandManager;
+    private ClientHudManager clientHudManager;
 
     @Override
     public void simpleInitApp() {
+        this.setDisplayStatView(false);
         this.bulletState = new BulletAppState();
         this.bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
 
         this.inputManager.setCursorVisible(true);
 
+        this.clientHudManager = new ClientHudManager(this.cam, this.guiNode, this.guiFont);
+
+        this.stateManager.attach(this.clientHudManager);
         this.stateManager.attach(this.bulletState);
         this.bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
         this.flyCam.setEnabled(false);
@@ -91,13 +97,14 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.worldManager = new WorldManager();
         this.syncManager.addObject(-1, this.worldManager);
 
-        this.listenerManager = new ClientNetListener(this, client, null);
+
+        this.userCommandManager = new UserCommandManager(this.client);
+        this.listenerManager = new ClientNetListener(this, client, this.worldManager);
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
                 ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class);
+                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class);
 
-        this.userCommandManager = new UserCommandManager(this.client);
         MessageUtils.registerMessages();
         this.stateManager.attach(ClientMain.this.worldManager);
 
@@ -262,6 +269,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     }
 
+
+    public UserCommandManager getUserCommandManager() {
+        return this.userCommandManager;
+    }
+
     public void bind(Nifty nifty, Screen screen) {
     }
 
@@ -276,4 +288,5 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.client.close();
         super.destroy();
     }
+
 }

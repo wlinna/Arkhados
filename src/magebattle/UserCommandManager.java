@@ -1,18 +1,17 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle;
 
 import com.jme3.app.Application;
@@ -31,6 +30,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
+import magebattle.actions.RunToAction;
+import magebattle.controls.ActionQueueControl;
+import magebattle.controls.CharacterPhysicsControl;
+import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.messages.usercommands.UcCastSpellMessage;
 import magebattle.messages.usercommands.UcRunToMessage;
 
@@ -48,6 +51,10 @@ public class UserCommandManager extends AbstractAppState {
     // TODO: Get character somewhere
     private Spatial character;
     private Camera cam;
+    private InfluenceInterfaceControl characterInterface;
+    private long playerId;
+    private long characterId;
+
 
     public UserCommandManager(Client client) {
         this.client = client;
@@ -82,10 +89,15 @@ public class UserCommandManager extends AbstractAppState {
         }
 
         private void move(final Vector3f contactPoint) {
+            UserCommandManager.this.getCharacter().getControl(ActionQueueControl.class).clear();
+            UserCommandManager.this.getCharacter().getControl(ActionQueueControl.class).enqueueAction(new RunToAction(contactPoint));
             UserCommandManager.this.client.send(new UcRunToMessage(contactPoint));
         }
 
         public void onAction(String name, boolean isPressed, float tpf) {
+            if (UserCommandManager.this.getCharacterInterface().isDead()) {
+                return;
+            }
             if (isPressed) {
                 return;
             }
@@ -95,6 +107,8 @@ public class UserCommandManager extends AbstractAppState {
             final Vector2f mouse2dPosition = UserCommandManager.this.inputManager.getCursorPosition();
             final Vector3f mouse3dPosition = UserCommandManager.this.cam
                     .getWorldCoordinates(mouse2dPosition, 0.0f);
+
+
             final Vector3f rayDirection = UserCommandManager.this.cam
                     .getWorldCoordinates(mouse2dPosition, 1.0f)
                     .subtractLocal(mouse3dPosition).normalizeLocal();
@@ -135,5 +149,32 @@ public class UserCommandManager extends AbstractAppState {
     @Override
     public void cleanup() {
         super.cleanup();
+    }
+
+//    private void setCharacter(Spatial character) {
+//        this.character = character;
+//        this.characterInterface = this.character.getControl(InfluenceInterfaceControl.class);
+//    }
+
+    private Spatial getCharacter() {
+        return this.worldManager.getEntity(this.characterId);
+    }
+
+    private InfluenceInterfaceControl getCharacterInterface() {
+        return this.worldManager.getEntity(this.characterId).getControl(InfluenceInterfaceControl.class);
+    }
+
+
+    public long getPlayerId() {
+        return this.playerId;
+    }
+
+    public void setPlayerId(long playerId) {
+        this.playerId = playerId;
+    }
+
+
+    public void setCharacterId(long characterId) {
+        this.characterId = characterId;
     }
 }

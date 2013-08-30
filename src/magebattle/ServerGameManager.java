@@ -1,18 +1,17 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle;
 
 import com.jme3.app.Application;
@@ -20,8 +19,9 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
+import com.jme3.network.Server;
 import java.util.Iterator;
+import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
 
 /**
@@ -29,6 +29,7 @@ import magebattle.messages.StartGameMessage;
  * @author william
  */
 public class ServerGameManager extends AbstractAppState {
+
     private SyncManager syncManager;
     private WorldManager worldManager;
     private boolean running;
@@ -50,7 +51,7 @@ public class ServerGameManager extends AbstractAppState {
         this.running = true;
         this.syncManager.getServer().broadcast(new StartGameMessage());
         this.worldManager.loadLevel();
-        this.worldManager.preloadModels(new String[] { "Models/Mage.j3o" });
+        this.worldManager.preloadModels(new String[]{"Models/Mage.j3o"});
         this.worldManager.attachLevel();
 
         int i = 0;
@@ -61,6 +62,12 @@ public class ServerGameManager extends AbstractAppState {
             startingLocation.setY(7.0f);
             long entityId = this.worldManager.addNewEntity("Mage", startingLocation, new Quaternion());
             playerData.setData("character-entity-id", entityId);
+
+        }
+
+        for (PlayerData playerData : PlayerData.getPlayers()) {
+            long entityId = playerData.getLongData("character-entity-id");
+            this.syncManager.getServer().broadcast(new SetPlayersCharacterMessage(entityId, playerData.getId()));
         }
         return true;
     }

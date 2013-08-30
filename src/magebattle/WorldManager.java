@@ -52,8 +52,6 @@ import magebattle.util.UserDataStrings;
  */
 public class WorldManager extends AbstractAppState {
 
-    private final static Trigger LEFT_CLICK = new MouseButtonTrigger(MouseInput.BUTTON_LEFT);
-    private final static String MAPPING_CLICK = "Click";
     // TODO: Add new starting locations
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
@@ -102,7 +100,8 @@ public class WorldManager extends AbstractAppState {
             this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
             this.space.addCollisionListener(this.serverCollisionListener);
         }
-        this.entityFactory = new EntityFactory(this.assetManager, this);
+
+        this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
         Spell.initSpells(assetManager, this);
         System.out.println("Initialized WorldManager");
     }
@@ -127,7 +126,6 @@ public class WorldManager extends AbstractAppState {
 
         this.cam.setLocation(new Vector3f(0.0f, 120.0f, -20.0f));
         this.cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
-
     }
 
     /**

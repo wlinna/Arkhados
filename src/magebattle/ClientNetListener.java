@@ -1,29 +1,30 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle;
 
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
+import com.jme3.scene.Spatial;
 import magebattle.messages.ChatMessage;
 import magebattle.messages.ClientLoginMessage;
 import magebattle.messages.MessageUtils;
 import magebattle.messages.PlayerDataTableMessage;
 import magebattle.messages.ServerLoginMessage;
+import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
 
 /**
@@ -42,8 +43,6 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
         this.app = app;
         this.client = client;
         this.worldManager = worldManager;
-
-
     }
 
     public void messageReceived(Object source, Message m) {
@@ -51,7 +50,7 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
             ServerLoginMessage message = (ServerLoginMessage) m;
             if (message.isAccepted()) {
                 System.out.println("Hooray! We've... I mean you've been accepted!");
-
+                this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
             }
 
         } else if (m instanceof PlayerDataTableMessage) {
@@ -62,6 +61,13 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
             this.app.addChat(message.getName(), message.getMessage());
         } else if (m instanceof StartGameMessage) {
             this.app.startGame();
+        } else if (m instanceof SetPlayersCharacterMessage) {
+            SetPlayersCharacterMessage message = (SetPlayersCharacterMessage)m;
+            if (this.app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
+//                Spatial character = this.worldManager.getEntity(message.getEntityId());
+                this.app.getUserCommandManager().setCharacterId(message.getEntityId());
+            }
+
         }
     }
 

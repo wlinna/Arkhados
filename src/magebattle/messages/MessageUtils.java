@@ -39,6 +39,8 @@ public class MessageUtils {
         Serializer.registerClass(StartGameMessage.class);
         // </Lobby>
 
+        Serializer.registerClass(SetPlayersCharacterMessage.class);
+
         // <Sync>
         Serializer.registerClass(AddEntityMessage.class);
         Serializer.registerClass(RemoveEntityMessage.class);

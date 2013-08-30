@@ -91,6 +91,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule out = ex.getCapsule(this);
+    }
 
+    public boolean isDead() {
+        return dead;
     }
 }

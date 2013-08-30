@@ -18,7 +18,6 @@ package magebattle;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.network.Client;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
