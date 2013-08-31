@@ -18,7 +18,6 @@ package magebattle.messages.usercommands;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
-import magebattle.controls.ActionQueueControl;
 import magebattle.controls.SpellCastControl;
 import magebattle.messages.syncmessages.AbstractSyncMessage;
 
@@ -43,7 +42,6 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(ActionQueueControl.class).clear();
         character.getControl(SpellCastControl.class).cast(this.spell, this.location);
     }
 

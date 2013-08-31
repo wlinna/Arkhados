@@ -50,7 +50,6 @@ public class MessageUtils {
         // </Sync>
 
         // <UserCommands>
-        Serializer.registerClass(UcRunToMessage.class);
         Serializer.registerClass(UcCastSpellMessage.class);
         Serializer.registerClass(UcWalkDirection.class);
         // </UserCommands>

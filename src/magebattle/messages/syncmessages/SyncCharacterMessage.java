@@ -58,16 +58,9 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         Spatial character = (Spatial) target;
         character.getControl(InfluenceInterfaceControl.class).setHealth(this.health);
         character.getControl(CharacterPhysicsControl.class).warp(this.location);
+//        character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
         character.getControl(CharacterPhysicsControl.class).setVelocity(velocity);
 //        character.getControl(CharacterMovementControl.class).runTo(this.location.add(this.walkDirection));
-        ActionQueueControl actionQueue = character.getControl(ActionQueueControl.class);
-//        if (actionQueue.getCurrent() instanceof RunToAction) {
-//            RunToAction action = (RunToAction) actionQueue.getCurrent();
-//            action.setTargetLocation(this.location.add(this.walkDirection));
-//        } else {
-        actionQueue.clear();
-        actionQueue.enqueueAction(new RunToAction(this.location.addLocal(this.walkDirection)));
-        character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
 //        }
     }
 }

@@ -64,7 +64,6 @@ public class EntityFactory {
             entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
 //            entity.addControl(new CharacterMovementControl());
             entity.addControl(new CharacterAnimationControl());
-            entity.addControl(new ActionQueueControl());
             entity.addControl(new SpellCastControl(this.worldManager));
             entity.addControl(new InfluenceInterfaceControl());
 

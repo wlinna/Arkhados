@@ -12,7 +12,6 @@
 
  You should have received a copy of the GNU General Public License
  along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
 package magebattle.messages.usercommands;
 
 import com.jme3.math.Vector3f;
@@ -28,11 +27,11 @@ import magebattle.util.UserDataStrings;
  */
 @Serializable
 public class UcWalkDirection extends AbstractSyncMessage {
+
     private int down;
     private int right;
 
     public UcWalkDirection() {
-
     }
 
     public UcWalkDirection(int down, int right) {
@@ -49,6 +48,9 @@ public class UcWalkDirection extends AbstractSyncMessage {
             Float speedMovement = character.getUserData(UserDataStrings.SPEED_MOVEMENT);
             walkDirection.normalizeLocal().multLocal(speedMovement);
             characterControl.setWalkDirection(walkDirection);
+            if (down != 0 || right != 0) {
+                characterControl.setViewDirection(walkDirection);
+            }
         }
     }
 }
