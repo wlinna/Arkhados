@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import magebattle.messages.usercommands.UcCastSpellMessage;
 import magebattle.messages.usercommands.UcRunToMessage;
+import magebattle.messages.usercommands.UcWalkDirection;
 
 /**
  * test
@@ -68,7 +69,7 @@ public class ServerMain extends SimpleApplication {
         }
         this.listenerManager = new ServerNetListener(this, server);
         this.syncManager = new SyncManager(this, this.server);
-        this.syncManager.setMessagesToListen(UcRunToMessage.class, UcCastSpellMessage.class); // Add message classes
+        this.syncManager.setMessagesToListen(UcRunToMessage.class, UcCastSpellMessage.class, UcWalkDirection.class); // Add message classes
         this.syncManager.addObject(-1, this.worldManager);
 
         this.stateManager.attach(ServerMain.this.syncManager);

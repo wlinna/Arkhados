@@ -1,4 +1,4 @@
-/*    This file is part of <project>.
+/*    This file is part of JMageBattle.
 
  JMageBattle is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -47,5 +47,9 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
         this.impulseToApply = impulse;
 //        this.rigidBody.applyForce(impulse, location);
+    }
+
+    public void setVelocity(Vector3f velocity) {
+        this.rigidBody.setLinearVelocity(velocity);
     }
 }

@@ -36,6 +36,8 @@ import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.messages.usercommands.UcCastSpellMessage;
 import magebattle.messages.usercommands.UcRunToMessage;
+import magebattle.messages.usercommands.UcWalkDirection;
+import magebattle.util.UserDataStrings;
 
 /**
  *
@@ -54,6 +56,10 @@ public class UserCommandManager extends AbstractAppState {
     private InfluenceInterfaceControl characterInterface;
     private long playerId;
     private long characterId;
+
+    private int down = 0;
+    private int right = 0;
+
 
 
     public UserCommandManager(Client client) {
@@ -75,6 +81,13 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private void initUserInput() {
+        this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_D));
+        this.inputManager.addMapping("move-left", new KeyTrigger(KeyInput.KEY_A));
+        this.inputManager.addMapping("move-up", new KeyTrigger(KeyInput.KEY_W));
+        this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_S));
+
+        this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
+
         this.inputManager.addMapping("cast-or-move", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         this.inputManager.addMapping("select-spell-fireball", new KeyTrigger(KeyInput.KEY_Q));
 
@@ -139,6 +152,28 @@ public class UserCommandManager extends AbstractAppState {
             if ("select-spell-fireball".equals(name)) {
                 UserCommandManager.this.selectedSpell = "Fireball";
             }
+        }
+    };
+
+    private ActionListener actionMoveDirection = new ActionListener() {
+
+        public void onAction(String name, boolean isPressed, float tpf) {
+            if ("move-right".equals(name)) {
+                UserCommandManager.this.right = isPressed ? 1 : 0;
+            }
+            if ("move-left".equals(name)) {
+                UserCommandManager.this.right = isPressed ? -1 : 0;
+            }
+            if ("move-up".equals(name)) {
+                UserCommandManager.this.down = isPressed ? -1 : 0;
+            }
+            if ("move-down".equals(name)) {
+                UserCommandManager.this.down = isPressed ? 1 : 0;
+            }
+            CharacterPhysicsControl characterPhysics = getCharacter().getControl(CharacterPhysicsControl.class);
+            Float speedMovement = getCharacter().getUserData(UserDataStrings.SPEED_MOVEMENT);
+            characterPhysics.setWalkDirection(new Vector3f(right, 0f, down).normalizeLocal().multLocal(speedMovement));
+            UserCommandManager.this.client.send(new UcWalkDirection(down, right));
         }
     };
 

@@ -22,6 +22,7 @@ import magebattle.messages.syncmessages.SyncCharacterMessage;
 import magebattle.messages.syncmessages.SyncProjectileMessage;
 import magebattle.messages.usercommands.UcCastSpellMessage;
 import magebattle.messages.usercommands.UcRunToMessage;
+import magebattle.messages.usercommands.UcWalkDirection;
 
 /**
  *
@@ -51,6 +52,7 @@ public class MessageUtils {
         // <UserCommands>
         Serializer.registerClass(UcRunToMessage.class);
         Serializer.registerClass(UcCastSpellMessage.class);
+        Serializer.registerClass(UcWalkDirection.class);
         // </UserCommands>
     }
 }

@@ -15,7 +15,6 @@
 
 package magebattle.messages.usercommands;
 
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;

@@ -14,7 +14,6 @@
  along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle.messages.syncmessages;
 
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -35,6 +34,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
     private Vector3f location = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Vector3f viewDirection = new Vector3f();
+    private Vector3f velocity = new Vector3f();
     private float health;
 
     public SyncCharacterMessage() {
@@ -45,8 +45,9 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         Spatial spatial = (Spatial) object;
         this.location.set(spatial.getLocalTranslation());
         this.walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
+        this.velocity.set(spatial.getControl(CharacterPhysicsControl.class).getVelocity());
         this.viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
-        this.health = (Float)spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        this.health = (Float) spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
     }
 
     public void readData(CharacterMovementControl control) {
@@ -57,6 +58,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         Spatial character = (Spatial) target;
         character.getControl(InfluenceInterfaceControl.class).setHealth(this.health);
         character.getControl(CharacterPhysicsControl.class).warp(this.location);
+        character.getControl(CharacterPhysicsControl.class).setVelocity(velocity);
 //        character.getControl(CharacterMovementControl.class).runTo(this.location.add(this.walkDirection));
         ActionQueueControl actionQueue = character.getControl(ActionQueueControl.class);
 //        if (actionQueue.getCurrent() instanceof RunToAction) {

@@ -94,9 +94,6 @@ public class ClientHudManager extends AbstractAppState {
             hpBar.setText("");
             return;
         }
-//        Vector3f characterScreenLocation = this.cam.getScreenCoordinates(character.getControl(CharacterPhysicsControl.class).getPhysicsLocation());
-//        System.out.println(String.format("%f %f %f", characterScreenLocation.x, characterScreenLocation.y, characterScreenLocation.z));
-
         // TODO: Implement better method to get character's head's location
         Vector3f hpBarLocation = this.cam.getScreenCoordinates(character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
         hpBar.setLocalTranslation(hpBarLocation);
