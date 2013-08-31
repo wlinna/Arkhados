@@ -49,18 +49,14 @@ public class UserCommandManager extends AbstractAppState {
     private Client client;
     private WorldManager worldManager;
     private Application app;
-    private String selectedSpell = "";
     // TODO: Get character somewhere
     private Spatial character;
     private Camera cam;
     private InfluenceInterfaceControl characterInterface;
     private long playerId;
     private long characterId;
-
     private int down = 0;
     private int right = 0;
-
-
 
     public UserCommandManager(Client client) {
         this.client = client;
@@ -88,25 +84,11 @@ public class UserCommandManager extends AbstractAppState {
 
         this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
 
-        this.inputManager.addMapping("cast-or-move", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        this.inputManager.addMapping("select-spell-fireball", new KeyTrigger(KeyInput.KEY_Q));
+        this.inputManager.addMapping("cast-fireball", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 
-        this.inputManager.addListener(this.actionCastOrMove, "cast-or-move");
-        this.inputManager.addListener(this.actionSelectSpell, "select-spell-fireball");
+        this.inputManager.addListener(this.actionCastFireball, "cast-fireball");
     }
-    private ActionListener actionCastOrMove = new ActionListener() {
-        private void cast(final Vector3f contactPoint) {
-            // TODO: Validate
-            UserCommandManager.this.client.send(new UcCastSpellMessage("Fireball", contactPoint));
-            UserCommandManager.this.selectedSpell = "";
-        }
-
-        private void move(final Vector3f contactPoint) {
-            UserCommandManager.this.getCharacter().getControl(ActionQueueControl.class).clear();
-            UserCommandManager.this.getCharacter().getControl(ActionQueueControl.class).enqueueAction(new RunToAction(contactPoint));
-            UserCommandManager.this.client.send(new UcRunToMessage(contactPoint));
-        }
-
+    private ActionListener actionCastFireball = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {
                 return;
@@ -115,48 +97,13 @@ public class UserCommandManager extends AbstractAppState {
                 return;
             }
 
-            CollisionResults collisionResults = new CollisionResults();
-
-            final Vector2f mouse2dPosition = UserCommandManager.this.inputManager.getCursorPosition();
-            final Vector3f mouse3dPosition = UserCommandManager.this.cam
-                    .getWorldCoordinates(mouse2dPosition, 0.0f);
-
-
-            final Vector3f rayDirection = UserCommandManager.this.cam
-                    .getWorldCoordinates(mouse2dPosition, 1.0f)
-                    .subtractLocal(mouse3dPosition).normalizeLocal();
-
-            Ray ray = new Ray(mouse3dPosition, rayDirection);
-            UserCommandManager.this.worldManager.getWorldRoot()
-                    .collideWith(ray, collisionResults);
-
-            if (collisionResults.size() > 0) {
-                Vector3f contactPoint = collisionResults
-                        .getClosestCollision().getContactPoint();
-
-                if ("".equals(UserCommandManager.this.selectedSpell)) {
-                    this.move(contactPoint);
-                } else {
-                    this.cast(contactPoint);
-                }
-
-//                System.out.println(String.format("Clicked on %f %f %f", contactPoint.x, contactPoint.y, contactPoint.z));
-            }
-
-
-
-        }
-    };
-    private ActionListener actionSelectSpell = new ActionListener() {
-        public void onAction(String name, boolean isPressed, float tpf) {
-            if ("select-spell-fireball".equals(name)) {
-                UserCommandManager.this.selectedSpell = "Fireball";
+            Vector3f clickLocation = getClickLocation();
+            if (clickLocation != null) {
+                UserCommandManager.this.client.send(new UcCastSpellMessage("Fireball", clickLocation));
             }
         }
     };
-
     private ActionListener actionMoveDirection = new ActionListener() {
-
         public void onAction(String name, boolean isPressed, float tpf) {
             if ("move-right".equals(name)) {
                 UserCommandManager.this.right = isPressed ? 1 : 0;
@@ -186,10 +133,29 @@ public class UserCommandManager extends AbstractAppState {
         super.cleanup();
     }
 
-//    private void setCharacter(Spatial character) {
-//        this.character = character;
-//        this.characterInterface = this.character.getControl(InfluenceInterfaceControl.class);
-//    }
+    private Vector3f getClickLocation() {
+        CollisionResults collisionResults = new CollisionResults();
+
+        final Vector2f mouse2dPosition = this.inputManager.getCursorPosition();
+        final Vector3f mouse3dPosition = this.cam
+                .getWorldCoordinates(mouse2dPosition, 0.0f);
+
+
+        final Vector3f rayDirection = this.cam
+                .getWorldCoordinates(mouse2dPosition, 1.0f)
+                .subtractLocal(mouse3dPosition).normalizeLocal();
+
+        Ray ray = new Ray(mouse3dPosition, rayDirection);
+        this.worldManager.getWorldRoot().collideWith(ray, collisionResults);
+
+        Vector3f contactPoint = null;
+        if (collisionResults.size() > 0) {
+            contactPoint = collisionResults
+                    .getClosestCollision().getContactPoint();
+
+        }
+        return contactPoint;
+    }
 
     private Spatial getCharacter() {
         return this.worldManager.getEntity(this.characterId);
@@ -199,7 +165,6 @@ public class UserCommandManager extends AbstractAppState {
         return this.worldManager.getEntity(this.characterId).getControl(InfluenceInterfaceControl.class);
     }
 
-
     public long getPlayerId() {
         return this.playerId;
     }
@@ -207,7 +172,6 @@ public class UserCommandManager extends AbstractAppState {
     public void setPlayerId(long playerId) {
         this.playerId = playerId;
     }
-
 
     public void setCharacterId(long characterId) {
         this.characterId = characterId;

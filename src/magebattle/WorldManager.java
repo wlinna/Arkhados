@@ -96,10 +96,10 @@ public class WorldManager extends AbstractAppState {
         this.server = this.syncManager.getServer();
         this.client = this.syncManager.getClient();
 
-        this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
-                    this.space.addCollisionListener(this.serverCollisionListener);
         if (this.isServer()) {
 
+        this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
+                    this.space.addCollisionListener(this.serverCollisionListener);
 
         }
 
