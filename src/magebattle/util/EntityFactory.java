@@ -15,16 +15,10 @@
 package magebattle.util;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.BillboardControl;
-import com.jme3.scene.shape.Quad;
 import magebattle.ClientHudManager;
 import magebattle.WorldManager;
-import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterAnimationControl;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;

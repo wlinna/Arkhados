@@ -17,8 +17,6 @@ package magebattle.messages.syncmessages;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
-import magebattle.actions.RunToAction;
-import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterMovementControl;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;

@@ -30,12 +30,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
-import magebattle.actions.RunToAction;
-import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.messages.usercommands.UcCastSpellMessage;
-import magebattle.messages.usercommands.UcRunToMessage;
 import magebattle.messages.usercommands.UcWalkDirection;
 import magebattle.util.UserDataStrings;
 
@@ -50,9 +47,7 @@ public class UserCommandManager extends AbstractAppState {
     private WorldManager worldManager;
     private Application app;
     // TODO: Get character somewhere
-    private Spatial character;
     private Camera cam;
-    private InfluenceInterfaceControl characterInterface;
     private long playerId;
     private long characterId;
     private int down = 0;

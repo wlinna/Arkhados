@@ -62,7 +62,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
     public void death() {
         this.dead = true;
         super.spatial.getControl(CharacterAnimationControl.class).death();
-        super.spatial.getControl(ActionQueueControl.class).setEnabled(false);
         super.spatial.getControl(SpellCastControl.class).setEnabled(false);
     }
 
