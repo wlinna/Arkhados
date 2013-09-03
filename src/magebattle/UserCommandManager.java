@@ -22,6 +22,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Ray;
@@ -30,6 +31,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
+import java.util.HashMap;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;
 import magebattle.messages.usercommands.UcCastSpellMessage;
@@ -52,6 +54,8 @@ public class UserCommandManager extends AbstractAppState {
     private long characterId;
     private int down = 0;
     private int right = 0;
+//    private HashMap<InputListener, Boolean> inputListeners = new HashMap<InputListener, Boolean>();
+    private boolean inputListenersActive = false;
 
     public UserCommandManager(Client client) {
         this.client = client;
@@ -59,7 +63,7 @@ public class UserCommandManager extends AbstractAppState {
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
+
         System.out.println("Initializing UserCommandManager");
         //this is called on the OpenGL thread after the AppState has been attached
         this.app = app;
@@ -67,22 +71,21 @@ public class UserCommandManager extends AbstractAppState {
         this.inputManager = app.getInputManager();
         this.cam = app.getCamera();
 
-        this.initUserInput();
+        this.initInputMappings();
         System.out.println("Initialized UserCommandManager");
+
+        super.initialize(stateManager, app);
     }
 
-    private void initUserInput() {
+    private void initInputMappings() {
         this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_D));
         this.inputManager.addMapping("move-left", new KeyTrigger(KeyInput.KEY_A));
         this.inputManager.addMapping("move-up", new KeyTrigger(KeyInput.KEY_W));
         this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_S));
 
-        this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
-
         this.inputManager.addMapping("cast-fireball", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-
-        this.inputManager.addListener(this.actionCastFireball, "cast-fireball");
     }
+
     private ActionListener actionCastFireball = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {
@@ -100,6 +103,9 @@ public class UserCommandManager extends AbstractAppState {
     };
     private ActionListener actionMoveDirection = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
+            if (getCharacterInterface().isDead()) {
+                return;
+            }
             if ("move-right".equals(name)) {
                 UserCommandManager.this.right = isPressed ? 1 : 0;
             }
@@ -123,6 +129,25 @@ public class UserCommandManager extends AbstractAppState {
         }
     };
 
+
+    private void disableInputListeners() {
+        if (this.inputListenersActive) {
+            this.inputManager.removeListener(this.actionMoveDirection);
+            this.inputManager.removeListener(this.actionCastFireball);
+
+        }
+        this.inputListenersActive = false;
+    }
+
+    private void enableInputListeners() {
+        if (!this.inputListenersActive) {
+            this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
+            this.inputManager.addListener(this.actionCastFireball, "cast-fireball");
+        }
+
+        this.inputListenersActive = true;
+    }
+
     @Override
     public void update(float tpf) {
     }
@@ -130,6 +155,16 @@ public class UserCommandManager extends AbstractAppState {
     @Override
     public void cleanup() {
         super.cleanup();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (enabled) {
+            this.enableInputListeners();
+        } else {
+            this.disableInputListeners();
+        }
     }
 
     private Vector3f getClickLocation() {

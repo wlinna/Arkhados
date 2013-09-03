@@ -37,7 +37,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import magebattle.messages.ChatMessage;
 import magebattle.messages.MessageUtils;
+import magebattle.messages.roundprotocol.NewRoundMessage;
 import magebattle.messages.PlayerDataTableMessage;
+import magebattle.messages.roundprotocol.RoundFinishedMessage;
 import magebattle.messages.ServerLoginMessage;
 import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
@@ -72,6 +74,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private BulletAppState bulletState;
     private UserCommandManager userCommandManager;
     private ClientHudManager clientHudManager;
+    private RoundManager roundManager;
 
     @Override
     public void simpleInitApp() {
@@ -103,10 +106,14 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
                 ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class);
+                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class
+                );
 
         MessageUtils.registerMessages();
-        this.stateManager.attach(ClientMain.this.worldManager);
+        this.stateManager.attach(this.worldManager);
+
+        this.roundManager = new RoundManager();
+        this.stateManager.attach(this.roundManager);
 
     }
 
@@ -247,7 +254,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
 
-                            ClientMain.this.worldManager.attachLevel();
+//                            ClientMain.this.worldManager.attachLevel();
                             return null;
                         }
                     }).get();
@@ -256,6 +263,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                         public Void call() throws Exception {
                             ClientMain.this.stateManager
                                     .attach(ClientMain.this.userCommandManager);
+                            ClientMain.this.userCommandManager.setEnabled(false);
                             return null;
                         }
                     }).get();
@@ -268,7 +276,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         }).start();
 
     }
-
 
     public UserCommandManager getUserCommandManager() {
         return this.userCommandManager;
@@ -289,4 +296,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         super.destroy();
     }
 
+    public RoundManager getRoundManager() {
+        return this.roundManager;
+    }
 }

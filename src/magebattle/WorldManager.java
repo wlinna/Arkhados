@@ -21,12 +21,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.input.InputManager;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.input.controls.Trigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -39,11 +34,11 @@ import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.EntityEventControl;
-import magebattle.entityevents.RemovalEventAction;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
 import magebattle.spells.Spell;
 import magebattle.util.EntityFactory;
+import magebattle.util.PlayerDataStrings;
 import magebattle.util.UserDataStrings;
 
 /**
@@ -55,7 +50,8 @@ public class WorldManager extends AbstractAppState {
     // TODO: Add new starting locations
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(10.0f, 0, 10.0f), new Vector3f(-10.0f, 0, -10.0f)
+        new Vector3f(10f, 0, 10.0f), new Vector3f(-10.0f, 0, -10f),
+        new Vector3f(10f, 0, -10f), new Vector3f(-10f, 0, 10f)
     };
     private Node worldRoot;
     private HashMap<Long, Spatial> entities = new HashMap<Long, Spatial>();
@@ -68,7 +64,6 @@ public class WorldManager extends AbstractAppState {
     }
     private SimpleApplication app;
     private AssetManager assetManager;
-    private InputManager inputManager;
     private PhysicsSpace space;
     private ViewPort viewPort;
     private Node rootNode;
@@ -83,7 +78,6 @@ public class WorldManager extends AbstractAppState {
         this.app = (SimpleApplication) app;
         this.rootNode = this.app.getRootNode();
         this.assetManager = this.app.getAssetManager();
-        this.inputManager = this.app.getInputManager();
         this.viewPort = this.app.getViewPort();
         this.space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
 
@@ -97,10 +91,8 @@ public class WorldManager extends AbstractAppState {
         this.client = this.syncManager.getClient();
 
         if (this.isServer()) {
-
-        this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
-                    this.space.addCollisionListener(this.serverCollisionListener);
-
+            this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
+            this.space.addCollisionListener(this.serverCollisionListener);
         }
 
         this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
@@ -117,12 +109,13 @@ public class WorldManager extends AbstractAppState {
     public void loadLevel() {
         this.worldRoot = (Node) this.assetManager.loadModel("Scenes/basicArena.j3o");
 
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
-        this.worldRoot.addLight(sun);
     }
 
     public void attachLevel() {
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
+        this.worldRoot.addLight(sun);
+
         this.space.addAll(this.worldRoot);
         this.rootNode.attachChild(this.worldRoot);
 
@@ -189,9 +182,7 @@ public class WorldManager extends AbstractAppState {
                 if (eventControl != null) {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
-
             }
-
         }
         spatial.removeFromParent();
         this.space.removeAll(spatial);
@@ -214,10 +205,28 @@ public class WorldManager extends AbstractAppState {
         return this.client != null;
     }
 
+    public void clear() {
+        for (PlayerData playerData : PlayerData.getPlayers()) {
+            playerData.setData(PlayerDataStrings.ENTITY_ID, -1l);
+        }
+        if (this.worldRoot != null) {
+            this.space.removeAll(this.worldRoot);
+            this.rootNode.detachChild(this.worldRoot);
+        }
+        this.entities.clear();
+        this.syncManager.clear();
+
+        this.idCounter = 0;
+
+        this.worldRoot = null;
+    }
+
     @Override
     public void cleanup() {
         super.cleanup();
-        this.rootNode.detachChild(this.worldRoot);
+        if (this.worldRoot != null) {
+            this.rootNode.detachChild(this.worldRoot);
+        }
     }
 
     public Node getWorldRoot() {

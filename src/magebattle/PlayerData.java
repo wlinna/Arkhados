@@ -162,6 +162,12 @@ public class PlayerData {
         players.get(id).setData(key, data);
     }
 
+    public static synchronized void setDataForAll(String key, boolean data) {
+        for (PlayerData player : PlayerData.getPlayers()) {
+            player.setData(key, data);
+        }
+    }
+
     public PlayerData(long id) {
         this.id = id;
     }

@@ -17,11 +17,6 @@ package magebattle;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.network.Server;
-import java.util.Iterator;
-import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
 
 /**
@@ -32,6 +27,7 @@ public class ServerGameManager extends AbstractAppState {
 
     private SyncManager syncManager;
     private WorldManager worldManager;
+    private RoundManager roundManager;
     private boolean running;
 
     @Override
@@ -40,6 +36,9 @@ public class ServerGameManager extends AbstractAppState {
         super.initialize(stateManager, app);
         this.worldManager = app.getStateManager().getState(WorldManager.class);
         this.syncManager = this.worldManager.getSyncManager();
+        this.roundManager = new RoundManager();
+        this.roundManager.setEnabled(false);
+        stateManager.attach(this.roundManager);
         System.out.println("Initialized ServerGameManager");
     }
 
@@ -47,28 +46,15 @@ public class ServerGameManager extends AbstractAppState {
         if (this.running) {
             return false;
         }
+        this.roundManager.setEnabled(true);
+
+        this.worldManager.preloadModels(new String[]{"Models/Mage.j3o"});
 
         this.running = true;
         this.syncManager.getServer().broadcast(new StartGameMessage());
-        this.worldManager.loadLevel();
-        this.worldManager.preloadModels(new String[]{"Models/Mage.j3o"});
-        this.worldManager.attachLevel();
 
-        int i = 0;
-        for (Iterator<PlayerData> it = PlayerData.getPlayers().iterator(); it.hasNext();) {
-            PlayerData playerData = it.next();
-//            float height = this.worldManager.getSpatialsHeight("Textures/Mage_mesh.mesh.xml");
-            Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
-            startingLocation.setY(7.0f);
-            long entityId = this.worldManager.addNewEntity("Mage", startingLocation, new Quaternion());
-            playerData.setData("character-entity-id", entityId);
+        this.roundManager.serverStartGame();
 
-        }
-
-        for (PlayerData playerData : PlayerData.getPlayers()) {
-            long entityId = playerData.getLongData("character-entity-id");
-            this.syncManager.getServer().broadcast(new SetPlayersCharacterMessage(entityId, playerData.getId()));
-        }
         return true;
     }
 

@@ -35,6 +35,7 @@ import magebattle.controls.ProjectileControl;
 import magebattle.messages.syncmessages.AbstractSyncMessage;
 import magebattle.messages.syncmessages.SyncCharacterMessage;
 import magebattle.messages.syncmessages.SyncProjectileMessage;
+import magebattle.util.PlayerDataStrings;
 
 /**
  *
@@ -144,7 +145,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             HostedConnection client = (HostedConnection) source;
             // HACK: If server receives sync message, it sets syncId of players character
             final long playerId = ServerClientData.getPlayerId(client.getId());
-            final long syncId = PlayerData.getLongData(playerId, "character-entity-id");
+            final long syncId = PlayerData.getLongData(playerId, PlayerDataStrings.ENTITY_ID);
             message.setSyncId(syncId);
             this.app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
@@ -171,7 +172,12 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         return this.client;
     }
 
-    void removeEntity(long id) {
+    public void removeEntity(long id) {
         this.syncObjects.remove(id);
+    }
+
+    public void clear() {
+        this.syncObjects.clear();
+        this.syncQueue.clear();
     }
 }

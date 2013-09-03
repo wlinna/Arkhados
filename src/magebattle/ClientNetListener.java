@@ -22,10 +22,13 @@ import com.jme3.scene.Spatial;
 import magebattle.messages.ChatMessage;
 import magebattle.messages.ClientLoginMessage;
 import magebattle.messages.MessageUtils;
+import magebattle.messages.roundprotocol.NewRoundMessage;
 import magebattle.messages.PlayerDataTableMessage;
+import magebattle.messages.roundprotocol.RoundFinishedMessage;
 import magebattle.messages.ServerLoginMessage;
 import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
+import magebattle.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 
 /**
  *
@@ -49,8 +52,8 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
         if (m instanceof ServerLoginMessage) {
             ServerLoginMessage message = (ServerLoginMessage) m;
             if (message.isAccepted()) {
-                System.out.println("Hooray! We've... I mean you've been accepted!");
                 this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
+                System.out.println(String.format("Your playerId: %d", message.getPlayerId()));
             }
 
         } else if (m instanceof PlayerDataTableMessage) {
@@ -66,8 +69,8 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
             if (this.app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
 //                Spatial character = this.worldManager.getEntity(message.getEntityId());
                 this.app.getUserCommandManager().setCharacterId(message.getEntityId());
+                System.out.println(String.format("Your entityId: %d", message.getEntityId()));
             }
-
         }
     }
 

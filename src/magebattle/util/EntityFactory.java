@@ -41,8 +41,6 @@ public class EntityFactory {
         this.clientHudManager = clientHudManager;
     }
 
-
-
     public Spatial createEntityById(String id) {
         Node entity = null;
 

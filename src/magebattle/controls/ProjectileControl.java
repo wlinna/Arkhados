@@ -75,13 +75,10 @@ public class ProjectileControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //Only needed for rendering-related operations,
-        //not called when spatial is culled.
     }
 
     public Control cloneForSpatial(Spatial spatial) {
         ProjectileControl control = new ProjectileControl();
-        //TODO: copy parameters to new Control
         return control;
     }
 
@@ -89,16 +86,12 @@ public class ProjectileControl extends AbstractControl {
     public void read(JmeImporter im) throws IOException {
         super.read(im);
         InputCapsule in = im.getCapsule(this);
-        //TODO: load properties of this Control, e.g.
-        //this.value = in.readFloat("name", defaultValue);
     }
 
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule out = ex.getCapsule(this);
-        //TODO: save properties of this Control, e.g.
-        //out.write(this.value, "name", defaultValue);
     }
 
     public RigidBodyControl getRigidBodyControl() {

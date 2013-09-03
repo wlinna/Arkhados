@@ -77,7 +77,6 @@ public class ServerMain extends SimpleApplication {
         this.stateManager.attach(ServerMain.this.gameManager);
         this.stateManager.attach(ServerMain.this.physicsState);
         this.physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
-
     }
 
     public void startGame() {

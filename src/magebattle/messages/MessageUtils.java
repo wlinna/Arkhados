@@ -15,13 +15,17 @@
 
 package magebattle.messages;
 
+import magebattle.messages.roundprotocol.RoundFinishedMessage;
+import magebattle.messages.roundprotocol.NewRoundMessage;
 import com.jme3.network.serializing.Serializer;
+import magebattle.messages.roundprotocol.ClientWorldCreatedMessage;
+import magebattle.messages.roundprotocol.PlayerReadyForNewRoundMessage;
+import magebattle.messages.roundprotocol.CreateWorldMessage;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
 import magebattle.messages.syncmessages.SyncCharacterMessage;
 import magebattle.messages.syncmessages.SyncProjectileMessage;
 import magebattle.messages.usercommands.UcCastSpellMessage;
-import magebattle.messages.usercommands.UcRunToMessage;
 import magebattle.messages.usercommands.UcWalkDirection;
 
 /**
@@ -38,7 +42,16 @@ public class MessageUtils {
         Serializer.registerClass(PlayerDataTableMessage.class);
         Serializer.registerClass(ChatMessage.class);
         Serializer.registerClass(StartGameMessage.class);
+
         // </Lobby>
+
+        // <RoundProtocol>
+        Serializer.registerClass(CreateWorldMessage.class);
+        Serializer.registerClass(ClientWorldCreatedMessage.class);
+        Serializer.registerClass(PlayerReadyForNewRoundMessage.class);
+        Serializer.registerClass(NewRoundMessage.class);
+        Serializer.registerClass(RoundFinishedMessage.class);
+        // </RoundProtocol
 
         Serializer.registerClass(SetPlayersCharacterMessage.class);
 
