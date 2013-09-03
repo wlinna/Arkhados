@@ -98,8 +98,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.stateManager.attach(this.syncManager);
         this.syncManager.setMessagesToListen(AddEntityMessage.class, RemoveEntityMessage.class, SyncCharacterMessage.class, SyncProjectileMessage.class);
         this.worldManager = new WorldManager();
-        this.syncManager.addObject(-1, this.worldManager);
-
 
         this.userCommandManager = new UserCommandManager(this.client);
         this.listenerManager = new ClientNetListener(this, client, this.worldManager);

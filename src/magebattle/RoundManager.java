@@ -55,6 +55,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.worldManager = stateManager.getState(WorldManager.class);
         this.syncManager = stateManager.getState(SyncManager.class);
         this.stateManager = stateManager;
+        this.syncManager.addObject(-1, this.worldManager);
 
         if (this.worldManager.isClient()) {
             this.syncManager.getClient().addMessageListener(this, CreateWorldMessage.class, NewRoundMessage.class, RoundFinishedMessage.class);
@@ -76,18 +77,17 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
     private void createWorld() {
         ++this.currentRound;
-        if (this.currentRound > 1) {
-            this.cleanupPreviousRound();
-        }
-
         if (this.worldManager.isClient()) {
             this.clientMain.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
 
+                    if (currentRound > 1) {
+                        cleanupPreviousRound();
+                    }
+
                     worldManager.setEnabled(true);
                     worldManager.loadLevel();
                     worldManager.attachLevel();
-
 
                     syncManager.getClient().send(new ClientWorldCreatedMessage());
 
@@ -97,6 +97,10 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         }
 
         if (this.worldManager.isServer()) {
+            if (this.currentRound > 1) {
+                this.cleanupPreviousRound();
+            }
+
             worldManager.setEnabled(true);
             worldManager.loadLevel();
             worldManager.attachLevel();
@@ -140,17 +144,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     }
 
     private void cleanupPreviousRound() {
-        if (this.worldManager.isServer()) {
-            this.worldManager.clear();
-        } else if (this.worldManager.isClient()) {
-            this.clientMain.enqueue(new Callable<Void>() {
-                public Void call() throws Exception {
-                    worldManager.clear();
-                    return null;
-                }
-            });
-        }
-
+        worldManager.clear();
+        this.syncManager.addObject(-1, this.worldManager);
     }
 
     private void endRound() {

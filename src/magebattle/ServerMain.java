@@ -21,6 +21,7 @@ import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
+import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -70,7 +71,6 @@ public class ServerMain extends SimpleApplication {
         this.listenerManager = new ServerNetListener(this, server);
         this.syncManager = new SyncManager(this, this.server);
         this.syncManager.setMessagesToListen(UcRunToMessage.class, UcCastSpellMessage.class, UcWalkDirection.class); // Add message classes
-        this.syncManager.addObject(-1, this.worldManager);
 
         this.stateManager.attach(ServerMain.this.syncManager);
         this.stateManager.attach(ServerMain.this.worldManager);
@@ -94,7 +94,6 @@ public class ServerMain extends SimpleApplication {
                 return null;
             }
         });
-
     }
 
     @Override
