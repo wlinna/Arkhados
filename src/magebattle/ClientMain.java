@@ -112,7 +112,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         this.roundManager = new RoundManager();
         this.stateManager.attach(this.roundManager);
-
     }
 
     @Override

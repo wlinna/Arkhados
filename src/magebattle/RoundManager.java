@@ -44,6 +44,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private SyncManager syncManager;
     private AppStateManager stateManager;
     private ClientMain clientMain = null;
+    private ClientHudManager hudManager = null;
     private int currentRound = 0;
     private int rounds = 3;
     private boolean roundRunning = false;
@@ -146,6 +147,9 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private void cleanupPreviousRound() {
         worldManager.clear();
         this.syncManager.addObject(-1, this.worldManager);
+        if (this.worldManager.isClient()) {
+            this.stateManager.getState(ClientHudManager.class).clear();
+        }
     }
 
     private void endRound() {

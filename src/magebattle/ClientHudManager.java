@@ -73,6 +73,14 @@ public class ClientHudManager extends AbstractAppState {
 
     }
 
+    public void clear() {
+        this.characters.clear();
+        for (BitmapText hpBar : this.hpBars) {
+            hpBar.removeFromParent();
+        }
+        this.hpBars.clear();
+    }
+
     private void createHpBar() {
         BitmapText hpBar = new BitmapText(this.guiFont);
 
