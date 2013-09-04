@@ -76,7 +76,7 @@ public class Spell {
 
     private static Spell initFireBall() {
         final List<Float> cooldowns = new ArrayList<Float>();
-        cooldowns.add(5.0f);
+        cooldowns.add(1.0f);
         final List<Float> ranges = new ArrayList<Float>();
         ranges.add(40.0f);
 

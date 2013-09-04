@@ -49,6 +49,7 @@ public class SpellCastControl extends AbstractControl {
 
     public SpellCastControl(WorldManager worldManager) {
         this.worldManager = worldManager;
+        this.cooldowns.put("Fireball", 1.0f);
     }
 
     @Override
@@ -61,7 +62,11 @@ public class SpellCastControl extends AbstractControl {
         if (!this.enabled) {
             return;
         }
-//        if (cooldowns.get(name) <= 0.0f) {
+        if (cooldowns.get(spellName) > 0.0f) {
+            return;
+        }
+
+        this.cooldowns.put("Fireball", 1.0f);
         // TODO: make character run close enough before casting
 //            Integer level = this.levels.get(name);
 //            cooldowns.put(name, Spell.getSpells().get(name).getCooldown(level));
