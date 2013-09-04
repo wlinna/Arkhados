@@ -119,7 +119,7 @@ public class WorldManager extends AbstractAppState {
         this.space.addAll(this.worldRoot);
         this.rootNode.attachChild(this.worldRoot);
 
-        this.cam.setLocation(new Vector3f(0.0f, 120.0f, 20.0f));
+        this.cam.setLocation(new Vector3f(0.0f, 160.0f, 20.0f));
         this.cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     }
 

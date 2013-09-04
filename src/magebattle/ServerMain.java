@@ -38,7 +38,7 @@ import magebattle.messages.usercommands.UcWalkDirection;
 public class ServerMain extends SimpleApplication {
 
     public static void main(String[] args) {
-        Logger.getLogger("").setLevel(Level.WARNING);
+//        Logger.getLogger("").setLevel(Level.WARNING);
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);
 //        settings.setRenderer(null);
