@@ -211,6 +211,8 @@ public class Spell {
                     node.addControl(areaEffectControl);
                     areaEffectControl.addInfluence(new DamagOverTimeeInfluence(7.5f));
 
+                    node.addControl(new TimedExistenceControl(10f, true));
+
                 }
 
                 if (worldManager.isClient()) {

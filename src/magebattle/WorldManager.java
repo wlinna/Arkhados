@@ -34,6 +34,7 @@ import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.EntityEventControl;
+import magebattle.controls.TimedExistenceControl;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
 import magebattle.spells.Spell;
@@ -73,6 +74,7 @@ public class WorldManager extends AbstractAppState {
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
+        TimedExistenceControl.setWorldManager(this);
         System.out.println("Initializing WorldManager");
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;

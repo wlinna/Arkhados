@@ -22,26 +22,44 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import java.io.IOException;
+import magebattle.WorldManager;
+import magebattle.util.UserDataStrings;
 
 /**
  *
  * @author william
  */
 public class TimedExistenceControl extends AbstractControl {
+    private static WorldManager worldManager;
+
     private float timeOut;
     private float age = 0.0f;
+    private boolean removeEntity;
+
 
     public TimedExistenceControl(float timeOut) {
         this.timeOut = timeOut;
+        this.removeEntity = false;
     }
 
-
+    public TimedExistenceControl(float timeOut, boolean removeEntity) {
+        this.timeOut = timeOut;
+        this.removeEntity = removeEntity;
+    }
 
     @Override
     protected void controlUpdate(float tpf) {
         this.age += tpf;
         if (this.age >= this.timeOut) {
-            super.spatial.removeFromParent();
+            if (this.removeEntity) {
+                if (worldManager.isServer()) {
+                    worldManager.removeEntity((Long)super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "expired");
+                }
+            } else {
+                super.spatial.removeFromParent();
+            }
+
+
         }
     }
 
@@ -59,5 +77,9 @@ public class TimedExistenceControl extends AbstractControl {
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule out = ex.getCapsule(this);
+    }
+
+    public static void setWorldManager(WorldManager worldManager) {
+        TimedExistenceControl.worldManager = worldManager;
     }
 }
