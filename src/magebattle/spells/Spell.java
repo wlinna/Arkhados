@@ -62,26 +62,23 @@ public class Spell {
         return Spells;
     }
     private final String name;
-    private final List<Float> cooldowns;
-    private final List<Float> ranges;
+    private final float cooldown;
+    private final float range;
     private final boolean isSelfCast;
     private NodeBuilder nodeBuilder;
 
-    private Spell(String name, List<Float> cooldowns, List<Float> ranges, boolean isSelfCast) {
+    private Spell(String name, float cooldown, float range, boolean isSelfCast) {
         this.name = name;
-        this.cooldowns = cooldowns;
-        this.ranges = ranges;
+        this.cooldown = cooldown;
+        this.range = range;
         this.isSelfCast = isSelfCast;
     }
 
     private static Spell initFireBall() {
-        final List<Float> cooldowns = new ArrayList<Float>();
-        cooldowns.add(1.0f);
-        final List<Float> ranges = new ArrayList<Float>();
-        ranges.add(40.0f);
+        float cooldown = 1.0f;
+        float range = 40f;
 
-        Spell spell = new Spell("Fireball", cooldowns, ranges, false);
-
+        Spell spell = new Spell("Fireball", cooldown, range, false);
 
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
@@ -166,12 +163,12 @@ public class Spell {
         return this.name;
     }
 
-    public Float getCooldown(int level) {
-        return this.cooldowns.get(level - 1);
+    public float getCooldown() {
+        return this.cooldown;
     }
 
-    public Float getRange(int level) {
-        return this.ranges.get(level - 1);
+    public float getRange() {
+        return this.range;
     }
 
     public boolean isIsSelfCast() {

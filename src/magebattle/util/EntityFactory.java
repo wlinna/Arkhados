@@ -57,7 +57,10 @@ public class EntityFactory {
 //            entity.addControl(new CharacterMovementControl());
             entity.addControl(new CharacterAnimationControl());
             entity.addControl(new SpellCastControl(this.worldManager));
+            entity.getControl(SpellCastControl.class).addSpell(Spell.getSpells().get("Fireball"));
+
             entity.addControl(new InfluenceInterfaceControl());
+
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);

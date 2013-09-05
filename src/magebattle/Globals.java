@@ -20,7 +20,6 @@ package magebattle;
  * @author william
  */
 public class Globals {
-//    public static String SERVER = "91.156.158.227";
     public static String SERVER = "localhost";
     public static int PORT = 12345;
 

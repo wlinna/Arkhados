@@ -45,11 +45,11 @@ public class SpellCastControl extends AbstractControl {
 
     private Spatial character;
     private WorldManager worldManager;
+    private HashMap<String, Spell> spells = new HashMap<String, Spell>();
     private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
 
     public SpellCastControl(WorldManager worldManager) {
         this.worldManager = worldManager;
-        this.cooldowns.put("Fireball", 1.0f);
     }
 
     @Override
@@ -58,24 +58,28 @@ public class SpellCastControl extends AbstractControl {
         this.character = spatial;
     }
 
+    public void addSpell(Spell spell) {
+        this.spells.put(spell.getName(), spell);
+        this.cooldowns.put(spell.getName(), 0f);
+    }
+
     public void cast(final String spellName, Vector3f targetLocation) {
         if (!this.enabled) {
             return;
         }
-        if (cooldowns.get(spellName) > 0.0f) {
+        Spell spell = this.spells.get(spellName);
+        if (spell != null && this.cooldowns.get(spellName) > 0.0f) {
             return;
         }
 
-        this.cooldowns.put("Fireball", 1.0f);
+
+
         // TODO: make character run close enough before casting
 //            Integer level = this.levels.get(name);
 //            cooldowns.put(name, Spell.getSpells().get(name).getCooldown(level));
 
         if (this.worldManager.isServer()) {
-
-            Spell spell = Spell.getSpells().get(spellName);
-            final int LEVEL = 1; // TODO: Make levels dynamic
-            final float range = spell.getRange(LEVEL);
+            final float range = spell.getRange();
 
             if ("Fireball".equals(spell.getName())) {
                 // TODO: Add spell casting time and animation
@@ -102,6 +106,7 @@ public class SpellCastControl extends AbstractControl {
             }
 
         }
+        this.cooldowns.put(spellName, spell.getCooldown());
     }
 
     private Vector3f findClosestCastingLocation(final Vector3f targetLocation, float range) {
