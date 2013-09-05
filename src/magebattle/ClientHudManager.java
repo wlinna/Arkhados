@@ -85,7 +85,7 @@ public class ClientHudManager extends AbstractAppState {
         BitmapText hpBar = new BitmapText(this.guiFont);
 
         hpBar.setSize(this.guiFont.getCharSet().getRenderedSize());
-        hpBar.setBox(new Rectangle(0f, 0f, 30f, 10f));
+        hpBar.setBox(new Rectangle(0f, 0f, 40f, 10f));
         hpBar.setColor(ColorRGBA.Red);
         hpBar.setAlignment(BitmapFont.Align.Center);
         hpBar.center();

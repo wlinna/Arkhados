@@ -33,6 +33,7 @@ public class DamagOverTimeeInfluence implements Influence {
     public void affect(Spatial spatial, float tpf) {
         InfluenceInterfaceControl characterInfluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
         if (characterInfluenceControl != null) {
+            // FIXME: Roundind errors cause significant changes in total damage
             characterInfluenceControl.doDamage(this.dps * tpf);
         }
     }

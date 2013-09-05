@@ -120,7 +120,7 @@ public class Spell {
                 node.setMaterial(material);
                 node.setUserData(UserDataStrings.SPEED_MOVEMENT, 50.0f);
                 node.setUserData(UserDataStrings.MASS, 30.0f);
-                node.setUserData(UserDataStrings.DAMAGE, 20.0f);
+                node.setUserData(UserDataStrings.DAMAGE, 150.0f);
 
                 if (Spell.worldManager.isClient()) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
@@ -202,14 +202,14 @@ public class Spell {
                 black.setColor("Color", ColorRGBA.Black);
                 node.setMaterial(black);
 
-                node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 10f);
+                node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
 
                 if (worldManager.isServer()) {
                     GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius)));
                     node.addControl(ghost);
                     AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
                     node.addControl(areaEffectControl);
-                    areaEffectControl.addInfluence(new DamagOverTimeeInfluence(7.5f));
+                    areaEffectControl.addInfluence(new DamagOverTimeeInfluence((Float)node.getUserData(UserDataStrings.DAMAGE_PER_SECOND)));
 
                     node.addControl(new TimedExistenceControl(10f, true));
 

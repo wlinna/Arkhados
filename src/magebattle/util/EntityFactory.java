@@ -50,7 +50,7 @@ public class EntityFactory {
             entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
             float radius = 5.0f;
             entity.setUserData(UserDataStrings.RADIUS, radius);
-            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 100.0f);
+            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 1700.0f);
 
             entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
             entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
