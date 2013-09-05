@@ -81,6 +81,8 @@ public class SpellCastControl extends AbstractControl {
         if (this.worldManager.isServer()) {
             final float range = spell.getRange();
 
+
+            // HACK: This must be changed to more generic
             if ("Fireball".equals(spell.getName())) {
                 // TODO: Add spell casting time and animation
 
@@ -100,9 +102,9 @@ public class SpellCastControl extends AbstractControl {
                 RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
                 body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
 
-                // HACK: IMPORTANT! This must be changed to more generic ASAP
                 projectile.getControl(ProjectileControl.class).setTarget(targetLocation);
-
+            } else if ("Ember Circle".equals(spell.getName())) {
+                this.worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY);
             }
 
         }

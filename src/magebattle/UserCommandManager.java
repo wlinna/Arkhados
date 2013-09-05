@@ -83,9 +83,9 @@ public class UserCommandManager extends AbstractAppState {
         this.inputManager.addMapping("move-up", new KeyTrigger(KeyInput.KEY_W));
         this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_S));
 
+        this.inputManager.addMapping("cast-spell-1", new KeyTrigger(KeyInput.KEY_Q));
         this.inputManager.addMapping("cast-fireball", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     }
-
     private ActionListener actionCastFireball = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {
@@ -98,6 +98,19 @@ public class UserCommandManager extends AbstractAppState {
             Vector3f clickLocation = getClickLocation();
             if (clickLocation != null) {
                 UserCommandManager.this.client.send(new UcCastSpellMessage("Fireball", clickLocation));
+            }
+        }
+    };
+    private ActionListener actionCastSpell1 = new ActionListener() {
+        public void onAction(String name, boolean isPressed, float tpf) {
+            if (UserCommandManager.this.getCharacterInterface().isDead()) {
+                return;
+            }
+            if (!isPressed) {
+                Vector3f clickLocation = getClickLocation();
+                if (clickLocation != null) {
+                    UserCommandManager.this.client.send(new UcCastSpellMessage("Ember Circle", clickLocation));
+                }
             }
         }
     };
@@ -129,11 +142,11 @@ public class UserCommandManager extends AbstractAppState {
         }
     };
 
-
     private void disableInputListeners() {
         if (this.inputListenersActive) {
             this.inputManager.removeListener(this.actionMoveDirection);
             this.inputManager.removeListener(this.actionCastFireball);
+            this.inputManager.removeListener(this.actionCastSpell1);
 
         }
         this.inputListenersActive = false;
@@ -143,6 +156,7 @@ public class UserCommandManager extends AbstractAppState {
         if (!this.inputListenersActive) {
             this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
             this.inputManager.addListener(this.actionCastFireball, "cast-fireball");
+            this.inputManager.addListener(this.actionCastSpell1, "cast-spell-1");
         }
 
         this.inputListenersActive = true;

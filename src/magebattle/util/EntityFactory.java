@@ -56,8 +56,12 @@ public class EntityFactory {
             entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
 //            entity.addControl(new CharacterMovementControl());
             entity.addControl(new CharacterAnimationControl());
-            entity.addControl(new SpellCastControl(this.worldManager));
-            entity.getControl(SpellCastControl.class).addSpell(Spell.getSpells().get("Fireball"));
+            SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
+            entity.addControl(spellCastControl);
+
+            spellCastControl.addSpell(Spell.getSpells().get("Fireball"));
+            spellCastControl.addSpell(Spell.getSpells().get("Ember Circle"));
+
 
             entity.addControl(new InfluenceInterfaceControl());
 
@@ -67,6 +71,9 @@ public class EntityFactory {
             }
 
         } else if ("Fireball".equals(id)) {
+            Spell spell = Spell.getSpells().get(id);
+            entity = spell.buildNode();
+        } else if ("Ember Circle".equals(id)) {
             Spell spell = Spell.getSpells().get(id);
             entity = spell.buildNode();
         }

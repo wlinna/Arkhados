@@ -69,8 +69,6 @@ public class ProjectileControl extends AbstractControl {
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
         Vector3f v = this.rigidBodyControl.getLinearVelocity();
-
-
     }
 
     @Override

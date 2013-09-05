@@ -29,4 +29,5 @@ public class UserDataStrings {
     public final static String RADIUS = "radius";
     public final static String MASS = "mass";
     public final static String DAMAGE = "damage";
+    public final static String DAMAGE_PER_SECOND = "damage-per-second";
 }

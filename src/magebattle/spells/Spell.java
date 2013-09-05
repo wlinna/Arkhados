@@ -15,7 +15,9 @@
 package magebattle.spells;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -56,6 +58,9 @@ public class Spell {
         Spell fireball = initFireBall();
         Spells.put(fireball.getName(), fireball);
 
+        Spell emberCircle = initEmberCircle();
+        Spells.put(emberCircle.getName(), emberCircle);
+
     }
 
     public static HashMap<String, Spell> getSpells() {
@@ -72,6 +77,27 @@ public class Spell {
         this.cooldown = cooldown;
         this.range = range;
         this.isSelfCast = isSelfCast;
+    }
+
+
+    public String getName() {
+        return this.name;
+    }
+
+    public float getCooldown() {
+        return this.cooldown;
+    }
+
+    public float getRange() {
+        return this.range;
+    }
+
+    public boolean isIsSelfCast() {
+        return this.isSelfCast;
+    }
+
+    public Node buildNode() {
+        return this.nodeBuilder.build();
     }
 
     private static Spell initFireBall() {
@@ -159,23 +185,58 @@ public class Spell {
         return spell;
     }
 
-    public String getName() {
-        return this.name;
+    private static Spell initEmberCircle() {
+        final float cooldown = 6f;
+        final float range = 40f;
+
+        Spell spell = new Spell("Ember Circle", cooldown, range, false);
+        spell.nodeBuilder = new NodeBuilder() {
+
+            public Node build() {
+//                Node node = new Node("ember-circle");
+                Node node = (Node)assetManager.loadModel("Models/Circle.j3o");
+//                Node otus = (Node)assetManager.loadModel("Models/Circle.j3o");
+                final float radius = 10f;
+                node.scale(radius, 1f, radius);
+                // Let's use simple black color first
+                Material black = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                black.setColor("Color", ColorRGBA.Black);
+                node.setMaterial(black);
+
+                node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 10f);
+
+                GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius)));
+                if (worldManager.isClient()) {
+                    final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
+                    Material materialRed = new Material(Spell.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                    materialRed.setTexture("Texture", Spell.assetManager.loadTexture("Effects/flame.png"));
+                    fire.setMaterial(materialRed);
+                    fire.setImagesX(2);
+                    fire.setImagesY(2);
+                    fire.setSelectRandomImage(true);
+                    fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
+                    fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+                    fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y);
+                    fire.setStartSize(6.5f);
+                    fire.setEndSize(0.5f);
+                    fire.setGravity(Vector3f.ZERO);
+                    fire.setLowLife(0.2f);
+                    fire.setHighLife(0.3f);
+                    fire.setParticlesPerSec(40);
+                    fire.getParticleInfluencer().setVelocityVariation(0.5f);
+                    fire.setRandomAngle(true);
+
+//                    EmitterSphereShape emitterShape = new EmitterSphereShape(Vector3f.ZERO, 5.0f);
+//                    fire.setShape(emitterShape);
+                    node.attachChild(fire);
+
+                }
+                return node;
+
+            }
+        };
+
+        return spell;
     }
 
-    public float getCooldown() {
-        return this.cooldown;
-    }
-
-    public float getRange() {
-        return this.range;
-    }
-
-    public boolean isIsSelfCast() {
-        return this.isSelfCast;
-    }
-
-    public Node buildNode() {
-        return this.nodeBuilder.build();
-    }
 }
