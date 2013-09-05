@@ -45,6 +45,9 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         Spatial staticA = null;
         Spatial staticB = null;
 
+        if (event.getNodeA() == null || event.getNodeB() == null) {
+            return;
+        }
         InfluenceInterfaceControl characterA = event.getNodeA().getControl(InfluenceInterfaceControl.class);
         InfluenceInterfaceControl characterB = event.getNodeB().getControl(InfluenceInterfaceControl.class);
 

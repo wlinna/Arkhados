@@ -33,6 +33,14 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        super.rigidBody.setUserObject(spatial);
+    }
+
+
+
+    @Override
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
         if (impulseToApply != null) {
             this.rigidBody.applyImpulse(this.impulseToApply.setY(10.0f), Vector3f.ZERO);

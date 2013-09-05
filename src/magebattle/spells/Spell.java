@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import magebattle.WorldManager;
+import magebattle.controls.AreaEffectControl;
 import magebattle.controls.EntityEventControl;
 import magebattle.controls.ProjectileControl;
 import magebattle.controls.TimedExistenceControl;
@@ -78,7 +79,6 @@ public class Spell {
         this.range = range;
         this.isSelfCast = isSelfCast;
     }
-
 
     public String getName() {
         return this.name;
@@ -156,7 +156,7 @@ public class Spell {
                             if (!"collision".equals(reason)) {
                                 return;
                             }
-                           Vector3f worldTranslation = fire.getParent().getLocalTranslation();
+                            Vector3f worldTranslation = fire.getParent().getLocalTranslation();
                             fire.removeFromParent();
                             worldManager.getWorldRoot().attachChild(fire);
                             fire.setLocalTranslation(worldTranslation);
@@ -172,7 +172,7 @@ public class Spell {
                 }
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
-                node.addControl(new RigidBodyControl(collisionShape, (Float)node.getUserData(UserDataStrings.MASS)));
+                node.addControl(new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS)));
                 node.addControl(new ProjectileControl());
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
@@ -191,10 +191,9 @@ public class Spell {
 
         Spell spell = new Spell("Ember Circle", cooldown, range, false);
         spell.nodeBuilder = new NodeBuilder() {
-
             public Node build() {
 //                Node node = new Node("ember-circle");
-                Node node = (Node)assetManager.loadModel("Models/Circle.j3o");
+                Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
 //                Node otus = (Node)assetManager.loadModel("Models/Circle.j3o");
                 final float radius = 10f;
                 node.scale(radius, 1f, radius);
@@ -205,7 +204,15 @@ public class Spell {
 
                 node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 10f);
 
-                GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius)));
+                if (worldManager.isServer()) {
+                    GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius)));
+                    node.addControl(ghost);
+                    AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
+                    node.addControl(areaEffectControl);
+                    areaEffectControl.addInfluence(new DamagOverTimeeInfluence(7.5f));
+
+                }
+
                 if (worldManager.isClient()) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
                     Material materialRed = new Material(Spell.assetManager, "Common/MatDefs/Misc/Particle.j3md");
@@ -229,7 +236,6 @@ public class Spell {
 //                    EmitterSphereShape emitterShape = new EmitterSphereShape(Vector3f.ZERO, 5.0f);
 //                    fire.setShape(emitterShape);
                     node.attachChild(fire);
-
                 }
                 return node;
 
@@ -238,5 +244,4 @@ public class Spell {
 
         return spell;
     }
-
 }

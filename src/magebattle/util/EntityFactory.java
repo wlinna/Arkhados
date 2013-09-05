@@ -62,9 +62,7 @@ public class EntityFactory {
             spellCastControl.addSpell(Spell.getSpells().get("Fireball"));
             spellCastControl.addSpell(Spell.getSpells().get("Ember Circle"));
 
-
             entity.addControl(new InfluenceInterfaceControl());
-
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);

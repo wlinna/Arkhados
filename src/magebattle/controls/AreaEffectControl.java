@@ -14,6 +14,11 @@
  along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle.controls;
 
+import com.bulletphysics.dynamics.RigidBody;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -24,6 +29,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import magebattle.spells.Influence;
 
 /**
  *
@@ -31,8 +39,34 @@ import java.io.IOException;
  */
 public class AreaEffectControl extends AbstractControl {
 
+    private GhostControl ghostControl;
+
+    private List<Influence> influences = new ArrayList<Influence>();
+
+    public AreaEffectControl() {
+    }
+
+    public AreaEffectControl(GhostControl ghostControl) {
+        this.ghostControl = ghostControl;
+    }
+
     @Override
     protected void controlUpdate(float tpf) {
+        List<PhysicsCollisionObject> collisionObjects =  this.ghostControl.getOverlappingObjects();
+
+        for (PhysicsCollisionObject collisionObject : collisionObjects) {
+            if (collisionObject.getUserObject() instanceof Spatial) {
+                Spatial spatial = (Spatial) collisionObject.getUserObject();
+                for (Influence influence : this.influences) {
+                    influence.affect(spatial, tpf);
+                }
+            }
+
+        }
+    }
+
+    public void addInfluence(Influence influence) {
+        this.influences.add(influence);
     }
 
     @Override
@@ -41,6 +75,7 @@ public class AreaEffectControl extends AbstractControl {
 
     public Control cloneForSpatial(Spatial spatial) {
         AreaEffectControl control = new AreaEffectControl();
+//        control.ghostControl = this.ghostControl.cloneForSpatial(spatial);
         return control;
     }
 
