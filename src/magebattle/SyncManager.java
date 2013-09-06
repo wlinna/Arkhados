@@ -48,7 +48,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private Application app;
     HashMap<Long, Object> syncObjects = new HashMap<Long, Object>();
     private float syncTimer = 0.0f;
-    private float syncFrequency = 0.25f;
+    private float syncFrequency = 0.15f;
     private Queue<AbstractSyncMessage> syncQueue =
             new LinkedList<AbstractSyncMessage>();
 

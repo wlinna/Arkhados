@@ -22,5 +22,4 @@ package magebattle;
 public class Globals {
     public static String SERVER = "localhost";
     public static int PORT = 12345;
-
 }

@@ -242,15 +242,14 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 try {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
+                            worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Circle.j3o"});
                             ClientMain.this.worldManager.loadLevel();
                             ClientMain.this.nifty.gotoScreen("default_hud");
-
                             return null;
                         }
                     }).get();
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
-
 //                            ClientMain.this.worldManager.attachLevel();
                             return null;
                         }

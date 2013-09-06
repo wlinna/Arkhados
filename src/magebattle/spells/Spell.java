@@ -212,7 +212,7 @@ public class Spell {
                 actionQueue.enqueueAction(new DelayAction(0.8f));
 
                 if (worldManager.isServer()) {
-                    GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius), 1));
+                    GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 0.05f, radius), 1));
                     node.addControl(ghost);
 
                     final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
