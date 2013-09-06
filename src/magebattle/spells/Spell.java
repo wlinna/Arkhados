@@ -177,7 +177,11 @@ public class Spell {
                 }
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
-                node.addControl(new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS)));
+                RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+                physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
+                physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
+                node.addControl(physicsBody);
+
                 node.addControl(new ProjectileControl());
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
