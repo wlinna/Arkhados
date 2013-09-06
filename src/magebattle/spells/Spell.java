@@ -123,9 +123,9 @@ public class Spell {
                 Material material = new Material(Spell.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 material.setColor("Color", ColorRGBA.Yellow);
                 node.setMaterial(material);
-                node.setUserData(UserDataStrings.SPEED_MOVEMENT, 50.0f);
-                node.setUserData(UserDataStrings.MASS, 30.0f);
-                node.setUserData(UserDataStrings.DAMAGE, 150.0f);
+                node.setUserData(UserDataStrings.SPEED_MOVEMENT, 70f);
+                node.setUserData(UserDataStrings.MASS, 30f);
+                node.setUserData(UserDataStrings.DAMAGE, 150f);
 
                 if (Spell.worldManager.isClient()) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
