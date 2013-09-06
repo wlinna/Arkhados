@@ -15,6 +15,7 @@
 package magebattle.spells;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -39,6 +40,7 @@ import magebattle.controls.AreaEffectControl;
 import magebattle.controls.EntityEventControl;
 import magebattle.controls.ProjectileControl;
 import magebattle.controls.TimedExistenceControl;
+import magebattle.effects.EmitterCircleShape;
 import magebattle.entityevents.RemovalEventAction;
 import magebattle.util.NodeBuilder;
 import magebattle.util.UserDataStrings;
@@ -196,7 +198,7 @@ public class Spell {
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
                 final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
-                final float radius = 10f;
+                final float radius = 15f;
                 node.scale(radius, 1f, radius);
                 // Let's use simple black color first
                 Material black = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -233,7 +235,7 @@ public class Spell {
                     actionQueue.enqueueAction(new EntityAction() {
                         @Override
                         public boolean update(float tpf) {
-                            final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
+                            final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50 * (int) radius);
                             Material materialRed = new Material(Spell.assetManager, "Common/MatDefs/Misc/Particle.j3md");
                             materialRed.setTexture("Texture", Spell.assetManager.loadTexture("Effects/flame.png"));
                             fire.setMaterial(materialRed);
@@ -242,26 +244,25 @@ public class Spell {
                             fire.setSelectRandomImage(true);
                             fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
                             fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
-                            fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y);
+                            fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y.mult(2f));
                             fire.setStartSize(6.5f);
                             fire.setEndSize(0.5f);
                             fire.setGravity(Vector3f.ZERO);
-                            fire.setLowLife(0.2f);
-                            fire.setHighLife(0.3f);
-                            fire.setParticlesPerSec(40);
-                            fire.getParticleInfluencer().setVelocityVariation(0.5f);
+                            fire.setLowLife(1f);
+                            fire.setHighLife(2f);
+                            fire.setParticlesPerSec((int) (0.5 * radius * radius));
+                            fire.getParticleInfluencer().setVelocityVariation(0.2f);
                             fire.setRandomAngle(true);
-
-//                    EmitterSphereShape emitterShape = new EmitterSphereShape(Vector3f.ZERO, 5.0f);
-//                    fire.setShape(emitterShape);
                             ((Node) super.spatial).attachChild(fire);
+                            fire.setLocalTranslation(Vector3f.ZERO);
+                            EmitterCircleShape emitterShape = new EmitterCircleShape(Vector3f.ZERO, 1f);
+                            fire.setShape(emitterShape);
+
                             return false;
                         }
                     });
-
                 }
                 return node;
-
             }
         };
 

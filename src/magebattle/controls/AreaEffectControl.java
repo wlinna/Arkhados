@@ -56,7 +56,6 @@ public class AreaEffectControl extends AbstractControl {
 
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
-//            System.out.println("AoE control collision!");
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
                 for (Influence influence : this.influences) {

@@ -29,7 +29,6 @@ public class DelayAction extends EntityAction {
     public boolean update(float tpf) {
         this.delay -= tpf;
         if (this.delay <= 0f) {
-            System.out.println("Delay is over!");
             return false;
         }
         return true;
