@@ -29,7 +29,6 @@ public class DamagOverTimeeInfluence implements Influence {
         this.dps = dps;
     }
 
-
     public void affect(Spatial spatial, float tpf) {
         InfluenceInterfaceControl characterInfluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
         if (characterInfluenceControl != null) {

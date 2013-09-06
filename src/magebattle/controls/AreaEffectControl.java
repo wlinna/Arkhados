@@ -54,14 +54,15 @@ public class AreaEffectControl extends AbstractControl {
     protected void controlUpdate(float tpf) {
         List<PhysicsCollisionObject> collisionObjects =  this.ghostControl.getOverlappingObjects();
 
+
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
+//            System.out.println("AoE control collision!");
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
                 for (Influence influence : this.influences) {
                     influence.affect(spatial, tpf);
                 }
             }
-
         }
     }
 

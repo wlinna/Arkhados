@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import magebattle.WorldManager;
+import magebattle.actions.DelayAction;
+import magebattle.actions.EntityAction;
+import magebattle.controls.ActionQueueControl;
 import magebattle.controls.AreaEffectControl;
 import magebattle.controls.EntityEventControl;
 import magebattle.controls.ProjectileControl;
@@ -192,9 +195,7 @@ public class Spell {
         Spell spell = new Spell("Ember Circle", cooldown, range, false);
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
-//                Node node = new Node("ember-circle");
-                Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
-//                Node otus = (Node)assetManager.loadModel("Models/Circle.j3o");
+                final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
                 final float radius = 10f;
                 node.scale(radius, 1f, radius);
                 // Let's use simple black color first
@@ -203,41 +204,61 @@ public class Spell {
                 node.setMaterial(black);
 
                 node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
+                ActionQueueControl actionQueue = new ActionQueueControl();
+                node.addControl(actionQueue);
+
+                actionQueue.enqueueAction(new DelayAction(0.8f));
 
                 if (worldManager.isServer()) {
-                    GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius)));
+                    GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 2f, radius), 1));
                     node.addControl(ghost);
-                    AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
+
+                    final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
                     node.addControl(areaEffectControl);
-                    areaEffectControl.addInfluence(new DamagOverTimeeInfluence((Float)node.getUserData(UserDataStrings.DAMAGE_PER_SECOND)));
 
-                    node.addControl(new TimedExistenceControl(10f, true));
+                    actionQueue.enqueueAction(new EntityAction() {
+                        @Override
+                        public boolean update(float tpf) {
+                            Float dps = (Float) super.spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
+                            areaEffectControl.addInfluence(new DamagOverTimeeInfluence(dps));
 
+                            node.addControl(new TimedExistenceControl(10f, true));
+
+                            return false;
+                        }
+                    });
                 }
 
                 if (worldManager.isClient()) {
-                    final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-                    Material materialRed = new Material(Spell.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-                    materialRed.setTexture("Texture", Spell.assetManager.loadTexture("Effects/flame.png"));
-                    fire.setMaterial(materialRed);
-                    fire.setImagesX(2);
-                    fire.setImagesY(2);
-                    fire.setSelectRandomImage(true);
-                    fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
-                    fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
-                    fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y);
-                    fire.setStartSize(6.5f);
-                    fire.setEndSize(0.5f);
-                    fire.setGravity(Vector3f.ZERO);
-                    fire.setLowLife(0.2f);
-                    fire.setHighLife(0.3f);
-                    fire.setParticlesPerSec(40);
-                    fire.getParticleInfluencer().setVelocityVariation(0.5f);
-                    fire.setRandomAngle(true);
+                    actionQueue.enqueueAction(new EntityAction() {
+                        @Override
+                        public boolean update(float tpf) {
+                            final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
+                            Material materialRed = new Material(Spell.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                            materialRed.setTexture("Texture", Spell.assetManager.loadTexture("Effects/flame.png"));
+                            fire.setMaterial(materialRed);
+                            fire.setImagesX(2);
+                            fire.setImagesY(2);
+                            fire.setSelectRandomImage(true);
+                            fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
+                            fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+                            fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y);
+                            fire.setStartSize(6.5f);
+                            fire.setEndSize(0.5f);
+                            fire.setGravity(Vector3f.ZERO);
+                            fire.setLowLife(0.2f);
+                            fire.setHighLife(0.3f);
+                            fire.setParticlesPerSec(40);
+                            fire.getParticleInfluencer().setVelocityVariation(0.5f);
+                            fire.setRandomAngle(true);
 
 //                    EmitterSphereShape emitterShape = new EmitterSphereShape(Vector3f.ZERO, 5.0f);
 //                    fire.setShape(emitterShape);
-                    node.attachChild(fire);
+                            ((Node) super.spatial).attachChild(fire);
+                            return false;
+                        }
+                    });
+
                 }
                 return node;
 
