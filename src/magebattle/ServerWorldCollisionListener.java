@@ -58,13 +58,13 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             if (characterB != null) {
                 this.projectileCharacterCollision(projectileA, characterB);
             }
-            this.worldManager.removeEntity((Long) projectileA.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
+//            this.worldManager.removeEntity((Long) projectileA.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
         }
         if (projectileB != null) {
             if (characterA != null) {
                 this.projectileCharacterCollision(projectileB, characterA);
             }
-            this.worldManager.removeEntity((Long) projectileB.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
+//            this.worldManager.removeEntity((Long) projectileB.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
         }
 
     }
@@ -74,6 +74,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         Vector3f impulse = character.getSpatial().getLocalTranslation()
                 .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(10000.0f);
         character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
+        this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
 
 //        character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(Vector3f.UNIT_Y.mult(2000.0f));
     }
