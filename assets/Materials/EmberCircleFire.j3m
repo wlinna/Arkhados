@@ -1,0 +1,7 @@
+Material Ember Circle Fire : Common/MatDefs/Misc/Particle.j3md {
+     MaterialParameters {
+        Texture : Effects/flame.png
+     }
+    AdditionalRenderState {
+    }
+}
