@@ -76,14 +76,13 @@ public class UserCommandManager extends AbstractAppState {
         this.worldManager = stateManager.getState(WorldManager.class);
         this.cam = app.getCamera();
         System.out.println("Initialized UserCommandManager");
-
     }
 
     private void initInputMappings() {
-        this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_S));
+        this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_D));
         this.inputManager.addMapping("move-left", new KeyTrigger(KeyInput.KEY_A));
         this.inputManager.addMapping("move-up", new KeyTrigger(KeyInput.KEY_W));
-        this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_R));
+        this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_S));
 
         this.inputManager.addMapping("cast-spell-1", new KeyTrigger(KeyInput.KEY_Q));
         this.inputManager.addMapping("cast-fireball", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
