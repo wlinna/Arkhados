@@ -130,7 +130,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 this.inputManager, this.audioRenderer, this.guiViewPort);
 
         this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "join_server", this);
+        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this);
         this.guiViewPort.addProcessor(this.niftyDisplay);
 
         this.statusText = this.nifty.getScreen("join_server")
@@ -156,6 +156,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 .findElementByName("username_text")
                 .getControl(TextFieldControl.class).getText();
 
+        final int port = Integer.parseInt(nifty.getScreen("join_server").findElementByName("layer")
+                .findElementByName("panel").findElementByName("server_port").getControl(TextFieldControl.class).getText());
+        final String ip = nifty.getScreen("join_server").findElementByName("layer")
+                .findElementByName("panel").findElementByName("server_ip").getControl(TextFieldControl.class).getText();
+
+
         if (username.trim().length() == 0) {
             this.setStatusText("Username is invalid");
             return;
@@ -165,7 +171,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         System.out.println("Trying to connect");
         this.setStatusText("Connecting... " + username);
         try {
-            this.client.connectToServer(Globals.SERVER, Globals.PORT, Globals.PORT);
+            this.client.connectToServer(ip, port, port);
             this.client.start();
 
             this.toLobby();
@@ -273,6 +279,15 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public UserCommandManager getUserCommandManager() {
         return this.userCommandManager;
+    }
+
+    public void gotoMenu(final String menu) {
+        this.enqueue(new Callable<Void>() {
+            public Void call() throws Exception {
+                ClientMain.this.nifty.gotoScreen(menu);
+                return null;
+            }
+        });
     }
 
     public void bind(Nifty nifty, Screen screen) {

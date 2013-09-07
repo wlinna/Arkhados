@@ -7,14 +7,42 @@
             <onCustom name="updateScrollpanelPositionToDisplayElement" target="listBoxStatic" oneShot="true" />
         </effect>
     </style>
-    
+
     <screen id="null" controller="magebattle.ClientMain">
     </screen>
-  
-    
+
     <screen id="main_menu" controller="magebattle.ClientMain">
+        <layer childLayout="center">
+            <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <effect>
+                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="1500"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                </effect>
+
+                <text style="nifty-label" text="Welcome to JMageBattle!" >
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                    </effect>
+                </text>
+                <control id="goto_join_server" name="button" label="Join Game" align="center">
+                    <interact onClick="gotoMenu(join_server)" />
+                </control>
+                <text style="nifty-label" text=""/>
+                <control id="goto_settings" name="button" label="Settings" align="center">
+                    <interact onClick="gotoMenu(settings)" />
+                </control>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="settings" controller="magebattle.ClientMain">
+        <layer id="layer" childLayout="center" >
+        </layer>
+    </screen>
+
+    <screen id="join_server" controller="magebattle.ClientMain">
         <layer id="layer" childLayout="center">
-            <panel id="panel" height="300px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
                     <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="1500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
@@ -30,6 +58,12 @@
                         <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
                     </effect>
                 </image>
+                <text style="nifty-label" text="Address"/>
+-                <control id="server_ip" name="textfield" align="center" valign="center" width="60%" text="localhost">
+-                </control>
+-                <text style="nifty-label" text="Port:"/>
+-                <control id="server_port" name="textfield" align="center" valign="center" width="60%" text="12345">
+-                </control>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="Enter Username" valign="center"/>
                 <control id="username_text" name="textfield" align="center" valign="center" width="60%">
@@ -120,11 +154,11 @@
     <screen id="default_hud" controller="magebattle.ClientMain">
         <layer id="layer" childLayout="vertical">
 <!--            <panel id="panel_top" childLayout="horizontal">
-                <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">                  
-                </panel>                
-            </panel>            
-			
-            <panel id="panel_bottom" childLayout="horizontal" width="100%"  height="80px" style="nifty-panel" align="left"valign="center">                
+                <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">
+                </panel>
+            </panel>
+
+            <panel id="panel_bottom" childLayout="horizontal" width="100%"  height="80px" style="nifty-panel" align="left"valign="center">
             </panel>-->
         </layer>
     </screen>
