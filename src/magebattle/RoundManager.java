@@ -45,6 +45,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private WorldManager worldManager;
     private SyncManager syncManager;
     private AppStateManager stateManager;
+    private Application app;
     private ClientMain clientMain = null;
     private ClientHudManager hudManager = null;
     private int currentRound = 0;
@@ -61,10 +62,12 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.syncManager = stateManager.getState(SyncManager.class);
         this.stateManager = stateManager;
         this.syncManager.addObject(-1, this.worldManager);
+        this.app = app;
 
         if (this.worldManager.isClient()) {
             this.syncManager.getClient().addMessageListener(this, CreateWorldMessage.class, NewRoundMessage.class, RoundFinishedMessage.class);
             this.clientMain = (ClientMain) app;
+            this.hudManager = stateManager.getState(ClientHudManager.class);
 
         } else if (this.worldManager.isServer()) {
             this.syncManager.getServer().addMessageListener(this, ClientWorldCreatedMessage.class, PlayerReadyForNewRoundMessage.class);
@@ -158,6 +161,13 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.roundRunning = true;
         if (this.worldManager.isClient()) {
             this.clientMain.getUserCommandManager().setEnabled(true);
+            this.app.enqueue(new Callable<Void>() {
+                public Void call() throws Exception {
+                    hudManager.startRoundStartCountdown(3);
+                    return null;
+
+                }
+            });
         }
     }
 

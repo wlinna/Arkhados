@@ -30,6 +30,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
+import magebattle.actions.EntityAction;
+import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.util.UserDataStrings;
 
@@ -50,6 +52,7 @@ public class ClientHudManager extends AbstractAppState {
         this.cam = cam;
         this.guiNode = guiNode;
         this.guiFont = guiFont;
+        this.guiNode.addControl(new ActionQueueControl());
     }
 
     @Override
@@ -70,7 +73,6 @@ public class ClientHudManager extends AbstractAppState {
         // TODO: Add some checks
         this.characters.add((Node) character);
         this.createHpBar();
-
     }
 
     public void clear() {
@@ -79,6 +81,16 @@ public class ClientHudManager extends AbstractAppState {
             hpBar.removeFromParent();
         }
         this.hpBars.clear();
+    }
+
+    public void startRoundStartCountdown(int seconds) {
+        ActionQueueControl actionQueue = this.guiNode.getControl(ActionQueueControl.class);
+        Vector3f location = new Vector3f(this.cam.getWidth(), this.cam.getHeight(), 0f);
+        for (int i = seconds; i > 0; --i) {
+            actionQueue.enqueueAction(new BitMapTextAction(this.guiFont, location, Integer.toString(i), 1f));
+        }
+
+        actionQueue.enqueueAction(new BitMapTextAction(this.guiFont, location, "Go!", 0.5f));
     }
 
     private void createHpBar() {
@@ -106,11 +118,52 @@ public class ClientHudManager extends AbstractAppState {
         Vector3f hpBarLocation = this.cam.getScreenCoordinates(character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
-
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
+    }
+
+    private class BitMapTextAction extends EntityAction {
+        private float time;
+        private final BitmapFont font;
+        private BitmapText bitmapText;
+
+        public BitMapTextAction(BitmapFont guiFont, Vector3f location, String text, float time) {
+            this.font = guiFont;
+            this.time = time;
+
+            this.bitmapText = new BitmapText(this.font);
+
+            this.bitmapText.setSize(this.font.getCharSet().getRenderedSize());
+            this.bitmapText.setBox(new Rectangle(location.x, location.y, 20f, 10f));
+            this.bitmapText.setColor(ColorRGBA.Red);
+            this.bitmapText.setAlignment(BitmapFont.Align.Center);
+            this.bitmapText.center();
+            this.bitmapText.setText(text);
+        }
+
+        @Override
+        public boolean update(float tpf) {
+            this.time -= tpf;
+            if (this.time < 0f) {
+                this.destroy();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public void setSpatial(Spatial spatial) {
+            super.setSpatial(spatial);
+            ((Node)super.spatial).attachChild(this.bitmapText);
+        }
+
+
+
+        private void destroy() {
+            this.bitmapText.removeFromParent();
+        }
     }
 }

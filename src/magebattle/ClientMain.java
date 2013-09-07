@@ -1,18 +1,17 @@
 /*    This file is part of JMageBattle.
 
-    JMageBattle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ JMageBattle is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    JMageBattle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ JMageBattle is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with JMageBattle.  If not, see <http://www.gnu.org/licenses/>. */
 package magebattle;
 
 import com.jme3.app.SimpleApplication;
@@ -49,7 +48,6 @@ import magebattle.messages.syncmessages.SyncCharacterMessage;
 import magebattle.messages.syncmessages.SyncProjectileMessage;
 
 public class ClientMain extends SimpleApplication implements ScreenController {
-
 
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.WARNING);
@@ -99,19 +97,23 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.syncManager.setMessagesToListen(AddEntityMessage.class, RemoveEntityMessage.class, SyncCharacterMessage.class, SyncProjectileMessage.class);
         this.worldManager = new WorldManager();
 
-        this.userCommandManager = new UserCommandManager(this.client);
+        this.userCommandManager = new UserCommandManager(this.client, this.inputManager);
+
+
         this.listenerManager = new ClientNetListener(this, client, this.worldManager);
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
                 ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class
-                );
+                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class);
 
         MessageUtils.registerMessages();
         this.stateManager.attach(this.worldManager);
 
         this.roundManager = new RoundManager();
         this.stateManager.attach(this.roundManager);
+
+        ClientMain.this.stateManager
+                .attach(ClientMain.this.userCommandManager);
     }
 
     @Override
@@ -255,11 +257,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                         }
                     }).get();
                     ClientMain.this.enqueue(new Callable<Void>() {
-
                         public Void call() throws Exception {
-                            ClientMain.this.stateManager
-                                    .attach(ClientMain.this.userCommandManager);
-                            ClientMain.this.userCommandManager.setEnabled(false);
                             return null;
                         }
                     }).get();

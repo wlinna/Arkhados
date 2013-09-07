@@ -61,24 +61,22 @@ public class UserCommandManager extends AbstractAppState {
 
 
 
-    public UserCommandManager(Client client) {
+    public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
+        this.inputManager = inputManager;
+        this.initInputMappings();
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-
+        super.initialize(stateManager, app);
         System.out.println("Initializing UserCommandManager");
         //this is called on the OpenGL thread after the AppState has been attached
         this.app = app;
         this.worldManager = stateManager.getState(WorldManager.class);
-        this.inputManager = app.getInputManager();
         this.cam = app.getCamera();
-
-        this.initInputMappings();
         System.out.println("Initialized UserCommandManager");
 
-        super.initialize(stateManager, app);
     }
 
     private void initInputMappings() {
@@ -154,6 +152,7 @@ public class UserCommandManager extends AbstractAppState {
 
     private void enableInputListeners() {
         if (!this.inputListenersActive) {
+            // FIXME: Sometimes this throws NullPointerException when round starts
             this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
             this.inputManager.addListener(this.actionCastFireball, "cast-fireball");
             this.inputManager.addListener(this.actionCastSpell1, "cast-spell-1");
