@@ -22,6 +22,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
@@ -54,8 +55,11 @@ public class UserCommandManager extends AbstractAppState {
     private long characterId;
     private int down = 0;
     private int right = 0;
+
 //    private HashMap<InputListener, Boolean> inputListeners = new HashMap<InputListener, Boolean>();
     private boolean inputListenersActive = false;
+
+
 
     public UserCommandManager(Client client) {
         this.client = client;
@@ -78,10 +82,10 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private void initInputMappings() {
-        this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_D));
+        this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_S));
         this.inputManager.addMapping("move-left", new KeyTrigger(KeyInput.KEY_A));
         this.inputManager.addMapping("move-up", new KeyTrigger(KeyInput.KEY_W));
-        this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_S));
+        this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_R));
 
         this.inputManager.addMapping("cast-spell-1", new KeyTrigger(KeyInput.KEY_Q));
         this.inputManager.addMapping("cast-fireball", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -120,16 +124,13 @@ public class UserCommandManager extends AbstractAppState {
                 return;
             }
             if ("move-right".equals(name)) {
-                UserCommandManager.this.right = isPressed ? 1 : 0;
-            }
-            if ("move-left".equals(name)) {
-                UserCommandManager.this.right = isPressed ? -1 : 0;
-            }
-            if ("move-up".equals(name)) {
-                UserCommandManager.this.down = isPressed ? -1 : 0;
-            }
-            if ("move-down".equals(name)) {
-                UserCommandManager.this.down = isPressed ? 1 : 0;
+                UserCommandManager.this.right += isPressed ? 1 : -1;
+            } else if ("move-left".equals(name)) {
+                UserCommandManager.this.right += isPressed ? -1 : 1;
+            } else if ("move-up".equals(name)) {
+                UserCommandManager.this.down += isPressed ? -1 : 1;
+            } else if ("move-down".equals(name)) {
+                UserCommandManager.this.down += isPressed ? 1 : -1;
             }
             CharacterPhysicsControl characterPhysics = getCharacter().getControl(CharacterPhysicsControl.class);
             Float speedMovement = getCharacter().getUserData(UserDataStrings.SPEED_MOVEMENT);
@@ -147,7 +148,6 @@ public class UserCommandManager extends AbstractAppState {
             this.inputManager.removeListener(this.actionMoveDirection);
             this.inputManager.removeListener(this.actionCastFireball);
             this.inputManager.removeListener(this.actionCastSpell1);
-
         }
         this.inputListenersActive = false;
     }
@@ -160,6 +160,12 @@ public class UserCommandManager extends AbstractAppState {
         }
 
         this.inputListenersActive = true;
+    }
+
+    private void moveX(int amount) {
+    }
+
+    private void moveY(int amount) {
     }
 
     @Override
