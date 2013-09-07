@@ -130,10 +130,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 this.inputManager, this.audioRenderer, this.guiViewPort);
 
         this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this);
+        this.nifty.fromXml("Interface/ClientUI.xml", "join_server", this);
         this.guiViewPort.addProcessor(this.niftyDisplay);
 
-        this.statusText = this.nifty.getScreen("main_menu")
+        this.statusText = this.nifty.getScreen("join_server")
                 .findElementByName("layer").findElementByName("panel")
                 .findElementByName("status_text")
                 .getRenderer(TextRenderer.class);
@@ -151,7 +151,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     public void connect() {
         // FIXME: TextFieldControl is deprecated
 
-        final String username = nifty.getScreen("main_menu")
+        final String username = nifty.getScreen("join_server")
                 .findElementByName("layer").findElementByName("panel")
                 .findElementByName("username_text")
                 .getControl(TextFieldControl.class).getText();
