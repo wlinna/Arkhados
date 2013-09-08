@@ -1,6 +1,6 @@
-# JMageBattle #
+# Arkhados #
 
-JMageBattle is fast paced MOBA game where mages cast entirely skill based spells to kill each other.
+Arkhados is fast paced MOBA game where mages cast entirely skill based spells to kill each other.
 It's programmed in Java with JMonkeyEngine 3.
 
 
@@ -23,4 +23,4 @@ Thanks to friends for giving ideas.
 
 ## License ##
 
-JMageBattle is GPLv3 licensed, except for two files that I copied from MonkeyZone
+Arkhados is GPLv3 licensed, except for two files that I copied from MonkeyZone

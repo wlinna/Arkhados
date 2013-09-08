@@ -8,10 +8,10 @@
         </effect>
     </style>
 
-    <screen id="null" controller="magebattle.ClientMain">
+    <screen id="null" controller="arkhados.ClientMain">
     </screen>
 
-    <screen id="main_menu" controller="magebattle.ClientMain">
+    <screen id="main_menu" controller="arkhados.ClientMain">
         <layer childLayout="center">
             <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -19,7 +19,7 @@
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
                 </effect>
 
-                <text style="nifty-label" text="Welcome to JMageBattle!" >
+                <text style="nifty-label" text="Welcome to Arkhados!" >
                     <effect>
                         <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
                     </effect>
@@ -35,7 +35,7 @@
         </layer>
     </screen>
 
-    <screen id="settings" controller="magebattle.ClientMain">
+    <screen id="settings" controller="arkhados.ClientMain">
         <layer id="layer" childLayout="center">
             <panel id="root_panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -61,7 +61,7 @@
         </layer>
     </screen>
 
-    <screen id="input_settings" controller="magebattle.ClientMain">
+    <screen id="input_settings" controller="arkhados.ClientMain">
         <layer id="layer" childLayout="center">
             <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <control id="exit_button" name="button" label="Back" align="center" width="200px">
@@ -74,7 +74,7 @@
         </layer>
     </screen>
 
-    <screen id="join_server" controller="magebattle.ClientMain">
+    <screen id="join_server" controller="arkhados.ClientMain">
         <layer id="layer" childLayout="center">
             <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -128,7 +128,7 @@
         </layer>
     </screen>
 
-    <screen id="lobby" controller="magebattle.ClientMain">
+    <screen id="lobby" controller="arkhados.ClientMain">
         <layer id="layer" childLayout="vertical">
             <panel id="panel" childLayout="horizontal">
                 <panel id="players_panel" height="100%" width="320px" valign="center" style="nifty-panel" childLayout="vertical">
@@ -179,7 +179,7 @@
         </layer>
     </screen>
 
-    <screen id="load_level" controller="magebattle.ClientMain">
+    <screen id="load_level" controller="arkhados.ClientMain">
         <layer id="layer" childLayout="center">
             <panel id="panel" height="140px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -193,7 +193,7 @@
         </layer>
     </screen>
 
-    <screen id="default_hud" controller="magebattle.ClientMain">
+    <screen id="default_hud" controller="arkhados.ClientMain">
         <layer id="layer" childLayout="vertical">
 <!--            <panel id="panel_top" childLayout="horizontal">
                 <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">
