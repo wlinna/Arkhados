@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package archados.entityevents;
+package arkhados.entityevents;
 
 import com.jme3.scene.Node;
 import arkhados.WorldManager;

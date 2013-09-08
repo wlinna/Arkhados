@@ -24,7 +24,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
-import archados.entityevents.RemovalEventAction;
+import arkhados.entityevents.RemovalEventAction;
 
 /**
  *

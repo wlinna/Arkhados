@@ -41,7 +41,7 @@ import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.EmitterCircleShape;
-import archados.entityevents.RemovalEventAction;
+import arkhados.entityevents.RemovalEventAction;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 
