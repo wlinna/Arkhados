@@ -44,6 +44,7 @@ import magebattle.messages.SetPlayersCharacterMessage;
 import magebattle.messages.StartGameMessage;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
+import magebattle.messages.syncmessages.StartCastingSpellMessage;
 import magebattle.messages.syncmessages.SyncCharacterMessage;
 import magebattle.messages.syncmessages.SyncProjectileMessage;
 
@@ -94,7 +95,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         this.syncManager = new SyncManager(this, this.client);
         this.stateManager.attach(this.syncManager);
-        this.syncManager.setMessagesToListen(AddEntityMessage.class, RemoveEntityMessage.class, SyncCharacterMessage.class, SyncProjectileMessage.class);
+        this.syncManager.setMessagesToListen(AddEntityMessage.class, RemoveEntityMessage.class, SyncCharacterMessage.class, SyncProjectileMessage.class, StartCastingSpellMessage.class);
         this.worldManager = new WorldManager();
 
         this.userCommandManager = new UserCommandManager(this.client, this.inputManager);

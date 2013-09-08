@@ -75,13 +75,15 @@ public class Spell {
     private final String name;
     private final float cooldown;
     private final float range;
+    private final float castTime;
     private final boolean isSelfCast;
     private NodeBuilder nodeBuilder;
 
-    private Spell(String name, float cooldown, float range, boolean isSelfCast) {
+    private Spell(String name, float cooldown, float range, float castTime, boolean isSelfCast) {
         this.name = name;
         this.cooldown = cooldown;
         this.range = range;
+        this.castTime = castTime;
         this.isSelfCast = isSelfCast;
     }
 
@@ -97,6 +99,10 @@ public class Spell {
         return this.range;
     }
 
+    public float getCastTime() {
+        return this.castTime;
+    }
+
     public boolean isIsSelfCast() {
         return this.isSelfCast;
     }
@@ -106,10 +112,11 @@ public class Spell {
     }
 
     private static Spell initFireBall() {
-        float cooldown = 1.0f;
-        float range = 40f;
+        final float cooldown = 1.0f;
+        final float range = 40f;
+        final float castTime = 0.2f;
 
-        Spell spell = new Spell("Fireball", cooldown, range, false);
+        Spell spell = new Spell("Fireball", cooldown, range, castTime, false);
 
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
@@ -197,8 +204,9 @@ public class Spell {
     private static Spell initEmberCircle() {
         final float cooldown = 6f;
         final float range = 40f;
+        final float castTime = 0.4f;
 
-        Spell spell = new Spell("Ember Circle", cooldown, range, false);
+        Spell spell = new Spell("Ember Circle", cooldown, range, castTime, false);
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
                 final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");

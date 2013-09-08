@@ -18,6 +18,7 @@ package magebattle.messages.usercommands;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
+import magebattle.controls.ActionQueueControl;
 import magebattle.controls.SpellCastControl;
 import magebattle.messages.syncmessages.AbstractSyncMessage;
 
@@ -28,7 +29,7 @@ import magebattle.messages.syncmessages.AbstractSyncMessage;
 @Serializable
 public class UcCastSpellMessage extends AbstractSyncMessage {
     private String spell;
-    private Vector3f location;
+    private Vector3f direction;
 
     public UcCastSpellMessage() {
 
@@ -36,13 +37,14 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
 
     public UcCastSpellMessage(String spell, Vector3f location) {
         this.spell = spell;
-        this.location = location;
+        this.direction = location;
     }
 
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(SpellCastControl.class).cast(this.spell, this.location);
+        character.getControl(ActionQueueControl.class).clear();
+        character.getControl(SpellCastControl.class).cast(this.spell, this.direction);
     }
 
     public String getSpell() {
@@ -50,6 +52,6 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
     }
 
     public Vector3f getLocation() {
-        return location;
+        return direction;
     }
 }

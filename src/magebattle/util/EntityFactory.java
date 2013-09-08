@@ -19,6 +19,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import magebattle.ClientHudManager;
 import magebattle.WorldManager;
+import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterAnimationControl;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.controls.InfluenceInterfaceControl;
@@ -55,12 +56,19 @@ public class EntityFactory {
             entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
             entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
 //            entity.addControl(new CharacterMovementControl());
-            entity.addControl(new CharacterAnimationControl());
+            entity.addControl(new ActionQueueControl());
+            CharacterAnimationControl animControl = new CharacterAnimationControl();
+
+            entity.addControl(animControl);
             SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
             entity.addControl(spellCastControl);
 
             spellCastControl.addSpell(Spell.getSpells().get("Fireball"));
             spellCastControl.addSpell(Spell.getSpells().get("Ember Circle"));
+
+            animControl.addSpellAnimation("Fireball", "Idle");
+            animControl.addSpellAnimation("Ember Circle", "Idle");
+
 
             entity.addControl(new InfluenceInterfaceControl());
 

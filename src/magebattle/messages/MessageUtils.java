@@ -23,6 +23,7 @@ import magebattle.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import magebattle.messages.roundprotocol.CreateWorldMessage;
 import magebattle.messages.syncmessages.AddEntityMessage;
 import magebattle.messages.syncmessages.RemoveEntityMessage;
+import magebattle.messages.syncmessages.StartCastingSpellMessage;
 import magebattle.messages.syncmessages.SyncCharacterMessage;
 import magebattle.messages.syncmessages.SyncProjectileMessage;
 import magebattle.messages.usercommands.UcCastSpellMessage;
@@ -51,7 +52,7 @@ public class MessageUtils {
         Serializer.registerClass(PlayerReadyForNewRoundMessage.class);
         Serializer.registerClass(NewRoundMessage.class);
         Serializer.registerClass(RoundFinishedMessage.class);
-        // </RoundProtocol
+        // </RoundProtocol>
 
         Serializer.registerClass(SetPlayersCharacterMessage.class);
 
@@ -60,6 +61,7 @@ public class MessageUtils {
         Serializer.registerClass(RemoveEntityMessage.class);
         Serializer.registerClass(SyncCharacterMessage.class);
         Serializer.registerClass(SyncProjectileMessage.class);
+        Serializer.registerClass(StartCastingSpellMessage.class);
         // </Sync>
 
         // <UserCommands>

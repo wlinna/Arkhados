@@ -89,7 +89,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         logger.log(Level.FINEST, "Creating world");
         ++this.currentRound;
         if (this.worldManager.isClient()) {
-            this.clientMain.enqueue(new Callable<Void>() {
+            this.app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
 
                     if (currentRound > 1) {

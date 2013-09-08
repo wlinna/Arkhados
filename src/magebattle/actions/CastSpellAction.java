@@ -44,16 +44,16 @@ public class CastSpellAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
+        // HACK: This must be changed to more generic
+        final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
+        super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
         if ("Fireball".equals(spell.getName())) {
             // TODO: Add spell casting time and animation
 
             float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
-            final Vector3f viewDirection = this.targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
 
-            super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
-
-
-            long projectileId = this.worldManager.addNewEntity(this.spell.getName(), super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f), Quaternion.IDENTITY);
+            long projectileId = this.worldManager.addNewEntity(this.spell.getName(),
+                    super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f), Quaternion.IDENTITY);
             Spatial projectile = this.worldManager.getEntity(projectileId);
 
             final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
@@ -64,9 +64,10 @@ public class CastSpellAction extends EntityAction {
             RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
             body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
 
-            // HACK: IMPORTANT! This must be changed to more generic ASAP
             projectile.getControl(ProjectileControl.class).setTarget(this.targetLocation);
 
+        } else if ("Ember Circle".equals(spell.getName())) {
+            this.worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY);
         }
         return false;
     }

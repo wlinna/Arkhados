@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 import magebattle.WorldManager;
 import magebattle.actions.CastSpellAction;
+import magebattle.actions.DelayAction;
 import magebattle.actions.RunToAction;
+import magebattle.messages.syncmessages.StartCastingSpellMessage;
 import magebattle.spells.Spell;
 import magebattle.util.UserDataStrings;
 
@@ -43,7 +45,6 @@ import magebattle.util.UserDataStrings;
  */
 public class SpellCastControl extends AbstractControl {
 
-    private Spatial character;
     private WorldManager worldManager;
     private HashMap<String, Spell> spells = new HashMap<String, Spell>();
     private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
@@ -55,12 +56,15 @@ public class SpellCastControl extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        this.character = spatial;
     }
 
     public void addSpell(Spell spell) {
         this.spells.put(spell.getName(), spell);
         this.cooldowns.put(spell.getName(), 0f);
+    }
+
+    public Spell getSpell(final String name) {
+        return this.spells.get(name);
     }
 
     public void cast(final String spellName, Vector3f targetLocation) {
@@ -72,48 +76,23 @@ public class SpellCastControl extends AbstractControl {
             return;
         }
 
-
-
         // TODO: make character run close enough before casting
 //            Integer level = this.levels.get(name);
 //            cooldowns.put(name, Spell.getSpells().get(name).getCooldown(level));
 
         if (this.worldManager.isServer()) {
-            final float range = spell.getRange();
-
-
-            // HACK: This must be changed to more generic
-            if ("Fireball".equals(spell.getName())) {
-                // TODO: Add spell casting time and animation
-
-                float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
-                final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-
-                super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
-
-                long projectileId = this.worldManager.addNewEntity(spell.getName(), super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f), Quaternion.IDENTITY);
-                Spatial projectile = this.worldManager.getEntity(projectileId);
-
-                final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
-
-                // FIXME: Get radius of BetterCharacterControl's capsule
-                final float radius = collisionSphere.getRadius() * 1.0f;
-
-                RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
-                body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
-
-                projectile.getControl(ProjectileControl.class).setTarget(targetLocation);
-            } else if ("Ember Circle".equals(spell.getName())) {
-                this.worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY);
-            }
-
+            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+            super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new DelayAction(spell.getCastTime()));
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastSpellAction(spell, targetLocation, worldManager));
+            Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
+            this.worldManager.getSyncManager().getServer().broadcast(new StartCastingSpellMessage((Long)super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
         }
         this.cooldowns.put(spellName, spell.getCooldown());
     }
 
     private Vector3f findClosestCastingLocation(final Vector3f targetLocation, float range) {
         Vector3f displacement = super.getSpatial().getLocalTranslation().subtract(targetLocation);
-        float distanceSquared = displacement.lengthSquared();
         if (displacement.lengthSquared() <= FastMath.sqr(range)) {
             return super.getSpatial().getLocalTranslation();
 
@@ -121,6 +100,8 @@ public class SpellCastControl extends AbstractControl {
         displacement.normalizeLocal().multLocal(range);
         return displacement.addLocal(targetLocation);
     }
+
+
 
     @Override
     protected void controlUpdate(float tpf) {

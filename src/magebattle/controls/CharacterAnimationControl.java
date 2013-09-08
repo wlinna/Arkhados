@@ -29,6 +29,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.HashMap;
+import magebattle.spells.Spell;
 import magebattle.util.UserDataStrings;
 
 /**
@@ -41,6 +43,8 @@ public class CharacterAnimationControl extends AbstractControl {
     private CharacterPhysicsControl characterControl;
     private CharacterMovementControl movementControl;
     private AnimChannel channel;
+    private float castTime = 0f;
+    private HashMap<String, String> spellAnimationMap = new HashMap<String, String>(6);
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -51,21 +55,35 @@ public class CharacterAnimationControl extends AbstractControl {
 
         this.channel = this.animControl.createChannel();
         this.channel.setAnim("Walk");
-
     }
 
     @Override
     protected void controlUpdate(float tpf) {
+        this.castTime -= tpf;
+        if (this.castTime > 0f) {
+            return;
+        }
         if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
+            if (!"Walk".equals(this.channel.getAnimationName())) {
+                this.channel.setAnim("Walk", 0.5f);
+            }
             this.channel.setSpeed(1.0f);
         } else {
             this.channel.setSpeed(0.0f);
         }
     }
+
     public void death() {
         this.channel.setAnim("Die");
         this.channel.setLoopMode(LoopMode.DontLoop);
         super.setEnabled(false);
+    }
+
+    public void castSpell(final Spell spell) {
+        this.castTime = spell.getCastTime();
+        final String animName = this.spellAnimationMap.get(spell.getName());
+        this.channel.setAnim(animName);
+        this.channel.setLoopMode(LoopMode.Loop);
     }
 
     @Override
@@ -89,5 +107,9 @@ public class CharacterAnimationControl extends AbstractControl {
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule out = ex.getCapsule(this);
+    }
+
+    public void addSpellAnimation(String spellName, String animName) {
+        this.spellAnimationMap.put(spellName, animName);
     }
 }

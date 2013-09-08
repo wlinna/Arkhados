@@ -17,6 +17,7 @@ package magebattle.messages.usercommands;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
+import magebattle.controls.ActionQueueControl;
 import magebattle.controls.CharacterPhysicsControl;
 import magebattle.messages.syncmessages.AbstractSyncMessage;
 import magebattle.util.UserDataStrings;
@@ -49,8 +50,10 @@ public class UcWalkDirection extends AbstractSyncMessage {
             walkDirection.normalizeLocal().multLocal(speedMovement);
             characterControl.setWalkDirection(walkDirection);
             if (down != 0 || right != 0) {
+                character.getControl(ActionQueueControl.class).clear();
                 characterControl.setViewDirection(walkDirection);
             }
         }
+        character.getControl(ActionQueueControl.class).clear();
     }
 }
