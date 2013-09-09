@@ -12,28 +12,22 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells;
-
-import com.jme3.scene.Spatial;
-import arkhados.controls.InfluenceInterfaceControl;
+package arkhados.spells.influences;
 
 /**
  *
  * @author william
  */
-public class DamagOverTimeeInfluence implements Influence {
+public abstract class AbstractBuff  {
+    private long id;
 
-    private float dps;
-
-    public DamagOverTimeeInfluence(float dps) {
-        this.dps = dps;
+    public AbstractBuff(long id) {
+        this.id = id;
     }
 
-    public void affect(Spatial spatial, float tpf) {
-        InfluenceInterfaceControl characterInfluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
-        if (characterInfluenceControl != null) {
-            // FIXME: Roundind errors cause significant changes in total damage
-            characterInfluenceControl.doDamage(this.dps * tpf);
-        }
+    public long getId() {
+        return this.id;
     }
+
+    protected abstract boolean shouldContinue();
 }

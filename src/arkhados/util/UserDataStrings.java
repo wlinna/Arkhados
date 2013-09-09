@@ -31,6 +31,8 @@ public class UserDataStrings {
     public final static String DAMAGE = "damage";
     public final static String DAMAGE_PER_SECOND = "damage-per-second";
 
+    public final static String IMPULSE_FACTOR = "impulse-factor";
+
     public final static String INCAPACITATE_LEFT = "incapacitate-left";
     public final static String INCAPACITATE_LENGTH = "incapacitate-length";
 }

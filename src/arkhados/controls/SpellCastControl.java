@@ -71,14 +71,13 @@ public class SpellCastControl extends AbstractControl {
         if (!this.enabled) {
             return;
         }
+        if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
+            return;
+        }
         Spell spell = this.spells.get(spellName);
         if (spell != null && this.cooldowns.get(spellName) > 0.0f) {
             return;
         }
-
-        // TODO: make character run close enough before casting
-//            Integer level = this.levels.get(name);
-//            cooldowns.put(name, Spell.getSpells().get(name).getCooldown(level));
 
         if (this.worldManager.isServer()) {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
@@ -87,7 +86,8 @@ public class SpellCastControl extends AbstractControl {
             EntityAction castingAction = spell.buildCastAction(targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
-            this.worldManager.getSyncManager().getServer().broadcast(new StartCastingSpellMessage((Long)super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
+            this.worldManager.getSyncManager().getServer().broadcast(
+                    new StartCastingSpellMessage((Long)super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
         }
         this.cooldowns.put(spellName, spell.getCooldown());
     }

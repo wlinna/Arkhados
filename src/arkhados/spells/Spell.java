@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spells;
 
+import arkhados.spells.influences.DamagOverTimeeInfluence;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
@@ -40,9 +41,11 @@ import arkhados.controls.ActionQueueControl;
 import arkhados.controls.AreaEffectControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
+import arkhados.controls.SpellBuffControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.entityevents.RemovalEventAction;
+import arkhados.spells.influences.IncapacitateInfluence;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
@@ -144,6 +147,7 @@ public class Spell {
                 node.setUserData(UserDataStrings.SPEED_MOVEMENT, 70f);
                 node.setUserData(UserDataStrings.MASS, 30f);
                 node.setUserData(UserDataStrings.DAMAGE, 150f);
+                node.setUserData(UserDataStrings.IMPULSE_FACTOR, 10000f);
 
                 if (Spell.worldManager.isClient()) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
@@ -201,6 +205,8 @@ public class Spell {
                 node.addControl(physicsBody);
 
                 node.addControl(new ProjectileControl());
+                SpellBuffControl buffControl = new SpellBuffControl();
+                node.addControl(buffControl);
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
 
@@ -236,6 +242,7 @@ public class Spell {
                 node.setUserData(UserDataStrings.SPEED_MOVEMENT, 70f);
                 node.setUserData(UserDataStrings.MASS, 30f);
                 node.setUserData(UserDataStrings.DAMAGE, 0f);
+                node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
                 node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0.4f);
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
@@ -245,6 +252,9 @@ public class Spell {
                 node.addControl(physicsBody);
 
                 node.addControl(new ProjectileControl());
+                SpellBuffControl buffControl = new SpellBuffControl();
+                node.addControl(buffControl);
+                buffControl.addCrowControlInfluence(new IncapacitateInfluence(0.6f, -1));
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
                 return node;

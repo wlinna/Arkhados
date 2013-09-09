@@ -19,6 +19,7 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.syncmessages.AbstractSyncMessage;
 import arkhados.util.UserDataStrings;
 
@@ -44,7 +45,11 @@ public class UcWalkDirection extends AbstractSyncMessage {
     public void applyData(Object target) {
         Node character = (Node) target;
         CharacterPhysicsControl characterControl = character.getControl(CharacterPhysicsControl.class);
-        if (characterControl != null) {
+        if (characterControl == null) {
+            return;
+        }
+        if (character.getControl(InfluenceInterfaceControl.class).canMove()) {
+            // FIXME: canMove is too coarse. If character is snared, it can still turn around
             Vector3f walkDirection = new Vector3f(this.right, 0f, this.down);
             Float speedMovement = character.getUserData(UserDataStrings.SPEED_MOVEMENT);
             walkDirection.normalizeLocal().multLocal(speedMovement);
@@ -53,7 +58,8 @@ public class UcWalkDirection extends AbstractSyncMessage {
                 character.getControl(ActionQueueControl.class).clear();
                 characterControl.setViewDirection(walkDirection);
             }
+            character.getControl(ActionQueueControl.class).clear();
         }
-        character.getControl(ActionQueueControl.class).clear();
+
     }
 }

@@ -23,6 +23,8 @@ import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
+import arkhados.controls.SpellBuffControl;
+import arkhados.spells.influences.CrowdControlInfluence;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -71,8 +73,14 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
+
+        for (CrowdControlInfluence cc : projectile.getSpatial().getControl(SpellBuffControl.class).getCrowdControlInfluences()) {
+            character.addCrowdControlEffect(cc);
+        }
+
+        Float impulseFactor =  projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
         Vector3f impulse = character.getSpatial().getLocalTranslation()
-                .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(10000.0f);
+                .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
         character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
         this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
 
