@@ -95,9 +95,12 @@ public class WorldManager extends AbstractAppState {
         if (this.isServer()) {
             this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
             this.space.addCollisionListener(this.serverCollisionListener);
+            this.entityFactory = new EntityFactory(assetManager, this);
+        } else if (this.isClient()) {
+            ClientMain clientMain = (ClientMain) app;
+            this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class), clientMain.getUserCommandManager());
         }
 
-        this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
         Spell.initSpells(assetManager, this);
         System.out.println("Initialized WorldManager");
     }

@@ -34,7 +34,9 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
+import java.util.HashMap;
 
 /**
  *
@@ -52,11 +54,8 @@ public class UserCommandManager extends AbstractAppState {
     private long characterId;
     private int down = 0;
     private int right = 0;
-
-//    private HashMap<InputListener, Boolean> inputListeners = new HashMap<InputListener, Boolean>();
+    private HashMap<String, String> keySpellMappings = new HashMap<String, String>(6);
     private boolean inputListenersActive = false;
-
-
 
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
@@ -68,23 +67,27 @@ public class UserCommandManager extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         System.out.println("Initializing UserCommandManager");
-        //this is called on the OpenGL thread after the AppState has been attached
         this.app = app;
         this.worldManager = stateManager.getState(WorldManager.class);
         this.cam = app.getCamera();
         System.out.println("Initialized UserCommandManager");
     }
 
-    private void initInputMappings() {
-        this.inputManager.addMapping("move-right", new KeyTrigger(KeyInput.KEY_D));
-        this.inputManager.addMapping("move-left", new KeyTrigger(KeyInput.KEY_A));
-        this.inputManager.addMapping("move-up", new KeyTrigger(KeyInput.KEY_W));
-        this.inputManager.addMapping("move-down", new KeyTrigger(KeyInput.KEY_S));
-
-        this.inputManager.addMapping("cast-spell-1", new KeyTrigger(KeyInput.KEY_Q));
-        this.inputManager.addMapping("cast-fireball", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+    public void addKeySpellMapping(String key, String spellName) {
+        this.keySpellMappings.put(key, spellName);
     }
-    private ActionListener actionCastFireball = new ActionListener() {
+
+    private void initInputMappings() {
+        this.inputManager.addMapping(InputMappingStrings.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
+        this.inputManager.addMapping(InputMappingStrings.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
+        this.inputManager.addMapping(InputMappingStrings.MOVE_UP, new KeyTrigger(KeyInput.KEY_W));
+        this.inputManager.addMapping(InputMappingStrings.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_S));
+
+        this.inputManager.addMapping(InputMappingStrings.Q, new KeyTrigger(KeyInput.KEY_Q));
+        this.inputManager.addMapping(InputMappingStrings.M1, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        this.inputManager.addMapping(InputMappingStrings.M2, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+    }
+    private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {
                 return;
@@ -95,19 +98,9 @@ public class UserCommandManager extends AbstractAppState {
 
             Vector3f clickLocation = getClickLocation();
             if (clickLocation != null) {
-                UserCommandManager.this.client.send(new UcCastSpellMessage("Fireball", clickLocation));
-            }
-        }
-    };
-    private ActionListener actionCastSpell1 = new ActionListener() {
-        public void onAction(String name, boolean isPressed, float tpf) {
-            if (UserCommandManager.this.getCharacterInterface().isDead()) {
-                return;
-            }
-            if (!isPressed) {
-                Vector3f clickLocation = getClickLocation();
-                if (clickLocation != null) {
-                    UserCommandManager.this.client.send(new UcCastSpellMessage("Ember Circle", clickLocation));
+                String spellName = keySpellMappings.get(name);
+                if (spellName != null) {
+                    UserCommandManager.this.client.send(new UcCastSpellMessage(spellName, clickLocation));
                 }
             }
         }
@@ -140,8 +133,7 @@ public class UserCommandManager extends AbstractAppState {
     private void disableInputListeners() {
         if (this.inputListenersActive) {
             this.inputManager.removeListener(this.actionMoveDirection);
-            this.inputManager.removeListener(this.actionCastFireball);
-            this.inputManager.removeListener(this.actionCastSpell1);
+            this.inputManager.removeListener(this.actionCastSpell);
         }
         this.inputListenersActive = false;
     }
@@ -149,18 +141,12 @@ public class UserCommandManager extends AbstractAppState {
     private void enableInputListeners() {
         if (!this.inputListenersActive) {
             // FIXME: Sometimes this throws NullPointerException when round starts
-            this.inputManager.addListener(this.actionMoveDirection, "move-right", "move-left", "move-up", "move-down");
-            this.inputManager.addListener(this.actionCastFireball, "cast-fireball");
-            this.inputManager.addListener(this.actionCastSpell1, "cast-spell-1");
+            this.inputManager.addListener(this.actionMoveDirection,
+                    InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT, InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+            this.inputManager.addListener(this.actionCastSpell, InputMappingStrings.M1, InputMappingStrings.M2, InputMappingStrings.Q);
         }
 
         this.inputListenersActive = true;
-    }
-
-    private void moveX(int amount) {
-    }
-
-    private void moveY(int amount) {
     }
 
     @Override

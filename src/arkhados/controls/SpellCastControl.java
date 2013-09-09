@@ -34,6 +34,7 @@ import java.util.Map;
 import arkhados.WorldManager;
 import arkhados.actions.CastSpellAction;
 import arkhados.actions.DelayAction;
+import arkhados.actions.EntityAction;
 import arkhados.actions.RunToAction;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.spells.Spell;
@@ -84,7 +85,8 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(new DelayAction(spell.getCastTime()));
-            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastSpellAction(spell, targetLocation, worldManager));
+            EntityAction castingAction = spell.buildCastAction(targetLocation);
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(new StartCastingSpellMessage((Long)super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
         }

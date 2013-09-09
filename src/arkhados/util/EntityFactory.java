@@ -18,6 +18,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import arkhados.ClientHudManager;
+import arkhados.UserCommandManager;
 import arkhados.WorldManager;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
@@ -35,11 +36,18 @@ public class EntityFactory {
     private AssetManager assetManager;
     private WorldManager worldManager;
     private ClientHudManager clientHudManager = null;
+    private UserCommandManager userCommandManager = null;
 
-    public EntityFactory(AssetManager assetManager, WorldManager worldManager, ClientHudManager clientHudManager) {
+    public EntityFactory(AssetManager assetManager, WorldManager worldManager) {
+        this.assetManager = assetManager;
+        this.worldManager = worldManager;
+    }
+
+    public EntityFactory(AssetManager assetManager, WorldManager worldManager, ClientHudManager clientHudManager, UserCommandManager userCommandManager) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
         this.clientHudManager = clientHudManager;
+        this.userCommandManager = userCommandManager;
     }
 
     public Spatial createEntityById(String id) {
@@ -66,22 +74,23 @@ public class EntityFactory {
             entity.addControl(spellCastControl);
 
             spellCastControl.addSpell(Spell.getSpells().get("Fireball"));
+            spellCastControl.addSpell(Spell.getSpells().get("Magma Bash"));
             spellCastControl.addSpell(Spell.getSpells().get("Ember Circle"));
 
             animControl.addSpellAnimation("Fireball", "Idle");
+            animControl.addSpellAnimation("Magma Bash", "Idle");
             animControl.addSpellAnimation("Ember Circle", "Idle");
-
 
             entity.addControl(new InfluenceInterfaceControl());
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
+                this.userCommandManager.addKeySpellMapping(InputMappingStrings.M1, "Fireball");
+                this.userCommandManager.addKeySpellMapping(InputMappingStrings.M2, "Magma Bash");
+                this.userCommandManager.addKeySpellMapping(InputMappingStrings.Q, "Ember Circle");
             }
 
-        } else if ("Fireball".equals(id)) {
-            Spell spell = Spell.getSpells().get(id);
-            entity = spell.buildNode();
-        } else if ("Ember Circle".equals(id)) {
+        } else if (Spell.getSpells().containsKey(id)) {
             Spell spell = Spell.getSpells().get(id);
             entity = spell.buildNode();
         }

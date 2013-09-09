@@ -35,6 +35,7 @@ import java.util.List;
 import arkhados.WorldManager;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
+import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.AreaEffectControl;
 import arkhados.controls.EntityEventControl;
@@ -44,6 +45,7 @@ import arkhados.effects.EmitterCircleShape;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.Quaternion;
 
 /**
  *
@@ -64,8 +66,13 @@ public class Spell {
         Spell fireball = initFireBall();
         Spells.put(fireball.getName(), fireball);
 
+        Spell magmaBash = initMagmaBash();
+        Spells.put(magmaBash.getName(), magmaBash);
+
         Spell emberCircle = initEmberCircle();
         Spells.put(emberCircle.getName(), emberCircle);
+
+
 
     }
 
@@ -76,15 +83,14 @@ public class Spell {
     private final float cooldown;
     private final float range;
     private final float castTime;
-    private final boolean isSelfCast;
+    private CastSpellActionBuilder castSpellActionBuilder;
     private NodeBuilder nodeBuilder;
 
-    private Spell(String name, float cooldown, float range, float castTime, boolean isSelfCast) {
+    private Spell(String name, float cooldown, float range, float castTime) {
         this.name = name;
         this.cooldown = cooldown;
         this.range = range;
         this.castTime = castTime;
-        this.isSelfCast = isSelfCast;
     }
 
     public String getName() {
@@ -103,8 +109,8 @@ public class Spell {
         return this.castTime;
     }
 
-    public boolean isIsSelfCast() {
-        return this.isSelfCast;
+    public EntityAction buildCastAction(Vector3f vec) {
+        return this.castSpellActionBuilder.newAction(vec);
     }
 
     public Node buildNode() {
@@ -116,7 +122,12 @@ public class Spell {
         final float range = 40f;
         final float castTime = 0.2f;
 
-        Spell spell = new Spell("Fireball", cooldown, range, castTime, false);
+        final Spell spell = new Spell("Fireball", cooldown, range, castTime);
+        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            public EntityAction newAction(Vector3f location) {
+                return new CastProjectileAction(spell, location, worldManager);
+            }
+        };
 
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
@@ -197,6 +208,49 @@ public class Spell {
             }
         };
 
+        return spell;
+    }
+
+    private static Spell initMagmaBash() {
+        final float cooldown = 5f;
+        final float range = 40f;
+        final float castTime = 0.3f;
+
+        final Spell spell = new Spell("Magma Bash", cooldown, range, castTime);
+        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            public EntityAction newAction(Vector3f vec) {
+                return new CastProjectileAction(spell, vec, worldManager);
+            }
+        };
+        spell.nodeBuilder = new NodeBuilder() {
+            public Node build() {
+                Sphere sphere = new Sphere(32, 32, 1.0f);
+                Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+                Node node = new Node("projectile");
+                node.attachChild(projectileGeom);
+
+                // TODO: Give at least bit better material
+                Material material = new Material(Spell.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                material.setColor("Color", ColorRGBA.Black);
+                node.setMaterial(material);
+                node.setUserData(UserDataStrings.SPEED_MOVEMENT, 70f);
+                node.setUserData(UserDataStrings.MASS, 30f);
+                node.setUserData(UserDataStrings.DAMAGE, 0f);
+                node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0.4f);
+
+                SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
+                RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+                physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
+                physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
+                node.addControl(physicsBody);
+
+                node.addControl(new ProjectileControl());
+
+                node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
+                return node;
+            }
+        };
+
 
         return spell;
     }
@@ -206,7 +260,19 @@ public class Spell {
         final float range = 40f;
         final float castTime = 0.4f;
 
-        Spell spell = new Spell("Ember Circle", cooldown, range, castTime, false);
+        final Spell spell = new Spell("Ember Circle", cooldown, range, castTime);
+        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            public EntityAction newAction(final Vector3f location) {
+                return new EntityAction() {
+                    @Override
+                    public boolean update(float tpf) {
+                        worldManager.addNewEntity(spell.getName(), location.setY(0.1f), Quaternion.IDENTITY);
+                        return false;
+                    }
+                };
+
+            }
+        };
         spell.nodeBuilder = new NodeBuilder() {
             public Node build() {
                 final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
