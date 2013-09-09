@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import arkhados.WorldManager;
-import arkhados.actions.CastSpellAction;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.RunToAction;
