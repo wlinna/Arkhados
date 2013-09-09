@@ -254,7 +254,7 @@ public class Spell {
                 node.addControl(new ProjectileControl());
                 SpellBuffControl buffControl = new SpellBuffControl();
                 node.addControl(buffControl);
-                buffControl.addCrowControlInfluence(new IncapacitateInfluence(0.6f, -1));
+                buffControl.addCrowControlInfluence(new IncapacitateInfluence(2.6f, -1));
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
                 return node;

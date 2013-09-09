@@ -28,6 +28,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +72,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (crowdControlInfluence != null) {
             System.out.println("Added cc");
             this.crowdControlInfluences.add(crowdControlInfluence);
+
+            if (crowdControlInfluence instanceof IncapacitateInfluence) {
+                super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+            }
         }
     }
 
