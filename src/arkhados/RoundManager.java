@@ -235,7 +235,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                     }
                 }
             }
-            if (aliveAmount == 0) {
+            if (aliveAmount == 1) {
                 this.endRound();
             }
         }

@@ -239,11 +239,33 @@ public class Spell {
                 Material material = new Material(Spell.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 material.setColor("Color", ColorRGBA.Black);
                 node.setMaterial(material);
-                node.setUserData(UserDataStrings.SPEED_MOVEMENT, 70f);
-                node.setUserData(UserDataStrings.MASS, 30f);
+                node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
+                node.setUserData(UserDataStrings.MASS, 10f);
                 node.setUserData(UserDataStrings.DAMAGE, 0f);
                 node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
                 node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0.4f);
+
+                if (Spell.worldManager.isClient()) {
+                    final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 80);
+                    Material materialRed = new Material(Spell.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                    materialRed.setTexture("Texture", Spell.assetManager.loadTexture("Effects/flame.png"));
+                    fire.setMaterial(materialRed);
+                    fire.setImagesX(2);
+                    fire.setImagesY(2);
+                    fire.setSelectRandomImage(true);
+                    fire.setStartColor(new ColorRGBA(0.95f, 0.850f, 0.0f, 1.0f));
+                    fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.80f, 0.5f));
+                    fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+                    fire.setStartSize(1.5f);
+                    fire.setEndSize(0.5f);
+                    fire.setGravity(Vector3f.ZERO);
+                    fire.setLowLife(0.2f);
+                    fire.setHighLife(0.3f);
+                    fire.setParticlesPerSec(60);
+                    fire.getParticleInfluencer().setVelocityVariation(0.2f);
+                    fire.setRandomAngle(true);
+                    node.attachChild(fire);
+                }
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
                 RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
@@ -254,7 +276,7 @@ public class Spell {
                 node.addControl(new ProjectileControl());
                 SpellBuffControl buffControl = new SpellBuffControl();
                 node.addControl(buffControl);
-                buffControl.addCrowControlInfluence(new IncapacitateInfluence(2.6f, -1));
+                buffControl.addCrowControlInfluence(new IncapacitateInfluence(1f, -1));
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
                 return node;
