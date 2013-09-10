@@ -31,6 +31,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     private int previousRight = 0;
     private int previousDown = 0;
 
+    private Vector3f targetLocation;
+
     public CharacterPhysicsControl(float radius, float height, float mass) {
         super(radius, height, mass);
     }
@@ -67,6 +69,10 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.setWalkDirection(newWalkDirection);
     }
 
+    public void lookAt(Vector3f targetlocation) {
+        this.setViewDirection(targetLocation.subtract(super.spatial.getLocalTranslation()));
+    }
+
     @Override
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
         if (impulseToApply != null) {
@@ -89,5 +95,14 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public void setVelocity(Vector3f velocity) {
         this.rigidBody.setLinearVelocity(velocity);
+    }
+
+    public Vector3f getTargetLocation() {
+        return this.targetLocation;
+    }
+
+    public void setTargetLocation(Vector3f targetLocation) {
+        this.targetLocation = targetLocation;
+//        this.lookAt(targetLocation);
     }
 }

@@ -14,6 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.messages.usercommands.UcCastSpellMessage;
+import arkhados.messages.usercommands.UcMouseTargetMessage;
+import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.util.InputMappingStrings;
+import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -30,12 +37,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.usercommands.UcCastSpellMessage;
-import arkhados.messages.usercommands.UcWalkDirection;
-import arkhados.util.InputMappingStrings;
-import arkhados.util.UserDataStrings;
 import java.util.HashMap;
 
 /**
@@ -56,6 +57,7 @@ public class UserCommandManager extends AbstractAppState {
     private int right = 0;
     private HashMap<String, String> keySpellMappings = new HashMap<String, String>(6);
     private boolean inputListenersActive = false;
+    private float mouseTargetUpdateTimer = 0f;
 
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
@@ -151,6 +153,17 @@ public class UserCommandManager extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
+        if (!this.inputListenersActive) {
+            return;
+        }
+        if (this.getCharacter().getControl(CharacterPhysicsControl.class).getWalkDirection().equals(Vector3f.ZERO)) {
+            this.mouseTargetUpdateTimer -= tpf;
+            if (this.mouseTargetUpdateTimer <= 0f) {
+                Vector3f targetLocation = this.getClickLocation();
+                this.client.send(new UcMouseTargetMessage(targetLocation));
+                this.mouseTargetUpdateTimer = 0.1f;
+            }
+        }
     }
 
     @Override

@@ -27,6 +27,7 @@ import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
 import arkhados.messages.usercommands.UcCastSpellMessage;
+import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
 
 /**
@@ -67,6 +68,7 @@ public class MessageUtils {
         // <UserCommands>
         Serializer.registerClass(UcCastSpellMessage.class);
         Serializer.registerClass(UcWalkDirection.class);
+        Serializer.registerClass(UcMouseTargetMessage.class);
         // </UserCommands>
     }
 }

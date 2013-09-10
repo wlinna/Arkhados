@@ -39,6 +39,7 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.AreaEffectControl;
+import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
@@ -128,7 +129,7 @@ public class Spell {
         final Spell spell = new Spell("Fireball", cooldown, range, castTime);
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Vector3f location) {
-                return new CastProjectileAction(spell, location, worldManager);
+                return new CastProjectileAction(spell, worldManager);
             }
         };
 
@@ -225,7 +226,7 @@ public class Spell {
         final Spell spell = new Spell("Magma Bash", cooldown, range, castTime);
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Vector3f vec) {
-                return new CastProjectileAction(spell, vec, worldManager);
+                return new CastProjectileAction(spell, worldManager);
             }
         };
         spell.nodeBuilder = new NodeBuilder() {
@@ -298,7 +299,8 @@ public class Spell {
                 return new EntityAction() {
                     @Override
                     public boolean update(float tpf) {
-                        worldManager.addNewEntity(spell.getName(), location.setY(0.1f), Quaternion.IDENTITY);
+                        Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
+                        worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY);
                         return false;
                     }
                 };
