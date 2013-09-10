@@ -23,8 +23,10 @@ import com.jme3.math.Vector3f;
  */
 public class CastingSpellAction extends EntityAction{
     private float delay;
+    private final String spellName;
 
-    public CastingSpellAction(float delay) {
+    public CastingSpellAction(final String spellName, float delay) {
+        this.spellName = spellName;
         this.delay = delay;
     }
 
@@ -38,6 +40,10 @@ public class CastingSpellAction extends EntityAction{
         super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
 
         return true;
+    }
+
+    public String getSpellName() {
+        return this.spellName;
     }
 
 }

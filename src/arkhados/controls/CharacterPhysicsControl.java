@@ -49,7 +49,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
             newWalkDirection.normalizeLocal().multLocal(speedMovement);
             super.setWalkDirection(newWalkDirection);
             if (down != 0 || right != 0) {
-                super.spatial.getControl(ActionQueueControl.class).clear();
+                super.spatial.getControl(SpellCastControl.class).safeInterrupt();
                 super.setViewDirection(newWalkDirection);
             }
         }

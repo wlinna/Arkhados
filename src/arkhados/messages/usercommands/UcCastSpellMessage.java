@@ -43,7 +43,7 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(ActionQueueControl.class).clear();
+        character.getControl(SpellCastControl.class).safeInterrupt();
         character.getControl(SpellCastControl.class).cast(this.spell, this.direction);
     }
 

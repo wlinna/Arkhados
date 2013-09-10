@@ -77,6 +77,16 @@ public class SpellCastControl extends AbstractControl {
 //        return false;
 //    }
 
+    public void safeInterrupt() {
+        EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
+        if (action != null && action instanceof CastingSpellAction) {
+
+            final String spellName = ((CastingSpellAction)action).getSpellName();
+            super.spatial.getControl(ActionQueueControl.class).clear();
+            this.cooldowns.put(spellName, 0f);
+        }
+    }
+
     public void cast(final String spellName, Vector3f targetLocation) {
         if (!this.enabled) {
             return;
@@ -94,7 +104,7 @@ public class SpellCastControl extends AbstractControl {
 
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
-            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell.getCastTime()));
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell.getName(), spell.getCastTime()));
 //            this.activeCastTimeLeft = spell.getCastTime();
             EntityAction castingAction = spell.buildCastAction(targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
