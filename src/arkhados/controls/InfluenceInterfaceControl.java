@@ -70,7 +70,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public void addCrowdControlEffect(CrowdControlInfluence crowdControlInfluence) {
         if (crowdControlInfluence != null) {
-            System.out.println("Added cc");
             this.crowdControlInfluences.add(crowdControlInfluence);
 
             if (crowdControlInfluence instanceof IncapacitateInfluence) {

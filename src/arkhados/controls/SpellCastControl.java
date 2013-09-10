@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import arkhados.WorldManager;
+import arkhados.actions.CastingSpellAction;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.RunToAction;
@@ -48,6 +49,8 @@ public class SpellCastControl extends AbstractControl {
     private WorldManager worldManager;
     private HashMap<String, Spell> spells = new HashMap<String, Spell>();
     private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
+
+//    private float activeCastTimeLeft = 0f;
 
     public SpellCastControl(WorldManager worldManager) {
         this.worldManager = worldManager;
@@ -67,27 +70,37 @@ public class SpellCastControl extends AbstractControl {
         return this.spells.get(name);
     }
 
+//    public boolean isCasting() {
+//        if (activeCastTimeLeft <= 0f) {
+//            return true;
+//        }
+//        return false;
+//    }
+
     public void cast(final String spellName, Vector3f targetLocation) {
         if (!this.enabled) {
             return;
         }
-        if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
-            return;
-        }
+
         Spell spell = this.spells.get(spellName);
         if (spell != null && this.cooldowns.get(spellName) > 0.0f) {
             return;
         }
 
         if (this.worldManager.isServer()) {
+            if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
+                return;
+            }
+
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
-            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new DelayAction(spell.getCastTime()));
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell.getCastTime()));
+//            this.activeCastTimeLeft = spell.getCastTime();
             EntityAction castingAction = spell.buildCastAction(targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(
-                    new StartCastingSpellMessage((Long)super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
+                    new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
         }
         this.cooldowns.put(spellName, spell.getCooldown());
     }
@@ -102,13 +115,16 @@ public class SpellCastControl extends AbstractControl {
         return displacement.addLocal(targetLocation);
     }
 
-
-
     @Override
     protected void controlUpdate(float tpf) {
         for (Map.Entry<String, Float> entry : this.cooldowns.entrySet()) {
             entry.setValue(entry.getValue() - tpf);
         }
+//
+//        this.activeCastTimeLeft -= tpf;
+//        if (super.spatial.getControl(ActionQueueControl.class).getCurrent() == null) {
+//            this.activeCastTimeLeft = 0f;
+//        }
     }
 
     @Override

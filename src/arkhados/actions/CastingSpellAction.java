@@ -12,39 +12,32 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.usercommands;
+package arkhados.actions;
 
-import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Node;
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.messages.syncmessages.AbstractSyncMessage;
+import com.jme3.math.Vector3f;
 
 /**
  *
  * @author william
  */
-@Serializable
-public class UcWalkDirection extends AbstractSyncMessage {
+public class CastingSpellAction extends EntityAction{
+    private float delay;
 
-    private int down;
-    private int right;
-
-    public UcWalkDirection() {
-    }
-
-    public UcWalkDirection(int down, int right) {
-        this.down = down;
-        this.right = right;
+    public CastingSpellAction(float delay) {
+        this.delay = delay;
     }
 
     @Override
-    public void applyData(Object target) {
-        Node character = (Node) target;
-        CharacterPhysicsControl characterControl = character.getControl(CharacterPhysicsControl.class);
-        if (characterControl == null) {
-            return;
+    public boolean update(float tpf) {
+        this.delay -= tpf;
+        if (this.delay <= 0f) {
+            super.spatial.getControl(CharacterPhysicsControl.class).restoreWalking();
+            return false;
         }
+        super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
 
-        characterControl.setUpDownDirection(this.right, this.down);
+        return true;
     }
+
 }
