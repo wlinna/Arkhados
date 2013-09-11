@@ -55,12 +55,28 @@ import com.jme3.math.Quaternion;
  *
  * @author william
  */
+
+/**
+ * Spell contains data of spell's base data. Each Spell is created only once and
+ * their data does not change.
+ */
 public class Spell {
 
     private static AssetManager assetManager = null;
     private static WorldManager worldManager = null;
+
+    /**
+     * Spells has all spells mapped by their name so that spell data can be
+     * retrieved from anywhere
+     */
     private static HashMap<String, Spell> Spells = new HashMap<String, Spell>();
 
+    /**
+     * Creates each spell and saves them to Spells-map. Should be called only
+     * once
+     * @param assetManager will be saved to static variable assetManager
+     * @param worldManager will be save to static variable worldManager
+     */
     public static void initSpells(AssetManager assetManager, WorldManager worldManager) {
         Spell.assetManager = assetManager;
         Spell.worldManager = worldManager;
@@ -75,14 +91,16 @@ public class Spell {
 
         Spell emberCircle = initEmberCircle();
         Spells.put(emberCircle.getName(), emberCircle);
-
-
-
     }
 
+    /**
+     * Call this method to get all Spell-data.
+     * @return Spells-map
+     */
     public static HashMap<String, Spell> getSpells() {
         return Spells;
     }
+
     private final String name;
     private final float cooldown;
     private final float range;
@@ -90,6 +108,13 @@ public class Spell {
     private CastSpellActionBuilder castSpellActionBuilder;
     private NodeBuilder nodeBuilder;
 
+    /**
+     * Creates spell with given parameters
+     * @param name visible to player so give human friendly name
+     * @param cooldown Time it takes to 'reload' spell so that it can be used again
+     * @param range range of spell. NOTE: Currently not used in projectiles
+     * @param castTime Time it takes to cast spell
+     */
     private Spell(String name, float cooldown, float range, float castTime) {
         this.name = name;
         this.cooldown = cooldown;
@@ -113,6 +138,12 @@ public class Spell {
         return this.castTime;
     }
 
+    /**
+     * Constructs new EntityAction that will cast the spell.
+     * @param vec Initial direction or target location vector, depending on
+     * spell. Often not necessary.
+     * @return EntityAction that will cast the spell
+     */
     public EntityAction buildCastAction(Vector3f vec) {
         return this.castSpellActionBuilder.newAction(vec);
     }
@@ -121,6 +152,11 @@ public class Spell {
         return this.nodeBuilder.build();
     }
 
+    /**
+     * Embermage's Fireball (M1) spell. Projectile has moderate speed and deals
+     * moderate damage. Has small knockback effect on hit.
+     * @return Fireball spell
+     */
     private static Spell initFireBall() {
         final float cooldown = 1.0f;
         final float range = 40f;
@@ -172,6 +208,10 @@ public class Spell {
                     node.attachChild(fire);
 
                     node.addControl(new EntityEventControl());
+                    /**
+                     * Here we specify what happens on client side when fireball
+                     * is removed. In this case we want explosion effect.
+                     */
                     node.getControl(EntityEventControl.class).setOnRemoval(new RemovalEventAction() {
                         private ParticleEmitter fire;
 
@@ -218,6 +258,11 @@ public class Spell {
         return spell;
     }
 
+    /**
+     * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage
+     * or knockback but incapacitates enemy for specified time.
+     * @return Magma Bash spell
+     */
     private static Spell initMagmaBash() {
         final float cooldown = 5f;
         final float range = 40f;
@@ -288,6 +333,11 @@ public class Spell {
         return spell;
     }
 
+    /**
+     * Embermage's Ember Circle (Q) spell. Area of Effect spell that deals
+     * damage over time in certain area. Has small activation delay.
+     * @return
+     */
     private static Spell initEmberCircle() {
         final float cooldown = 6f;
         final float range = 40f;
