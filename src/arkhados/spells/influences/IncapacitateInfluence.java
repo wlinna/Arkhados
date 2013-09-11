@@ -15,7 +15,8 @@
 package arkhados.spells.influences;
 
 /**
- *
+ * Crow Control buff that causes entity to not be able to move or cast spells.
+ * Damage from outside removes incapacitate however.
  * @author william
  */
 public class IncapacitateInfluence extends CrowdControlInfluence {

@@ -14,9 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import arkhados.ClientHudManager;
 import arkhados.UserCommandManager;
 import arkhados.WorldManager;
@@ -26,8 +23,12 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.spells.Spell;
+import com.jme3.asset.AssetManager;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
+ * Creates all game entities
  *
  * @author william
  */
@@ -38,11 +39,25 @@ public class EntityFactory {
     private ClientHudManager clientHudManager = null;
     private UserCommandManager userCommandManager = null;
 
+    /**
+     * Server side EntityFactory constructor. Should be called only once
+     *
+     * @param assetManager
+     * @param worldManager
+     */
     public EntityFactory(AssetManager assetManager, WorldManager worldManager) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
     }
 
+    /**
+     * Client side EntityFactory constructor. Should be called once per game
+     *
+     * @param assetManager
+     * @param worldManager
+     * @param clientHudManager
+     * @param userCommandManager
+     */
     public EntityFactory(AssetManager assetManager, WorldManager worldManager, ClientHudManager clientHudManager, UserCommandManager userCommandManager) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
@@ -50,33 +65,49 @@ public class EntityFactory {
         this.userCommandManager = userCommandManager;
     }
 
+    /**
+     *
+     * @param id Id of entity to create. If id is name of entity, creates that
+     * entity. If id is spell's name, creates node of that spell (i.e
+     * projectile)
+     * @return
+     */
     public Spatial createEntityById(String id) {
         Node entity = null;
 
         if ("Mage".equals(id)) {
-            entity = (Node)this.assetManager.loadModel("Models/" + id + ".j3o");
+            entity = (Node) this.assetManager.loadModel("Models/" + id + ".j3o");
             entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 30.0f);
             entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
             float radius = 5.0f;
             entity.setUserData(UserDataStrings.RADIUS, radius);
             entity.setUserData(UserDataStrings.HEALTH_CURRENT, 1700.0f);
 
-            entity.setUserData(UserDataStrings.INCAPACITATE_LEFT, 0f);
-
             entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
-            entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
-//            entity.addControl(new CharacterMovementControl());
-            entity.addControl(new ActionQueueControl());
-            CharacterAnimationControl animControl = new CharacterAnimationControl();
 
-            entity.addControl(animControl);
+            /**
+             * By setting physics damping to low value, we can effectively apply
+             * impulses on it.
+             */
+            entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
+            entity.addControl(new ActionQueueControl());
+
+            /**
+             * To add spells to entity, create SpellCastControl and call its
+             * addSpell-method with name of the spell as argument.
+             */
             SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
             entity.addControl(spellCastControl);
-
             spellCastControl.addSpell(Spell.getSpells().get("Fireball"));
             spellCastControl.addSpell(Spell.getSpells().get("Magma Bash"));
             spellCastControl.addSpell(Spell.getSpells().get("Ember Circle"));
 
+            /**
+             * Map Spell names to casting animation's name. In this case all
+             * spells use same animation.
+             */
+            CharacterAnimationControl animControl = new CharacterAnimationControl();
+            entity.addControl(animControl);
             animControl.addSpellAnimation("Fireball", "Idle");
             animControl.addSpellAnimation("Magma Bash", "Idle");
             animControl.addSpellAnimation("Ember Circle", "Idle");

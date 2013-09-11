@@ -15,13 +15,20 @@
 package arkhados.spells.influences;
 
 /**
- *
+ * Base class for all buffs that somehow restricts or limits the entity that is
+ * carrying the buff. Some examples of crowd control buffs are stun, silence,
+ * incapacitate, slow, snare etc.
  * @author william
  */
 public abstract class CrowdControlInfluence extends AbstractBuff {
 
     private float duration;
 
+    /**
+     *
+     * @param id buff group's id
+     * @param duration how long buff is going to influence entity
+     */
     public CrowdControlInfluence(long id, float duration) {
         super(id);
         this.duration = duration;

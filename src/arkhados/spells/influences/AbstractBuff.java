@@ -15,19 +15,32 @@
 package arkhados.spells.influences;
 
 /**
- *
+ * Base class for all buffs, negative or positive.
  * @author william
  */
 public abstract class AbstractBuff  {
-    private long id;
+    private long buffGroupId;
 
-    public AbstractBuff(long id) {
-        this.id = id;
+    /**
+     * @param buffGroupId identifies group of buffs so that they can be removed
+     * with single dispel. Not used currently
+     */
+    public AbstractBuff(long buffGroupId) {
+        this.buffGroupId = buffGroupId;
     }
 
-    public long getId() {
-        return this.id;
+    /**
+     *
+     * @return Id of buff group that buff belongs to.
+     */
+    public long getBuffGroupId() {
+        return this.buffGroupId;
     }
 
+    /**
+     * Method for checking from buff's internal state whether it should be removed
+     * or not
+     * @return true if buff should continue. false, if it should be removed
+     */
     protected abstract boolean shouldContinue();
 }

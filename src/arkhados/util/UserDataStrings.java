@@ -21,6 +21,7 @@ package arkhados.util;
  */
 public class UserDataStrings {
     public final static String SPEED_MOVEMENT = "speed-movement";
+    // NOTE: SPEED_ROTATION has no functionality yet
     public final static String SPEED_ROTATION = "speed-rotation";
     public final static String HEALTH_CURRENT = "health-current";
     public final static String HEALTH_MAX = "health-max";
@@ -28,11 +29,16 @@ public class UserDataStrings {
     public final static String PLAYER_ID = "player-id";
     public final static String RADIUS = "radius";
     public final static String MASS = "mass";
+    /**
+     * How much entity deals instant damage when it hits
+     */
     public final static String DAMAGE = "damage";
+    /**
+     * How much damage it deals per second to be on touch with entity
+     */
     public final static String DAMAGE_PER_SECOND = "damage-per-second";
-
     public final static String IMPULSE_FACTOR = "impulse-factor";
 
-    public final static String INCAPACITATE_LEFT = "incapacitate-left";
+    // NOTE: INCAPACITATE_LENGTH has no functionality yet
     public final static String INCAPACITATE_LENGTH = "incapacitate-length";
 }

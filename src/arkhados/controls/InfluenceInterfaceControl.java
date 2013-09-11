@@ -65,7 +65,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
 
         }
-        super.spatial.setUserData(UserDataStrings.INCAPACITATE_LEFT, 0f);
     }
 
     public void addCrowdControlEffect(CrowdControlInfluence crowdControlInfluence) {
