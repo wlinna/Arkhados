@@ -83,7 +83,7 @@ public class Spell {
 
         ProjectileControl.setWorldManager(worldManager);
 
-        Spell fireball = initFireBall();
+        Spell fireball = initFireball();
         Spells.put(fireball.getName(), fireball);
 
         Spell magmaBash = initMagmaBash();
@@ -157,7 +157,7 @@ public class Spell {
      * moderate damage. Has small knockback effect on hit.
      * @return Fireball spell
      */
-    private static Spell initFireBall() {
+    private static Spell initFireball() {
         final float cooldown = 1.0f;
         final float range = 40f;
         final float castTime = 0.2f;
