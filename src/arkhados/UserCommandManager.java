@@ -80,10 +80,10 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private void initInputMappings() {
-        this.inputManager.addMapping(InputMappingStrings.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_S));
+        this.inputManager.addMapping(InputMappingStrings.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
         this.inputManager.addMapping(InputMappingStrings.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
         this.inputManager.addMapping(InputMappingStrings.MOVE_UP, new KeyTrigger(KeyInput.KEY_W));
-        this.inputManager.addMapping(InputMappingStrings.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_R));
+        this.inputManager.addMapping(InputMappingStrings.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_S));
 
         this.inputManager.addMapping(InputMappingStrings.Q, new KeyTrigger(KeyInput.KEY_Q));
         this.inputManager.addMapping(InputMappingStrings.M1, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
