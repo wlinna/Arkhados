@@ -46,7 +46,7 @@ import arkhados.controls.SpellBuffControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.entityevents.RemovalEventAction;
-import arkhados.spells.influences.IncapacitateInfluence;
+import arkhados.spells.buffs.IncapacitateCC;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
@@ -181,6 +181,7 @@ public class Spell {
                 Material material = new Material(Spell.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 material.setColor("Color", ColorRGBA.Yellow);
                 node.setMaterial(material);
+
                 node.setUserData(UserDataStrings.SPEED_MOVEMENT, 70f);
                 node.setUserData(UserDataStrings.MASS, 30f);
                 node.setUserData(UserDataStrings.DAMAGE, 150f);
@@ -241,8 +242,13 @@ public class Spell {
 
                 SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
                 RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+                /**
+                 * We don't want projectiles to collide with each other so we give them their own collision group and prevent them from
+                 * colliding with that group.
+                 */
                 physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
                 physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
+
                 node.addControl(physicsBody);
 
                 node.addControl(new ProjectileControl());
@@ -322,7 +328,7 @@ public class Spell {
                 node.addControl(new ProjectileControl());
                 SpellBuffControl buffControl = new SpellBuffControl();
                 node.addControl(buffControl);
-                buffControl.addCrowControlInfluence(new IncapacitateInfluence(1f, -1));
+                buffControl.addCrowControlInfluence(new IncapacitateCC(1f, -1));
 
                 node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
                 return node;

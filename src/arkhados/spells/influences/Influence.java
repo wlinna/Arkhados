@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells;
+package arkhados.spells.influences;
 
 import com.jme3.scene.Spatial;
 

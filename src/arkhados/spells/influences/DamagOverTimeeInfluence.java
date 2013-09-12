@@ -16,13 +16,10 @@ package arkhados.spells.influences;
 
 import com.jme3.scene.Spatial;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.spells.Influence;
 
 /**
  * @author william
  */
-// Sorry for the confusion that naming may cause here. This is not buff but
-// influence
 public class DamagOverTimeeInfluence implements Influence {
 
     private float dps;

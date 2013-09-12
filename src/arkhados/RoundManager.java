@@ -161,13 +161,6 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.roundRunning = true;
         if (this.worldManager.isClient()) {
             this.clientMain.getUserCommandManager().setEnabled(true);
-            this.app.enqueue(new Callable<Void>() {
-                public Void call() throws Exception {
-                    hudManager.startRoundStartCountdown(3);
-                    return null;
-
-                }
-            });
         }
     }
 
@@ -235,7 +228,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                     }
                 }
             }
-            if (aliveAmount == 1) {
+            if (aliveAmount == 0) {
                 this.endRound();
             }
         }

@@ -14,7 +14,7 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.spells.influences.CrowdControlInfluence;
+import arkhados.spells.buffs.CrowdControlBuff;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -33,10 +33,10 @@ import java.util.List;
  * @author william
  */
 public class SpellBuffControl extends AbstractControl {
-    private List<CrowdControlInfluence> crowdControlInfluences = new ArrayList<CrowdControlInfluence>();
+    private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<CrowdControlBuff>();
 
 
-    public void addCrowControlInfluence(CrowdControlInfluence influence) {
+    public void addCrowControlInfluence(CrowdControlBuff influence) {
         this.crowdControlInfluences.add(influence);
     }
     @Override
@@ -64,7 +64,7 @@ public class SpellBuffControl extends AbstractControl {
         OutputCapsule out = ex.getCapsule(this);
     }
 
-    public List<CrowdControlInfluence> getCrowdControlInfluences() {
+    public List<CrowdControlBuff> getCrowdControlInfluences() {
         return this.crowdControlInfluences;
     }
 }

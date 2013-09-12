@@ -31,7 +31,7 @@ import com.jme3.scene.control.Control;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import arkhados.spells.Influence;
+import arkhados.spells.influences.Influence;
 
 /**
  *

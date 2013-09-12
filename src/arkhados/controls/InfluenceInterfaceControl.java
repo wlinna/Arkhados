@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.spells.influences.CrowdControlInfluence;
-import arkhados.spells.influences.IncapacitateInfluence;
+import arkhados.spells.buffs.CrowdControlBuff;
+import arkhados.spells.buffs.IncapacitateCC;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class InfluenceInterfaceControl extends AbstractControl {
 
-    private List<CrowdControlInfluence> crowdControlInfluences = new ArrayList<CrowdControlInfluence>();
+    private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<CrowdControlBuff>();
     private boolean dead = false;
 
     /**
@@ -58,20 +58,20 @@ public class InfluenceInterfaceControl extends AbstractControl {
             this.death();
         }
 
-        for (Iterator<CrowdControlInfluence> it = crowdControlInfluences.iterator(); it.hasNext();) {
-            CrowdControlInfluence crowdControlEffect = it.next();
-            if (crowdControlEffect instanceof IncapacitateInfluence) {
+        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
+            CrowdControlBuff crowdControlEffect = it.next();
+            if (crowdControlEffect instanceof IncapacitateCC) {
                 it.remove();
             }
 
         }
     }
 
-    public void addCrowdControlEffect(CrowdControlInfluence crowdControlInfluence) {
+    public void addCrowdControlEffect(CrowdControlBuff crowdControlInfluence) {
         if (crowdControlInfluence != null) {
             this.crowdControlInfluences.add(crowdControlInfluence);
 
-            if (crowdControlInfluence instanceof IncapacitateInfluence) {
+            if (crowdControlInfluence instanceof IncapacitateCC) {
                 super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             }
         }
@@ -87,8 +87,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canMove() {
-        for (CrowdControlInfluence crowdControlInfluence : crowdControlInfluences) {
-            if (crowdControlInfluence instanceof IncapacitateInfluence) {
+        for (CrowdControlBuff crowdControlInfluence : crowdControlInfluences) {
+            if (crowdControlInfluence instanceof IncapacitateCC) {
                 return false;
             }
 
@@ -96,8 +96,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
         return true;
     }
     public boolean canCast() {
-        for (CrowdControlInfluence crowdControlInfluence : crowdControlInfluences) {
-            if (crowdControlInfluence instanceof IncapacitateInfluence) {
+        for (CrowdControlBuff crowdControlInfluence : crowdControlInfluences) {
+            if (crowdControlInfluence instanceof IncapacitateCC) {
                 System.out.println("Can't cast. Incapacitated");
                 return false;
             }
@@ -113,8 +113,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        for (Iterator<CrowdControlInfluence> it = crowdControlInfluences.iterator(); it.hasNext();) {
-            CrowdControlInfluence crowdControlInfluence = it.next();
+        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
+            CrowdControlBuff crowdControlInfluence = it.next();
             boolean shouldContinue = crowdControlInfluence.updateDuration(tpf);
             if (!shouldContinue) {
                 it.remove();

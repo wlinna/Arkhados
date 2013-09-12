@@ -12,15 +12,16 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells.influences;
+package arkhados.spells.buffs;
 
 /**
  * Crow Control buff that causes entity to not be able to move or cast spells.
- * Damage from outside removes incapacitate however.
+ * Damage from outside removes incapacitate however. Note: CC is acronym for
+ * Crowd Control
  * @author william
  */
-public class IncapacitateInfluence extends CrowdControlInfluence {
-    public IncapacitateInfluence(float duration, long id) {
+public class IncapacitateCC extends CrowdControlBuff {
+    public IncapacitateCC(float duration, long id) {
         super(id, duration);
     }
 }

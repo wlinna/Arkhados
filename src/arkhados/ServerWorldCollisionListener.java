@@ -24,7 +24,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
-import arkhados.spells.influences.CrowdControlInfluence;
+import arkhados.spells.buffs.CrowdControlBuff;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -74,7 +74,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
 
-        for (CrowdControlInfluence cc : projectile.getSpatial().getControl(SpellBuffControl.class).getCrowdControlInfluences()) {
+        for (CrowdControlBuff cc : projectile.getSpatial().getControl(SpellBuffControl.class).getCrowdControlInfluences()) {
             character.addCrowdControlEffect(cc);
         }
 

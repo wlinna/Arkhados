@@ -12,7 +12,9 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells.influences;
+package arkhados.spells.buffs;
+
+import arkhados.spells.buffs.AbstractBuff;
 
 /**
  * Base class for all buffs that somehow restricts or limits the entity that is
@@ -20,7 +22,7 @@ package arkhados.spells.influences;
  * incapacitate, slow, snare etc.
  * @author william
  */
-public abstract class CrowdControlInfluence extends AbstractBuff {
+public abstract class CrowdControlBuff extends AbstractBuff {
 
     private float duration;
 
@@ -29,7 +31,7 @@ public abstract class CrowdControlInfluence extends AbstractBuff {
      * @param id buff group's id
      * @param duration how long buff is going to influence entity
      */
-    public CrowdControlInfluence(long id, float duration) {
+    public CrowdControlBuff(long id, float duration) {
         super(id);
         this.duration = duration;
     }
