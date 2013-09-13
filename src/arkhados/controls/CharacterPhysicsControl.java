@@ -17,6 +17,7 @@ package arkhados.controls;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.Queue;
@@ -30,7 +31,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     private Vector3f impulseToApply = null;
     private int previousRight = 0;
     private int previousDown = 0;
-
     private Vector3f targetLocation;
 
     public CharacterPhysicsControl(float radius, float height, float mass) {
@@ -41,6 +41,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         super.rigidBody.setUserObject(spatial);
+        super.rigidBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_02);
     }
 
     public void setUpDownDirection(int right, int down) {
@@ -75,11 +76,11 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     @Override
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
+        super.prePhysicsTick(space, tpf);
+
         if (impulseToApply != null) {
-            this.rigidBody.applyImpulse(this.impulseToApply.setY(10.0f), Vector3f.ZERO);
+            this.rigidBody.applyImpulse(this.impulseToApply.setY(0.0f), Vector3f.ZERO);
             this.impulseToApply = null;
-        } else {
-            super.prePhysicsTick(space, tpf);
         }
     }
 

@@ -37,10 +37,12 @@ import arkhados.controls.EntityEventControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.spells.Spell;
+import arkhados.spell.Spell;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -113,6 +115,7 @@ public class WorldManager extends AbstractAppState {
 
     public void loadLevel() {
         this.worldRoot = (Node) this.assetManager.loadModel("Scenes/basicArena.j3o");
+        this.worldRoot.setName("world-root");
 
     }
 
@@ -191,6 +194,28 @@ public class WorldManager extends AbstractAppState {
         }
         spatial.removeFromParent();
         this.space.removeAll(spatial);
+    }
+
+    public static List<SpatialDistancePair> getSpatialsWithinDistance(Spatial spatial, float distance) {
+        // Find worldRoot first
+        Node worldRoot = spatial.getParent();
+        while (!"world-root".equals(worldRoot.getName())) {
+            worldRoot = worldRoot.getParent();
+            if (worldRoot == null) {
+                // Consider throwing exception here
+                return null;
+            }
+        }
+
+        List<SpatialDistancePair> spatialDistancePairs = new LinkedList<SpatialDistancePair>();
+        for (Spatial child : worldRoot.getChildren()) {
+            float distanceBetween = child.getWorldTranslation().distance(spatial.getWorldTranslation());
+            if (distanceBetween > distance) {
+                continue;
+            }
+            spatialDistancePairs.add(new SpatialDistancePair(child, distanceBetween));
+        }
+        return spatialDistancePairs;
     }
 
     @Override

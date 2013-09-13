@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells.influences;
+package arkhados;
 
 import com.jme3.scene.Spatial;
 
@@ -20,6 +20,12 @@ import com.jme3.scene.Spatial;
  *
  * @author william
  */
-public  interface Influence {
-    public void affect(Spatial spatial, float tpf);
+public class SpatialDistancePair {
+    public Spatial spatial;
+    public float distance;
+
+    public SpatialDistancePair(Spatial spatial, float distance) {
+        this.spatial = spatial;
+        this.distance = distance;
+    }
 }

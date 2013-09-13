@@ -12,9 +12,9 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells.buffs;
+package arkhados.spell.buffs;
 
-import arkhados.spells.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuff;
 
 /**
  * Base class for all buffs that somehow restricts or limits the entity that is

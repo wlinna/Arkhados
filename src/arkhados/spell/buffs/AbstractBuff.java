@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells.buffs;
+package arkhados.spell.buffs;
 
 /**
  * Base class for all buffs, negative or positive.

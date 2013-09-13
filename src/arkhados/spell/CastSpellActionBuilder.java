@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with <project>.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells;
+package arkhados.spell;
 
 import arkhados.actions.EntityAction;
 import com.jme3.math.Vector3f;

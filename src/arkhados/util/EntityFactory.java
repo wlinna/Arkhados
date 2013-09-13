@@ -22,7 +22,7 @@ import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.spells.Spell;
+import arkhados.spell.Spell;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;

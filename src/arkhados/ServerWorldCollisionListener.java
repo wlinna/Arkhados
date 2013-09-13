@@ -24,7 +24,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
-import arkhados.spells.buffs.CrowdControlBuff;
+import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -42,7 +42,6 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     }
 
     public void collision(PhysicsCollisionEvent event) {
-
 
         Spatial staticA = null;
         Spatial staticB = null;
@@ -78,10 +77,11 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             character.addCrowdControlEffect(cc);
         }
 
-        Float impulseFactor =  projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
+        Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
         Vector3f impulse = character.getSpatial().getLocalTranslation()
                 .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
         character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
+
         this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
 
 //        character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(Vector3f.UNIT_Y.mult(2000.0f));

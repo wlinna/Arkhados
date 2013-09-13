@@ -47,7 +47,7 @@ public class ProjectileControl extends AbstractControl {
                 .normalizeLocal().multLocal((Float)super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
 
         this.rigidBodyControl.setLinearVelocity(this.direction);
-        this.rigidBodyControl.setGravity(Vector3f.ZERO);
+//        this.rigidBodyControl.setGravity(Vector3f.ZERO);
         if (this.startingLocation == null) {
         }
     }
@@ -61,14 +61,13 @@ public class ProjectileControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         if (this.direction == null) {
-//            this.rigidBodyControl.setGravity(Vector3f.ZERO);
+            this.rigidBodyControl.setGravity(Vector3f.ZERO);
             return;
         }
         this.age += tpf;
         if (this.age > ProjectileControl.timeToLive) {
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
-        Vector3f v = this.rigidBodyControl.getLinearVelocity();
     }
 
     @Override

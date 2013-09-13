@@ -1,0 +1,159 @@
+/*    This file is part of Arkhados.
+
+ Arkhados is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Arkhados is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.spell;
+
+import arkhados.WorldManager;
+import arkhados.actions.DelayAction;
+import arkhados.actions.EntityAction;
+import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.controls.ActionQueueControl;
+import arkhados.controls.AreaEffectControl;
+import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.EntityEventControl;
+import arkhados.controls.ProjectileControl;
+import arkhados.controls.SpellBuffControl;
+import arkhados.controls.TimedExistenceControl;
+import arkhados.effects.EmitterCircleShape;
+import arkhados.entityevents.RemovalEventAction;
+import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.spell.influences.DamagOverTimeeInfluence;
+import arkhados.spell.spells.embermage.EmberCircle;
+import arkhados.spell.spells.embermage.Fireball;
+import arkhados.spell.spells.embermage.MagmaBash;
+import arkhados.util.NodeBuilder;
+import arkhados.util.UserDataStrings;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterSphereShape;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.shape.Sphere;
+import java.util.HashMap;
+
+/**
+ *
+ * @author william
+ */
+
+/**
+ * Spell contains data of spell's base data. Each Spell is created only once and
+ * their data does not change.
+ */
+public abstract class Spell {
+
+    protected static AssetManager assetManager = null;
+    protected static WorldManager worldManager = null;
+
+    /**
+     * Spells has all spells mapped by their name so that spell data can be
+     * retrieved from anywhere
+     */
+    private static HashMap<String, Spell> Spells = new HashMap<String, Spell>();
+
+    /**
+     * Creates each spell and saves them to Spells-map. Should be called only
+     * once
+     * @param assetManager will be saved to static variable assetManager
+     * @param worldManager will be save to static variable worldManager
+     */
+    public static void initSpells(AssetManager assetManager, WorldManager worldManager) {
+        Spell.assetManager = assetManager;
+        Spell.worldManager = worldManager;
+
+        NodeBuilder.setAssetManager(assetManager);
+        NodeBuilder.setWorldManager(worldManager);
+
+        ProjectileControl.setWorldManager(worldManager);
+
+        // *************** INIT spells here ************************
+
+        Spell fireball = Fireball.create();
+        Spells.put(fireball.getName(), fireball);
+
+        Spell magmaBash = MagmaBash.create();
+        Spells.put(magmaBash.getName(), magmaBash);
+
+        Spell emberCircle = EmberCircle.create();
+        Spells.put(emberCircle.getName(), emberCircle);
+    }
+
+    /**
+     * Call this method to get all Spell-data.
+     * @return Spells-map
+     */
+    public static HashMap<String, Spell> getSpells() {
+        return Spells;
+    }
+
+    private final String name;
+    private final float cooldown;
+    private final float range;
+    private final float castTime;
+    protected CastSpellActionBuilder castSpellActionBuilder;
+    protected NodeBuilder nodeBuilder;
+
+    /**
+     * Creates spell with given parameters
+     * @param name visible to player so give human friendly name
+     * @param cooldown Time it takes to 'reload' spell so that it can be used again
+     * @param range range of spell. NOTE: Currently not used in projectiles
+     * @param castTime Time it takes to cast spell
+     */
+    protected Spell(String name, float cooldown, float range, float castTime) {
+        this.name = name;
+        this.cooldown = cooldown;
+        this.range = range;
+        this.castTime = castTime;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public float getCooldown() {
+        return this.cooldown;
+    }
+
+    public float getRange() {
+        return this.range;
+    }
+
+    public float getCastTime() {
+        return this.castTime;
+    }
+
+    /**
+     * Constructs new EntityAction that will cast the spell.
+     * @param vec Initial direction or target location vector, depending on
+     * spell. Often not necessary.
+     * @return EntityAction that will cast the spell
+     */
+    public EntityAction buildCastAction(Vector3f vec) {
+        return this.castSpellActionBuilder.newAction(vec);
+    }
+
+    public Node buildNode() {
+        return this.nodeBuilder.build();
+    }
+}

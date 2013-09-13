@@ -37,7 +37,7 @@ import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.RunToAction;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
-import arkhados.spells.Spell;
+import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
 
 /**

@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spells.buffs;
+package arkhados.spell.buffs;
 
 /**
  * Crow Control buff that causes entity to not be able to move or cast spells.

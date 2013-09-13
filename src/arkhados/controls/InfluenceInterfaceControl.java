@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.spells.buffs.CrowdControlBuff;
-import arkhados.spells.buffs.IncapacitateCC;
+import arkhados.spell.buffs.CrowdControlBuff;
+import arkhados.spell.buffs.IncapacitateCC;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;

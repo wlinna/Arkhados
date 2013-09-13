@@ -1,4 +1,4 @@
-/*    This file is part of <project>.
+/*    This file is part of Arkhados.
 
  Arkhados is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -12,27 +12,14 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.util;
+package arkhados.spell.influences;
 
-import arkhados.WorldManager;
-import com.jme3.asset.AssetManager;
-import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  *
  * @author william
  */
-public abstract class NodeBuilder {
-    protected static WorldManager worldManager;
-    protected static AssetManager assetManager;
-
-    public abstract Node build();
-
-    public static void setWorldManager(WorldManager worldManager) {
-        NodeBuilder.worldManager = worldManager;
-    }
-
-    public static void setAssetManager(AssetManager assetManager) {
-        NodeBuilder.assetManager = assetManager;
-    }
+public  interface Influence {
+    public void affect(Spatial spatial, float tpf);
 }

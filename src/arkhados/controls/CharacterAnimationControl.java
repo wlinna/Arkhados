@@ -30,7 +30,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import java.util.HashMap;
-import arkhados.spells.Spell;
+import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
 
 /**

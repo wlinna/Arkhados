@@ -9,7 +9,7 @@ import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.spells.Spell;
+import arkhados.spell.Spell;
 
 /**
  *
