@@ -29,6 +29,7 @@ import java.util.Queue;
 public class CharacterPhysicsControl extends BetterCharacterControl {
 
     private Vector3f impulseToApply = null;
+    private Vector3f queuedLinearVelocity = null;
     private int previousRight = 0;
     private int previousDown = 0;
     private Vector3f targetLocation;
@@ -82,6 +83,10 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
             this.rigidBody.applyImpulse(this.impulseToApply.setY(0.0f), Vector3f.ZERO);
             this.impulseToApply = null;
         }
+        if (queuedLinearVelocity != null) {
+            this.rigidBody.setLinearVelocity(this.queuedLinearVelocity);
+            this.queuedLinearVelocity = null;
+        }
     }
 
     @Override
@@ -94,8 +99,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         this.impulseToApply = impulse;
     }
 
-    public void setVelocity(Vector3f velocity) {
-        this.rigidBody.setLinearVelocity(velocity);
+    public void enqueueSetLinearVelocity(Vector3f velocity) {
+        this.queuedLinearVelocity = velocity;
     }
 
     public Vector3f getTargetLocation() {

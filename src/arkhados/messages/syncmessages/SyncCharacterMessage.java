@@ -58,7 +58,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         character.getControl(InfluenceInterfaceControl.class).setHealth(this.health);
         character.getControl(CharacterPhysicsControl.class).warp(this.location);
         character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
-//        character.getControl(CharacterPhysicsControl.class).setVelocity(velocity);
+        character.getControl(CharacterPhysicsControl.class).enqueueSetLinearVelocity(velocity);
         character.getControl(CharacterPhysicsControl.class).setWalkDirection(this.walkDirection);
 
 
