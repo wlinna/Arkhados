@@ -23,6 +23,7 @@ import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
+import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.util.UserDataStrings;
@@ -54,6 +55,14 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
         ProjectileControl projectileA = event.getNodeA().getControl(ProjectileControl.class);
         ProjectileControl projectileB = event.getNodeB().getControl(ProjectileControl.class);
+
+        SkyDropControl skyDrop = event.getNodeA().getControl(SkyDropControl.class);
+        if (skyDrop == null) {
+            skyDrop = event.getNodeB().getControl(SkyDropControl.class);
+        }
+        if (skyDrop != null) {
+            skyDrop.onGroundCollision();
+        }
 
         if (projectileA != null) {
             if (characterB != null) {
