@@ -27,7 +27,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 /**
- *
+ * CastProjectileAction is proper action for basic projectile spells like Magma Bash, Fireball etc.
  * @author william
  */
 public class CastProjectileAction extends EntityAction {

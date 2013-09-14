@@ -60,7 +60,6 @@ public class MagmaBash extends Spell {
         spell.nodeBuilder = new MagmaBashBuilder();
 
         return spell;
-
     }
 }
 

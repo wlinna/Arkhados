@@ -47,7 +47,7 @@ public class ProjectileControl extends AbstractControl {
                 .normalizeLocal().multLocal((Float)super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
 
         this.rigidBodyControl.setLinearVelocity(this.direction);
-//        this.rigidBodyControl.setGravity(Vector3f.ZERO);
+        this.rigidBodyControl.setGravity(Vector3f.ZERO);
         if (this.startingLocation == null) {
         }
     }

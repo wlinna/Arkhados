@@ -125,6 +125,7 @@ public class WorldManager extends AbstractAppState {
         this.worldRoot.addLight(sun);
 
         this.space.addAll(this.worldRoot);
+        this.space.setGravity(new Vector3f(0f, -98.1f, 0));
         this.rootNode.attachChild(this.worldRoot);
 
         this.cam.setLocation(new Vector3f(0.0f, 160.0f, 20.0f));
