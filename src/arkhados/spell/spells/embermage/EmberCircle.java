@@ -32,10 +32,15 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  * Embermage's Ember Circle (Q) spell. Area of Effect spell that deals damage
@@ -74,9 +79,17 @@ class EmberCircleBuilder extends NodeBuilder {
         final float radius = 15f;
         node.scale(radius, 1f, radius);
         // Let's use simple black color first
-        Material black = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        black.setColor("Color", ColorRGBA.Black);
-        node.setMaterial(black);
+//        Material black = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//        black.setColor("Color", ColorRGBA.Black);
+//        node.setMaterial(black);
+
+        Material material = assetManager.loadMaterial("Materials/EmberCircleGround.j3m");
+        material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        node.setQueueBucket(RenderQueue.Bucket.Transparent);
+        material.setTexture("AlphaMap", assetManager.loadTexture("Textures/EmberCircleAlphaMap.png"));
+//        material.setBoolean("UseAlpha", true);
+        node.setMaterial(material);
+
 
         node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
         ActionQueueControl actionQueue = new ActionQueueControl();

@@ -60,8 +60,5 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
         character.getControl(CharacterPhysicsControl.class).enqueueSetLinearVelocity(velocity);
         character.getControl(CharacterPhysicsControl.class).setWalkDirection(this.walkDirection);
-
-
-//        }
     }
 }
