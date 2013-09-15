@@ -47,14 +47,53 @@ import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
+import arkhados.util.InputMappingStrings;
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
+import de.lessvoid.nifty.controls.Button;
+import java.util.prefs.BackingStoreException;
 
 public class ClientMain extends SimpleApplication implements ScreenController {
+
+    public final static String PREFERENCES_KEY = "arkhados";
+
+    public static void setKeySettings(AppSettings settings) {
+        setKey(settings, InputMappingStrings.M1, false, MouseInput.BUTTON_LEFT);
+        setKey(settings, InputMappingStrings.M2, false, MouseInput.BUTTON_RIGHT);
+
+        setKey(settings, InputMappingStrings.MOVE_UP, true, KeyInput.KEY_W);
+        setKey(settings, InputMappingStrings.MOVE_DOWN, true, KeyInput.KEY_S);
+        setKey(settings, InputMappingStrings.MOVE_LEFT, true, KeyInput.KEY_A);
+        setKey(settings, InputMappingStrings.MOVE_RIGHT, true, KeyInput.KEY_D);
+
+        setKey(settings, InputMappingStrings.Q, true, KeyInput.KEY_Q);
+        setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
+        setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
+        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
+    }
+
+    public static void setKey(AppSettings settings, final String inputMapping, boolean isKeyboard, int code) {
+        if (settings.containsKey(inputMapping)) {
+            return;
+        }
+        String prefix = isKeyboard ? "keyboard::" : "mouse::";
+        String setting = prefix + Integer.toString(code);
+        settings.putString(inputMapping, setting);
+
+    }
 
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.WARNING);
         Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
         Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
         AppSettings settings = new AppSettings(true);
+
+        try {
+            settings.load(ClientMain.PREFERENCES_KEY);
+        } catch (BackingStoreException ex) {
+            Logger.getLogger("").warning("Could not load preferences");
+        }
+        setKeySettings(settings);
         settings.setFrameRate(60);
         settings.setTitle("Arkhados Client");
         ClientMain app = new ClientMain();
@@ -131,7 +170,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 this.inputManager, this.audioRenderer, this.guiViewPort);
 
         this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this);
+        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager));
         this.guiViewPort.addProcessor(this.niftyDisplay);
 
         this.statusText = this.nifty.getScreen("join_server")
@@ -300,9 +339,16 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     public void onEndScreen() {
     }
 
+    public void closeApplication() {
+        this.stop();
+    }
+
+
     @Override
     public void destroy() {
-        this.client.close();
+        if (this.client.isConnected()) {
+            this.client.close();
+        }
         super.destroy();
     }
 

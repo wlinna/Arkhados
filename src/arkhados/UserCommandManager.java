@@ -62,7 +62,6 @@ public class UserCommandManager extends AbstractAppState {
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
         this.inputManager = inputManager;
-        this.initInputMappings();
     }
 
     @Override
@@ -79,16 +78,6 @@ public class UserCommandManager extends AbstractAppState {
         this.keySpellMappings.put(key, spellName);
     }
 
-    private void initInputMappings() {
-        this.inputManager.addMapping(InputMappingStrings.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
-        this.inputManager.addMapping(InputMappingStrings.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
-        this.inputManager.addMapping(InputMappingStrings.MOVE_UP, new KeyTrigger(KeyInput.KEY_W));
-        this.inputManager.addMapping(InputMappingStrings.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_S));
-
-        this.inputManager.addMapping(InputMappingStrings.Q, new KeyTrigger(KeyInput.KEY_Q));
-        this.inputManager.addMapping(InputMappingStrings.M1, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        this.inputManager.addMapping(InputMappingStrings.M2, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-    }
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {

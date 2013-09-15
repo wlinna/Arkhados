@@ -15,13 +15,13 @@
         <layer childLayout="center">
             <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
-                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="1500"/>
+                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
                 </effect>
 
                 <text style="nifty-label" text="Welcome to Arkhados!" >
                     <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
                     </effect>
                 </text>
                 <control id="goto_join_server" name="button" label="Join Game" align="center">
@@ -31,6 +31,11 @@
                 <control id="goto_settings" name="button" label="Settings" align="center">
                     <interact onClick="gotoMenu(settings)" />
                 </control>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <control id="exit_application_button" name="button" label="Exit game" align="center" valign="bottom">
+                    <interact onClick="closeApplication()" />
+                </control>
             </panel>
         </layer>
     </screen>
@@ -39,7 +44,7 @@
         <layer id="layer" childLayout="center">
             <panel id="root_panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
-                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="1500"/>
+                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
                 </effect>
                 <text style="nifty-label" text="Settings" />
@@ -47,28 +52,74 @@
                 <control id="input_settings_button" name="button" label="Configure controls" align="center" width="200px">
                     <interact onClick="gotoMenu(input_settings)"/>
                     <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
                     </effect>
                 </control>
                 <text style="nifty-label" text=""/>
                 <control id="exit_button" name="button" label="Back" align="center" width="200px">
                     <interact onClick="gotoMenu(main_menu)" />
                     <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
                     </effect>
                 </control>
             </panel>
         </layer>
     </screen>
 
-    <screen id="input_settings" controller="arkhados.ClientMain">
+    <screen id="input_settings" controller="arkhados.KeySetter">
         <layer id="layer" childLayout="center">
             <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+
+                <text style="nifty-label" text=""/>
+                <panel height="*" width="*" align="center" childLayout="horizontal">
+                    <panel height="700px" width="100px" align="left" childLayout="vertical">
+                        <text style="nifty-label" text="Up" align="center" />
+                        <text style="nifty-label" text="Down" align="center" />
+                        <text style="nifty-label" text="Left" align="center" />
+                        <text style="nifty-label" text="Right" align="center" />
+
+                        <text style="nifty-label" text="Spell 1" align="center" />
+                        <text style="nifty-label" text="Spell 2" align="center" />
+                        <text style="nifty-label" text="Spell 3" align="center" />
+                        <text style="nifty-label" text="Spell 4" align="center" />
+                        <text style="nifty-label" text="Spell 5" align="center" />
+                        <text style="nifty-label" text="Spell 6" align="center" />
+                    </panel>
+                    <panel height="700px" width="300px" align="center" childLayout="vertical">
+                        <control id="button_up" name="button" label="Up" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_up, move-up)" />
+                        </control>
+                        <control id="button_down" name="button" label="Down" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_down, move-down)" />
+                        </control>
+                        <control id="button_left" name="button" label="Left" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_left, move-left)" />
+                        </control>
+                        <control id="button_right" name="button" label="Right" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_right, move-right)" />
+                        </control>
+                        <control id="button_m1" name="button" label="Spell 1" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_m1, m1)" />
+                        </control>
+                        <control id="button_m2" name="button" label="Spell 2" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_m2, m2)" />
+                        </control>
+                        <control id="button_q" name="button" label="Spell 3" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_q, q)" />
+                        </control>
+                        <control id="button_e" name="button" label="Spell 4" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_e, e)" />
+                        </control>
+                        <control id="button_r" name="button" label="Spell 5" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_r, r)" />
+                        </control>
+                        <control id="button_space" name="button" label="Spell 6" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_space, space)" />
+                        </control>
+                    </panel>
+                </panel>
                 <control id="exit_button" name="button" label="Back" align="center" width="200px">
                     <interact onClick="gotoMenu(settings)" />
-                    <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
-                    </effect>
                 </control>
             </panel>
         </layer>
@@ -78,7 +129,7 @@
         <layer id="layer" childLayout="center">
             <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
-                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="1500"/>
+                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
                 </effect>
                 <text style="nifty-label" text="Join server" >
