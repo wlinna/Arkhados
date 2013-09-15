@@ -15,40 +15,15 @@
 package arkhados.spell;
 
 import arkhados.WorldManager;
-import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.AreaEffectControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
-import arkhados.effects.EmitterCircleShape;
-import arkhados.entityevents.RemovalEventAction;
-import arkhados.spell.buffs.IncapacitateCC;
-import arkhados.spell.influences.DamagOverTimeeInfluence;
 import arkhados.spell.spells.embermage.EmberCircle;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.util.NodeBuilder;
-import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
 import java.util.HashMap;
 
 /**

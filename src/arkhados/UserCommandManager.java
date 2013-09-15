@@ -15,6 +15,7 @@
 package arkhados;
 
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.FollowCharacterControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
@@ -26,16 +27,14 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.CameraNode;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 
@@ -53,6 +52,7 @@ public class UserCommandManager extends AbstractAppState {
     private Camera cam;
     private long playerId;
     private long characterId;
+    private Node character;
     private int down = 0;
     private int right = 0;
     private HashMap<String, String> keySpellMappings = new HashMap<String, String>(6);
@@ -77,7 +77,6 @@ public class UserCommandManager extends AbstractAppState {
     public void addKeySpellMapping(String key, String spellName) {
         this.keySpellMappings.put(key, spellName);
     }
-
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {
@@ -98,7 +97,7 @@ public class UserCommandManager extends AbstractAppState {
     };
     private ActionListener actionMoveDirection = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
-           if (getCharacterInterface().isDead()) {
+            if (getCharacterInterface().isDead()) {
                 return;
             }
             if ("move-right".equals(name)) {
@@ -133,7 +132,10 @@ public class UserCommandManager extends AbstractAppState {
         if (!this.inputListenersActive) {
             this.inputManager.addListener(this.actionMoveDirection,
                     InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT, InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
-            this.inputManager.addListener(this.actionCastSpell, InputMappingStrings.M1, InputMappingStrings.M2, InputMappingStrings.Q);
+            this.inputManager.addListener(this.actionCastSpell,
+                    InputMappingStrings.M1, InputMappingStrings.M2,
+                    InputMappingStrings.Q, InputMappingStrings.E,
+                    InputMappingStrings.R, InputMappingStrings.SPACE);
         }
 
         this.inputListenersActive = true;
@@ -156,6 +158,13 @@ public class UserCommandManager extends AbstractAppState {
                 this.mouseTargetUpdateTimer = 0.1f;
             }
         }
+    }
+
+    public void followPlayer() {
+        Node camNode = new Node("cam-node");
+        this.worldManager.getWorldRoot().attachChild(camNode);
+        camNode.addControl(new FollowCharacterControl(this.character, this.cam));
+        camNode.getControl(FollowCharacterControl.class).setRelativePosition(new Vector3f(0f, 120f, 10f));
     }
 
     @Override
@@ -198,7 +207,10 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private Spatial getCharacter() {
-        return this.worldManager.getEntity(this.characterId);
+        if (this.character == null) {
+            return this.worldManager.getEntity(this.characterId);
+        }
+        return this.character;
     }
 
     private InfluenceInterfaceControl getCharacterInterface() {
@@ -215,5 +227,15 @@ public class UserCommandManager extends AbstractAppState {
 
     public void setCharacterId(long characterId) {
         this.characterId = characterId;
+    }
+
+    public boolean trySetPlayersCharacter(Spatial spatial) {
+        if ((Long)spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
+            this.character = (Node) spatial;
+            this.followPlayer();
+
+            return true;
+        }
+        return false;
     }
 }

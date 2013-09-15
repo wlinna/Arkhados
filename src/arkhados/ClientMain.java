@@ -36,9 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.MessageUtils;
-import arkhados.messages.roundprotocol.NewRoundMessage;
 import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
@@ -50,7 +48,6 @@ import arkhados.messages.syncmessages.SyncProjectileMessage;
 import arkhados.util.InputMappingStrings;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
-import de.lessvoid.nifty.controls.Button;
 import java.util.prefs.BackingStoreException;
 
 public class ClientMain extends SimpleApplication implements ScreenController {

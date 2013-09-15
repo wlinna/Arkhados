@@ -74,6 +74,8 @@ public class WorldManager extends AbstractAppState {
     private EntityFactory entityFactory;
     private ServerWorldCollisionListener serverCollisionListener = null;
 
+    private ClientMain clientMain;
+
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         TimedExistenceControl.setWorldManager(this);
@@ -99,7 +101,7 @@ public class WorldManager extends AbstractAppState {
             this.space.addCollisionListener(this.serverCollisionListener);
             this.entityFactory = new EntityFactory(assetManager, this);
         } else if (this.isClient()) {
-            ClientMain clientMain = (ClientMain) app;
+            this.clientMain = (ClientMain) app;
             this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class), clientMain.getUserCommandManager());
         }
 
@@ -159,6 +161,10 @@ public class WorldManager extends AbstractAppState {
         this.syncManager.addObject(id, entitySpatial);
         this.space.addAll(entitySpatial);
         this.worldRoot.attachChild(entitySpatial);
+
+        if (this.isClient()) {
+            this.clientMain.getUserCommandManager().trySetPlayersCharacter(entitySpatial);
+        }
     }
 
     private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {

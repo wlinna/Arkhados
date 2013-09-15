@@ -92,7 +92,7 @@ public class SpellCastControl extends AbstractControl {
             return;
         }
 
-        Spell spell = this.spells.get(spellName);
+         Spell spell = this.spells.get(spellName);
         if (spell != null && this.cooldowns.get(spellName) > 0.0f) {
             return;
         }
