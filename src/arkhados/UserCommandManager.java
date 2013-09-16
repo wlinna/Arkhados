@@ -16,6 +16,7 @@ package arkhados;
 
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.FollowCharacterControl;
+import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
@@ -28,6 +29,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.math.Plane;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -58,6 +60,8 @@ public class UserCommandManager extends AbstractAppState {
     private HashMap<String, String> keySpellMappings = new HashMap<String, String>(6);
     private boolean inputListenersActive = false;
     private float mouseTargetUpdateTimer = 0f;
+    private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
+    private Vector3f mouseGroundPosition = new Vector3f();
 
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
@@ -86,13 +90,14 @@ public class UserCommandManager extends AbstractAppState {
                 return;
             }
 
-            Vector3f clickLocation = getClickLocation();
-            if (clickLocation != null) {
-                String spellName = keySpellMappings.get(name);
-                if (spellName != null) {
-                    UserCommandManager.this.client.send(new UcCastSpellMessage(spellName, clickLocation));
-                }
+//            Vector3f clickLocation = getClickLocation();
+            calculateMouseGroundPosition();
+            String spellName = keySpellMappings.get(name);
+            if (spellName != null) {
+                UserCommandManager.this.client.send(
+                        new UcCastSpellMessage(spellName, UserCommandManager.this.mouseGroundPosition ));
             }
+
         }
     };
     private ActionListener actionMoveDirection = new ActionListener() {
@@ -153,8 +158,7 @@ public class UserCommandManager extends AbstractAppState {
         if (character.getControl(CharacterPhysicsControl.class).getWalkDirection().equals(Vector3f.ZERO)) {
             this.mouseTargetUpdateTimer -= tpf;
             if (this.mouseTargetUpdateTimer <= 0f) {
-                Vector3f targetLocation = this.getClickLocation();
-                this.client.send(new UcMouseTargetMessage(targetLocation));
+                this.client.send(new UcMouseTargetMessage(this.mouseGroundPosition));
                 this.mouseTargetUpdateTimer = 0.1f;
             }
         }
@@ -163,8 +167,9 @@ public class UserCommandManager extends AbstractAppState {
     public void followPlayer() {
         Node camNode = new Node("cam-node");
         this.worldManager.getWorldRoot().attachChild(camNode);
-        camNode.addControl(new FollowCharacterControl(this.character, this.cam));
-        camNode.getControl(FollowCharacterControl.class).setRelativePosition(new Vector3f(0f, 120f, 10f));
+//        camNode.addControl(new FollowCharacterControl(this.character, this.cam));
+        camNode.addControl(new FreeCameraControl(this.character, this.cam, this.inputManager));
+        camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 120f, 10f));
     }
 
     @Override
@@ -206,6 +211,20 @@ public class UserCommandManager extends AbstractAppState {
         return contactPoint;
     }
 
+    private void calculateMouseGroundPosition() {
+        final Vector2f mouse2dPosition = this.inputManager.getCursorPosition();
+        final Vector3f mouse3dPosition = this.cam
+                .getWorldCoordinates(mouse2dPosition, 0.0f);
+
+
+        final Vector3f rayDirection = this.cam
+                .getWorldCoordinates(mouse2dPosition, 1.0f)
+                .subtractLocal(mouse3dPosition).normalizeLocal();
+
+        Ray ray = new Ray(mouse3dPosition, rayDirection);
+        boolean intersects = ray.intersectsWherePlane(this.floorPlane, this.mouseGroundPosition);
+    }
+
     private Spatial getCharacter() {
         if (this.character == null) {
             return this.worldManager.getEntity(this.characterId);
@@ -230,7 +249,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        if ((Long)spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
+        if ((Long) spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
             this.character = (Node) spatial;
             this.followPlayer();
 

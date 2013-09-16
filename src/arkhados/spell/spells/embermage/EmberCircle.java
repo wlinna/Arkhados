@@ -78,10 +78,6 @@ class EmberCircleBuilder extends NodeBuilder {
         final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
         final float radius = 15f;
         node.scale(radius, 1f, radius);
-        // Let's use simple black color first
-//        Material black = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//        black.setColor("Color", ColorRGBA.Black);
-//        node.setMaterial(black);
 
         Material material = assetManager.loadMaterial("Materials/EmberCircleGround.j3m");
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
