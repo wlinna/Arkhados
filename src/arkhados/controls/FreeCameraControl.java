@@ -45,6 +45,12 @@ public class FreeCameraControl extends AbstractControl {
     private Vector3f intersectionPoint = new Vector3f();
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f relativePosition;
+    private Vector3f targetDestination = new Vector3f();
+
+    private float timeToReach = 20f;
+    private float timeMoved = this.timeToReach;
+
+    private float camSpeed = 500f;
 
     public FreeCameraControl(Node character, Camera cam, InputManager inputManager) {
         this.character = character;
@@ -54,11 +60,32 @@ public class FreeCameraControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+//        if (this.timeMoved < this.timeToReach) {
+//            this.timeMoved += tpf;
+//        }
         this.calculateMouseLocation();
         Vector3f midPoint = this.intersectionPoint.subtract(character.getLocalTranslation()).multLocal(0.5f);
         midPoint.addLocal(this.relativePosition);
         midPoint.addLocal(character.getLocalTranslation());
-        this.cam.setLocation(midPoint);
+        this.targetDestination.set(midPoint);
+
+//        this.cam.setLocation(this.targetDestination);
+//        this.cam.
+        float distance = this.cam.getLocation().distance(this.targetDestination);
+
+        float factor = tpf * this.camSpeed / distance;
+        if (factor > 1f) {
+            factor = 1f;
+        }
+        this.cam.setLocation(this.cam.getLocation().interpolate(this.targetDestination, factor));
+//
+//        if (this.timeMoved < this.timeToReach) {
+//            this.timeMoved += tpf;
+//            this.cam.setLocation(Vector3f.NAN.interpolate(this.cam.getLocation(), this.targetDestination, this.timeMoved / this.timeToReach));
+//        } else {
+//            this.timeMoved = 0f;
+//            this.cam.setLocation(this.targetDestination);
+//    }
     }
 
     @Override
