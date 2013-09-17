@@ -77,7 +77,7 @@ public class EntityFactory {
 
         if ("Mage".equals(id)) {
             entity = (Node) this.assetManager.loadModel("Models/" + id + ".j3o");
-            entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 30.0f);
+            entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 40.0f);
             entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
             float radius = 5.0f;
             entity.setUserData(UserDataStrings.RADIUS, radius);

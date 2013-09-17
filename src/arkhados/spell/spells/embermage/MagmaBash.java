@@ -75,7 +75,7 @@ class MagmaBashBuilder extends NodeBuilder {
         Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
+        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 180f);
         node.setUserData(UserDataStrings.MASS, 10f);
         node.setUserData(UserDataStrings.DAMAGE, 0f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
@@ -113,7 +113,7 @@ class MagmaBashBuilder extends NodeBuilder {
         node.addControl(new ProjectileControl());
         SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
-        buffControl.addCrowControlInfluence(new IncapacitateCC(1f, -1));
+        buffControl.addCrowControlInfluence(new IncapacitateCC(1.6f, -1));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;
