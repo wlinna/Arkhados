@@ -85,11 +85,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
         AppSettings settings = new AppSettings(true);
 
-//        try {
-//            settings.load(ClientMain.PREFERENCES_KEY);
-//        } catch (BackingStoreException ex) {
-//            Logger.getLogger("").warning("Could not load preferences");
-//        }
+        try {
+            settings.load(ClientMain.PREFERENCES_KEY);
+        } catch (BackingStoreException ex) {
+            Logger.getLogger("").warning("Could not load preferences");
+        }
         setKeySettings(settings);
         settings.setFrameRate(60);
         settings.setTitle("Arkhados Client");
