@@ -229,14 +229,17 @@ public class UserCommandManager extends AbstractAppState {
     private Spatial getCharacter() {
         if (this.character == null) {
             Spatial spatial = this.worldManager.getEntity(this.characterId);
-            this.trySetPlayersCharacter(spatial);
+            if (spatial != null) {
+                this.trySetPlayersCharacter(spatial);
+            }
             return spatial;
         }
         return this.character;
     }
 
     private InfluenceInterfaceControl getCharacterInterface() {
-        return this.worldManager.getEntity(this.characterId).getControl(InfluenceInterfaceControl.class);
+        // FIXME: Sometimes NullPointerException occurs here
+        return this.getCharacter().getControl(InfluenceInterfaceControl.class);
     }
 
     public long getPlayerId() {

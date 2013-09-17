@@ -1,18 +1,17 @@
 /*    This file is part of Arkhados.
 
-    Arkhados is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Arkhados is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Arkhados is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Arkhados is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
 import com.jme3.app.Application;
@@ -51,6 +50,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private float syncFrequency = 0.15f;
     private Queue<AbstractSyncMessage> syncQueue =
             new LinkedList<AbstractSyncMessage>();
+    private boolean listening = false; // NOTE: Only server is affected
 
     public SyncManager(Application app, Server server) {
         this.app = app;
@@ -132,6 +132,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     }
 
     public void messageReceived(Object source, final Message m) {
+
         assert (m instanceof AbstractSyncMessage);
         final AbstractSyncMessage message = (AbstractSyncMessage) m;
         if (this.client != null) {
@@ -142,6 +143,9 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                 }
             });
         } else if (this.server != null) {
+            if (!this.listening) {
+                return;
+            }
             HostedConnection client = (HostedConnection) source;
             // HACK: If server receives sync message, it sets syncId of players character
             final long playerId = ServerClientData.getPlayerId(client.getId());
@@ -179,5 +183,13 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     public void clear() {
         this.syncObjects.clear();
         this.syncQueue.clear();
+    }
+
+    public void stopListening() {
+        this.listening = false;
+    }
+
+    public void startListening() {
+        this.listening = true;
     }
 }

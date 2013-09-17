@@ -1,18 +1,17 @@
 /*    This file is part of Arkhados.
 
-    Arkhados is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Arkhados is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Arkhados is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Arkhados is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
 import com.jme3.app.SimpleApplication;
@@ -30,6 +29,7 @@ import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcRunToMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
+import java.util.logging.FileHandler;
 
 /**
  * test
@@ -39,7 +39,14 @@ import arkhados.messages.usercommands.UcWalkDirection;
 public class ServerMain extends SimpleApplication {
 
     public static void main(String[] args) {
-        Logger.getLogger("").setLevel(Level.FINEST);
+        Logger.getLogger("").setLevel(Level.ALL);
+        try {
+            FileHandler fileHandler = new FileHandler();
+            fileHandler.setLevel(Level.FINE);
+            Logger.getLogger("").addHandler(fileHandler);
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);
 //        settings.setRenderer(null);
@@ -88,10 +95,6 @@ public class ServerMain extends SimpleApplication {
         this.inputManager.setCursorVisible(true);
         this.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-//                ServerMain.this.stateManager.attach(ServerMain.this.syncManager);
-//                ServerMain.this.stateManager.attach(ServerMain.this.gameManager);
-//                ServerMain.this.stateManager.attach(ServerMain.this.physicsState);
-//                ServerMain.this.stateManager.attach(ServerMain.this.worldManager);
 
                 ServerMain.this.gameManager.startGame();
                 return null;
