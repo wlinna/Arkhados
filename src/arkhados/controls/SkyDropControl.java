@@ -46,7 +46,6 @@ public class SkyDropControl extends AbstractControl {
         if (!this.collided) {
             this.collided = true;
             this.spatial.getControl(ActionQueueControl.class).enqueueAction(this.groundCollisionAction);
-
         }
     }
 

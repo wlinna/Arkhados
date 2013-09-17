@@ -41,6 +41,10 @@ import arkhados.spell.Spell;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
+import com.jme3.math.Plane;
+import com.jme3.scene.control.LodControl;
+import com.jme3.terrain.geomipmap.TerrainLodControl;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -117,6 +121,12 @@ public class WorldManager extends AbstractAppState {
 
     public void loadLevel() {
         this.worldRoot = (Node) this.assetManager.loadModel("Scenes/basicArena.j3o");
+        this.worldRoot.addControl(new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f));
+        Spatial terrain = this.worldRoot.getChild("terrain");
+        TerrainLodControl lod =  terrain.getControl(TerrainLodControl.class);
+        if (lod != null) {
+            lod.setCamera(this.cam);
+        }
         this.worldRoot.setName("world-root");
 
     }

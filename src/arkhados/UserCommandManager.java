@@ -158,6 +158,7 @@ public class UserCommandManager extends AbstractAppState {
         if (character.getControl(CharacterPhysicsControl.class).getWalkDirection().equals(Vector3f.ZERO)) {
             this.mouseTargetUpdateTimer -= tpf;
             if (this.mouseTargetUpdateTimer <= 0f) {
+                this.calculateMouseGroundPosition();
                 this.client.send(new UcMouseTargetMessage(this.mouseGroundPosition));
                 this.mouseTargetUpdateTimer = 0.1f;
             }
@@ -169,7 +170,7 @@ public class UserCommandManager extends AbstractAppState {
         this.worldManager.getWorldRoot().attachChild(camNode);
 //        camNode.addControl(new FollowCharacterControl(this.character, this.cam));
         camNode.addControl(new FreeCameraControl(this.character, this.cam, this.inputManager));
-        camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 120f, 10f));
+        camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
 
     @Override
@@ -227,7 +228,9 @@ public class UserCommandManager extends AbstractAppState {
 
     private Spatial getCharacter() {
         if (this.character == null) {
-            return this.worldManager.getEntity(this.characterId);
+            Spatial spatial = this.worldManager.getEntity(this.characterId);
+            this.trySetPlayersCharacter(spatial);
+            return spatial;
         }
         return this.character;
     }
@@ -249,6 +252,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
+        // FIXME: NullPointerException
         if ((Long) spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
             this.character = (Node) spatial;
             this.followPlayer();
