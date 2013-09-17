@@ -95,7 +95,7 @@ public class UserCommandManager extends AbstractAppState {
             String spellName = keySpellMappings.get(name);
             if (spellName != null) {
                 UserCommandManager.this.client.send(
-                        new UcCastSpellMessage(spellName, UserCommandManager.this.mouseGroundPosition ));
+                        new UcCastSpellMessage(spellName, UserCommandManager.this.mouseGroundPosition));
             }
 
         }
@@ -260,5 +260,16 @@ public class UserCommandManager extends AbstractAppState {
             return true;
         }
         return false;
+    }
+
+    public void onLoseFocus() {
+        if (!super.isEnabled()) {
+            return;
+        }
+//        this.down = 0;
+//        this.right = 0;
+        if (this.client != null && this.client.isConnected()) {
+            this.client.send(new UcWalkDirection(0, 0));
+        }
     }
 }

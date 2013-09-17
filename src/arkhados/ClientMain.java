@@ -340,7 +340,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.stop();
     }
 
-
     @Override
     public void destroy() {
         if (this.client.isConnected()) {
@@ -351,5 +350,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public RoundManager getRoundManager() {
         return this.roundManager;
+    }
+
+    @Override
+    public void loseFocus() {
+        super.loseFocus();
+        this.userCommandManager.onLoseFocus();
     }
 }
