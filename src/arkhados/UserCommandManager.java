@@ -62,10 +62,13 @@ public class UserCommandManager extends AbstractAppState {
     private float mouseTargetUpdateTimer = 0f;
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f mouseGroundPosition = new Vector3f();
+    private HashMap<String, Boolean> movementKeyFlags = new HashMap<String, Boolean>(4);
+
 
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
         this.inputManager = inputManager;
+        this.clearMovementFlags();
     }
 
     @Override
@@ -105,6 +108,12 @@ public class UserCommandManager extends AbstractAppState {
             if (getCharacterInterface().isDead()) {
                 return;
             }
+            if (movementKeyFlags.get(name) == false && !isPressed) {
+                return;
+            }
+
+            movementKeyFlags.put(name, isPressed);
+
             if ("move-right".equals(name)) {
                 UserCommandManager.this.right += isPressed ? 1 : -1;
             } else if ("move-left".equals(name)) {
@@ -181,11 +190,22 @@ public class UserCommandManager extends AbstractAppState {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
+        this.down = 0;
+        this.right = 0;
+
         if (enabled) {
             this.enableInputListeners();
         } else {
             this.disableInputListeners();
+            this.clearMovementFlags();
         }
+    }
+
+    private void clearMovementFlags() {
+        this.movementKeyFlags.put("move-up", false);
+        this.movementKeyFlags.put("move-down", false);
+        this.movementKeyFlags.put("move-left", false);
+        this.movementKeyFlags.put("move-right", false);
     }
 
     private Vector3f getClickLocation() {
