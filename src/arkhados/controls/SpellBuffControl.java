@@ -33,11 +33,11 @@ import java.util.List;
  * @author william
  */
 public class SpellBuffControl extends AbstractControl {
-    private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<CrowdControlBuff>();
+    private List<CrowdControlBuff> crowdControlBuffs = new ArrayList<CrowdControlBuff>();
 
 
-    public void addCrowControlInfluence(CrowdControlBuff influence) {
-        this.crowdControlInfluences.add(influence);
+    public void addCrowControlBuff(CrowdControlBuff buff) {
+        this.crowdControlBuffs.add(buff);
     }
     @Override
     protected void controlUpdate(float tpf) {
@@ -64,7 +64,7 @@ public class SpellBuffControl extends AbstractControl {
         OutputCapsule out = ex.getCapsule(this);
     }
 
-    public List<CrowdControlBuff> getCrowdControlInfluences() {
-        return this.crowdControlInfluences;
+    public List<CrowdControlBuff> getCrowdControlBuffs() {
+        return this.crowdControlBuffs;
     }
 }

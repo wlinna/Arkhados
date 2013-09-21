@@ -113,7 +113,7 @@ class MagmaBashBuilder extends NodeBuilder {
         node.addControl(new ProjectileControl());
         SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
-        buffControl.addCrowControlInfluence(new IncapacitateCC(1.6f, -1));
+        buffControl.addCrowControlBuff(new IncapacitateCC(1.6f, -1));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;

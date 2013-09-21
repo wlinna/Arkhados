@@ -58,13 +58,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
             this.death();
         }
 
-        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
-            CrowdControlBuff crowdControlEffect = it.next();
-            if (crowdControlEffect instanceof IncapacitateCC) {
-                it.remove();
-            }
+        this.removeIncapacitates();
 
-        }
     }
 
     public void addCrowdControlEffect(CrowdControlBuff crowdControlInfluence) {
@@ -95,6 +90,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
         return true;
     }
+
     public boolean canCast() {
         for (CrowdControlBuff crowdControlInfluence : crowdControlInfluences) {
             if (crowdControlInfluence instanceof IncapacitateCC) {
@@ -147,5 +143,16 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public boolean isDead() {
         return dead;
+    }
+
+    private void removeIncapacitates() {
+
+        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
+            CrowdControlBuff crowdControlEffect = it.next();
+            if (crowdControlEffect instanceof IncapacitateCC) {
+                it.remove();
+            }
+
+        }
     }
 }

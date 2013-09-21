@@ -82,7 +82,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
 
-        for (CrowdControlBuff cc : projectile.getSpatial().getControl(SpellBuffControl.class).getCrowdControlInfluences()) {
+        for (CrowdControlBuff cc : projectile.getSpatial().getControl(SpellBuffControl.class).getCrowdControlBuffs()) {
             character.addCrowdControlEffect(cc);
         }
 
