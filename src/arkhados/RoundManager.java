@@ -132,7 +132,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                         PlayerData playerData = it.next();
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
-                        long entityId = worldManager.addNewEntity("Mage", startingLocation, new Quaternion());
+                        final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
+                        long entityId = worldManager.addNewEntity(heroName, startingLocation, new Quaternion());
                         playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
                     }
 

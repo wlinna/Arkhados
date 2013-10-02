@@ -1,18 +1,17 @@
 /*    This file is part of Arkhados.
 
-    Arkhados is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Arkhados is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Arkhados is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Arkhados is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
+ You should have received a copy of the GNU General Public License
+ along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
 import com.jme3.network.ConnectionListener;
@@ -24,16 +23,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginMessage;
+import arkhados.messages.ClientSelectHeroMessage;
 import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.StartGameMessage;
+import arkhados.util.PlayerDataStrings;
 
 /**
  *
  * @author william
  */
 public class ServerNetListener implements MessageListener<HostedConnection>, ConnectionListener {
+
     private ServerMain app;
     private Server server;
     //
@@ -46,9 +48,9 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
         this.server.addConnectionListener(this);
         this.server.addMessageListener(this,
                 ClientLoginMessage.class, ChatMessage.class,
-                StartGameMessage.class);
+                StartGameMessage.class,
+                ClientSelectHeroMessage.class);
     }
-
 
     public void connectionAdded(Server server, HostedConnection conn) {
         final int clientId = conn.getId();
@@ -63,9 +65,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
     }
 
     public void connectionRemoved(Server server, HostedConnection conn) {
-
     }
-
 
     public void messageReceived(HostedConnection source, Message m) {
         if (m instanceof ClientLoginMessage) {
@@ -77,6 +77,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
                 return;
             }
             final long playerId = PlayerData.getNew(message.getName());
+            PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
             ServerClientData.setConnected(clientId, true);
             ServerClientData.setPlayerId(clientId, playerId);
             ServerLoginMessage serverLoginMessage = new ServerLoginMessage(message.getName(), playerId, true);
@@ -86,6 +87,13 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
         } else if (m instanceof ChatMessage) {
             final ChatMessage message = (ChatMessage) m;
             this.server.broadcast(message);
+        } else if (m instanceof ClientSelectHeroMessage) {
+            final ClientSelectHeroMessage message = (ClientSelectHeroMessage) m;
+            final long playerId = ServerClientData.getPlayerId(source.getId());
+
+            // TODO: Check hero name validity
+            PlayerData.setData(playerId, PlayerDataStrings.HERO, message.getHeroName());
+
         } else if (m instanceof StartGameMessage) {
             final StartGameMessage message = (StartGameMessage) m;
             this.server.broadcast(message);

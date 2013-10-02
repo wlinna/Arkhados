@@ -26,6 +26,8 @@ import arkhados.spell.Spell;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates all game entities
@@ -38,7 +40,11 @@ public class EntityFactory {
     private WorldManager worldManager;
     private ClientHudManager clientHudManager = null;
     private UserCommandManager userCommandManager = null;
+    private List<String> heroNames = new ArrayList<String>(1);
 
+    {
+        heroNames.add("Mage");
+    }
     /**
      * Server side EntityFactory constructor. Should be called only once
      *

@@ -199,6 +199,9 @@
                         </control>
                     </panel>
                     <text style="nifty-label" text="" valign="center"/>
+                    <control id="select_hero_button" name="button" label="Select hero" align="center">
+                        <interact onClick="gotoMenu(hero_selection)"/>
+                    </control>
                     <control id="start_server_button" name="button" label="Start Game" align="center">
                         <interact onClick="sendStartGameRequest()"/>
                     </control>
@@ -226,6 +229,32 @@
                     <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
                 </effect>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="hero_selection" controller="arkhados.ClientMain">
+        <layer childLayout="center">
+            <panel id="panel_root" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <effect>
+                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true" />
+                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true" />
+                </effect>
+                <text style="nifty-label" text="Select your hero" />
+                <text style="nifty-label" text="" />
+
+                <panel id="categories" childLayout="horizontal">
+                    <panel id="ranged" childLayout="vertical" >
+                        <text style="nifty-label" text="Ranged" />
+                        <control id="embermage" name="button" label="Embermage">
+                            <interact onClick="selectHero(Mage)" />
+                        </control>
+                    </panel>
+                    <panel id="melee" childLayout="vertical" >
+                        <text style="nifty-label" text="Melee" />
+                    </panel>
+
+                </panel>
             </panel>
         </layer>
     </screen>

@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
+import arkhados.messages.ClientSelectHeroMessage;
 import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
@@ -263,6 +264,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 return null;
             }
         });
+    }
+
+    public void selectHero(final String heroName) {
+        this.client.send(new ClientSelectHeroMessage(heroName));
     }
 
     public void sendStartGameRequest() {

@@ -35,7 +35,6 @@ import java.util.List;
 public class SpellBuffControl extends AbstractControl {
     private List<CrowdControlBuff> crowdControlBuffs = new ArrayList<CrowdControlBuff>();
 
-
     public void addCrowControlBuff(CrowdControlBuff buff) {
         this.crowdControlBuffs.add(buff);
     }

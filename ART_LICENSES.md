@@ -6,6 +6,7 @@ Note: see CREDITS.md for attributions
 
 - circle.blend and all its derivatives
 - EmberCircleAlphaMap.png
+- Werewolf and all its derivatives
 
 ## CC-BY 3.0 ##
 
