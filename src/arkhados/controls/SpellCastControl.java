@@ -49,9 +49,9 @@ public class SpellCastControl extends AbstractControl {
     private WorldManager worldManager;
     private HashMap<String, Spell> spells = new HashMap<String, Spell>();
     private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
+    private HashMap<String, Spell> keySpellMappings = new HashMap<String, Spell>();
 
 //    private float activeCastTimeLeft = 0f;
-
     public SpellCastControl(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
@@ -61,9 +61,10 @@ public class SpellCastControl extends AbstractControl {
         super.setSpatial(spatial);
     }
 
-    public void addSpell(Spell spell) {
+    public void putSpell(Spell spell, String key) {
         this.spells.put(spell.getName(), spell);
         this.cooldowns.put(spell.getName(), 0f);
+        this.keySpellMappings.put(key, spell);
     }
 
     public Spell getSpell(final String name) {
@@ -76,24 +77,23 @@ public class SpellCastControl extends AbstractControl {
 //        }
 //        return false;
 //    }
-
     public void safeInterrupt() {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
 
-            final String spellName = ((CastingSpellAction)action).getSpellName();
+            final String spellName = ((CastingSpellAction) action).getSpellName();
             super.spatial.getControl(ActionQueueControl.class).clear();
             this.cooldowns.put(spellName, 0f);
         }
     }
 
-    public void cast(final String spellName, Vector3f targetLocation) {
+    public void cast(final String input, Vector3f targetLocation) {
         if (!this.enabled) {
             return;
         }
 
-         Spell spell = this.spells.get(spellName);
-        if (spell != null && this.cooldowns.get(spellName) > 0.0f) {
+        Spell spell = this.keySpellMappings.get(input);
+        if (spell != null && this.cooldowns.get(spell.getName()) > 0.0f) {
             return;
         }
 
@@ -110,11 +110,12 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(
-                    new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spellName, direction));
+                    new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
         }
-        this.cooldowns.put(spellName, spell.getCooldown());
+        this.cooldowns.put(spell.getName(), spell.getCooldown());
     }
 
+    // Not removing this, because it may be useful for AI controlled units and for visual cues
     private Vector3f findClosestCastingLocation(final Vector3f targetLocation, float range) {
         Vector3f displacement = super.getSpatial().getLocalTranslation().subtract(targetLocation);
         if (displacement.lengthSquared() <= FastMath.sqr(range)) {

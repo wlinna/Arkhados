@@ -106,7 +106,7 @@ public class WorldManager extends AbstractAppState {
             this.entityFactory = new EntityFactory(assetManager, this);
         } else if (this.isClient()) {
             this.clientMain = (ClientMain) app;
-            this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class), clientMain.getUserCommandManager());
+            this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
         }
 
         Spell.initSpells(assetManager, this);

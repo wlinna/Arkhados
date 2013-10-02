@@ -39,12 +39,12 @@ public class EntityFactory {
     private AssetManager assetManager;
     private WorldManager worldManager;
     private ClientHudManager clientHudManager = null;
-    private UserCommandManager userCommandManager = null;
     private List<String> heroNames = new ArrayList<String>(1);
 
     {
         heroNames.add("Mage");
     }
+
     /**
      * Server side EntityFactory constructor. Should be called only once
      *
@@ -62,13 +62,11 @@ public class EntityFactory {
      * @param assetManager
      * @param worldManager
      * @param clientHudManager
-     * @param userCommandManager
      */
-    public EntityFactory(AssetManager assetManager, WorldManager worldManager, ClientHudManager clientHudManager, UserCommandManager userCommandManager) {
+    public EntityFactory(AssetManager assetManager, WorldManager worldManager, ClientHudManager clientHudManager) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
         this.clientHudManager = clientHudManager;
-        this.userCommandManager = userCommandManager;
     }
 
     /**
@@ -100,13 +98,13 @@ public class EntityFactory {
 
             /**
              * To add spells to entity, create SpellCastControl and call its
-             * addSpell-method with name of the spell as argument.
+             * putSpell-method with name of the spell as argument.
              */
             SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
             entity.addControl(spellCastControl);
-            spellCastControl.addSpell(Spell.getSpells().get("Fireball"));
-            spellCastControl.addSpell(Spell.getSpells().get("Magma Bash"));
-            spellCastControl.addSpell(Spell.getSpells().get("Ember Circle"));
+            spellCastControl.putSpell(Spell.getSpells().get("Fireball"), InputMappingStrings.M1);
+            spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
+            spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
 
             /**
              * Map Spell names to casting animation's name. In this case all
@@ -122,9 +120,6 @@ public class EntityFactory {
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
-                this.userCommandManager.addKeySpellMapping(InputMappingStrings.M1, "Fireball");
-                this.userCommandManager.addKeySpellMapping(InputMappingStrings.M2, "Magma Bash");
-                this.userCommandManager.addKeySpellMapping(InputMappingStrings.Q, "Ember Circle");
             }
 
         } else if (Spell.getSpells().containsKey(id)) {

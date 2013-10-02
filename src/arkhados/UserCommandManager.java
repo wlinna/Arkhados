@@ -50,14 +50,12 @@ public class UserCommandManager extends AbstractAppState {
     private Client client;
     private WorldManager worldManager;
     private Application app;
-    // TODO: Get character somewhere
     private Camera cam;
     private long playerId;
     private long characterId;
     private Node character;
     private int down = 0;
     private int right = 0;
-    private HashMap<String, String> keySpellMappings = new HashMap<String, String>(6);
     private boolean inputListenersActive = false;
     private float mouseTargetUpdateTimer = 0f;
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
@@ -81,9 +79,6 @@ public class UserCommandManager extends AbstractAppState {
         System.out.println("Initialized UserCommandManager");
     }
 
-    public void addKeySpellMapping(String key, String spellName) {
-        this.keySpellMappings.put(key, spellName);
-    }
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {
@@ -93,12 +88,10 @@ public class UserCommandManager extends AbstractAppState {
                 return;
             }
 
-//            Vector3f clickLocation = getClickLocation();
             calculateMouseGroundPosition();
-            String spellName = keySpellMappings.get(name);
-            if (spellName != null) {
+            if (name != null) {
                 UserCommandManager.this.client.send(
-                        new UcCastSpellMessage(spellName, UserCommandManager.this.mouseGroundPosition));
+                        new UcCastSpellMessage(name, UserCommandManager.this.mouseGroundPosition));
             }
 
         }
@@ -289,8 +282,6 @@ public class UserCommandManager extends AbstractAppState {
         if (!super.isEnabled()) {
             return;
         }
-//        this.down = 0;
-//        this.right = 0;
         if (this.client != null && this.client.isConnected()) {
             this.client.send(new UcWalkDirection(0, 0));
         }

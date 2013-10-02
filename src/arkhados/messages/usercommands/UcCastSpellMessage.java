@@ -28,15 +28,15 @@ import arkhados.messages.syncmessages.AbstractSyncMessage;
  */
 @Serializable
 public class UcCastSpellMessage extends AbstractSyncMessage {
-    private String spell;
+    private String input;
     private Vector3f direction;
 
     public UcCastSpellMessage() {
 
     }
 
-    public UcCastSpellMessage(String spell, Vector3f location) {
-        this.spell = spell;
+    public UcCastSpellMessage(String input, Vector3f location) {
+        this.input = input;
         this.direction = location;
     }
 
@@ -44,11 +44,11 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
         character.getControl(SpellCastControl.class).safeInterrupt();
-        character.getControl(SpellCastControl.class).cast(this.spell, this.direction);
+        character.getControl(SpellCastControl.class).cast(this.input, this.direction);
     }
 
     public String getSpell() {
-        return spell;
+        return input;
     }
 
     public Vector3f getLocation() {
