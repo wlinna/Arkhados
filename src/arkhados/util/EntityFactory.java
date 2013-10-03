@@ -17,6 +17,8 @@ package arkhados.util;
 import arkhados.ClientHudManager;
 import arkhados.UserCommandManager;
 import arkhados.WorldManager;
+import arkhados.characters.EmberMage;
+import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
@@ -43,6 +45,7 @@ public class EntityFactory {
 
     {
         heroNames.add("Mage");
+        heroNames.add("Venator");
     }
 
     /**
@@ -80,48 +83,17 @@ public class EntityFactory {
         Node entity = null;
 
         if ("Mage".equals(id)) {
-            entity = (Node) this.assetManager.loadModel("Models/" + id + ".j3o");
-            entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 35.0f);
-            entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
-            float radius = 5.0f;
-            entity.setUserData(UserDataStrings.RADIUS, radius);
-            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 1700.0f);
-
-            entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
-
-            /**
-             * By setting physics damping to low value, we can effectively apply
-             * impulses on it.
-             */
-            entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
-            entity.addControl(new ActionQueueControl());
-
-            /**
-             * To add spells to entity, create SpellCastControl and call its
-             * putSpell-method with name of the spell as argument.
-             */
-            SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
-            entity.addControl(spellCastControl);
-            spellCastControl.putSpell(Spell.getSpells().get("Fireball"), InputMappingStrings.M1);
-            spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
-            spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
-
-            /**
-             * Map Spell names to casting animation's name. In this case all
-             * spells use same animation.
-             */
-            CharacterAnimationControl animControl = new CharacterAnimationControl();
-            entity.addControl(animControl);
-            animControl.addSpellAnimation("Fireball", "Idle");
-            animControl.addSpellAnimation("Magma Bash", "Idle");
-            animControl.addSpellAnimation("Ember Circle", "Idle");
-
-            entity.addControl(new InfluenceInterfaceControl());
+            entity = new EmberMage().build();
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
             }
 
+        } else if ("Venator".equals(id)) {
+            entity = new Venator().build();
+            if (worldManager.isClient()) {
+                this.clientHudManager.addCharacter(entity);
+            }
         } else if (Spell.getSpells().containsKey(id)) {
             Spell spell = Spell.getSpells().get(id);
             entity = spell.buildNode();

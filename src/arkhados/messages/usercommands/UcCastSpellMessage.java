@@ -32,7 +32,6 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
     private Vector3f direction;
 
     public UcCastSpellMessage() {
-
     }
 
     public UcCastSpellMessage(String input, Vector3f location) {

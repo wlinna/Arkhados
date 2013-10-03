@@ -34,7 +34,8 @@ import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
 
 /**
- *
+ * Original animation control for Mage. Most likely each character needs its own
+ * custom character animation control and this will be changed to abstract class
  * @author william
  */
 public class CharacterAnimationControl extends AbstractControl {
@@ -45,6 +46,8 @@ public class CharacterAnimationControl extends AbstractControl {
     private AnimChannel channel;
     private float castTime = 0f;
     private HashMap<String, String> spellAnimationMap = new HashMap<String, String>(6);
+    private String walkAnimation;
+    private String deathAnimation;
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -54,7 +57,7 @@ public class CharacterAnimationControl extends AbstractControl {
         this.movementControl = super.spatial.getControl(CharacterMovementControl.class);
 
         this.channel = this.animControl.createChannel();
-        this.channel.setAnim("Walk");
+        this.channel.setAnim(this.walkAnimation);
     }
 
     @Override
@@ -64,8 +67,8 @@ public class CharacterAnimationControl extends AbstractControl {
             return;
         }
         if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
-            if (!"Walk".equals(this.channel.getAnimationName())) {
-                this.channel.setAnim("Walk", 0.5f);
+            if (!this.walkAnimation.equals(this.channel.getAnimationName())) {
+                this.channel.setAnim(this.walkAnimation, 0.5f);
             }
             this.channel.setSpeed(1.0f);
         } else {
@@ -74,7 +77,7 @@ public class CharacterAnimationControl extends AbstractControl {
     }
 
     public void death() {
-        this.channel.setAnim("Die");
+        this.channel.setAnim(this.deathAnimation);
         this.channel.setLoopMode(LoopMode.DontLoop);
         super.setEnabled(false);
     }
@@ -88,8 +91,6 @@ public class CharacterAnimationControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //Only needed for rendering-related operations,
-        //not called when spatial is culled.
     }
 
     public Control cloneForSpatial(Spatial spatial) {
@@ -111,5 +112,21 @@ public class CharacterAnimationControl extends AbstractControl {
 
     public void addSpellAnimation(String spellName, String animName) {
         this.spellAnimationMap.put(spellName, animName);
+    }
+
+    public String getWalkAnimation() {
+        return this.walkAnimation;
+    }
+
+    public void setWalkAnimation(String walkAnimation) {
+        this.walkAnimation = walkAnimation;
+    }
+
+    public String getDeathAnimation() {
+        return this.deathAnimation;
+    }
+
+    public void setDeathAnimation(String deathAnimation) {
+        this.deathAnimation = deathAnimation;
     }
 }

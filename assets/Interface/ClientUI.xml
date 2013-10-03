@@ -252,9 +252,16 @@
                     </panel>
                     <panel id="melee" childLayout="vertical" >
                         <text style="nifty-label" text="Melee" />
+                        <control id="venator" name="button" label="Venator">
+                            <interact onClick="selectHero(Venator)" />
+                        </control>
                     </panel>
-
                 </panel>
+                <text style="nifty-label" text="" />
+                <control id="back" name="button" label="Back">
+                    <interact onClick="gotoMenu(lobby)" />
+                </control>
+
             </panel>
         </layer>
     </screen>
