@@ -31,8 +31,8 @@ public class Rend extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 0.5f;
-        final float range = 10f;
+        final float cooldown = 0.3f;
+        final float range = 30f;
         final float castTime = 0.2f;
 
         final Rend spell = new Rend("Rend", cooldown, range, castTime);

@@ -34,7 +34,9 @@ public class Venator extends NodeBuilder {
     @Override
     public Node build() {
         Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Warwolf.j3o");
-        entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 37f);
+        final float movementSpeed = 37f;
+        entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
+        entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
         float radius = 3.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
@@ -50,11 +52,13 @@ public class Venator extends NodeBuilder {
         SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
         entity.addControl(spellCastControl);
         spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
+        spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
 
         CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");
         animControl.setWalkAnimation("Run");
         animControl.addSpellAnimation("Rend", "Swipe-Left");
+        animControl.addSpellAnimation("Damaging Dagger", "Throw");
         entity.addControl(animControl);
 
         entity.addControl(new InfluenceInterfaceControl());

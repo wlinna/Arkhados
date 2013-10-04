@@ -20,6 +20,7 @@ package arkhados.util;
  * @author william
  */
 public class UserDataStrings {
+    public final static String SPEED_MOVEMENT_BASE = "speed-movement-base";
     public final static String SPEED_MOVEMENT = "speed-movement";
     // NOTE: SPEED_ROTATION has no functionality yet
     public final static String SPEED_ROTATION = "speed-rotation";

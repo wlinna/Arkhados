@@ -16,6 +16,7 @@ package arkhados.controls;
 
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.spell.buffs.SlowCC;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -109,13 +110,25 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        Float speedFactor = 1f;
         for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
-            CrowdControlBuff crowdControlInfluence = it.next();
-            boolean shouldContinue = crowdControlInfluence.updateDuration(tpf);
+            CrowdControlBuff cc = it.next();
+            boolean shouldContinue = cc.updateDuration(tpf);
             if (!shouldContinue) {
                 it.remove();
+                continue;
+            }
+            if (cc instanceof SlowCC) {
+                speedFactor *= ((SlowCC)cc).getSlowFactor();
             }
         }
+
+        Float speedMovement = ((Float)super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE)) * speedFactor;
+        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        Vector3f walkDir = physics.getWalkDirection();
+        Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(speedMovement);
+        physics.setWalkDirection(newWalkDir);
+        super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, speedMovement);
     }
 
     @Override

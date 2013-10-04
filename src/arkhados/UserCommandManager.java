@@ -117,7 +117,7 @@ public class UserCommandManager extends AbstractAppState {
             CharacterPhysicsControl characterPhysics = getCharacter().getControl(CharacterPhysicsControl.class);
             Float speedMovement = getCharacter().getUserData(UserDataStrings.SPEED_MOVEMENT);
             Vector3f walkDirection = new Vector3f(right, 0f, down).normalizeLocal().multLocal(speedMovement);
-            characterPhysics.setWalkDirection(walkDirection);
+//            characterPhysics.setWalkDirection(walkDirection);
             if (walkDirection.lengthSquared() > 0f) {
                 characterPhysics.setViewDirection(walkDirection);
             }

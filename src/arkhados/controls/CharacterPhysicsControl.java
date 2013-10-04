@@ -43,6 +43,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.setSpatial(spatial);
         super.rigidBody.setUserObject(spatial);
         super.rigidBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_02);
+        super.rigidBody.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_01 | RigidBodyControl.COLLISION_GROUP_02);
     }
 
     public void setUpDownDirection(int right, int down) {

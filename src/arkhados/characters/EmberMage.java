@@ -35,7 +35,9 @@ public class EmberMage extends NodeBuilder {
     @Override
     public  Node build() {
         Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Mage.j3o");
-        entity.setUserData(UserDataStrings.SPEED_MOVEMENT, 35.0f);
+        final float movementSpeed = 35f;
+        entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
+        entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
         float radius = 5.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
