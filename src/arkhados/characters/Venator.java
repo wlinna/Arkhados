@@ -19,6 +19,8 @@ import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.spell.Spell;
+import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Node;
@@ -38,7 +40,7 @@ public class Venator extends NodeBuilder {
         entity.setUserData(UserDataStrings.RADIUS, radius);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, 2100f);
 
-        entity.scale(radius);
+        entity.scale(3f);
 
         entity.addControl(new CharacterPhysicsControl(radius, 22f, 100f));
 
@@ -47,10 +49,12 @@ public class Venator extends NodeBuilder {
 
         SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
         entity.addControl(spellCastControl);
+        spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
 
         CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");
         animControl.setWalkAnimation("Run");
+        animControl.addSpellAnimation("Rend", "Swipe-Left");
         entity.addControl(animControl);
 
         entity.addControl(new InfluenceInterfaceControl());

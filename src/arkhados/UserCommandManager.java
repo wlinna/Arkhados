@@ -62,7 +62,6 @@ public class UserCommandManager extends AbstractAppState {
     private Vector3f mouseGroundPosition = new Vector3f();
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<String, Boolean>(4);
 
-
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
         this.inputManager = inputManager;
@@ -78,7 +77,6 @@ public class UserCommandManager extends AbstractAppState {
         this.cam = app.getCamera();
         System.out.println("Initialized UserCommandManager");
     }
-
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             if (UserCommandManager.this.getCharacterInterface().isDead()) {

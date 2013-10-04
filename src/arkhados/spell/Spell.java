@@ -20,6 +20,7 @@ import arkhados.controls.ProjectileControl;
 import arkhados.spell.spells.embermage.EmberCircle;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.MagmaBash;
+import arkhados.spell.spells.venator.Rend;
 import arkhados.util.NodeBuilder;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
@@ -71,6 +72,11 @@ public abstract class Spell {
 
         Spell emberCircle = EmberCircle.create();
         Spells.put(emberCircle.getName(), emberCircle);
+
+
+        // Venator spells
+        Spell rend = Rend.create();
+        Spells.put(rend.getName(), rend);
     }
 
     /**

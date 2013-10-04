@@ -15,15 +15,10 @@
 package arkhados.util;
 
 import arkhados.ClientHudManager;
-import arkhados.UserCommandManager;
 import arkhados.WorldManager;
 import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.DebugControl;
 import arkhados.spell.Spell;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
@@ -91,6 +86,7 @@ public class EntityFactory {
 
         } else if ("Venator".equals(id)) {
             entity = new Venator().build();
+            entity.addControl(new DebugControl(this.assetManager));
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
             }
