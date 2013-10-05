@@ -233,6 +233,9 @@ public class WorldManager extends AbstractAppState {
             if (distanceBetween > distance) {
                 continue;
             }
+            if (child == spatial) {
+                continue;
+            }
             spatialDistancePairs.add(new SpatialDistancePair(child, distanceBetween));
         }
         return spatialDistancePairs;

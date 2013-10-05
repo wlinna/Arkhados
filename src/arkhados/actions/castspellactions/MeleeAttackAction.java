@@ -53,7 +53,6 @@ public class MeleeAttackAction extends EntityAction {
         physicsControl.setViewDirection(hitDirection);
         PhysicsSpace space = physicsControl.getPhysicsSpace();
         Vector3f to = super.spatial.getLocalTranslation().add(hitDirection);
-        super.spatial.getControl(DebugControl.class).drawArrow(super.spatial.getLocalTranslation(), to);
 
         List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().setY(3f), to.setY(3f));
         for (PhysicsRayTestResult result : results) {

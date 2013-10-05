@@ -14,10 +14,14 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
+import arkhados.SpatialDistancePair;
+import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.IncapacitateCC;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -25,6 +29,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
+import java.util.List;
 
 /**
  *
@@ -98,10 +103,37 @@ class CastLeapAction extends EntityAction {
         motionControl.play();
 
         path.addListener(new MotionPathListener() {
+            private void landingEffect() {
+                List<SpatialDistancePair> spatialsOnDistance =  WorldManager.getSpatialsWithinDistance(spatial, 10f);
+                if (spatialsOnDistance == null) {
+                    return;
+                }
+                SpatialDistancePair pairWithSmallestDistance = null;
+                for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
+                    // Check if spatial is character
+
+                    if (spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class) == null) {
+                        continue;
+                    }
+
+                    if (pairWithSmallestDistance == null) {
+                        pairWithSmallestDistance = spatialDistancePair;
+                    }
+                    if (spatialDistancePair.distance < pairWithSmallestDistance.distance) {
+                        pairWithSmallestDistance = spatialDistancePair;
+                    }
+                }
+                if (pairWithSmallestDistance != null) {
+                    InfluenceInterfaceControl influenceInterface = pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
+                    influenceInterface.doDamage(200f);
+                    influenceInterface.addCrowdControlEffect(new IncapacitateCC(1f, -1));
+                }
+            }
 
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (path.getNbWayPoints() == wayPointIndex + 1) {
                     physics.switchToNormalPhysicsMode();
+                    this.landingEffect();
 //                    physics.warp(path.getWayPoint(wayPointIndex));
                 }
             }
