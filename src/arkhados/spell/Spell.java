@@ -21,6 +21,7 @@ import arkhados.spell.spells.embermage.EmberCircle;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.venator.Dagger;
+import arkhados.spell.spells.venator.Leap;
 import arkhados.spell.spells.venator.Rend;
 import arkhados.util.NodeBuilder;
 import com.jme3.asset.AssetManager;
@@ -80,6 +81,9 @@ public abstract class Spell {
 
         Spell dagger = Dagger.create();
         Spells.put(dagger.getName(), dagger);
+
+        Spell leap = Leap.create();
+        Spells.put(leap.getName(), leap);
     }
 
     /**

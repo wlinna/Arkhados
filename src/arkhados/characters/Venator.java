@@ -38,7 +38,7 @@ public class Venator extends NodeBuilder {
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
-        float radius = 3.0f;
+        float radius = 4.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, 2100f);
 
@@ -53,17 +53,18 @@ public class Venator extends NodeBuilder {
         entity.addControl(spellCastControl);
         spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
+        spellCastControl.putSpell(Spell.getSpells().get("Leap"), InputMappingStrings.SPACE);
 
         CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");
         animControl.setWalkAnimation("Run");
         animControl.addSpellAnimation("Rend", "Swipe-Left");
         animControl.addSpellAnimation("Damaging Dagger", "Throw");
+        animControl.addSpellAnimation("Leap", "Jump");
         entity.addControl(animControl);
 
         entity.addControl(new InfluenceInterfaceControl());
 
         return entity;
     }
-
 }

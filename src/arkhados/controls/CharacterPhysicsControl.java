@@ -17,7 +17,9 @@ package arkhados.controls;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.Queue;
@@ -44,6 +46,9 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.rigidBody.setUserObject(spatial);
         super.rigidBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_02);
         super.rigidBody.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_01 | RigidBodyControl.COLLISION_GROUP_02);
+        super.rigidBody.setFriction(1f);
+        super.rigidBody.setRestitution(0f);
+        super.rigidBody.setGravity(Vector3f.ZERO);
     }
 
     public void setUpDownDirection(int right, int down) {
@@ -81,7 +86,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.prePhysicsTick(space, tpf);
 
         if (impulseToApply != null) {
-            this.rigidBody.applyImpulse(this.impulseToApply.setY(0.0f), Vector3f.ZERO);
+            this.rigidBody.applyImpulse(this.impulseToApply, Vector3f.ZERO);
             this.impulseToApply = null;
         }
         if (queuedLinearVelocity != null) {
@@ -111,5 +116,23 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     public void setTargetLocation(Vector3f targetLocation) {
         this.targetLocation = targetLocation;
 //        this.lookAt(targetLocation);
+    }
+
+    public void switchToMotionCollisionMode() {
+        super.setEnabled(false);
+    }
+
+    public void switchToNormalPhysicsMode() {
+        super.setEnabled(true);
+    }
+
+    private void dragOfAirXZ() {
+        float xSign = FastMath.sign(super.getVelocity().x);
+        float zSign = FastMath.sign(super.getVelocity().z);
+        float xDrag = 0.5f * 1.3f * FastMath.sqr(super.getVelocity().x) * 1.1f;
+        float zDrag = 0.5f * 1.3f * FastMath.sqr(super.getVelocity().z) * 1.1f;
+        Vector3f counter = new Vector3f(-xDrag * xSign, 0f, -zDrag * zSign);
+        super.velocity.addLocal(counter);
+
     }
 }

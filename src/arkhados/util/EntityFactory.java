@@ -18,6 +18,7 @@ import arkhados.ClientHudManager;
 import arkhados.WorldManager;
 import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
+import arkhados.controls.CharacterInterpolationControl;
 import arkhados.controls.DebugControl;
 import arkhados.spell.Spell;
 import com.jme3.asset.AssetManager;
@@ -82,6 +83,7 @@ public class EntityFactory {
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
+                entity.addControl(new CharacterInterpolationControl());
             }
 
         } else if ("Venator".equals(id)) {
@@ -89,6 +91,7 @@ public class EntityFactory {
             entity.addControl(new DebugControl(this.assetManager));
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
+                entity.addControl(new CharacterInterpolationControl());
             }
         } else if (Spell.getSpells().containsKey(id)) {
             Spell spell = Spell.getSpells().get(id);

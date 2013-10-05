@@ -121,7 +121,10 @@ public class WorldManager extends AbstractAppState {
 
     public void loadLevel() {
         this.worldRoot = (Node) this.assetManager.loadModel("Scenes/basicArena.j3o");
-        this.worldRoot.addControl(new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f));
+        RigidBodyControl physics = new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
+        physics.setFriction(1f);
+        physics.setRestitution(0f);
+        this.worldRoot.addControl(physics);
         Spatial terrain = this.worldRoot.getChild("terrain");
         TerrainLodControl lod =  terrain.getControl(TerrainLodControl.class);
         if (lod != null) {

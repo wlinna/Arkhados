@@ -102,9 +102,9 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                 this.broadcast(syncMessage);
             }
 
-            ProjectileControl fireballControl = spatial.getControl(ProjectileControl.class);
-            if (fireballControl != null) {
-                SyncProjectileMessage syncMessage = new SyncProjectileMessage(entry.getKey(), fireballControl);
+            ProjectileControl projectileControl = spatial.getControl(ProjectileControl.class);
+            if (projectileControl != null) {
+                SyncProjectileMessage syncMessage = new SyncProjectileMessage(entry.getKey(), projectileControl);
                 this.broadcast(syncMessage);
             }
         }

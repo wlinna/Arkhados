@@ -18,6 +18,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterAnimationControl;
+import arkhados.controls.CharacterInterpolationControl;
 import arkhados.controls.CharacterMovementControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -56,6 +57,7 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
         character.getControl(InfluenceInterfaceControl.class).setHealth(this.health);
+        character.getControl(CharacterInterpolationControl.class).interpolate(location);
         character.getControl(CharacterPhysicsControl.class).warp(this.location);
         character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
         character.getControl(CharacterPhysicsControl.class).enqueueSetLinearVelocity(velocity);
