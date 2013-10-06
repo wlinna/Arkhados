@@ -48,7 +48,7 @@ public class ServerGameManager extends AbstractAppState {
         }
         this.roundManager.setEnabled(true);
 
-        this.worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Circle.j3o"});
+        this.worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o"});
 
         this.running = true;
         this.syncManager.getServer().broadcast(new StartGameMessage());

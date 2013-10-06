@@ -43,7 +43,6 @@ import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.math.Plane;
-import com.jme3.scene.control.LodControl;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import java.util.LinkedList;
 import java.util.List;

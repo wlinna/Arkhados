@@ -79,7 +79,8 @@ public class UserCommandManager extends AbstractAppState {
     }
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
-            if (UserCommandManager.this.getCharacterInterface().isDead()) {
+            InfluenceInterfaceControl influenceInterface = getCharacterInterface();
+            if (influenceInterface == null ||  influenceInterface.isDead()) {
                 return;
             }
             if (isPressed) {
@@ -96,7 +97,8 @@ public class UserCommandManager extends AbstractAppState {
     };
     private ActionListener actionMoveDirection = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
-            if (getCharacterInterface().isDead()) {
+            InfluenceInterfaceControl influenceInterface = getCharacterInterface();
+            if (influenceInterface == null ||  influenceInterface.isDead()) {
                 return;
             }
             if (movementKeyFlags.get(name) == false && !isPressed) {
@@ -249,8 +251,11 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private InfluenceInterfaceControl getCharacterInterface() {
-        // FIXME: Sometimes NullPointerException occurs here
-        return this.getCharacter().getControl(InfluenceInterfaceControl.class);
+        Spatial spatial = this.getCharacter();
+        if (spatial == null) {
+            return null;
+        }
+        return spatial.getControl(InfluenceInterfaceControl.class);
     }
 
     public long getPlayerId() {

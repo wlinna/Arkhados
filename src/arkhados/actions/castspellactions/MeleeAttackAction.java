@@ -16,18 +16,12 @@ package arkhados.actions.castspellactions;
 
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.debug.Arrow;
 import java.util.List;
 
 /**
