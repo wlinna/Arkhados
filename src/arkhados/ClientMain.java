@@ -168,8 +168,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 this.inputManager, this.audioRenderer, this.guiViewPort);
 
         this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager));
+        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager), this.clientHudManager);
         this.guiViewPort.addProcessor(this.niftyDisplay);
+
+        this.clientHudManager.setNifty(nifty);
 
         this.statusText = this.nifty.getScreen("join_server")
                 .findElementByName("layer").findElementByName("panel")

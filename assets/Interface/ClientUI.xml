@@ -280,8 +280,8 @@
         </layer>
     </screen>
 
-    <screen id="default_hud" controller="arkhados.ClientMain">
-        <layer id="layer" childLayout="vertical">
+    <screen id="default_hud" controller="arkhados.ClientHudManager">
+        <layer id="bars" childLayout="vertical">
 <!--            <panel id="panel_top" childLayout="horizontal">
                 <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">
                 </panel>
@@ -289,6 +289,12 @@
 
             <panel id="panel_bottom" childLayout="horizontal" width="100%"  height="80px" style="nifty-panel" align="left"valign="center">
             </panel>-->
+        </layer>
+        <layer id="layer_countdown" childLayout="center" valign="center">
+            <panel id="panel_countdown" valign="center" align="center" childLayout="absolute">
+                <!--textLineHeight doesn't appear to be working :(-->
+                <text id="text_countdown" style="nifty-label" text="#" align="center" x="50%" y="30%" height="40px" width="40px" textLineHeight="30" />
+            </panel>
         </layer>
     </screen>
 </nifty>

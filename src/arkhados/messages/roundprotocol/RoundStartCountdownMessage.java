@@ -12,27 +12,28 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.influences;
+package arkhados.messages.roundprotocol;
 
-import com.jme3.scene.Spatial;
-import arkhados.controls.InfluenceInterfaceControl;
+import com.jme3.network.AbstractMessage;
+import com.jme3.network.serializing.Serializable;
 
 /**
+ *
  * @author william
  */
-public class DamagOverTimeeInfluence implements Influence {
 
-    private float dps;
+@Serializable
+public class RoundStartCountdownMessage extends AbstractMessage {
+    private int time;
 
-    public DamagOverTimeeInfluence(float dps) {
-        this.dps = dps;
+    public RoundStartCountdownMessage() {
     }
 
-    public void affect(Spatial spatial, float tpf) {
-        InfluenceInterfaceControl characterInfluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
-        if (characterInfluenceControl != null) {
-            // FIXME: Rounding errors cause significant changes in total damage
-            characterInfluenceControl.doDamage(this.dps * tpf);
-        }
+    public RoundStartCountdownMessage(int time) {
+        this.time = time;
+    }
+
+    public int getTime() {
+        return this.time;
     }
 }

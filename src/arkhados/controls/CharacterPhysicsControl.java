@@ -133,6 +133,5 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         float zDrag = 0.5f * 1.3f * FastMath.sqr(super.getVelocity().z) * 1.1f;
         Vector3f counter = new Vector3f(-xDrag * xSign, 0f, -zDrag * zSign);
         super.velocity.addLocal(counter);
-
     }
 }

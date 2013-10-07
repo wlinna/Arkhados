@@ -34,25 +34,37 @@ import arkhados.actions.EntityAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.util.UserDataStrings;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.screen.ScreenController;
 
 /**
  *
  * @author william
  */
-public class ClientHudManager extends AbstractAppState {
+public class ClientHudManager extends AbstractAppState implements ScreenController {
 
-    private float deltaY = 40.0f;
+    private Nifty nifty;
+    private Screen screen;
     private Camera cam;
     private Node guiNode;
     private BitmapFont guiFont;
     private List<Node> characters = new ArrayList<Node>();
     private List<BitmapText> hpBars = new ArrayList<BitmapText>();
+    private int currentSeconds = -1;
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
         this.guiNode = guiNode;
         this.guiFont = guiFont;
         this.guiNode.addControl(new ActionQueueControl());
+    }
+
+    public void setNifty(Nifty nifty) {
+        this.nifty = nifty;
+        this.screen = this.nifty.getScreen("default_hud");
     }
 
     @Override
@@ -66,7 +78,6 @@ public class ClientHudManager extends AbstractAppState {
         for (int i = 0; i < this.characters.size(); ++i) {
             this.updateHpBar(i);
         }
-
     }
 
     public void addCharacter(Spatial character) {
@@ -75,12 +86,40 @@ public class ClientHudManager extends AbstractAppState {
         this.createHpBar();
     }
 
+    public void startRound() {
+        Element layerCountdown = this.screen.findElementByName("layer_countdown");
+        layerCountdown.disable();
+        layerCountdown.hide();
+
+        // TODO: Show bottom bar
+    }
+
+    public void setSecondsLeftToStart(int seconds) {
+//        Element layerCountdown = this.screen.findElementByName("layer_countdown");
+//        if (!layerCountdown.isEnabled()) {
+//            layerCountdown.enable();
+//            layerCountdown.show();
+//        }
+        if (this.currentSeconds == -1) {
+            Element layerCountdown = this.screen.findElementByName("layer_countdown");
+
+            layerCountdown.enable();
+            layerCountdown.show();
+        }
+        if (seconds != currentSeconds) {
+            this.currentSeconds = seconds;
+            Element textElement = this.screen.findElementByName("text_countdown");
+            textElement.getRenderer(TextRenderer.class).setText(Integer.toString(seconds));
+        }
+    }
+
     public void clear() {
         this.characters.clear();
         for (BitmapText hpBar : this.hpBars) {
             hpBar.removeFromParent();
         }
         this.hpBars.clear();
+        this.currentSeconds = -1;
     }
 
     private void createHpBar() {
@@ -113,5 +152,19 @@ public class ClientHudManager extends AbstractAppState {
     @Override
     public void cleanup() {
         super.cleanup();
+    }
+
+    public void bind(Nifty nifty, Screen screen) {
+    }
+
+    public void onStartScreen() {
+        List<Element> layers = this.screen.getLayerElements();
+        for (Element layer : layers) {
+//            layer.disable();
+//            layer.hideWithoutEffect();
+        }
+    }
+
+    public void onEndScreen() {
     }
 }

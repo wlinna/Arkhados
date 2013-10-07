@@ -33,6 +33,7 @@ import arkhados.messages.roundprotocol.CreateWorldMessage;
 import arkhados.messages.roundprotocol.NewRoundMessage;
 import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
+import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 
@@ -66,7 +67,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.app = app;
 
         if (this.worldManager.isClient()) {
-            this.syncManager.getClient().addMessageListener(this, CreateWorldMessage.class, NewRoundMessage.class, RoundFinishedMessage.class);
+            this.syncManager.getClient().addMessageListener(this, CreateWorldMessage.class, NewRoundMessage.class, RoundFinishedMessage.class, RoundStartCountdownMessage.class);
             this.clientMain = (ClientMain) app;
             this.hudManager = stateManager.getState(ClientHudManager.class);
 
@@ -126,8 +127,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                 public Void call() throws Exception {
 
                     int i = 0;
-                    for (Iterator<PlayerData> it = PlayerData.getPlayers().iterator(); it.hasNext();) {
-                        PlayerData playerData = it.next();
+                    for (PlayerData playerData : PlayerData.getPlayers()) {
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
                         final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
@@ -146,11 +146,10 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                     return null;
                 }
             });
-
         }
 
-        // TODO: Wait for confirmation from clients
-        this.startNewRound();
+        this.syncManager.getServer().broadcast(new RoundStartCountdownMessage(5));
+        this.roundStartCountDown = 5f;
     }
 
     private void startNewRound() {
@@ -161,6 +160,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.roundRunning = true;
         if (this.worldManager.isClient()) {
             this.clientMain.getUserCommandManager().setEnabled(true);
+            this.hudManager.startRound();
         }
     }
 
@@ -203,13 +203,14 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
     @Override
     public void update(float tpf) {
-
-        if (this.worldManager.isServer()) {
-            if (this.roundStartCountDown > 0f) {
-                this.roundStartCountDown -= tpf;
+        if (this.roundStartCountDown > 0f) {
+            this.roundStartCountDown -= tpf;
+            if (this.worldManager.isServer()) {
                 if (this.roundStartCountDown <= 0f) {
                     this.startNewRound();
                 }
+            } else if (this.worldManager.isClient()) {
+                this.hudManager.setSecondsLeftToStart((int) this.roundStartCountDown);
             }
         }
 
@@ -229,7 +230,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                     }
                 }
             }
-            if (aliveAmount == 1) {
+            if (aliveAmount == 0) {
                 this.endRound();
             }
         }
@@ -276,6 +277,9 @@ public class RoundManager extends AbstractAppState implements MessageListener {
             this.createWorld();
         } else if (m instanceof NewRoundMessage) {
             this.startNewRound();
+        } else if (m instanceof RoundStartCountdownMessage) {
+            RoundStartCountdownMessage message = (RoundStartCountdownMessage) m;
+            this.roundStartCountDown = message.getTime();
         } else if (m instanceof RoundFinishedMessage) {
             this.endRound();
         }
@@ -294,7 +298,6 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 //            long playerdId = ServerClientData.getPlayerId(client.getId());
 //            PlayerData.setData(playerdId, PlayerDataStrings.ENTITY_ID, true);
 //            if (this.allReadyForRound()) {
-//                // TODO: Countdown like 3...2...1...Fight!
 //                this.startNewRound();
 //            }
         }
