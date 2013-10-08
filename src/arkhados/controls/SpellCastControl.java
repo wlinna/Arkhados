@@ -14,14 +14,11 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -33,9 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import arkhados.WorldManager;
 import arkhados.actions.CastingSpellAction;
-import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
-import arkhados.actions.RunToAction;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
@@ -85,6 +80,24 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(ActionQueueControl.class).clear();
             this.cooldowns.put(spellName, 0f);
         }
+    }
+
+    public void castIfDifferentSpell(final String input, Vector3f targetLocation) {
+        Spell spell = this.keySpellMappings.get(input);
+
+        EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
+        if (action != null && action instanceof CastingSpellAction) {
+
+            final String spellName = ((CastingSpellAction) action).getSpellName();
+            // Let's not interrupt spell if you are already casting same spell
+            if (spell.getName().equals(spellName)) {
+                return;
+            }
+            super.spatial.getControl(ActionQueueControl.class).clear();
+            this.cooldowns.put(spellName, 0f);
+        }
+
+        this.cast(input, targetLocation);
     }
 
     public void cast(final String input, Vector3f targetLocation) {

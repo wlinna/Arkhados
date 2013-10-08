@@ -147,7 +147,6 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                 return;
             }
             HostedConnection client = (HostedConnection) source;
-            // HACK: If server receives sync message, it sets syncId of players character
             final long playerId = ServerClientData.getPlayerId(client.getId());
             final long syncId = PlayerData.getLongData(playerId, PlayerDataStrings.ENTITY_ID);
             message.setSyncId(syncId);

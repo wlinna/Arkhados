@@ -107,7 +107,6 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                     syncManager.getClient().send(new ClientWorldCreatedMessage());
                 }
 
-
                 if (worldManager.isServer()) {
                     logger.log(Level.INFO, "Broadcasting CreateWorldMessage");
                     syncManager.getServer().broadcast(new CreateWorldMessage());

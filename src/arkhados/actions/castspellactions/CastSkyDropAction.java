@@ -51,7 +51,7 @@ public class CastSkyDropAction extends EntityAction {
         long entityId = this.worldManager.addNewEntity(this.spell.getName(), startLocation, Quaternion.IDENTITY);
         Spatial skyDrop = this.worldManager.getEntity(entityId);
 
-        // TODO: Queue changes to physics properties
+        // TODO: Use MotionPath instead of relying on physics
 
         return false;
     }
