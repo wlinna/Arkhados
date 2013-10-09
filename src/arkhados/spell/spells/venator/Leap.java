@@ -63,21 +63,6 @@ class CastLeapAction extends EntityAction {
 
     private float forwardSpeed = 105f;
 
-    private void physicalVersion() {
-
-        //        float dragCounterFactor
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        Vector3f displacement = physics.getTargetLocation().subtract(super.spatial.getLocalTranslation());
-        float airTime = displacement.length() / forwardSpeed;
-//        float ySpeed = height / airTime + 0.5f * 98.1f * airTime;
-        float ySpeed = 0.5f * 98.1f * airTime;
-        Vector3f normalizedDisplacement = displacement.normalizeLocal();
-        Vector3f jumpVelocity = new Vector3f(this.forwardSpeed * normalizedDisplacement.x, ySpeed, this.forwardSpeed * normalizedDisplacement.z);
-        physics.enqueueSetLinearVelocity(jumpVelocity);
-//        physics.applyImpulse(jumpVelocity.multLocal(100f));
-
-    }
-
     private void motionPathVersion() {
 
 
@@ -88,9 +73,12 @@ class CastLeapAction extends EntityAction {
 
         final MotionPath path = new MotionPath();
         // We set y to 1 to prevent ground collision on start
-        path.addWayPoint(super.spatial.getLocalTranslation().clone().setY(1f));
+
+        final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
+        final Vector3f finalLocation = physics.getTargetLocation().clone().setY(1f);
+        path.addWayPoint(startLocation);
         path.addWayPoint(super.spatial.getLocalTranslation().add(displacement.divide(2)).setY(displacement.length() / 3f));
-        path.addWayPoint(physics.getTargetLocation().clone().setY(1f));
+        path.addWayPoint(finalLocation);
 //        path.setCurveTension(1f);
 //        path.setPathSplineType(Spline.SplineType.CatmullRom);
 
@@ -98,9 +86,8 @@ class CastLeapAction extends EntityAction {
         MotionEvent motionControl = new MotionEvent(super.spatial, path);
 //        motionControl.setDirectionType(MotionEvent.Direction.PathAndRotation);
 //        motionControl.setRotation(new Quaternion().fromAngleNormalAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y));
-        motionControl.setInitialDuration(1f);
+        motionControl.setInitialDuration(finalLocation.distance(startLocation) / this.forwardSpeed);
         motionControl.setSpeed(2f);
-        motionControl.play();
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
@@ -134,11 +121,11 @@ class CastLeapAction extends EntityAction {
                 if (path.getNbWayPoints() == wayPointIndex + 1) {
                     physics.switchToNormalPhysicsMode();
                     this.landingEffect();
-//                    physics.warp(path.getWayPoint(wayPointIndex));
                 }
             }
         });
 
+        motionControl.play();
     }
 
     @Override

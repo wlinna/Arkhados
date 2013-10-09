@@ -42,10 +42,13 @@ import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
+import arkhados.messages.syncmessages.GenericSyncMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.util.InputMappingStrings;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -132,7 +135,15 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         this.syncManager = new SyncManager(this, this.client);
         this.stateManager.attach(this.syncManager);
-        this.syncManager.setMessagesToListen(AddEntityMessage.class, RemoveEntityMessage.class, SyncCharacterMessage.class, SyncProjectileMessage.class, StartCastingSpellMessage.class);
+        this.syncManager.setMessagesToListen(
+                AddEntityMessage.class,
+                RestoreTemporarilyRemovedEntityMessage.class,
+                RemoveEntityMessage.class,
+                TemporarilyRemoveEntityMessage.class,
+                GenericSyncMessage.class,
+                SyncCharacterMessage.class,
+                SyncProjectileMessage.class,
+                StartCastingSpellMessage.class);
         this.worldManager = new WorldManager();
 
         this.userCommandManager = new UserCommandManager(this.client, this.inputManager);

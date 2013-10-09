@@ -32,9 +32,12 @@ import java.util.concurrent.Callable;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.messages.syncmessages.AbstractSyncMessage;
+import arkhados.messages.syncmessages.GenericSyncMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
 import arkhados.util.PlayerDataStrings;
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.MotionEvent;
 
 /**
  *
@@ -105,6 +108,12 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             ProjectileControl projectileControl = spatial.getControl(ProjectileControl.class);
             if (projectileControl != null) {
                 SyncProjectileMessage syncMessage = new SyncProjectileMessage(entry.getKey(), projectileControl);
+                this.broadcast(syncMessage);
+            }
+
+            MotionEvent motionEvent = spatial.getControl(MotionEvent.class);
+            if (motionEvent != null && characterControl == null) {
+                GenericSyncMessage syncMessage = new GenericSyncMessage(entry.getKey(), spatial);
                 this.broadcast(syncMessage);
             }
         }

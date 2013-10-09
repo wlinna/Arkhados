@@ -34,9 +34,12 @@ import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
+import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.spell.Spell;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
@@ -179,6 +182,42 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
+    public void temporarilyRemoveEntity(long id) {
+        if (this.isServer()) {
+            this.server.broadcast(new TemporarilyRemoveEntityMessage(id));
+        }
+        Spatial spatial = this.getEntity(id);
+        spatial.removeFromParent();
+        this.syncManager.removeEntity(id);
+
+        CharacterPhysicsControl characterPhysics = spatial.getControl(CharacterPhysicsControl.class);
+        if (characterPhysics != null) {
+            characterPhysics.setEnabled(false);
+        }
+    }
+
+    public void restoreTemporarilyRemovedEntity(long id, Vector3f location, Quaternion rotation) {
+        if (this.isServer()) {
+            this.server.broadcast(new RestoreTemporarilyRemovedEntityMessage(id, location, rotation));
+        }
+        Spatial spatial = this.getEntity(id);
+        this.worldRoot.attachChild(spatial);
+        this.syncManager.addObject(id, spatial);
+
+        CharacterPhysicsControl characterPhysics = spatial.getControl(CharacterPhysicsControl.class);
+        if (characterPhysics != null) {
+            characterPhysics.setEnabled(true);
+        }
+
+        SyncInterpolationControl interpolationControl = spatial.getControl(SyncInterpolationControl.class);
+        if (interpolationControl != null) {
+            interpolationControl.ignoreNext();
+        }
+
+        this.setEntityTranslation(spatial, location, rotation);
+    }
+
+
     private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {
         if (entityModel.getControl(RigidBodyControl.class) != null) {
             entityModel.getControl(RigidBodyControl.class).setPhysicsLocation(location);
@@ -186,7 +225,7 @@ public class WorldManager extends AbstractAppState {
         } else if (entityModel.getControl(CharacterPhysicsControl.class) != null) {
             entityModel.getControl(CharacterPhysicsControl.class).warp(location);
             entityModel.setLocalTranslation(location);
-            entityModel.getControl(CharacterPhysicsControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).multLocal(1, 0, 1).normalizeLocal());
+            entityModel.getControl(CharacterPhysicsControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
         } else {
             entityModel.setLocalTranslation(location);
             entityModel.setLocalRotation(rotation);

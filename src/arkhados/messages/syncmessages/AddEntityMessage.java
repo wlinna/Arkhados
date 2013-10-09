@@ -15,10 +15,10 @@
 
 package arkhados.messages.syncmessages;
 
+import arkhados.WorldManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
-import arkhados.WorldManager;
 
 /**
  *
@@ -41,29 +41,10 @@ public class AddEntityMessage extends AbstractSyncMessage {
         this.rotation = rotation;
     }
 
-    public long getEntityId() {
-        return this.entityId;
-    }
-
-    public String getModelId() {
-        return this.modelId;
-    }
-
-    public Vector3f getLocation() {
-        return this.location;
-    }
-
-    public Quaternion getRotation() {
-        return this.rotation;
-    }
-
     @Override
-    public void applyData(Object object) {
-        WorldManager worldManager = (WorldManager) object;
+    public void applyData(Object target) {
+        WorldManager worldManager = (WorldManager) target;
         worldManager.addEntity(this.entityId, this.modelId, this.location,
                 this.rotation);
     }
-
-
-
 }

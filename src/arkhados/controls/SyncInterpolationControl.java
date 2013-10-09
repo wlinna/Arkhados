@@ -31,14 +31,15 @@ import java.io.IOException;
  *
  * @author william
  */
-public class CharacterInterpolationControl extends AbstractControl {
+public class SyncInterpolationControl extends AbstractControl {
 
     private Vector3f oldLocation = new Vector3f();
-    private Vector3f targetLocaton = new Vector3f();
+    private Vector3f targetLocation = new Vector3f();
 //    private Vector3f velocity;
     private float timeBetween = 0f;
     private float timeSinceLast = 0f;
     private float timeInterpolated = 0f;
+    private boolean ignoreNext = false;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -48,8 +49,9 @@ public class CharacterInterpolationControl extends AbstractControl {
             return;
         }
         float factor = FastMath.clamp(this.timeInterpolated / this.timeBetween, 0f, 1f);
-        super.spatial.getLocalTranslation().interpolate(this.oldLocation,
-                this.targetLocaton, factor);
+        Vector3f trans = super.spatial.getLocalTranslation().interpolate(this.oldLocation,
+                this.targetLocation, factor);
+        super.spatial.setLocalTranslation(trans);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class CharacterInterpolationControl extends AbstractControl {
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        CharacterInterpolationControl control = new CharacterInterpolationControl();
+        SyncInterpolationControl control = new SyncInterpolationControl();
         return control;
     }
 
@@ -74,13 +76,22 @@ public class CharacterInterpolationControl extends AbstractControl {
     }
 
     public void interpolate(Vector3f newLocation) {
-
-        this.oldLocation.set(super.spatial.getLocalTranslation());
-        this.targetLocaton = newLocation;
+        if (this.ignoreNext) {
+            this.oldLocation.set(newLocation);
+        } else {
+            this.oldLocation.set(super.spatial.getLocalTranslation());
+        }
+        this.targetLocation.set(newLocation);
 //        this.velocity.set(newLocation.subtract(super.spatial.getLocalTranslation()).divide(this.timeBetween));
 
         this.timeBetween = this.timeSinceLast;
         this.timeSinceLast = 0f;
         this.timeInterpolated = 0f;
+
+        this.ignoreNext = false;
+    }
+
+    public void ignoreNext() {
+        this.ignoreNext = true;
     }
 }

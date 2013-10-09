@@ -22,10 +22,13 @@ import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.CreateWorldMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
+import arkhados.messages.syncmessages.GenericSyncMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
@@ -60,7 +63,10 @@ public class MessageUtils {
 
         // <Sync>
         Serializer.registerClass(AddEntityMessage.class);
+        Serializer.registerClass(RestoreTemporarilyRemovedEntityMessage.class);
         Serializer.registerClass(RemoveEntityMessage.class);
+        Serializer.registerClass(TemporarilyRemoveEntityMessage.class);
+        Serializer.registerClass(GenericSyncMessage.class);
         Serializer.registerClass(SyncCharacterMessage.class);
         Serializer.registerClass(SyncProjectileMessage.class);
         Serializer.registerClass(StartCastingSpellMessage.class);

@@ -43,10 +43,6 @@ public class RemoveEntityMessage extends AbstractSyncMessage {
         super.setSyncId(-1);
     }
 
-    public long getEntityId() {
-        return entityId;
-    }
-
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;

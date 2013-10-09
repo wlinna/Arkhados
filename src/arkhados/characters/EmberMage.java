@@ -61,6 +61,7 @@ public class EmberMage extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Fireball"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
+        spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -73,6 +74,7 @@ public class EmberMage extends NodeBuilder {
         animControl.addSpellAnimation("Fireball", "Idle");
         animControl.addSpellAnimation("Magma Bash", "Idle");
         animControl.addSpellAnimation("Ember Circle", "Idle");
+        animControl.addSpellAnimation("Firewalk", "Idle");
 
         entity.addControl(new InfluenceInterfaceControl());
 
