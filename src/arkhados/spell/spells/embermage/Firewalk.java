@@ -17,11 +17,14 @@ package arkhados.spell.spells.embermage;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.influences.Influence;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.cinematic.MotionPath;
@@ -32,9 +35,16 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -134,18 +144,60 @@ public class Firewalk extends Spell {
             node.setUserData(UserDataStrings.DAMAGE, 50f);
             node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
-            final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
 
-            final GhostControl ghost = new GhostControl(collisionShape);
-            ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
-            ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+            if (worldManager.isServer()) {
+                final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
 
-            node.addControl(ghost);
+                final GhostControl ghost = new GhostControl(collisionShape);
+                ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
+                ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
 
-            // TODO: Make firewalk do damage when passing through enemy
+                node.addControl(ghost);
 
-
+                node.addControl(new FirewalkCollisionHandler());
+            }
             return node;
         }
+    }
+}
+
+class FirewalkCollisionHandler extends AbstractControl {
+
+    private GhostControl ghost;
+    private Set<Long> collidedWith = new HashSet<Long>(8);
+
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        this.ghost = spatial.getControl(GhostControl.class);
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+        List<PhysicsCollisionObject> collisionObjects = this.ghost.getOverlappingObjects();
+        for (PhysicsCollisionObject collisionObject : collisionObjects) {
+            if (collisionObject.getUserObject() instanceof Spatial) {
+                Spatial spatial = (Spatial) collisionObject.getUserObject();
+                Long entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                if (collidedWith.contains(entityId)) {
+                    continue;
+                }
+
+                this.collidedWith.add(entityId);
+                this.collisionEffect(spatial);
+            }
+        }
+    }
+
+    private void collisionEffect(Spatial spatial) {
+        InfluenceInterfaceControl influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);
+        if (influenceInterface == null) {
+            return;
+        }
+        influenceInterface.doDamage(80f);
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 }
