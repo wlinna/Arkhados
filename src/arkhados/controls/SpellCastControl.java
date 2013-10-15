@@ -45,6 +45,7 @@ public class SpellCastControl extends AbstractControl {
     private HashMap<String, Spell> spells = new HashMap<String, Spell>();
     private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
     private HashMap<String, Spell> keySpellMappings = new HashMap<String, Spell>();
+    private static final float GLOBAL_COOLDOWN = 0.2f;
 
 //    private float activeCastTimeLeft = 0f;
     public SpellCastControl(WorldManager worldManager) {
@@ -110,6 +111,8 @@ public class SpellCastControl extends AbstractControl {
             return;
         }
 
+        this.globalCooldown();
+
         if (this.worldManager.isServer()) {
             if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
                 return;
@@ -171,5 +174,13 @@ public class SpellCastControl extends AbstractControl {
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule out = ex.getCapsule(this);
+    }
+
+    private void globalCooldown() {
+        for (String spell : this.cooldowns.keySet()) {
+            if (this.cooldowns.get(spell) < GLOBAL_COOLDOWN) {
+                this.cooldowns.put(spell, GLOBAL_COOLDOWN);
+            }
+        }
     }
 }
