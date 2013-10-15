@@ -162,7 +162,7 @@ public class UserCommandManager extends AbstractAppState {
             if (this.mouseTargetUpdateTimer <= 0f) {
                 this.calculateMouseGroundPosition();
                 this.client.send(new UcMouseTargetMessage(this.mouseGroundPosition));
-                this.mouseTargetUpdateTimer = 0.1f;
+                this.mouseTargetUpdateTimer = 0.075f;
             }
         }
     }

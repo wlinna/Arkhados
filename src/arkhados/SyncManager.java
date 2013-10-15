@@ -50,7 +50,6 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private Application app;
     HashMap<Long, Object> syncObjects = new HashMap<Long, Object>();
     private float syncTimer = 0.0f;
-    private float syncFrequency = 0.15f;
     private Queue<AbstractSyncMessage> syncQueue =
             new LinkedList<AbstractSyncMessage>();
     private boolean listening = false; // NOTE: Only server is affected
@@ -83,7 +82,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             }
         } else if (this.server != null) {
             this.syncTimer += tpf;
-            if (this.syncTimer >= this.syncFrequency) {
+            if (this.syncTimer >= Globals.DEFAULT_SYNC_FREQUENCY) {
                 this.sendSyncData();
                 this.syncTimer = 0.0f;
             }
@@ -132,7 +131,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         if (object != null) {
             message.applyData(object);
         } else {
-            System.out.println("SyncId does not exist");
+//            System.out.println("SyncId does not exist");
         }
     }
 
