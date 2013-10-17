@@ -15,35 +15,40 @@
 package arkhados.actions;
 
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 
 /**
  *
  * @author william
  */
-public class CastingSpellAction extends EntityAction{
-    private float delay;
-    private final String spellName;
+public class CastingSpellAction extends EntityAction {
 
-    public CastingSpellAction(final String spellName, float delay) {
-        this.spellName = spellName;
-        this.delay = delay;
+    private float delay;
+    private final Spell spell;
+
+    public CastingSpellAction(final Spell spell) {
+        this.spell = spell;
+        this.delay = spell.getCastTime();
     }
 
     @Override
     public boolean update(float tpf) {
         this.delay -= tpf;
         if (this.delay <= 0f) {
-            super.spatial.getControl(CharacterPhysicsControl.class).restoreWalking();
+            if (!this.spell.canMoveWhileCasting()) {
+                super.spatial.getControl(CharacterPhysicsControl.class).restoreWalking();
+            }
             return false;
         }
-        super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        if (!this.spell.canMoveWhileCasting()) {
+            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        }
 
         return true;
     }
 
-    public String getSpellName() {
-        return this.spellName;
+    public Spell getSpell() {
+        return this.spell;
     }
-
 }

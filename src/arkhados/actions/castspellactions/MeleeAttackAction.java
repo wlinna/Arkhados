@@ -16,6 +16,7 @@ package arkhados.actions.castspellactions;
 
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -42,7 +43,7 @@ public class MeleeAttackAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
-        Vector3f hitDirection = physicsControl.getTargetLocation().subtract(super.spatial.getLocalTranslation()).normalizeLocal().multLocal(this.range);
+        Vector3f hitDirection = physicsControl.getTargetLocation().subtract(super.spatial.getLocalTranslation()).normalize().multLocal(this.range);
 
         physicsControl.setViewDirection(hitDirection);
         PhysicsSpace space = physicsControl.getPhysicsSpace();

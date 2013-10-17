@@ -36,6 +36,7 @@ public class Rend extends Spell {
         final float castTime = 0.2f;
 
         final Rend spell = new Rend("Rend", cooldown, range, castTime);
+        spell.setCanMoveWhileCasting(true);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Vector3f vec) {

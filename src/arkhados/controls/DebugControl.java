@@ -75,6 +75,20 @@ public class DebugControl extends AbstractControl {
         g.setMaterial(mat);
         super.spatial.getParent().attachChild(g);
         g.setLocalTranslation(from);
+    }
 
+    public void pointToLocation(Vector3f location) {
+        Vector3f from = location.clone().setY(2f);
+        Vector3f direction = location.subtract(from);
+        Arrow arrow = new Arrow(direction);
+
+        arrow.setLineWidth(6f);
+        Geometry g = new Geometry("arrow", arrow);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.getAdditionalRenderState().setWireframe(true);
+        mat.setColor("Color", ColorRGBA.Blue);
+        g.setMaterial(mat);
+        super.spatial.getParent().attachChild(g);
+        g.setLocalTranslation(from);
     }
 }

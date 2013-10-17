@@ -17,6 +17,7 @@ package arkhados.actions.castspellactions;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.DebugControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;

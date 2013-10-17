@@ -80,6 +80,7 @@ public class EntityFactory {
 
         if ("Mage".equals(id)) {
             entity = new EmberMage().build();
+            entity.addControl(new DebugControl(this.assetManager));
 
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);

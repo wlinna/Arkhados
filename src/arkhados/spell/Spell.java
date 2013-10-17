@@ -102,6 +102,7 @@ public abstract class Spell {
     private final float cooldown;
     private final float range;
     private final float castTime;
+    private boolean canMoveWhileCasting = false;
     protected CastSpellActionBuilder castSpellActionBuilder;
     protected NodeBuilder nodeBuilder;
 
@@ -147,5 +148,13 @@ public abstract class Spell {
 
     public Node buildNode() {
         return this.nodeBuilder.build();
+    }
+
+    public boolean canMoveWhileCasting() {
+        return this.canMoveWhileCasting;
+    }
+
+    public void setCanMoveWhileCasting(boolean canMoveWhileCasting) {
+        this.canMoveWhileCasting = canMoveWhileCasting;
     }
 }

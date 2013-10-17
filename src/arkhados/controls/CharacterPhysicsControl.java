@@ -34,7 +34,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     private Vector3f queuedLinearVelocity = null;
     private int previousRight = 0;
     private int previousDown = 0;
-    private Vector3f targetLocation;
+    private Vector3f targetLocation = new Vector3f();
 
     public CharacterPhysicsControl(float radius, float height, float mass) {
         super(radius, height, mass);
@@ -113,8 +113,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         return this.targetLocation;
     }
 
-    public void setTargetLocation(Vector3f targetLocation) {
-        this.targetLocation = targetLocation;
+    public void setTargetLocation(Vector3f target) {
+        this.targetLocation.set(target);
 //        this.lookAt(targetLocation);
     }
 

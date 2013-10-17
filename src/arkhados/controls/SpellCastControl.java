@@ -77,9 +77,9 @@ public class SpellCastControl extends AbstractControl {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
 
-            final String spellName = ((CastingSpellAction) action).getSpellName();
+            final Spell spell = ((CastingSpellAction) action).getSpell();
             super.spatial.getControl(ActionQueueControl.class).clear();
-            this.cooldowns.put(spellName, 0f);
+            this.cooldowns.put(spell.getName(), 0f);
         }
     }
 
@@ -89,7 +89,8 @@ public class SpellCastControl extends AbstractControl {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
 
-            final String spellName = ((CastingSpellAction) action).getSpellName();
+            final Spell currentSpell = ((CastingSpellAction) action).getSpell();
+            final String spellName = currentSpell.getName();
             // Let's not interrupt spell if you are already casting same spell
             if (spell.getName().equals(spellName)) {
                 return;
@@ -107,20 +108,17 @@ public class SpellCastControl extends AbstractControl {
         }
 
         Spell spell = this.keySpellMappings.get(input);
-        if (spell != null && this.cooldowns.get(spell.getName()) > 0.0f) {
+        if (spell != null && this.cooldowns.get(spell.getName()) > 0f) {
             return;
         }
-
-        this.globalCooldown();
 
         if (this.worldManager.isServer()) {
             if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
                 return;
             }
 
-            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
-            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell.getName(), spell.getCastTime()));
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell));
 //            this.activeCastTimeLeft = spell.getCastTime();
             EntityAction castingAction = spell.buildCastAction(targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
@@ -128,6 +126,7 @@ public class SpellCastControl extends AbstractControl {
             this.worldManager.getSyncManager().getServer().broadcast(
                     new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
         }
+        this.globalCooldown();
         this.cooldowns.put(spell.getName(), spell.getCooldown());
     }
 

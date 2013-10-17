@@ -80,7 +80,7 @@ public class UserCommandManager extends AbstractAppState {
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             InfluenceInterfaceControl influenceInterface = getCharacterInterface();
-            if (influenceInterface == null ||  influenceInterface.isDead()) {
+            if (influenceInterface == null || influenceInterface.isDead()) {
                 return;
             }
             if (isPressed) {
@@ -98,7 +98,7 @@ public class UserCommandManager extends AbstractAppState {
     private ActionListener actionMoveDirection = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
             InfluenceInterfaceControl influenceInterface = getCharacterInterface();
-            if (influenceInterface == null ||  influenceInterface.isDead()) {
+            if (influenceInterface == null || influenceInterface.isDead()) {
                 return;
             }
             if (movementKeyFlags.get(name) == false && !isPressed) {
@@ -157,13 +157,11 @@ public class UserCommandManager extends AbstractAppState {
         if (character == null) {
             return;
         }
-        if (character.getControl(CharacterPhysicsControl.class).getWalkDirection().equals(Vector3f.ZERO)) {
-            this.mouseTargetUpdateTimer -= tpf;
-            if (this.mouseTargetUpdateTimer <= 0f) {
-                this.calculateMouseGroundPosition();
-                this.client.send(new UcMouseTargetMessage(this.mouseGroundPosition));
-                this.mouseTargetUpdateTimer = 0.075f;
-            }
+        this.mouseTargetUpdateTimer -= tpf;
+        if (this.mouseTargetUpdateTimer <= 0f) {
+            this.calculateMouseGroundPosition();
+            this.client.send(new UcMouseTargetMessage(this.mouseGroundPosition));
+            this.mouseTargetUpdateTimer = 0.075f;
         }
     }
 
