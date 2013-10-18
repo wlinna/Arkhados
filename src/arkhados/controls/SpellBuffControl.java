@@ -1,19 +1,20 @@
 /*    This file is part of Arkhados.
 
-    Arkhados is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Arkhados is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Arkhados is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Arkhados is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+ You should have received a copy of the GNU General Public License
+ along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -33,11 +34,14 @@ import java.util.List;
  * @author william
  */
 public class SpellBuffControl extends AbstractControl {
-    private List<CrowdControlBuff> crowdControlBuffs = new ArrayList<CrowdControlBuff>();
 
-    public void addCrowControlBuff(CrowdControlBuff buff) {
-        this.crowdControlBuffs.add(buff);
+    private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
+
+
+    public void addBuff(AbstractBuff buff) {
+        this.buffs.add(buff);
     }
+
     @Override
     protected void controlUpdate(float tpf) {
     }
@@ -63,7 +67,7 @@ public class SpellBuffControl extends AbstractControl {
         OutputCapsule out = ex.getCapsule(this);
     }
 
-    public List<CrowdControlBuff> getCrowdControlBuffs() {
-        return this.crowdControlBuffs;
+    public List<AbstractBuff> getBuffs() {
+        return this.buffs;
     }
 }

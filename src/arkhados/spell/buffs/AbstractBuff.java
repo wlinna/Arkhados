@@ -14,19 +14,33 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.controls.InfluenceInterfaceControl;
+import com.jme3.scene.Spatial;
+
 /**
  * Base class for all buffs, negative or positive.
+ *
  * @author william
  */
-public abstract class AbstractBuff  {
+public abstract class AbstractBuff {
+
     private long buffGroupId;
+    protected float duration;
+    protected InfluenceInterfaceControl influenceInterface = null;
 
     /**
      * @param buffGroupId identifies group of buffs so that they can be removed
      * with single dispel. Not used currently
      */
-    public AbstractBuff(long buffGroupId) {
+    public AbstractBuff(long buffGroupId, float duration) {
         this.buffGroupId = buffGroupId;
+        this.duration = duration;
+    }
+
+    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
+
+        this.influenceInterface = influenceInterface;
+        influenceInterface.addOtherBuff(this);
     }
 
     /**
@@ -37,10 +51,20 @@ public abstract class AbstractBuff  {
         return this.buffGroupId;
     }
 
+    public void update(float time) {
+        this.duration -= time;
+    }
+
     /**
-     * Method for checking from buff's internal state whether it should be removed
-     * or not
+     * Method for checking from buff's internal state whether it should be
+     * removed or not
+     *
      * @return true if buff should continue. false, if it should be removed
      */
-    protected abstract boolean shouldContinue();
+    public boolean shouldContinue() {
+        if (this.duration <= 0f) {
+            return false;
+        }
+        return true;
+    }
 }

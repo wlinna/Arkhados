@@ -113,7 +113,7 @@ class CastLeapAction extends EntityAction {
                 if (pairWithSmallestDistance != null) {
                     InfluenceInterfaceControl influenceInterface = pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
                     influenceInterface.doDamage(200f);
-                    influenceInterface.addCrowdControlEffect(new IncapacitateCC(1f, -1));
+                    influenceInterface.addCrowdControlBuff(new IncapacitateCC(1f, -1));
                 }
             }
 

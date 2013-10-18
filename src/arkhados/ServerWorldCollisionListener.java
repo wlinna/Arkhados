@@ -14,19 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
-import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -82,8 +81,9 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
 
-        for (CrowdControlBuff cc : projectile.getSpatial().getControl(SpellBuffControl.class).getCrowdControlBuffs()) {
-            character.addCrowdControlEffect(cc);
+
+        for (AbstractBuff buff : projectile.getSpatial().getControl(SpellBuffControl.class).getBuffs()) {
+            buff.attachToCharacter(character);
         }
 
         Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);

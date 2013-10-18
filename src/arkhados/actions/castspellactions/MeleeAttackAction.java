@@ -18,11 +18,13 @@ import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.spell.buffs.AbstractBuff;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,12 +34,17 @@ import java.util.List;
 public class MeleeAttackAction extends EntityAction {
 
     // TODO: Make melee attack effect more generic
+    private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
     private float damage;
     private float range;
 
     public MeleeAttackAction(float damage, float range) {
         this.damage = damage;
         this.range = range;
+    }
+
+    public void addBuff(AbstractBuff buff) {
+        this.buffs.add(buff);
     }
 
     @Override
@@ -63,6 +70,9 @@ public class MeleeAttackAction extends EntityAction {
             InfluenceInterfaceControl influenceControl = node.getControl(InfluenceInterfaceControl.class);
             if (influenceControl != null) {
                 influenceControl.doDamage(this.damage);
+                for (AbstractBuff buff : this.buffs) {
+                    buff.attachToCharacter(influenceControl);
+                }
                 break;
             }
         }

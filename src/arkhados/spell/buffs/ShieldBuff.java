@@ -23,14 +23,14 @@ import com.jme3.scene.Node;
 public abstract class ShieldBuff extends AbstractBuff {
     protected Node exterior;
 
-    public ShieldBuff(long buffGroupId) {
-        super(buffGroupId);
+    public ShieldBuff(long buffGroupId, float duration) {
+        super(buffGroupId, duration);
     }
 
     public Node getExterior() {
         return this.exterior;
     }
-    
+
     public abstract void react();
 
 }

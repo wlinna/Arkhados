@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.spell.buffs.SlowCC;
@@ -41,6 +42,7 @@ import java.util.List;
 public class InfluenceInterfaceControl extends AbstractControl {
 
     private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<CrowdControlBuff>();
+    private List<AbstractBuff> otherBuffs = new ArrayList<AbstractBuff>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean constantSpeed = false;
@@ -65,14 +67,22 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     }
 
-    public void addCrowdControlEffect(CrowdControlBuff crowdControlInfluence) {
-        if (crowdControlInfluence != null) {
-            this.crowdControlInfluences.add(crowdControlInfluence);
-
-            if (crowdControlInfluence instanceof IncapacitateCC) {
-                super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
-            }
+    public void addCrowdControlBuff(CrowdControlBuff crowdControlInfluence) {
+        if (crowdControlInfluence == null) {
+            return;
         }
+        this.crowdControlInfluences.add(crowdControlInfluence);
+
+        if (crowdControlInfluence instanceof IncapacitateCC) {
+            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        }
+    }
+
+    public void addOtherBuff(AbstractBuff buff) {
+        if (buff == null) {
+            return;
+        }
+        this.otherBuffs.add(buff);
     }
 
     public void setHealth(float health) {
@@ -120,12 +130,20 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        for (Iterator<AbstractBuff> it = this.otherBuffs.iterator(); it.hasNext();) {
+            AbstractBuff buff = it.next();
+            buff.update(tpf);
+            if (!buff.shouldContinue()) {
+                it.remove();
+                continue;
+            }
+        }
         if (!this.constantSpeed) {
             Float speedFactor = 1f;
             for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
                 CrowdControlBuff cc = it.next();
-                boolean shouldContinue = cc.updateDuration(tpf);
-                if (!shouldContinue) {
+                cc.update(tpf);
+                if (!cc.shouldContinue()) {
                     it.remove();
                     continue;
                 }
@@ -149,7 +167,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public Control cloneForSpatial(Spatial spatial) {
         InfluenceInterfaceControl control = new InfluenceInterfaceControl();
-
         return control;
     }
 

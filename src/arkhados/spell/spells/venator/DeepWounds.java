@@ -22,8 +22,10 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -68,7 +70,9 @@ class CastDeepWoundsAction extends EntityAction {
 
         // Set animation for attack
         // CharacterAnimationControl animControl =  super.spatial.getControl(CharacterAnimationControl.class);
-        actionQueue.enqueueAction(new MeleeAttackAction(100f, 15f));
+        MeleeAttackAction meleeAction = new MeleeAttackAction(100f, 15f);
+        meleeAction.addBuff(new BleedBuff(-1, 3f));
+        actionQueue.enqueueAction(meleeAction);
         physics.restoreWalking();
         return false;
     }
@@ -119,5 +123,33 @@ class ChargeAction extends EntityAction {
         Float baseMs = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
         super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, baseMs);
         physics.setWalkDirection(Vector3f.ZERO);
+    }
+}
+
+class BleedBuff extends AbstractBuff {
+
+    private CharacterPhysicsControl physics = null;
+    private Spatial spatial = null;
+    private final static float dmgPerUnit = 2f;
+
+    public BleedBuff(long buffGroupId, float duration) {
+        super(buffGroupId, duration);
+    }
+
+    @Override
+    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
+        super.attachToCharacter(influenceInterface);
+        this.spatial = influenceInterface.getSpatial();
+        this.physics = this.spatial.getControl(CharacterPhysicsControl.class);
+    }
+
+    @Override
+    public void update(float time) {
+        super.update(time);
+        if (this.physics.getWalkDirection().equals(Vector3f.ZERO)) {
+            return;
+        }
+        Float dmg = ((Float)this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT)) * time * dmgPerUnit;
+        this.influenceInterface.doDamage(dmg);
     }
 }

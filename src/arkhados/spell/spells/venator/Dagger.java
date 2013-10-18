@@ -91,7 +91,7 @@ public class Dagger extends Spell {
 
             node.addControl(new ProjectileControl());
             SpellBuffControl buffControl = new SpellBuffControl();
-            buffControl.addCrowControlBuff(new SlowCC(-1, 6f, 0.2f));
+            buffControl.addBuff(new SlowCC(-1, 6f, 0.2f));
             node.addControl(buffControl);
 
             return node;
