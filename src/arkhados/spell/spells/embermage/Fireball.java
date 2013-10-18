@@ -50,7 +50,7 @@ public class Fireball extends Spell {
 
     public static Spell create() {
         final float cooldown = 1.0f;
-        final float range = 40f;
+        final float range = 80f;
         final float castTime = 0.2f;
 
         final Fireball spell = new Fireball("Fireball", cooldown, range, castTime);

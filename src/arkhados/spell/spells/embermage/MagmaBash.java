@@ -46,7 +46,7 @@ public class MagmaBash extends Spell {
 
     public static MagmaBash create() {
         final float cooldown = 5f;
-        final float range = 40f;
+        final float range = 120f;
         final float castTime = 0.3f;
 
         final MagmaBash spell = new MagmaBash("Magma Bash", cooldown, range, castTime);

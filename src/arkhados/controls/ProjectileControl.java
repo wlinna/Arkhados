@@ -41,12 +41,15 @@ public class ProjectileControl extends AbstractControl {
     private float age = 0.0f;
     private static WorldManager worldManager;
     private static final float timeToLive = 3.0f;
+    private float range = 0f;
+    private float speed = 0f;
 
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
                 .normalizeLocal().multLocal((Float)super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
 
         this.rigidBodyControl.setLinearVelocity(this.direction);
+        this.speed = this.direction.length();
         this.rigidBodyControl.setGravity(Vector3f.ZERO);
         if (this.startingLocation == null) {
         }
@@ -65,6 +68,11 @@ public class ProjectileControl extends AbstractControl {
             return;
         }
         this.age += tpf;
+
+        if (this.range > 0f && this.age * this.speed >= this.range) {
+            ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
+        }
+
         if (this.age > ProjectileControl.timeToLive) {
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
@@ -97,5 +105,9 @@ public class ProjectileControl extends AbstractControl {
 
     public static void setWorldManager(WorldManager worldManager) {
         ProjectileControl.worldManager = worldManager;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
     }
 }

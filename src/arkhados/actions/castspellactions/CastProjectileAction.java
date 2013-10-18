@@ -62,7 +62,9 @@ public class CastProjectileAction extends EntityAction {
         RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
         body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
 
-        projectile.getControl(ProjectileControl.class).setTarget(targetLocation);
+        ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
+        projectileControl.setRange(this.spell.getRange());
+        projectileControl.setTarget(targetLocation);
 
         return false;
     }
