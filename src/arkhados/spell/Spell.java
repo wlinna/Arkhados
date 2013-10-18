@@ -22,6 +22,7 @@ import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.Firewalk;
 import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.venator.Dagger;
+import arkhados.spell.spells.venator.DeepWounds;
 import arkhados.spell.spells.venator.Leap;
 import arkhados.spell.spells.venator.Rend;
 import arkhados.util.NodeBuilder;
@@ -88,6 +89,9 @@ public abstract class Spell {
 
         Spell leap = Leap.create();
         Spells.put(leap.getName(), leap);
+
+        Spell deepWounds = DeepWounds.create();
+        Spells.put(deepWounds.getName(), deepWounds);
     }
 
     /**

@@ -54,6 +54,7 @@ public class Venator extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Leap"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpells().get("Deep Wounds"), InputMappingStrings.E);
 
         CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");
@@ -61,6 +62,7 @@ public class Venator extends NodeBuilder {
         animControl.addSpellAnimation("Rend", "Swipe-Left");
         animControl.addSpellAnimation("Damaging Dagger", "Throw");
         animControl.addSpellAnimation("Leap", "Jump");
+        animControl.addSpellAnimation("Deep Wounds", "Charge");
         entity.addControl(animControl);
 
         entity.addControl(new InfluenceInterfaceControl());

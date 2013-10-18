@@ -14,10 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.spell.Spell;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -30,8 +30,6 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import java.util.HashMap;
-import arkhados.spell.Spell;
-import arkhados.util.UserDataStrings;
 
 /**
  * Original animation control for Mage. Most likely each character needs its own
@@ -42,7 +40,6 @@ public class CharacterAnimationControl extends AbstractControl {
 
     private AnimControl animControl;
     private CharacterPhysicsControl characterControl;
-    private CharacterMovementControl movementControl;
     private AnimChannel channel;
     private float castTime = 0f;
     private HashMap<String, String> spellAnimationMap = new HashMap<String, String>(6);
@@ -54,7 +51,6 @@ public class CharacterAnimationControl extends AbstractControl {
         super.setSpatial(spatial);
         this.animControl = super.spatial.getControl(AnimControl.class);
         this.characterControl = super.spatial.getControl(CharacterPhysicsControl.class);
-        this.movementControl = super.spatial.getControl(CharacterMovementControl.class);
 
         this.channel = this.animControl.createChannel();
         this.channel.setAnim(this.walkAnimation);

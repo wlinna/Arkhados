@@ -52,8 +52,12 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     public void setUpDownDirection(int right, int down) {
+        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        if (!influenceInterface.canControlMovement()) {
+            return;
+        }
         this.saveDirection(right, down);
-        if (super.spatial.getControl(InfluenceInterfaceControl.class).canMove()) {
+        if (influenceInterface.canMove()) {
             Vector3f newWalkDirection = new Vector3f(right, 0f, down);
             Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
             newWalkDirection.normalizeLocal().multLocal(speedMovement);
@@ -71,6 +75,10 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     public void restoreWalking() {
+        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+//        if (!influenceInterface.canControlMovement()) {
+//            return;
+//        }
         Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
@@ -101,7 +109,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     public void applyImpulse(Vector3f impulse) {
-
         this.impulseToApply = impulse;
     }
 
@@ -124,14 +131,5 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public void switchToNormalPhysicsMode() {
         super.setEnabled(true);
-    }
-
-    private void dragOfAirXZ() {
-        float xSign = FastMath.sign(super.getVelocity().x);
-        float zSign = FastMath.sign(super.getVelocity().z);
-        float xDrag = 0.5f * 1.3f * FastMath.sqr(super.getVelocity().x) * 1.1f;
-        float zDrag = 0.5f * 1.3f * FastMath.sqr(super.getVelocity().z) * 1.1f;
-        Vector3f counter = new Vector3f(-xDrag * xSign, 0f, -zDrag * zSign);
-        super.velocity.addLocal(counter);
     }
 }
