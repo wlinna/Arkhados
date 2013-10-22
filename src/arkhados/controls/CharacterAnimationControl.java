@@ -79,10 +79,14 @@ public class CharacterAnimationControl extends AbstractControl {
     }
 
     public void castSpell(final Spell spell) {
+        final String animName = this.spellAnimationMap.get(spell.getName());
+        if ("".equals(animName)) {
+            return;
+        }
         this.castTime = spell.getCastTime();
         // FIXME: Adjust speed depending on animation length
         this.channel.setSpeed(0.1f);
-        final String animName = this.spellAnimationMap.get(spell.getName());
+
         this.channel.setAnim(animName);
         this.channel.setLoopMode(LoopMode.Loop);
     }

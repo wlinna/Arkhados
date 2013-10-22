@@ -38,9 +38,12 @@ public class Venator extends NodeBuilder {
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
-        float radius = 4.0f;
+        final float radius = 4f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        entity.setUserData(UserDataStrings.HEALTH_CURRENT, 2100f);
+        final float health = 2100f;
+        entity.setUserData(UserDataStrings.HEALTH_MAX, health);
+        entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
         entity.scale(3f);
 
@@ -55,6 +58,7 @@ public class Venator extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Leap"), InputMappingStrings.SPACE);
         spellCastControl.putSpell(Spell.getSpells().get("Deep Wounds"), InputMappingStrings.E);
+        spellCastControl.putSpell(Spell.getSpells().get("Survival Instinct"), InputMappingStrings.R);
 
         CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");
@@ -63,6 +67,7 @@ public class Venator extends NodeBuilder {
         animControl.addSpellAnimation("Damaging Dagger", "Throw");
         animControl.addSpellAnimation("Leap", "Jump");
         animControl.addSpellAnimation("Deep Wounds", "Charge");
+        animControl.addSpellAnimation("Survival Instinct", "");
         entity.addControl(animControl);
 
         entity.addControl(new InfluenceInterfaceControl());

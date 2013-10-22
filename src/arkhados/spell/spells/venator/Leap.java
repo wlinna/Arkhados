@@ -22,6 +22,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -112,7 +113,8 @@ class CastLeapAction extends EntityAction {
                 }
                 if (pairWithSmallestDistance != null) {
                     InfluenceInterfaceControl influenceInterface = pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
-                    influenceInterface.doDamage(200f);
+                    Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    influenceInterface.doDamage(200f * damageFactor);
                     influenceInterface.addCrowdControlBuff(new IncapacitateCC(1f, -1));
                 }
             }

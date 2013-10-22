@@ -54,6 +54,10 @@ public class CastProjectileAction extends EntityAction {
                 super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f), Quaternion.IDENTITY);
         Spatial projectile = this.worldManager.getEntity(projectileId);
 
+        Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
+        Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
+
         final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
 
         // FIXME: Get radius of BetterCharacterControl's capsule

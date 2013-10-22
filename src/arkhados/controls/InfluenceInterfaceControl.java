@@ -45,7 +45,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     private List<AbstractBuff> otherBuffs = new ArrayList<AbstractBuff>();
     private boolean dead = false;
     private boolean canControlMovement = true;
-    private boolean constantSpeed = false;
+    private boolean speedConstant = false;
 
     /**
      * Do damage to character (damage can be mitigated).
@@ -130,6 +130,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+
+        if (!this.speedConstant) {
+            Float msBase = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
+            super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
+        }
         for (Iterator<AbstractBuff> it = this.otherBuffs.iterator(); it.hasNext();) {
             AbstractBuff buff = it.next();
             buff.update(tpf);
@@ -138,27 +144,20 @@ public class InfluenceInterfaceControl extends AbstractControl {
                 continue;
             }
         }
-        if (!this.constantSpeed) {
-            Float speedFactor = 1f;
-            for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
-                CrowdControlBuff cc = it.next();
-                cc.update(tpf);
-                if (!cc.shouldContinue()) {
-                    it.remove();
-                    continue;
-                }
-                if (cc instanceof SlowCC) {
-                    speedFactor *= ((SlowCC) cc).getSlowFactor();
-                }
+        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
+            CrowdControlBuff cc = it.next();
+            cc.update(tpf);
+            if (!cc.shouldContinue()) {
+                it.remove();
+                continue;
             }
-
-            Float speedMovement = ((Float) super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE)) * speedFactor;
-            CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-            Vector3f walkDir = physics.getWalkDirection();
-            Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(speedMovement);
-            physics.setWalkDirection(newWalkDir);
-            super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, speedMovement);
         }
+
+        Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        Vector3f walkDir = physics.getWalkDirection();
+        Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+        physics.setWalkDirection(newWalkDir);
     }
 
     @Override
@@ -198,7 +197,11 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
     }
 
-    public void setConstantSpeed(boolean constantSpeed) {
-        this.constantSpeed = constantSpeed;
+    public void setSpeedConstant(boolean constantSpeed) {
+        this.speedConstant = constantSpeed;
+    }
+
+    public boolean isSpeedConstant() {
+        return this.speedConstant;
     }
 }

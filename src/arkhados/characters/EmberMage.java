@@ -39,9 +39,12 @@ public class EmberMage extends NodeBuilder {
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
-        float radius = 5.0f;
+        final float radius = 5.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        entity.setUserData(UserDataStrings.HEALTH_CURRENT, 1700.0f);
+        final float health = 1700f;
+        entity.setUserData(UserDataStrings.HEALTH_MAX, health);
+        entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 

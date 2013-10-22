@@ -68,10 +68,15 @@ class CastDeepWoundsAction extends EntityAction {
         ActionQueueControl actionQueue = super.spatial.getControl(ActionQueueControl.class);
         actionQueue.enqueueAction(new ChargeAction(this.spell));
 
-        // Set animation for attack
+        // TODO: Set animation for attack
         // CharacterAnimationControl animControl =  super.spatial.getControl(CharacterAnimationControl.class);
         MeleeAttackAction meleeAction = new MeleeAttackAction(100f, 15f);
-        meleeAction.addBuff(new BleedBuff(-1, 3f));
+
+        BleedBuff bleedBuff = new BleedBuff(-1, 3f);
+        Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        bleedBuff.setDamagePerUnit(2f * damageFactor);
+        meleeAction.addBuff(bleedBuff);
+
         actionQueue.enqueueAction(meleeAction);
         physics.restoreWalking();
         return false;
@@ -101,7 +106,7 @@ class ChargeAction extends EntityAction {
             direction.multLocal(this.chargeSpeed);
             physics.setWalkDirection(direction);
             this.isCharging = true;
-            influenceInterface.setConstantSpeed(true);
+            influenceInterface.setSpeedConstant(true);
             return true;
         }
         physics.setWalkDirection(direction);
@@ -118,7 +123,7 @@ class ChargeAction extends EntityAction {
         super.end();
         InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(true);
-        influenceInterface.setConstantSpeed(false);
+        influenceInterface.setSpeedConstant(false);
         CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
         Float baseMs = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
         super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, baseMs);
@@ -130,7 +135,7 @@ class BleedBuff extends AbstractBuff {
 
     private CharacterPhysicsControl physics = null;
     private Spatial spatial = null;
-    private final static float dmgPerUnit = 2f;
+    private float dmgPerUnit = 2f;
 
     public BleedBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
@@ -151,5 +156,9 @@ class BleedBuff extends AbstractBuff {
         }
         Float dmg = ((Float)this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT)) * time * dmgPerUnit;
         this.influenceInterface.doDamage(dmg);
+    }
+
+    public void setDamagePerUnit(float dmgPerUnit) {
+        this.dmgPerUnit = dmgPerUnit;
     }
 }

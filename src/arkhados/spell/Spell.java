@@ -25,6 +25,7 @@ import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
 import arkhados.spell.spells.venator.Leap;
 import arkhados.spell.spells.venator.Rend;
+import arkhados.spell.spells.venator.SurvivalInstinct;
 import arkhados.util.NodeBuilder;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
@@ -92,6 +93,9 @@ public abstract class Spell {
 
         Spell deepWounds = DeepWounds.create();
         Spells.put(deepWounds.getName(), deepWounds);
+
+        Spell survivalInstinct = SurvivalInstinct.create();
+        Spells.put(survivalInstinct.getName(), survivalInstinct);
     }
 
     /**

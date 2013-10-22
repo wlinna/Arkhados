@@ -30,6 +30,7 @@ public class UserDataStrings {
     public final static String PLAYER_ID = "player-id";
     public final static String RADIUS = "radius";
     public final static String MASS = "mass";
+    public final static String DAMAGE_FACTOR = "damage-modifier";
     /**
      * How much entity deals instant damage when it hits
      */

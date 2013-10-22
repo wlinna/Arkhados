@@ -20,7 +20,6 @@ import arkhados.controls.ProjectileControl;
 import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
-import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -79,8 +78,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     }
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
+        // TODO: Apply damage factor of caster
         character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
-
 
         for (AbstractBuff buff : projectile.getSpatial().getControl(SpellBuffControl.class).getBuffs()) {
             buff.attachToCharacter(character);

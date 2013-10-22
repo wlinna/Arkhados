@@ -19,6 +19,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
@@ -69,9 +70,11 @@ public class MeleeAttackAction extends EntityAction {
             }
             InfluenceInterfaceControl influenceControl = node.getControl(InfluenceInterfaceControl.class);
             if (influenceControl != null) {
-                influenceControl.doDamage(this.damage);
+                Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                influenceControl.doDamage(this.damage * damageFactor);
                 for (AbstractBuff buff : this.buffs) {
                     buff.attachToCharacter(influenceControl);
+                    // TODO: If buff is DoT, apply damageFactor to it
                 }
                 break;
             }
