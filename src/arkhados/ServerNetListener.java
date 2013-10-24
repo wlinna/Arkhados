@@ -78,6 +78,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             }
             final long playerId = PlayerData.getNew(message.getName());
             PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
+            PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
             ServerClientData.setConnected(clientId, true);
             ServerClientData.setPlayerId(clientId, playerId);
             ServerLoginMessage serverLoginMessage = new ServerLoginMessage(message.getName(), playerId, true);

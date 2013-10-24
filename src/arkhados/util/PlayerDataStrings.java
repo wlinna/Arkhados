@@ -21,6 +21,7 @@ package arkhados.util;
  */
 public class PlayerDataStrings {
     public final static String ENTITY_ID = "character-entity-id";
+    public final static String TEAM_ID = "team-id";
     public final static String WORLD_CREATED = "world-created";
     public final static String READY_FOR_ROUND = "ready-for-round";
     public final static String HERO = "hero";

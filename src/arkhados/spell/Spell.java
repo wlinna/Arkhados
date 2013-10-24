@@ -21,6 +21,7 @@ import arkhados.spell.spells.embermage.EmberCircle;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.Firewalk;
 import arkhados.spell.spells.embermage.MagmaBash;
+import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
 import arkhados.spell.spells.venator.Leap;
@@ -77,6 +78,9 @@ public abstract class Spell {
 
         Spell emberCircle = EmberCircle.create();
         Spells.put(emberCircle.getName(), emberCircle);
+
+        Spell purifyingFlame = PurifyingFlame.create();
+        Spells.put(purifyingFlame.getName(), purifyingFlame);
 
         Spell firewalk = Firewalk.create();
         Spells.put(firewalk.getName(), firewalk);

@@ -21,5 +21,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public  interface Influence {
+
+    public boolean isFriendly();
     public void affect(Spatial spatial, float tpf);
 }

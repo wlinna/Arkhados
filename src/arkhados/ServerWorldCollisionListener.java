@@ -78,19 +78,24 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     }
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
-        // TODO: Apply damage factor of caster
-        character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
 
-        for (AbstractBuff buff : projectile.getSpatial().getControl(SpellBuffControl.class).getBuffs()) {
-            buff.attachToCharacter(character);
+        String removalReason = "collision";
+        if (character.isImmuneToProjectiles()) {
+            removalReason = "absorbed";
+        } else {
+            character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
+
+            for (AbstractBuff buff : projectile.getSpatial().getControl(SpellBuffControl.class).getBuffs()) {
+                buff.attachToCharacter(character);
+            }
+
+            Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
+            Vector3f impulse = character.getSpatial().getLocalTranslation()
+                    .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
+            character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
         }
 
-        Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
-        Vector3f impulse = character.getSpatial().getLocalTranslation()
-                .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
-        character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
-
-        this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
+        this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), removalReason);
 
 //        character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(Vector3f.UNIT_Y.mult(2000.0f));
     }

@@ -14,7 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.PlayerData;
 import arkhados.spell.influences.Influence;
+import arkhados.util.PlayerDataStrings;
+import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.export.InputCapsule;
@@ -37,7 +40,6 @@ import java.util.List;
 public class AreaEffectControl extends AbstractControl {
 
     private GhostControl ghostControl;
-
     private List<Influence> influences = new ArrayList<Influence>();
 
     public AreaEffectControl() {
@@ -49,13 +51,26 @@ public class AreaEffectControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects =  this.ghostControl.getOverlappingObjects();
+        final Long myPlayerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final long myTeamId = PlayerData.getLongData(myPlayerId, PlayerDataStrings.TEAM_ID);
+        List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
-                Spatial spatial = (Spatial) collisionObject.getUserObject();
+                final Spatial other = (Spatial) collisionObject.getUserObject();
+                final InfluenceInterfaceControl influenceInterface = other.getControl(InfluenceInterfaceControl.class);
+                if (influenceInterface == null) {
+                    continue;
+                }
+                final Long othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+                final Long othersTeamId = PlayerData.getLongData(othersPlayerId, PlayerDataStrings.TEAM_ID);
+                final boolean sameTeam = myTeamId == othersTeamId;
                 for (Influence influence : this.influences) {
-                    influence.affect(spatial, tpf);
+                    if (sameTeam && influence.isFriendly()) {
+                        influence.affect(other, tpf);
+                    } else if (!sameTeam && !influence.isFriendly()) {
+                        influence.affect(other, tpf);
+                    }
                 }
             }
         }

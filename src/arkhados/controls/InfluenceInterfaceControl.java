@@ -46,6 +46,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
+    private boolean immuneToProjectiles = false;
 
     /**
      * Do damage to character (damage can be mitigated).
@@ -131,6 +132,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+        this.immuneToProjectiles = false;
 
         if (!this.speedConstant) {
             Float msBase = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
@@ -203,5 +205,13 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public boolean isSpeedConstant() {
         return this.speedConstant;
+    }
+
+    public boolean isImmuneToProjectiles() {
+        return this.immuneToProjectiles;
+    }
+
+    public void setImmuneToProjectiles(boolean immuneToProjectiles) {
+        this.immuneToProjectiles = immuneToProjectiles;
     }
 }

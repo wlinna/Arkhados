@@ -155,22 +155,23 @@ public class WorldManager extends AbstractAppState {
      * @param typeId
      * @param location
      * @param rotation
+     * @param playerId id of owning player. -1, if server owns
      * @return entity id
      */
-    public long addNewEntity(String typeId, Vector3f location, Quaternion rotation) {
+    public long addNewEntity(String typeId, Vector3f location, Quaternion rotation, long playerId) {
         ++this.idCounter;
-        this.addEntity(this.idCounter, typeId, location, rotation);
+        this.addEntity(this.idCounter, typeId, location, rotation, playerId);
         return this.idCounter;
     }
 
-    public void addEntity(long id, String modelPath, Vector3f location, Quaternion rotation) {
+    public void addEntity(long id, String modelPath, Vector3f location, Quaternion rotation, long playerId) {
         if (this.isServer()) {
-            this.syncManager.broadcast(new AddEntityMessage(id, modelPath, location, rotation));
+            this.syncManager.broadcast(new AddEntityMessage(id, modelPath, location, rotation, playerId));
         }
 
         Spatial entitySpatial = this.entityFactory.createEntityById(modelPath);
         this.setEntityTranslation(entitySpatial, location, rotation);
-        entitySpatial.setUserData(UserDataStrings.PLAYER_ID, -1l);
+        entitySpatial.setUserData(UserDataStrings.PLAYER_ID, playerId);
         entitySpatial.setUserData(UserDataStrings.ENTITY_ID, id);
         this.entities.put(id, entitySpatial);
         this.syncManager.addObject(id, entitySpatial);

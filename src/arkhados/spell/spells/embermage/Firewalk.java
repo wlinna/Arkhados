@@ -85,7 +85,8 @@ public class Firewalk extends Spell {
         private void motion() {
             final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
             final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
-            final long firewalkId = this.world.addNewEntity(spell.getName(), startLocation, Quaternion.IDENTITY);
+            final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+            final long firewalkId = this.world.addNewEntity(spell.getName(), startLocation, Quaternion.IDENTITY, playerId);
             final Node firewalkNode = (Node) this.world.getEntity(firewalkId);
 
             final MotionPath path = new MotionPath();

@@ -30,21 +30,23 @@ public class AddEntityMessage extends AbstractSyncMessage {
     private String modelId;
     private Vector3f location;
     private Quaternion rotation;
+    private long playerId;
 
     public AddEntityMessage() {
     }
 
-    public AddEntityMessage(long entityId, String modelId, Vector3f location, Quaternion rotation) {
+    public AddEntityMessage(long entityId, String modelId, Vector3f location, Quaternion rotation, long playerId) {
         this.entityId = entityId;
         this.modelId = modelId;
         this.location = location;
         this.rotation = rotation;
+        this.playerId = playerId;
     }
 
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
         worldManager.addEntity(this.entityId, this.modelId, this.location,
-                this.rotation);
+                this.rotation, playerId);
     }
 }

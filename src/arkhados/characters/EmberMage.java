@@ -23,6 +23,8 @@ import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.scene.Node;
 
 /**
@@ -33,7 +35,7 @@ import com.jme3.scene.Node;
 public class EmberMage extends NodeBuilder {
 
     @Override
-    public  Node build() {
+    public Node build() {
         Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Mage.j3o");
         final float movementSpeed = 35f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
@@ -64,7 +66,15 @@ public class EmberMage extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Fireball"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
+        spellCastControl.putSpell(Spell.getSpells().get("Purifying Flame"), InputMappingStrings.R);
         spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
+
+//        GhostControl testGhost = new GhostControl(new SphereCollisionShape(8f));
+//        testGhost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
+//        testGhost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02 | GhostControl.COLLISION_GROUP_16);
+//
+//        entity.addControl(testGhost);
+//
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -77,6 +87,7 @@ public class EmberMage extends NodeBuilder {
         animControl.addSpellAnimation("Fireball", "Idle");
         animControl.addSpellAnimation("Magma Bash", "Idle");
         animControl.addSpellAnimation("Ember Circle", "Idle");
+        animControl.addSpellAnimation("Purifying Flame", "");
         animControl.addSpellAnimation("Firewalk", "Idle");
 
         entity.addControl(new InfluenceInterfaceControl());

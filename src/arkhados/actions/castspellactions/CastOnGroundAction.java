@@ -18,6 +18,7 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.spell.Spell;
+import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -38,7 +39,8 @@ public class CastOnGroundAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
-        worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY);
+        Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY, playerId);
         return false;
     }
 }

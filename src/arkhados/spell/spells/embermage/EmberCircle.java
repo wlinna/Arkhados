@@ -24,7 +24,7 @@ import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.influences.DamagOverTimeeInfluence;
+import arkhados.spell.influences.DamagOverTimeInfluence;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
@@ -104,7 +104,7 @@ class EmberCircleBuilder extends NodeBuilder {
                 @Override
                 public boolean update(float tpf) {
                     Float dps = (Float) super.spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
-                    areaEffectControl.addInfluence(new DamagOverTimeeInfluence(dps));
+                    areaEffectControl.addInfluence(new DamagOverTimeInfluence(dps));
 
                     node.addControl(new TimedExistenceControl(10f, true));
 

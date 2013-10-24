@@ -47,8 +47,8 @@ public class CastSkyDropAction extends EntityAction {
         CharacterPhysicsControl characterControl = super.spatial.getControl(CharacterPhysicsControl.class);
         Vector3f targetLocation = characterControl.getTargetLocation();
         Vector3f startLocation = targetLocation.add(Vector3f.UNIT_Y.mult(height));
-
-        long entityId = this.worldManager.addNewEntity(this.spell.getName(), startLocation, Quaternion.IDENTITY);
+        final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        long entityId = this.worldManager.addNewEntity(this.spell.getName(), startLocation, Quaternion.IDENTITY, playerId);
         Spatial skyDrop = this.worldManager.getEntity(entityId);
 
         // TODO: Use MotionPath instead of relying on physics

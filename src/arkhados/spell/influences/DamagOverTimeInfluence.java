@@ -20,11 +20,11 @@ import arkhados.controls.InfluenceInterfaceControl;
 /**
  * @author william
  */
-public class DamagOverTimeeInfluence implements Influence {
+public class DamagOverTimeInfluence implements Influence {
 
     private float dps;
 
-    public DamagOverTimeeInfluence(float dps) {
+    public DamagOverTimeInfluence(float dps) {
         this.dps = dps;
     }
 
@@ -34,5 +34,9 @@ public class DamagOverTimeeInfluence implements Influence {
             // FIXME: Rounding errors cause significant changes in total damage
             characterInfluenceControl.doDamage(this.dps * tpf);
         }
+    }
+
+    public boolean isFriendly() {
+        return false;
     }
 }
