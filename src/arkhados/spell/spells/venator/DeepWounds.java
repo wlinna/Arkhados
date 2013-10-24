@@ -25,6 +25,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
@@ -45,7 +46,7 @@ public class DeepWounds extends Spell {
         final DeepWounds spell = new DeepWounds("Deep Wounds", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastDeepWoundsAction(spell);
             }
         };

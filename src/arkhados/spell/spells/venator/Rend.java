@@ -19,6 +19,7 @@ import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 /**
  *
@@ -39,7 +40,7 @@ public class Rend extends Spell {
         spell.setCanMoveWhileCasting(true);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 return new MeleeAttackAction(150f, range);
             }
         };

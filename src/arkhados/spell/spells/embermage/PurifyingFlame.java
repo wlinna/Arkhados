@@ -16,11 +16,19 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.controls.AreaEffectControl;
+import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.TimedExistenceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.influences.DamagOverTimeInfluence;
+import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 /**
  *
@@ -40,18 +48,49 @@ public class PurifyingFlame extends Spell {
         final PurifyingFlame spell = new PurifyingFlame("Purifying Flame", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 // TODO: When team play is implemented, make this targetable to
                 // team mates!
-                CastSelfBuffAction action = new CastSelfBuffAction();
-                action.addBuff(new AbsorbingShieldBuff(-1, 3f));
+
+                final float duration = 3f;
+                final CastSelfBuffAction action = new CastSelfBuffAction();
+                final Node aoeContainer = new Node("purifying-flame");
+                if (worldManager.isServer()) {
+                    // TODO: Remove negative buffs
+                    final Long playerId = caster.getUserData(UserDataStrings.PLAYER_ID);
+                    aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
+
+                    final GhostControl ghost = new GhostControl(new SphereCollisionShape(8f));
+                    ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_02);
+                    ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+                    aoeContainer.addControl(ghost);
+
+                    final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
+
+                    float baseDps = 100f;
+                    final Float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    final float dps = baseDps * damageFactor;
+
+                    areaEffectControl.addInfluence(new DamagOverTimeInfluence(dps));
+
+                    aoeContainer.addControl(areaEffectControl);
+
+                    action.addBuff(new AbsorbingShieldBuff(-1, duration));
+                }
+                aoeContainer.setLocalTranslation(0f, 0f, 0f);
+                TimedExistenceControl timedExistence = new TimedExistenceControl(duration);
+                aoeContainer.addControl(timedExistence);
+                timedExistence.setSpace(caster.getControl(CharacterPhysicsControl.class).getPhysicsSpace());
+
+                caster.attachChild(aoeContainer);
+
+
                 return action;
             }
         };
 
         return spell;
-    }
-}
+    }}
 
 class AbsorbingShieldBuff extends AbstractBuff {
 

@@ -24,18 +24,19 @@ import com.jme3.scene.control.AbstractControl;
 import java.io.IOException;
 import arkhados.WorldManager;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.PhysicsSpace;
 
 /**
  *
  * @author william
  */
 public class TimedExistenceControl extends AbstractControl {
-    private static WorldManager worldManager;
 
+    private static WorldManager worldManager;
     private float timeOut;
     private float age = 0.0f;
     private boolean removeEntity;
-
+    private PhysicsSpace space = null;
 
     public TimedExistenceControl(float timeOut) {
         this.timeOut = timeOut;
@@ -53,13 +54,14 @@ public class TimedExistenceControl extends AbstractControl {
         if (this.age >= this.timeOut) {
             if (this.removeEntity) {
                 if (worldManager.isServer()) {
-                    worldManager.removeEntity((Long)super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "expired");
+                    worldManager.removeEntity((Long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "expired");
                 }
             } else {
+                if (this.space != null) {
+                    this.space.removeAll(super.spatial);
+                }
                 super.spatial.removeFromParent();
             }
-
-
         }
     }
 
@@ -81,5 +83,17 @@ public class TimedExistenceControl extends AbstractControl {
 
     public static void setWorldManager(WorldManager worldManager) {
         TimedExistenceControl.worldManager = worldManager;
+    }
+
+    public void setSpace(PhysicsSpace space) {
+        if (this.space != null) {
+            this.space.removeAll(super.spatial);
+        }
+        this.space = space;
+        if (space == null) {
+            return;
+        }
+        space.addAll(spatial);
+
     }
 }

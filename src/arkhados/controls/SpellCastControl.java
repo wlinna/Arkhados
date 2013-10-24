@@ -34,6 +34,7 @@ import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
+import com.jme3.scene.Node;
 
 /**
  *
@@ -120,7 +121,7 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell));
 //            this.activeCastTimeLeft = spell.getCastTime();
-            EntityAction castingAction = spell.buildCastAction(targetLocation);
+            EntityAction castingAction = spell.buildCastAction((Node)super.spatial, targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(

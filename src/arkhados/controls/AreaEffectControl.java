@@ -56,23 +56,26 @@ public class AreaEffectControl extends AbstractControl {
         List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
-            if (collisionObject.getUserObject() instanceof Spatial) {
-                final Spatial other = (Spatial) collisionObject.getUserObject();
-                final InfluenceInterfaceControl influenceInterface = other.getControl(InfluenceInterfaceControl.class);
-                if (influenceInterface == null) {
-                    continue;
-                }
-                final Long othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
-                final Long othersTeamId = PlayerData.getLongData(othersPlayerId, PlayerDataStrings.TEAM_ID);
-                final boolean sameTeam = myTeamId == othersTeamId;
-                for (Influence influence : this.influences) {
-                    if (sameTeam && influence.isFriendly()) {
-                        influence.affect(other, tpf);
-                    } else if (!sameTeam && !influence.isFriendly()) {
-                        influence.affect(other, tpf);
-                    }
+            if (!(collisionObject.getUserObject() instanceof Spatial)) {
+                continue;
+            }
+            final Spatial other = (Spatial) collisionObject.getUserObject();
+            final InfluenceInterfaceControl influenceInterface = other.getControl(InfluenceInterfaceControl.class);
+            if (influenceInterface == null) {
+                continue;
+            }
+
+            final Long othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+            final Long othersTeamId = PlayerData.getLongData(othersPlayerId, PlayerDataStrings.TEAM_ID);
+            final boolean sameTeam = myTeamId == othersTeamId;
+            for (Influence influence : this.influences) {
+                if (sameTeam && influence.isFriendly()) {
+                    influence.affect(other, tpf);
+                } else if (!sameTeam && !influence.isFriendly()) {
+                    influence.affect(other, tpf);
                 }
             }
+
         }
     }
 

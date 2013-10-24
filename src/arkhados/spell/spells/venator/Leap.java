@@ -30,6 +30,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class Leap extends Spell {
         final Leap spell = new Leap("Leap", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastLeapAction();
             }
         };

@@ -60,7 +60,7 @@ public class EmberCircle extends Spell {
         final EmberCircle spell = new EmberCircle("Ember Circle", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastOnGroundAction(worldManager, spell);
             }
         };

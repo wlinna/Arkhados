@@ -22,6 +22,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
@@ -42,7 +43,7 @@ public class SurvivalInstinct extends Spell {
         final SurvivalInstinct spell = new SurvivalInstinct("Survival Instinct", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 CastSelfBuffAction buffAction = new CastSelfBuffAction();
                 buffAction.addBuff(new DamagePerHealthPercentBuff(-1, 5f));
                 buffAction.addBuff(new MovementSpeedPerHealthMissingBuff(-1, 5f));

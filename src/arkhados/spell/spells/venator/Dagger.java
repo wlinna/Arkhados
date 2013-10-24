@@ -50,7 +50,7 @@ public class Dagger extends Spell {
         final Dagger spell = new Dagger("Damaging Dagger", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastProjectileAction(spell, worldManager);
             }
         };

@@ -154,8 +154,8 @@ public abstract class Spell {
      * spell. Often not necessary.
      * @return EntityAction that will cast the spell
      */
-    public EntityAction buildCastAction(Vector3f vec) {
-        return this.castSpellActionBuilder.newAction(vec);
+    public EntityAction buildCastAction(Node caster, Vector3f vec) {
+        return this.castSpellActionBuilder.newAction(caster, vec);
     }
 
     public Node buildNode() {

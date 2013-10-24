@@ -63,7 +63,7 @@ public class Firewalk extends Spell {
         final Firewalk spell = new Firewalk("Firewalk", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f vec) {
+            public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastFirewalkAction(spell, Spell.worldManager);
             }
         };

@@ -56,7 +56,7 @@ public class Fireball extends Spell {
         final Fireball spell = new Fireball("Fireball", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            public EntityAction newAction(Vector3f location) {
+            public EntityAction newAction(Node caster, Vector3f location) {
                 return new CastProjectileAction(spell, Spell.worldManager);
             }
         };
