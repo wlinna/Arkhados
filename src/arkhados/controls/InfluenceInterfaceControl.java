@@ -16,21 +16,21 @@ package arkhados.controls;
 
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
+import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
-import arkhados.spell.buffs.SlowCC;
+import arkhados.util.UserDataStrings;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
-import arkhados.util.UserDataStrings;
-import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +64,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             this.death();
         }
 
-        this.removeIncapacitates();
+        this.removeDamageSensitiveBuffs();
 
     }
 
@@ -115,8 +115,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public boolean canCast() {
         for (CrowdControlBuff crowdControlInfluence : crowdControlInfluences) {
+            // Consider letting buffs to set property and just returning that property
             if (crowdControlInfluence instanceof IncapacitateCC) {
-                System.out.println("Can't cast. Incapacitated");
+                return false;
+            } else if (crowdControlInfluence instanceof FearCC) {
                 return false;
             }
         }
@@ -133,6 +135,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     protected void controlUpdate(float tpf) {
         super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         this.immuneToProjectiles = false;
+        this.canControlMovement = true;
 
         if (!this.speedConstant) {
             Float msBase = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
@@ -155,11 +158,16 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-        Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+
         CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        Vector3f walkDir = physics.getWalkDirection();
-        Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
-        physics.setWalkDirection(newWalkDir);
+        if (this.canControlMovement) {
+            physics.restoreWalking();
+        } else {
+            Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+            Vector3f walkDir = physics.getWalkDirection();
+            Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+            physics.setWalkDirection(newWalkDir);
+        }
     }
 
     @Override
@@ -188,14 +196,16 @@ public class InfluenceInterfaceControl extends AbstractControl {
         return dead;
     }
 
-    private void removeIncapacitates() {
+    private void removeDamageSensitiveBuffs() {
 
         for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
-            CrowdControlBuff crowdControlEffect = it.next();
-            if (crowdControlEffect instanceof IncapacitateCC) {
+            CrowdControlBuff cc = it.next();
+            // TODO: Use some kind of flag instance of detecting type
+            if (cc instanceof IncapacitateCC) {
+                it.remove();
+            } else if (cc instanceof FearCC) {
                 it.remove();
             }
-
         }
     }
 

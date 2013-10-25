@@ -23,9 +23,6 @@ import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Node;
 
 /**
@@ -60,6 +57,7 @@ public class Venator extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Leap"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpells().get("Feral Scream"), InputMappingStrings.Q);
         spellCastControl.putSpell(Spell.getSpells().get("Deep Wounds"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Survival Instinct"), InputMappingStrings.R);
 
@@ -69,6 +67,7 @@ public class Venator extends NodeBuilder {
         animControl.addSpellAnimation("Rend", "Swipe-Left");
         animControl.addSpellAnimation("Damaging Dagger", "Throw");
         animControl.addSpellAnimation("Leap", "Jump");
+        animControl.addSpellAnimation("Feral Scream", "Roar");
         animControl.addSpellAnimation("Deep Wounds", "Charge");
         animControl.addSpellAnimation("Survival Instinct", "");
         entity.addControl(animControl);

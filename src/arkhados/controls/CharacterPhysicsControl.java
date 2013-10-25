@@ -50,10 +50,11 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public void setUpDownDirection(int right, int down) {
         InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        this.saveDirection(right, down);
         if (!influenceInterface.canControlMovement()) {
             return;
         }
-        this.saveDirection(right, down);
+
         if (influenceInterface.canMove()) {
             Vector3f newWalkDirection = new Vector3f(right, 0f, down);
             Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
@@ -72,10 +73,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     public void restoreWalking() {
-        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
-//        if (!influenceInterface.canControlMovement()) {
-//            return;
-//        }
         Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);

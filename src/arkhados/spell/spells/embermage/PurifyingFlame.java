@@ -51,12 +51,13 @@ public class PurifyingFlame extends Spell {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 // TODO: When team play is implemented, make this targetable to
                 // team mates!
+                // TODO: Make this visible!
 
                 final float duration = 3f;
                 final CastSelfBuffAction action = new CastSelfBuffAction();
                 final Node aoeContainer = new Node("purifying-flame");
                 if (worldManager.isServer()) {
-                    // TODO: Remove negative buffs
+                    // TODO: Remove some negative buffs
                     final Long playerId = caster.getUserData(UserDataStrings.PLAYER_ID);
                     aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
 
@@ -83,7 +84,6 @@ public class PurifyingFlame extends Spell {
                 timedExistence.setSpace(caster.getControl(CharacterPhysicsControl.class).getPhysicsSpace());
 
                 caster.attachChild(aoeContainer);
-
 
                 return action;
             }

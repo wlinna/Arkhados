@@ -24,6 +24,7 @@ import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
+import arkhados.spell.spells.venator.FeralScream;
 import arkhados.spell.spells.venator.Leap;
 import arkhados.spell.spells.venator.Rend;
 import arkhados.spell.spells.venator.SurvivalInstinct;
@@ -94,6 +95,9 @@ public abstract class Spell {
 
         Spell leap = Leap.create();
         Spells.put(leap.getName(), leap);
+
+        Spell feralScream = FeralScream.create();
+        Spells.put(feralScream.getName(), feralScream);
 
         Spell deepWounds = DeepWounds.create();
         Spells.put(deepWounds.getName(), deepWounds);

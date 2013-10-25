@@ -156,6 +156,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             }
             HostedConnection client = (HostedConnection) source;
             final long playerId = ServerClientData.getPlayerId(client.getId());
+            // FIXME: Sometimes NullPointerException occurs when receiving UcWalkDirection at start
             final long syncId = PlayerData.getLongData(playerId, PlayerDataStrings.ENTITY_ID);
             message.setSyncId(syncId);
             this.app.enqueue(new Callable<Void>() {
