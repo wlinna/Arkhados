@@ -57,10 +57,10 @@ public class MeleeAttackAction extends EntityAction {
         PhysicsSpace space = physicsControl.getPhysicsSpace();
         Vector3f to = super.spatial.getLocalTranslation().add(hitDirection);
 
-        List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().setY(3f), to.setY(3f));
+        List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().clone().setY(3f), to.setY(3f));
         for (PhysicsRayTestResult result : results) {
             PhysicsCollisionObject collisionObject = result.getCollisionObject();
-            Object userObject = collisionObject.getUserObject();
+            final Object userObject = collisionObject.getUserObject();
             if (!(userObject instanceof Node)) {
                 continue;
             }
@@ -70,8 +70,10 @@ public class MeleeAttackAction extends EntityAction {
             }
             InfluenceInterfaceControl influenceControl = node.getControl(InfluenceInterfaceControl.class);
             if (influenceControl != null) {
-                Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-                influenceControl.doDamage(this.damage * damageFactor);
+                final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                final Float damageDone = influenceControl.doDamage(this.damage * damageFactor);
+                final Float lifeStolen = (Float) super.spatial.getUserData(UserDataStrings.LIFE_STEAL) * damageDone;
+                super.spatial.getControl(InfluenceInterfaceControl.class).heal(lifeStolen);
                 for (AbstractBuff buff : this.buffs) {
                     buff.attachToCharacter(influenceControl);
                     // TODO: If buff is DoT, apply damageFactor to it

@@ -47,6 +47,7 @@ public class EmberMage extends NodeBuilder {
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+        entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 

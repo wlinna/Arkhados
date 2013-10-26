@@ -45,6 +45,9 @@ public class Venator extends NodeBuilder {
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
+        // Note: this is not enough to retain lifesteal
+        entity.setUserData(UserDataStrings.LIFE_STEAL, 0.2f);
+
         entity.scale(3f);
 
         entity.addControl(new CharacterPhysicsControl(radius, 22f, 100f));

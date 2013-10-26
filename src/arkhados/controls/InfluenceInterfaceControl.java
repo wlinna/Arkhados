@@ -53,18 +53,32 @@ public class InfluenceInterfaceControl extends AbstractControl {
      *
      * @param damage
      */
-    public void doDamage(float damage) {
+    public float doDamage(float damage) {
         if (this.dead) {
-            return;
+            return 0f;
         }
-        Float health = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        health = FastMath.clamp(health - damage, 0, health);
+        Float healthBefore = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        // TODO: Damage mitigation by shields
+        float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
         super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         if (health == 0.0f) {
             this.death();
         }
 
         this.removeDamageSensitiveBuffs();
+        return healthBefore - health;
+    }
+
+    public float heal(float healing) {
+        if (this.dead) {
+            return 0f;
+        }
+        // TODO: Healing mitigation from negative buff
+        final Float maxHealth = super.spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        final Float healthBefore = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        final float health = FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
+        super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        return health - healthBefore;
 
     }
 
