@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions.castspellactions;
 
+import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.DebugControl;
@@ -50,36 +51,33 @@ public class MeleeAttackAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
+        final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
         Vector3f hitDirection = physicsControl.getTargetLocation().subtract(super.spatial.getLocalTranslation()).normalize().multLocal(this.range);
 
         physicsControl.setViewDirection(hitDirection);
-        PhysicsSpace space = physicsControl.getPhysicsSpace();
+        final PhysicsSpace space = physicsControl.getPhysicsSpace();
         Vector3f to = super.spatial.getLocalTranslation().add(hitDirection);
 
         List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().clone().setY(3f), to.setY(3f));
         for (PhysicsRayTestResult result : results) {
-            PhysicsCollisionObject collisionObject = result.getCollisionObject();
+            final PhysicsCollisionObject collisionObject = result.getCollisionObject();
             final Object userObject = collisionObject.getUserObject();
             if (!(userObject instanceof Node)) {
                 continue;
             }
-            Node node = (Node) userObject;
+            final Node node = (Node) userObject;
             if (node == super.spatial) {
                 continue;
             }
-            InfluenceInterfaceControl influenceControl = node.getControl(InfluenceInterfaceControl.class);
-            if (influenceControl != null) {
-                final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-                final Float damageDone = influenceControl.doDamage(this.damage * damageFactor);
-                final Float lifeStolen = (Float) super.spatial.getUserData(UserDataStrings.LIFE_STEAL) * damageDone;
-                super.spatial.getControl(InfluenceInterfaceControl.class).heal(lifeStolen);
-                for (AbstractBuff buff : this.buffs) {
-                    buff.attachToCharacter(influenceControl);
-                    // TODO: If buff is DoT, apply damageFactor to it
-                }
-                break;
+            final InfluenceInterfaceControl targetInfluenceControl = node.getControl(InfluenceInterfaceControl.class);
+            if (targetInfluenceControl == null) {
+                continue;
             }
+
+            CharacterInteraction.harm(super.spatial.getControl(InfluenceInterfaceControl.class),
+                    targetInfluenceControl, this.damage, this.buffs);
+            break;
+
         }
         return false;
     }
