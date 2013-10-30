@@ -33,7 +33,7 @@ public class Venator extends NodeBuilder {
 
     @Override
     public Node build() {
-        Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Warwolf.j3o");
+        final Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Warwolf.j3o");
         final float movementSpeed = 37f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
@@ -45,7 +45,7 @@ public class Venator extends NodeBuilder {
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
-        // Note: this is not enough to retain lifesteal
+        // Note: This works now but later life steal is set by buffs.
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0.2f);
 
         entity.scale(3f);
@@ -55,7 +55,7 @@ public class Venator extends NodeBuilder {
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
-        SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
+        final SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
         entity.addControl(spellCastControl);
         spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
@@ -64,7 +64,7 @@ public class Venator extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Deep Wounds"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Survival Instinct"), InputMappingStrings.R);
 
-        CharacterAnimationControl animControl = new CharacterAnimationControl();
+        final CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");
         animControl.setWalkAnimation("Run");
         animControl.addSpellAnimation("Rend", "Swipe-Left");
