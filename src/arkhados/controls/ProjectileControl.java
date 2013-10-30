@@ -43,6 +43,7 @@ public class ProjectileControl extends AbstractControl {
     private static final float timeToLive = 3.0f;
     private float range = 0f;
     private float speed = 0f;
+    private InfluenceInterfaceControl ownerInterface;
 
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
@@ -109,5 +110,13 @@ public class ProjectileControl extends AbstractControl {
 
     public void setRange(float range) {
         this.range = range;
+    }
+
+    public InfluenceInterfaceControl getOwnerInterface() {
+        return this.ownerInterface;
+    }
+
+    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+        this.ownerInterface = ownerInterface;
     }
 }

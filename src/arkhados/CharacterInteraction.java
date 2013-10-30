@@ -25,11 +25,9 @@ import java.util.List;
  * @author william
  */
 public class CharacterInteraction {
-    public static void harm(final InfluenceInterfaceControl attacker, final InfluenceInterfaceControl target, final float baseDamage, final List<AbstractBuff> buffs) {
+    public static void harm(final InfluenceInterfaceControl attacker, final InfluenceInterfaceControl target, final float rawDamage, final List<AbstractBuff> buffs) {
         final Spatial attackerSpatial = attacker.getSpatial();
 
-        final Float damageFactor = attackerSpatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-        final float rawDamage = baseDamage * damageFactor;
         final float damageDone = target.doDamage(rawDamage);
 
         final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
@@ -38,7 +36,6 @@ public class CharacterInteraction {
 
         for (AbstractBuff buff : buffs) {
             buff.attachToCharacter(target);
-            // TODO: If buff is DoT, apply damageFactor to it
         }
 
         // TODO: Collect stats

@@ -77,26 +77,22 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     }
 
-    private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl character) {
+    private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl target) {
 
         String removalReason = "collision";
-        if (character.isImmuneToProjectiles()) {
+        if (target.isImmuneToProjectiles()) {
             removalReason = "absorbed";
         } else {
-            character.doDamage((Float) projectile.getSpatial().getUserData(UserDataStrings.DAMAGE));
-
-            for (AbstractBuff buff : projectile.getSpatial().getControl(SpellBuffControl.class).getBuffs()) {
-                buff.attachToCharacter(character);
-            }
+            final Float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
+            final SpellBuffControl buffControl = projectile.getSpatial().getControl(SpellBuffControl.class);
+            CharacterInteraction.harm(projectile.getOwnerInterface(), target, damage, buffControl.getBuffs());
 
             Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
-            Vector3f impulse = character.getSpatial().getLocalTranslation()
+            Vector3f impulse = target.getSpatial().getLocalTranslation()
                     .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
-            character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
+            target.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
         }
 
         this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), removalReason);
-
-//        character.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(Vector3f.UNIT_Y.mult(2000.0f));
     }
 }
