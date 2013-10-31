@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
+import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
@@ -21,6 +22,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
@@ -31,6 +33,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,7 +96,7 @@ class CastLeapAction extends EntityAction {
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
-                List<SpatialDistancePair> spatialsOnDistance =  WorldManager.getSpatialsWithinDistance(spatial, 10f);
+                final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(spatial, 10f);
                 if (spatialsOnDistance == null) {
                     return;
                 }
@@ -113,10 +116,16 @@ class CastLeapAction extends EntityAction {
                     }
                 }
                 if (pairWithSmallestDistance != null) {
-                    InfluenceInterfaceControl influenceInterface = pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
-                    Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-                    influenceInterface.doDamage(200f * damageFactor);
-                    influenceInterface.addCrowdControlBuff(new IncapacitateCC(1f, -1));
+                    final InfluenceInterfaceControl thisInfluenceInterfaceControl = CastLeapAction.super.spatial.getControl(InfluenceInterfaceControl.class);
+                    final InfluenceInterfaceControl targetInfluenceInterface = pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
+
+                    final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    final float damage = 200f * damageFactor;
+
+                    final List<AbstractBuff> buffs = new ArrayList<AbstractBuff>(1);
+                    buffs.add(0, new IncapacitateCC(1f, -1));
+
+                    CharacterInteraction.harm(thisInfluenceInterfaceControl, targetInfluenceInterface, damage, buffs);
                 }
             }
 
