@@ -12,31 +12,34 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.influences;
+package arkhados.spell.buffs;
 
-import com.jme3.scene.Spatial;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.CharacterInteraction;
 
 /**
+ *
  * @author william
  */
-public class DamagOverTimeInfluence implements Influence {
-
+public class DamageOverTimeBuff extends AbstractBuff {
+    /**
+     * Damage per second
+     */
     private float dps;
 
-    public DamagOverTimeInfluence(float dps) {
+    public DamageOverTimeBuff(long buffGroupId, float duration) {
+        super(buffGroupId, duration);
+    }
+
+    @Override
+    public void update(float time) {
+        super.update(time);
+        CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, this.dps * time, null, false);
+    }
+
+    public void setDps(float dps) {
         this.dps = dps;
     }
 
-    public void affect(Spatial spatial, float tpf) {
-        InfluenceInterfaceControl targetInterface = spatial.getControl(InfluenceInterfaceControl.class);
-        if (targetInterface != null) {
-            // FIXME: Rounding errors cause significant changes in total damage
-            targetInterface.doDamage(this.dps * tpf, true);
-        }
-    }
 
-    public boolean isFriendly() {
-        return false;
-    }
+
 }

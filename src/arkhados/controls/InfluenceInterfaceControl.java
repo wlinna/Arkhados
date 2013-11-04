@@ -53,7 +53,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
      *
      * @param damage
      */
-    public float doDamage(float damage) {
+    public float doDamage(final float damage, final boolean canBreakCC) {
         if (this.dead) {
             return 0f;
         }
@@ -65,7 +65,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
             this.death();
         }
 
-        this.removeDamageSensitiveBuffs();
+        if (canBreakCC) {
+            this.removeDamageSensitiveBuffs();
+        }
         return healthBefore - health;
     }
 
@@ -172,15 +174,16 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        if (this.canControlMovement) {
-            physics.restoreWalking();
-        } else {
-            Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-            Vector3f walkDir = physics.getWalkDirection();
-            Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
-            physics.setWalkDirection(newWalkDir);
+        if (this.canMove()) {
+            CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+            if (this.canControlMovement) {
+                physics.restoreWalking();
+            } else {
+                Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                Vector3f walkDir = physics.getWalkDirection();
+                Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+                physics.setWalkDirection(newWalkDir);
+            }
         }
     }
 

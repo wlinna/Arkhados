@@ -20,6 +20,7 @@ import arkhados.controls.ProjectileControl;
 import arkhados.spell.spells.embermage.EmberCircle;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.Firewalk;
+import arkhados.spell.spells.embermage.Ignite;
 import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.spell.spells.venator.Dagger;
@@ -71,38 +72,41 @@ public abstract class Spell {
 
         // *************** INIT spells here ************************
 
-        Spell fireball = Fireball.create();
+        final Spell fireball = Fireball.create();
         Spells.put(fireball.getName(), fireball);
 
-        Spell magmaBash = MagmaBash.create();
+        final Spell magmaBash = MagmaBash.create();
         Spells.put(magmaBash.getName(), magmaBash);
 
-        Spell emberCircle = EmberCircle.create();
+        final Spell emberCircle = EmberCircle.create();
         Spells.put(emberCircle.getName(), emberCircle);
 
-        Spell purifyingFlame = PurifyingFlame.create();
+        final Spell purifyingFlame = PurifyingFlame.create();
         Spells.put(purifyingFlame.getName(), purifyingFlame);
 
-        Spell firewalk = Firewalk.create();
+        final Spell firewalk = Firewalk.create();
         Spells.put(firewalk.getName(), firewalk);
 
+        final Spell ignite = Ignite.create();
+        Spells.put(ignite.getName(), ignite);
+
         // Venator spells
-        Spell rend = Rend.create();
+        final Spell rend = Rend.create();
         Spells.put(rend.getName(), rend);
 
-        Spell dagger = Dagger.create();
+        final Spell dagger = Dagger.create();
         Spells.put(dagger.getName(), dagger);
 
-        Spell leap = Leap.create();
+        final Spell leap = Leap.create();
         Spells.put(leap.getName(), leap);
 
-        Spell feralScream = FeralScream.create();
+        final Spell feralScream = FeralScream.create();
         Spells.put(feralScream.getName(), feralScream);
 
-        Spell deepWounds = DeepWounds.create();
+        final Spell deepWounds = DeepWounds.create();
         Spells.put(deepWounds.getName(), deepWounds);
 
-        Spell survivalInstinct = SurvivalInstinct.create();
+        final Spell survivalInstinct = SurvivalInstinct.create();
         Spells.put(survivalInstinct.getName(), survivalInstinct);
     }
 

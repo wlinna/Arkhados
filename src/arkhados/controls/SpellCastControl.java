@@ -108,7 +108,7 @@ public class SpellCastControl extends AbstractControl {
             return;
         }
 
-        Spell spell = this.keySpellMappings.get(input);
+        final Spell spell = this.keySpellMappings.get(input);
         if (spell != null && this.cooldowns.get(spell.getName()) > 0f) {
             return;
         }
@@ -121,7 +121,7 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell));
 //            this.activeCastTimeLeft = spell.getCastTime();
-            EntityAction castingAction = spell.buildCastAction((Node)super.spatial, targetLocation);
+            final EntityAction castingAction = spell.buildCastAction((Node)super.spatial, targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(
@@ -129,6 +129,20 @@ public class SpellCastControl extends AbstractControl {
         }
         this.globalCooldown();
         this.cooldowns.put(spell.getName(), spell.getCooldown());
+    }
+
+    public void putOnCooldown(final String spellName) {
+        final Spell spell = this.keySpellMappings.get(spellName);
+        this.putOnCooldown(spell);
+    }
+
+    public void putOnCooldown(final Spell spell) {
+        this.cooldowns.put(spell.getName(), spell.getCooldown());
+    }
+
+    public boolean isOnCooldown(final String spellName) {
+        final Float cooldown =this.cooldowns.get(spellName);
+        return cooldown > 0f;
     }
 
     // Not removing this, because it may be useful for AI controlled units and for visual cues

@@ -47,7 +47,7 @@ public class SlowCC extends CrowdControlBuff {
     @Override
     public void update(float time) {
         super.update(time);
-        if (this.influenceInterface.isSpeedConstant()) {
+        if (this.targetInterface.isSpeedConstant()) {
             return;
         }
         Float msCurrent = this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);

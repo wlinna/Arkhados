@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.CharacterInteraction;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
@@ -190,12 +191,14 @@ class FirewalkCollisionHandler extends AbstractControl {
         }
     }
 
-    private void collisionEffect(Spatial spatial) {
-        InfluenceInterfaceControl influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);
-        if (influenceInterface == null) {
+    private void collisionEffect(Spatial target) {
+        final InfluenceInterfaceControl targetInterface = target.getControl(InfluenceInterfaceControl.class);
+        if (targetInterface == null) {
             return;
         }
-        influenceInterface.doDamage(80f);
+        final InfluenceInterfaceControl ownerInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        // TODO: Add slow effect
+        CharacterInteraction.harm(ownerInterface, targetInterface, 80f, null, true);
     }
 
     @Override

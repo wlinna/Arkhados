@@ -77,9 +77,9 @@ class MagmaBashBuilder extends NodeBuilder {
         node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 180f);
         node.setUserData(UserDataStrings.MASS, 10f);
-        node.setUserData(UserDataStrings.DAMAGE, 0f);
+        node.setUserData(UserDataStrings.DAMAGE, 80f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-        node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0.4f);
+        node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 7.4f);
 
         if (NodeBuilder.worldManager.isClient()) {
             final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 80);
@@ -113,7 +113,7 @@ class MagmaBashBuilder extends NodeBuilder {
         node.addControl(new ProjectileControl());
         SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
-        buffControl.addBuff(new IncapacitateCC(1.6f, -1));
+        buffControl.addBuff(new IncapacitateCC(1.1f, -1));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;

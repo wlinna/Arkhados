@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
+import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.controls.ActionQueueControl;
@@ -74,6 +75,7 @@ class CastDeepWoundsAction extends EntityAction {
         MeleeAttackAction meleeAction = new MeleeAttackAction(100f, 15f);
 
         BleedBuff bleedBuff = new BleedBuff(-1, 3f);
+        bleedBuff.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
         Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         bleedBuff.setDamagePerUnit(2f * damageFactor);
         meleeAction.addBuff(bleedBuff);
@@ -143,9 +145,9 @@ class BleedBuff extends AbstractBuff {
     }
 
     @Override
-    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
-        super.attachToCharacter(influenceInterface);
-        this.spatial = influenceInterface.getSpatial();
+    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
+        super.attachToCharacter(targetInterface);
+        this.spatial = targetInterface.getSpatial();
         this.physics = this.spatial.getControl(CharacterPhysicsControl.class);
     }
 
@@ -156,7 +158,7 @@ class BleedBuff extends AbstractBuff {
             return;
         }
         Float dmg = ((Float)this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT)) * time * dmgPerUnit;
-        this.influenceInterface.doDamage(dmg);
+        CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, dmg, null, true);
     }
 
     public void setDamagePerUnit(float dmgPerUnit) {

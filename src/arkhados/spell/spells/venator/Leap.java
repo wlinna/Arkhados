@@ -73,7 +73,7 @@ class CastLeapAction extends EntityAction {
 
         final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
         physics.switchToMotionCollisionMode();
-        Vector3f displacement = physics.getTargetLocation().subtract(super.spatial.getLocalTranslation());
+        final Vector3f displacement = physics.getTargetLocation().subtract(super.spatial.getLocalTranslation());
 
 
         final MotionPath path = new MotionPath();
@@ -125,7 +125,7 @@ class CastLeapAction extends EntityAction {
                     final List<AbstractBuff> buffs = new ArrayList<AbstractBuff>(1);
                     buffs.add(0, new IncapacitateCC(1f, -1));
 
-                    CharacterInteraction.harm(thisInfluenceInterfaceControl, targetInfluenceInterface, damage, buffs);
+                    CharacterInteraction.harm(thisInfluenceInterfaceControl, targetInfluenceInterface, damage, buffs, true);
                 }
             }
 

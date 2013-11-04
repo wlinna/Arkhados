@@ -63,6 +63,7 @@ public class Venator extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Feral Scream"), InputMappingStrings.Q);
         spellCastControl.putSpell(Spell.getSpells().get("Deep Wounds"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Survival Instinct"), InputMappingStrings.R);
+        spellCastControl.putSpell(Spell.getSpells().get("Ignite"), null);
 
         final CharacterAnimationControl animControl = new CharacterAnimationControl();
         animControl.setDeathAnimation("Die-1");

@@ -101,6 +101,6 @@ class AbsorbingShieldBuff extends AbstractBuff {
     @Override
     public void update(float time) {
         super.update(time);
-        super.influenceInterface.setImmuneToProjectiles(true);
+        super.targetInterface.setImmuneToProjectiles(true);
     }
 }

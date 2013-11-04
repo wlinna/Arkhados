@@ -103,7 +103,7 @@ class MovementSpeedPerHealthMissingBuff extends AbstractBuff {
     @Override
     public void update(float time) {
         super.update(time);
-        if (super.influenceInterface.isSpeedConstant()) {
+        if (super.targetInterface.isSpeedConstant()) {
             return;
         }
 

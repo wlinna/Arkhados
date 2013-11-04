@@ -26,7 +26,8 @@ public abstract class AbstractBuff {
 
     private long buffGroupId;
     protected float duration;
-    protected InfluenceInterfaceControl influenceInterface = null;
+    protected InfluenceInterfaceControl targetInterface = null;
+    private InfluenceInterfaceControl ownerInterface = null;
 
     /**
      * @param buffGroupId identifies group of buffs so that they can be removed
@@ -37,10 +38,10 @@ public abstract class AbstractBuff {
         this.duration = duration;
     }
 
-    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
+    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
 
-        this.influenceInterface = influenceInterface;
-        influenceInterface.addOtherBuff(this);
+        this.targetInterface = targetInterface;
+        targetInterface.addOtherBuff(this);
     }
 
     /**
@@ -66,5 +67,13 @@ public abstract class AbstractBuff {
             return false;
         }
         return true;
+    }
+
+    public InfluenceInterfaceControl getOwnerInterface() {
+        return ownerInterface;
+    }
+
+    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+        this.ownerInterface = ownerInterface;
     }
 }

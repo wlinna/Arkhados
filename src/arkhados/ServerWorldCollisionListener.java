@@ -85,7 +85,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         } else {
             final Float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
             final SpellBuffControl buffControl = projectile.getSpatial().getControl(SpellBuffControl.class);
-            CharacterInteraction.harm(projectile.getOwnerInterface(), target, damage, buffControl.getBuffs());
+            final boolean canBreakCC = damage > 0f ? true : false;
+            CharacterInteraction.harm(projectile.getOwnerInterface(), target, damage, buffControl.getBuffs(), canBreakCC);
 
             Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
             Vector3f impulse = target.getSpatial().getLocalTranslation()

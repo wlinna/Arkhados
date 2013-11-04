@@ -25,20 +25,24 @@ import java.util.List;
  * @author william
  */
 public class CharacterInteraction {
-    public static void harm(final InfluenceInterfaceControl attacker, final InfluenceInterfaceControl target, final float rawDamage, final List<AbstractBuff> buffs) {
+
+    public static void harm(final InfluenceInterfaceControl attacker,
+            final InfluenceInterfaceControl target, final float rawDamage,
+            final List<AbstractBuff> buffs, final boolean canBreakCC) {
+
+        final float damageDone = target.doDamage(rawDamage, canBreakCC);
+
         final Spatial attackerSpatial = attacker.getSpatial();
-
-        final float damageDone = target.doDamage(rawDamage);
-
         final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
         final float lifeStolen = lifeSteal * damageDone;
         attacker.heal(lifeStolen);
 
-        for (AbstractBuff buff : buffs) {
-            buff.attachToCharacter(target);
+        if (buffs != null) {
+            for (AbstractBuff buff : buffs) {
+                buff.attachToCharacter(target);
+            }
         }
 
         // TODO: Collect stats
     }
-
 }

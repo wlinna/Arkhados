@@ -12,31 +12,27 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.influences;
+package arkhados.spell.spells.embermage;
 
-import com.jme3.scene.Spatial;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.spell.Spell;
 
 /**
+ *
  * @author william
  */
-public class DamagOverTimeInfluence implements Influence {
+public class Ignite extends Spell{
 
-    private float dps;
-
-    public DamagOverTimeInfluence(float dps) {
-        this.dps = dps;
+    public Ignite(String name, float cooldown, float range, float castTime) {
+        super(name, cooldown, range, castTime);
     }
 
-    public void affect(Spatial spatial, float tpf) {
-        InfluenceInterfaceControl targetInterface = spatial.getControl(InfluenceInterfaceControl.class);
-        if (targetInterface != null) {
-            // FIXME: Rounding errors cause significant changes in total damage
-            targetInterface.doDamage(this.dps * tpf, true);
-        }
+    public static Ignite create() {
+        final float cooldown = 5f;
+        final float range = 0f;
+        final float castTime = 0f;
+
+        final Ignite spell = new Ignite("Ignite", cooldown, range, castTime);
+        return spell;
     }
 
-    public boolean isFriendly() {
-        return false;
-    }
 }

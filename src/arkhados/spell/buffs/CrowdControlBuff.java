@@ -36,7 +36,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
 
     @Override
     public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
-        this.influenceInterface = influenceInterface;
+        this.targetInterface = influenceInterface;
         influenceInterface.addCrowdControlBuff(this);
     }
 }

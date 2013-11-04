@@ -47,7 +47,7 @@ public class FearCC extends CrowdControlBuff {
     @Override
     public void update(float time) {
         super.update(time);
-        this.influenceInterface.setCanControlMovement(false);
+        this.targetInterface.setCanControlMovement(false);
     }
 
 

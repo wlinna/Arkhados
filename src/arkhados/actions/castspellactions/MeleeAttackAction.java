@@ -78,7 +78,7 @@ public class MeleeAttackAction extends EntityAction {
             final float rawDamage = this.damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
             CharacterInteraction.harm(super.spatial.getControl(InfluenceInterfaceControl.class),
-                    targetInfluenceControl, rawDamage, this.buffs);
+                    targetInfluenceControl, rawDamage, this.buffs, true);
 
             // TODO: Add mechanism that allows melee attack to knock enemy back
             break;
