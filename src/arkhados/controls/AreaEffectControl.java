@@ -70,9 +70,9 @@ public class AreaEffectControl extends AbstractControl {
             final boolean sameTeam = myTeamId == othersTeamId;
             for (Influence influence : this.influences) {
                 if (sameTeam && influence.isFriendly()) {
-                    influence.affect(other, tpf);
+                    influence.affect(influenceInterface, tpf);
                 } else if (!sameTeam && !influence.isFriendly()) {
-                    influence.affect(other, tpf);
+                    influence.affect(influenceInterface, tpf) ;
                 }
             }
 

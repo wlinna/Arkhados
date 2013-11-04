@@ -28,8 +28,7 @@ public class DamagOverTimeInfluence implements Influence {
         this.dps = dps;
     }
 
-    public void affect(Spatial spatial, float tpf) {
-        InfluenceInterfaceControl targetInterface = spatial.getControl(InfluenceInterfaceControl.class);
+    public void affect(final InfluenceInterfaceControl targetInterface, final float tpf) {
         if (targetInterface != null) {
             // FIXME: Rounding errors cause significant changes in total damage
             targetInterface.doDamage(this.dps * tpf, true);

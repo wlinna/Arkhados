@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.influences;
 
+import arkhados.controls.InfluenceInterfaceControl;
 import com.jme3.scene.Spatial;
 
 /**
@@ -23,5 +24,5 @@ import com.jme3.scene.Spatial;
 public  interface Influence {
 
     public boolean isFriendly();
-    public void affect(Spatial spatial, float tpf);
+    public void affect(InfluenceInterfaceControl target, float tpf);
 }
