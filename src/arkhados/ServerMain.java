@@ -49,13 +49,14 @@ public class ServerMain extends SimpleApplication {
         }
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);
-        settings.setRenderer(null);
+//        settings.setRenderer(null);
 
         ServerMain app = new ServerMain();
         app.setShowSettings(false);
         app.setSettings(settings);
         app.setPauseOnLostFocus(false);
-        app.start(JmeContext.Type.Headless);
+//        app.start(JmeContext.Type.Headless);
+        app.start();
     }
     private Server server;
     private ServerNetListener listenerManager;

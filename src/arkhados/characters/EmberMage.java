@@ -67,6 +67,7 @@ public class EmberMage extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Fireball"), InputMappingStrings.M1);
         spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
+        spellCastControl.putSpell(Spell.getSpells().get("Meteor"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Purifying Flame"), InputMappingStrings.R);
         spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
 
@@ -88,6 +89,7 @@ public class EmberMage extends NodeBuilder {
         animControl.addSpellAnimation("Fireball", "Idle");
         animControl.addSpellAnimation("Magma Bash", "Idle");
         animControl.addSpellAnimation("Ember Circle", "Idle");
+        animControl.addSpellAnimation("Meteor", "Idle");
         animControl.addSpellAnimation("Purifying Flame", "");
         animControl.addSpellAnimation("Firewalk", "Idle");
 
