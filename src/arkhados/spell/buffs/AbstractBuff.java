@@ -39,7 +39,6 @@ public abstract class AbstractBuff {
     }
 
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
-
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
     }

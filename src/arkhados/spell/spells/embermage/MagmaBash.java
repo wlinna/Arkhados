@@ -16,10 +16,12 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
@@ -33,6 +35,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
+import java.util.Iterator;
 
 /**
  * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage or
@@ -113,9 +116,34 @@ class MagmaBashBuilder extends NodeBuilder {
         node.addControl(new ProjectileControl());
         SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
-        buffControl.addBuff(new IncapacitateCC(1.1f, -1));
+        buffControl.addBuff(new BrimstoneIncapacitate(1.1f, -1));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;
+    }
+}
+
+class BrimstoneIncapacitate extends IncapacitateCC {
+
+    public BrimstoneIncapacitate(float duration, long id) {
+        super(duration, id);
+    }
+
+    @Override
+    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
+        BrimstoneBuff brimstone = null;
+
+        for (Iterator<AbstractBuff> it = influenceInterface.getBuffs().iterator(); it.hasNext();) {
+            AbstractBuff buff = it.next();
+            if (buff instanceof BrimstoneBuff) {
+                brimstone = (BrimstoneBuff) buff;
+                it.remove();
+            }
+        }
+        if (brimstone != null) {
+            super.duration += brimstone.getStacks() * 0.3f;
+        }
+
+        super.attachToCharacter(influenceInterface);
     }
 }

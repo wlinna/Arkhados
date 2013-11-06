@@ -241,4 +241,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     public void setImmuneToProjectiles(boolean immuneToProjectiles) {
         this.immuneToProjectiles = immuneToProjectiles;
     }
+
+    public List<AbstractBuff> getBuffs() {
+        return otherBuffs;
+    }
 }

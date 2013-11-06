@@ -18,12 +18,15 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.EntityEventControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -92,21 +95,21 @@ class FireballBuilder extends NodeBuilder {
     }
 
     public Node build() {
-        Sphere sphere = new Sphere(32, 32, 1.0f);
+        final Sphere sphere = new Sphere(32, 32, 1.0f);
 
-        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
-        Node node = new Node("projectile");
+        final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+        final Node node = new Node("projectile");
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
-        node.setUserData(UserDataStrings.MASS, 30f);
+        node.setUserData(UserDataStrings.MASS, 0.30f);
         node.setUserData(UserDataStrings.DAMAGE, 150f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 10000f);
+        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
         if (NodeBuilder.worldManager.isClient()) {
             final ParticleEmitter fire = this.createFireEmitter();
@@ -118,15 +121,15 @@ class FireballBuilder extends NodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            FireballRemovalAction removalAction = new FireballRemovalAction();
+            final FireballRemovalAction removalAction = new FireballRemovalAction();
             removalAction.setEmitter(fire);
 
 
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
 
-        SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
-        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
+        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -143,8 +146,9 @@ class FireballBuilder extends NodeBuilder {
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());
-        SpellBuffControl buffControl = new SpellBuffControl();
+        final SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
+        buffControl.addBuff(new BrimstoneBuff(-1, 8f));
 
 //                node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
 
@@ -175,5 +179,42 @@ class FireballRemovalAction implements RemovalEventAction {
         fire.setParticlesPerSec(0.0f);
 
         // TODO: Add soundeffect too!
+    }
+}
+
+class BrimstoneBuff extends AbstractBuff {
+
+    private static float maxDuration;
+    private static final int stackCap = 3;
+    private int stacks = 0;
+
+    public BrimstoneBuff(long buffGroupId, float duration) {
+        super(buffGroupId, duration);
+        maxDuration = duration;
+    }
+
+    @Override
+    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
+
+        BrimstoneBuff existingBrimstone = null;
+        for (AbstractBuff buff : targetInterface.getBuffs()) {
+            if (buff instanceof BrimstoneBuff) {
+                existingBrimstone = (BrimstoneBuff) buff;
+                break;
+            }
+        }
+
+        if (existingBrimstone != null) {
+            existingBrimstone.duration = maxDuration;
+            if (existingBrimstone.stacks < stackCap) {
+                existingBrimstone.stacks++;
+            }
+        } else {
+            super.attachToCharacter(targetInterface);
+        }
+    }
+
+    public int getStacks() {
+        return stacks;
     }
 }

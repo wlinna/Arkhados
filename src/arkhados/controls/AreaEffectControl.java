@@ -75,7 +75,6 @@ public class AreaEffectControl extends AbstractControl {
                     influence.affect(influenceInterface, tpf) ;
                 }
             }
-
         }
     }
 
