@@ -55,8 +55,8 @@ public class ServerMain extends SimpleApplication {
         app.setShowSettings(false);
         app.setSettings(settings);
         app.setPauseOnLostFocus(false);
-//        app.start(JmeContext.Type.Headless);
-        app.start();
+        app.start(JmeContext.Type.Headless);
+//        app.start();
     }
     private Server server;
     private ServerNetListener listenerManager;

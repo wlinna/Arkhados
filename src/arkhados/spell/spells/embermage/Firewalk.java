@@ -31,6 +31,8 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -125,12 +127,31 @@ public class Firewalk extends Spell {
 
     private static class FirewalkNodeBuilder extends NodeBuilder {
 
-        public FirewalkNodeBuilder() {
+        private ParticleEmitter createFireEmitter() {
+            final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
+            final Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+            materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+            fire.setMaterial(materialRed);
+            fire.setImagesX(2);
+            fire.setImagesY(2);
+            fire.setSelectRandomImage(true);
+            fire.setStartColor(new ColorRGBA(0.95f, 0.650f, 0.0f, 1.0f));
+            fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.1f));
+            fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+            fire.setStartSize(4.5f);
+            fire.setEndSize(8.5f);
+            fire.setGravity(Vector3f.ZERO);
+            fire.setLowLife(0.4f);
+            fire.setHighLife(0.4f);
+            fire.setParticlesPerSec(30);
+//            fire.getParticleInfluencer().setVelocityVariation(0.5f);
+//            fire.setRandomAngle(true);
+            return fire;
         }
 
         @Override
         public Node build() {
-            final Sphere sphere = new Sphere(32, 32, 2f);
+            final Sphere sphere = new Sphere(16, 16, 0.2f);
             final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
             final Node node = new Node("firewalk");
             node.attachChild(projectileGeom);
@@ -157,6 +178,11 @@ public class Firewalk extends Spell {
                 node.addControl(ghost);
 
                 node.addControl(new FirewalkCollisionHandler());
+            }
+            if (NodeBuilder.worldManager.isClient()) {
+                final ParticleEmitter fire = this.createFireEmitter();
+                node.attachChild(fire);
+
             }
             return node;
         }

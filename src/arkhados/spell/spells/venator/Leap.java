@@ -87,7 +87,6 @@ class CastLeapAction extends EntityAction {
 //        path.setCurveTension(1f);
 //        path.setPathSplineType(Spline.SplineType.CatmullRom);
 
-
         MotionEvent motionControl = new MotionEvent(super.spatial, path);
 //        motionControl.setDirectionType(MotionEvent.Direction.PathAndRotation);
 //        motionControl.setRotation(new Quaternion().fromAngleNormalAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y));
