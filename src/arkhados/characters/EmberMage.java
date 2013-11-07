@@ -70,6 +70,7 @@ public class EmberMage extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Meteor"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Purifying Flame"), InputMappingStrings.R);
         spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpells().get("Ignite"), null);
 
 //        GhostControl testGhost = new GhostControl(new SphereCollisionShape(8f));
 //        testGhost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);

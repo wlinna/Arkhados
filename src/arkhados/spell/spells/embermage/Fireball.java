@@ -21,11 +21,13 @@ import arkhados.controls.EntityEventControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
@@ -60,7 +62,13 @@ public class Fireball extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f location) {
-                return new CastProjectileAction(spell, Spell.worldManager);
+                final CastProjectileAction castProjectile = new CastProjectileAction(spell, Spell.worldManager);
+                final SpellCastControl castControl = caster.getControl(SpellCastControl.class);
+                if (!castControl.isOnCooldown("Ignite")) {                    
+                    castProjectile.addBuff(Ignite.createDamageOverTimeBuff(caster));
+                    castControl.putOnCooldown("Ignite");
+                }
+                return castProjectile;
             }
         };
 
@@ -149,8 +157,6 @@ class FireballBuilder extends NodeBuilder {
         final SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
         buffControl.addBuff(new BrimstoneBuff(-1, 8f));
-
-//                node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
 
         return node;
     }

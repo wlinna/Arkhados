@@ -20,13 +20,17 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
+import arkhados.controls.SpellBuffControl;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CastProjectileAction is proper action for basic projectile spells like Magma Bash, Fireball etc.
@@ -36,10 +40,15 @@ public class CastProjectileAction extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
+    private final List<AbstractBuff> additionalBuffs = new ArrayList<AbstractBuff>();
 
     public CastProjectileAction(Spell spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
+    }
+
+    public void addBuff(final AbstractBuff buff) {
+        this.additionalBuffs.add(buff);
     }
 
     @Override
@@ -73,6 +82,11 @@ public class CastProjectileAction extends EntityAction {
         projectileControl.setRange(this.spell.getRange());
         projectileControl.setTarget(targetLocation);
         projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+
+        final SpellBuffControl buffControl = projectile.getControl(SpellBuffControl.class);
+        for (AbstractBuff buff : this.additionalBuffs) {
+            buffControl.addBuff(buff);
+        }
 
         return false;
     }
