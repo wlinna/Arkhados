@@ -114,6 +114,7 @@ class CastMeteorAction extends EntityAction {
         motionControl.setSpeed(1f);
 
         final InfluenceInterfaceControl casterInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        meteor.getControl(SpellBuffControl.class).setOwnerInterface(casterInterface);
 
         path.addListener(new MotionPathListener() {
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
@@ -139,7 +140,11 @@ class CastMeteorAction extends EntityAction {
                     // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
                     final float distanceFactor = 1f - (pair.distance / maxDistance);
                     final float damage = 300f * distanceFactor;
-                    CharacterInteraction.harm(casterInterface, targetInterface, damage, additionalBuffs, true);
+
+                    final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
+                    buffControl.getBuffs().addAll(additionalBuffs);
+
+                    CharacterInteraction.harm(casterInterface, targetInterface, damage, buffControl.getBuffs(), true);
 
                     final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
                     final Float impulseFactor = meteor.getUserData(UserDataStrings.IMPULSE_FACTOR);

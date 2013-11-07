@@ -36,6 +36,7 @@ import java.util.List;
 public class SpellBuffControl extends AbstractControl {
 
     private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
+    private InfluenceInterfaceControl ownerInterface;
 
 
     public void addBuff(AbstractBuff buff) {
@@ -69,5 +70,13 @@ public class SpellBuffControl extends AbstractControl {
 
     public List<AbstractBuff> getBuffs() {
         return this.buffs;
+    }
+
+    public InfluenceInterfaceControl getOwnerInterface() {
+        return this.ownerInterface;
+    }
+
+    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+        this.ownerInterface = ownerInterface;
     }
 }

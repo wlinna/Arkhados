@@ -19,9 +19,12 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SpellBuffControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.SlowCC;
 import arkhados.spell.influences.Influence;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
@@ -45,6 +48,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,7 +71,9 @@ public class Firewalk extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastFirewalkAction(spell, Spell.worldManager);
+                final CastFirewalkAction castAction = new CastFirewalkAction(spell, Spell.worldManager);
+                castAction.additionalBuffs.add(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                return castAction;
             }
         };
 
@@ -79,10 +85,15 @@ public class Firewalk extends Spell {
 
         private final Spell spell;
         private final WorldManager world;
+        private final List<AbstractBuff> additionalBuffs = new ArrayList<AbstractBuff>();
 
         public CastFirewalkAction(Spell spell, WorldManager world) {
             this.spell = spell;
             this.world = world;
+        }
+
+        public void addAdditionalBuff(final AbstractBuff buff) {
+            this.additionalBuffs.add(buff);
         }
 
         private void motion() {
@@ -92,13 +103,15 @@ public class Firewalk extends Spell {
             final long firewalkId = this.world.addNewEntity(spell.getName(), startLocation, Quaternion.IDENTITY, playerId);
             final Node firewalkNode = (Node) this.world.getEntity(firewalkId);
 
+            final SpellBuffControl buffControl = firewalkNode.getControl(SpellBuffControl.class);
+            buffControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+            buffControl.getBuffs().addAll(this.additionalBuffs);
+
             final MotionPath path = new MotionPath();
             path.setPathSplineType(Spline.SplineType.Linear);
             final Vector3f finalLocation = physics.getTargetLocation().clone().setY(1f);
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
-
-
 
             MotionEvent motionControl = new MotionEvent(firewalkNode, path);
             motionControl.setSpeed(1f);
@@ -167,6 +180,10 @@ public class Firewalk extends Spell {
             node.setUserData(UserDataStrings.DAMAGE, 50f);
             node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
+            final SpellBuffControl buffControl = new SpellBuffControl();
+            final SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
+            buffControl.addBuff(slowCC);
+            node.addControl(buffControl);
 
             if (worldManager.isServer()) {
                 final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
@@ -192,7 +209,7 @@ public class Firewalk extends Spell {
 class FirewalkCollisionHandler extends AbstractControl {
 
     private GhostControl ghost;
-    private Set<Long> collidedWith = new HashSet<Long>(8);
+    private final Set<Long> collidedWith = new HashSet<Long>(8);
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -222,9 +239,9 @@ class FirewalkCollisionHandler extends AbstractControl {
         if (targetInterface == null) {
             return;
         }
-        final InfluenceInterfaceControl ownerInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
-        // TODO: Add slow effect
-        CharacterInteraction.harm(ownerInterface, targetInterface, 80f, null, true);
+
+        final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);
+        CharacterInteraction.harm(buffControl.getOwnerInterface(), targetInterface, 80f, buffControl.getBuffs(), true);
     }
 
     @Override
