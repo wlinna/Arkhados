@@ -18,6 +18,7 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
 import arkhados.controls.AreaEffectControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -67,6 +68,8 @@ public class PurifyingFlame extends Spell {
                     aoeContainer.addControl(ghost);
 
                     final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
+                    areaEffectControl.setOwnerInterface(caster.getControl(InfluenceInterfaceControl.class));
+                    areaEffectControl.addEnterBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
 
                     float baseDps = 100f;
                     final Float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);

@@ -32,11 +32,12 @@ public class CharacterInteraction {
 
         final float damageDone = target.doDamage(rawDamage, canBreakCC);
 
-        final Spatial attackerSpatial = attacker.getSpatial();
-        final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
-        final float lifeStolen = lifeSteal * damageDone;
-        attacker.heal(lifeStolen);
-
+        if (attacker != null) {
+            final Spatial attackerSpatial = attacker.getSpatial();
+            final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
+            final float lifeStolen = lifeSteal * damageDone;
+            attacker.heal(lifeStolen);
+        }
         if (buffs != null) {
             for (AbstractBuff buff : buffs) {
                 if (buff != null && !buff.isFriendly()) {

@@ -48,10 +48,8 @@ public class AreaEffectControl extends AbstractControl {
     private final List<Influence> influences = new ArrayList<Influence>();
     private final List<AbstractBuff> exitBuffs = new ArrayList<AbstractBuff>();
     private final List<AbstractBuff> enterBuffs = new ArrayList<AbstractBuff>();
-    private final HashMap<InfluenceInterfaceControl, Boolean> enteredPlayers
-            = new HashMap<InfluenceInterfaceControl, Boolean>();
+    private final HashMap<InfluenceInterfaceControl, Boolean> enteredPlayers = new HashMap<InfluenceInterfaceControl, Boolean>();
     private InfluenceInterfaceControl ownerInterface = null;
-
 
     public AreaEffectControl() {
     }
@@ -71,25 +69,26 @@ public class AreaEffectControl extends AbstractControl {
                 continue;
             }
             final Spatial other = (Spatial) collisionObject.getUserObject();
-            final InfluenceInterfaceControl influenceInterface = other.getControl(InfluenceInterfaceControl.class);
-            if (influenceInterface == null) {
+            final InfluenceInterfaceControl targetInterface = other.getControl(InfluenceInterfaceControl.class);
+            if (targetInterface == null) {
                 continue;
             }
-
             final Long othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
             final Long othersTeamId = PlayerData.getLongData(othersPlayerId, PlayerDataStrings.TEAM_ID);
             final boolean sameTeam = myTeamId == othersTeamId;
             for (Influence influence : this.influences) {
                 if (sameTeam && influence.isFriendly()) {
-                    influence.affect(influenceInterface, tpf);
+                    influence.affect(targetInterface, tpf);
                 } else if (!sameTeam && !influence.isFriendly()) {
-                    influence.affect(influenceInterface, tpf) ;
+                    influence.affect(targetInterface, tpf);
                 }
             }
 
-            if (!this.enteredPlayers.containsKey(influenceInterface)) {
-                this.enteredPlayers.put(influenceInterface, false);
-                CharacterInteraction.harm(this.ownerInterface, influenceInterface, 0f, this.enterBuffs, false);
+            if (!this.enteredPlayers.containsKey(targetInterface)) {
+                this.enteredPlayers.put(targetInterface, false);
+                if (!sameTeam) {
+                    CharacterInteraction.harm(this.ownerInterface, targetInterface, 0f, this.enterBuffs, false);
+                }
             }
         }
 
