@@ -63,11 +63,9 @@ public class Fireball extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f location) {
                 final CastProjectileAction castProjectile = new CastProjectileAction(spell, Spell.worldManager);
-                final SpellCastControl castControl = caster.getControl(SpellCastControl.class);
-                if (!castControl.isOnCooldown("Ignite")) {                    
-                    castProjectile.addBuff(Ignite.createDamageOverTimeBuff(caster));
-                    castControl.putOnCooldown("Ignite");
-                }
+
+                castProjectile.addBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+
                 return castProjectile;
             }
         };

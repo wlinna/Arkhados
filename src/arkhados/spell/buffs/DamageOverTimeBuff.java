@@ -33,6 +33,7 @@ public class DamageOverTimeBuff extends AbstractBuff {
     @Override
     public void update(float time) {
         super.update(time);
+        // TODO: Calling harm on each update may cause significant rounding error, especially if dps is high. There might be performance penalties too.
         CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, this.dps * time, null, false);
     }
 

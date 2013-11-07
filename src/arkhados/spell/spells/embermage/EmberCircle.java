@@ -61,7 +61,9 @@ public class EmberCircle extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastOnGroundAction(worldManager, spell);
+                final CastOnGroundAction castOnGround = new CastOnGroundAction(worldManager, spell);
+                castOnGround.addEnterBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                return castOnGround;
             }
         };
 
@@ -95,6 +97,7 @@ class EmberCircleBuilder extends NodeBuilder {
 
         if (worldManager.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 0.05f, radius), 1));
+            ghost.removeCollideWithGroup(GhostControl.COLLISION_GROUP_01);
             node.addControl(ghost);
 
             final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);

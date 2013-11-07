@@ -59,6 +59,9 @@ public class SurvivalInstinct extends Spell {
 class DamagePerHealthPercentBuff extends AbstractBuff {
 
     private Spatial spatial = null;
+    {
+        super.friendly = true;
+    }
 
     public DamagePerHealthPercentBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
@@ -88,6 +91,9 @@ class MovementSpeedPerHealthMissingBuff extends AbstractBuff {
 
     private Spatial spatial;
     private float originalHealth;
+    {
+        super.friendly = true;
+    }
 
     public MovementSpeedPerHealthMissingBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);

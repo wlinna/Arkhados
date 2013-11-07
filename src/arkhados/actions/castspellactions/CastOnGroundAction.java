@@ -16,11 +16,18 @@ package arkhados.actions.castspellactions;
 
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.controls.AreaEffectControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SpellBuffControl;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,6 +37,8 @@ public class CastOnGroundAction extends EntityAction {
 
     private WorldManager worldManager;
     private Spell spell;
+    private final List<AbstractBuff> additionalEnterBuffs = new ArrayList<AbstractBuff>();
+    // NOTE: Add additionalExitBuffs -list if needed
 
     public CastOnGroundAction(WorldManager worldManager, Spell spell) {
         this.worldManager = worldManager;
@@ -38,9 +47,20 @@ public class CastOnGroundAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
-        Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY, playerId);
+        final Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
+        final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Long entityId = worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY, playerId);
+
+        final Spatial entity = worldManager.getEntity(entityId);
+        final AreaEffectControl aoeControl = entity.getControl(AreaEffectControl.class);
+        aoeControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+        for (AbstractBuff buff : this.additionalEnterBuffs) {
+            aoeControl.addEnterBuff(buff);
+        }
         return false;
+    }
+
+    public void addEnterBuff(final AbstractBuff buff) {
+        this.additionalEnterBuffs.add(buff);
     }
 }

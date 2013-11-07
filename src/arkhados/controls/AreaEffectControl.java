@@ -14,7 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.CharacterInteraction;
 import arkhados.PlayerData;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
@@ -31,7 +33,10 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -40,7 +45,13 @@ import java.util.List;
 public class AreaEffectControl extends AbstractControl {
 
     private GhostControl ghostControl;
-    private List<Influence> influences = new ArrayList<Influence>();
+    private final List<Influence> influences = new ArrayList<Influence>();
+    private final List<AbstractBuff> exitBuffs = new ArrayList<AbstractBuff>();
+    private final List<AbstractBuff> enterBuffs = new ArrayList<AbstractBuff>();
+    private final HashMap<InfluenceInterfaceControl, Boolean> enteredPlayers
+            = new HashMap<InfluenceInterfaceControl, Boolean>();
+    private InfluenceInterfaceControl ownerInterface = null;
+
 
     public AreaEffectControl() {
     }
@@ -75,11 +86,26 @@ public class AreaEffectControl extends AbstractControl {
                     influence.affect(influenceInterface, tpf) ;
                 }
             }
+
+            if (!this.enteredPlayers.containsKey(influenceInterface)) {
+                this.enteredPlayers.put(influenceInterface, false);
+                CharacterInteraction.harm(this.ownerInterface, influenceInterface, 0f, this.enterBuffs, false);
+            }
         }
+
+        // TODO: Add way to inflict exitBuffs
     }
 
-    public void addInfluence(Influence influence) {
+    public void addInfluence(final Influence influence) {
         this.influences.add(influence);
+    }
+
+    public void addEnterBuff(final AbstractBuff buff) {
+        this.enterBuffs.add(buff);
+    }
+
+    public void addExitBuff(final AbstractBuff buff) {
+        this.exitBuffs.add(buff);
     }
 
     @Override
@@ -102,5 +128,9 @@ public class AreaEffectControl extends AbstractControl {
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule out = ex.getCapsule(this);
+    }
+
+    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+        this.ownerInterface = ownerInterface;
     }
 }

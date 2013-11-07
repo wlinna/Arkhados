@@ -15,6 +15,7 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.UserDataStrings;
@@ -24,7 +25,7 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class Ignite extends Spell{
+public class Ignite extends Spell {
 
     public Ignite(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
@@ -39,18 +40,24 @@ public class Ignite extends Spell{
         return spell;
     }
 
-    public static DamageOverTimeBuff createDamageOverTimeBuff(Node caster) {
+    public static DamageOverTimeBuff ifNotCooldownCreateDamageOverTimeBuff(final Node caster) {
+        final SpellCastControl castControl = caster.getControl(SpellCastControl.class);
+        if (castControl.isOnCooldown("Ignite")) {
+            return null;
+        }
+
+        castControl.putOnCooldown("Ignite");
+
         final DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(-1, 4f);
         final InfluenceInterfaceControl ownerInterface = caster.getControl(InfluenceInterfaceControl.class);
         dotBuff.setOwnerInterface(ownerInterface);
+
         float damagePerSecond = 20f;
         Float damageFactor = 1f;
-        if (caster != null) {
-            damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
-        }
+        damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+
         damagePerSecond *= damageFactor;
         dotBuff.setDps(damagePerSecond);
         return dotBuff;
     }
-
 }

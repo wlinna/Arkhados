@@ -39,12 +39,12 @@ public class CharacterInteraction {
 
         if (buffs != null) {
             for (AbstractBuff buff : buffs) {
-                buff.attachToCharacter(target);
+                if (buff != null && !buff.isFriendly()) {
+                    buff.attachToCharacter(target);
+                }
             }
         }
 
         // TODO: Collect stats
     }
-
-
 }

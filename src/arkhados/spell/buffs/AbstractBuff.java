@@ -28,6 +28,7 @@ public abstract class AbstractBuff {
     protected float duration;
     protected InfluenceInterfaceControl targetInterface = null;
     private InfluenceInterfaceControl ownerInterface = null;
+    protected boolean friendly = false;
 
     /**
      * @param buffGroupId identifies group of buffs so that they can be removed
@@ -72,7 +73,11 @@ public abstract class AbstractBuff {
         return ownerInterface;
     }
 
-    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+    public void setOwnerInterface(final InfluenceInterfaceControl ownerInterface) {
         this.ownerInterface = ownerInterface;
+    }
+
+    public boolean isFriendly() {
+        return this.friendly;
     }
 }

@@ -94,6 +94,9 @@ public class PurifyingFlame extends Spell {
 
 class AbsorbingShieldBuff extends AbstractBuff {
 
+    {
+        super.friendly = true;
+    }
     public AbsorbingShieldBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
