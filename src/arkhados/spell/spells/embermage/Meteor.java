@@ -24,6 +24,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
@@ -40,6 +41,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +64,7 @@ public class Meteor extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 final CastMeteorAction action = new CastMeteorAction(worldManager, spell);
+                action.addAdditionalBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
                 return action;
             }
         };
@@ -75,10 +78,15 @@ class CastMeteorAction extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
+    private final List<AbstractBuff> additionalBuffs = new ArrayList<AbstractBuff>();
 
     public CastMeteorAction(WorldManager worldManager, final Spell spell) {
         this.spell = spell;
         this.worldManager = worldManager;
+    }
+
+    public void addAdditionalBuff(final AbstractBuff buff) {
+        this.additionalBuffs.add(buff);
     }
 
     @Override
@@ -131,7 +139,7 @@ class CastMeteorAction extends EntityAction {
                     // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
                     final float distanceFactor = 1f - (pair.distance / maxDistance);
                     final float damage = 300f * distanceFactor;
-                    CharacterInteraction.harm(casterInterface, targetInterface, damage, null, true);
+                    CharacterInteraction.harm(casterInterface, targetInterface, damage, additionalBuffs, true);
 
                     final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
                     final Float impulseFactor = meteor.getUserData(UserDataStrings.IMPULSE_FACTOR);
