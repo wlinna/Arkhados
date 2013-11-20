@@ -49,6 +49,7 @@ public class Ignite extends Spell {
         castControl.putOnCooldown("Ignite");
 
         final DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(-1, 4f);
+        dotBuff.setName("Ignite");
         final InfluenceInterfaceControl ownerInterface = caster.getControl(InfluenceInterfaceControl.class);
         dotBuff.setOwnerInterface(ownerInterface);
 

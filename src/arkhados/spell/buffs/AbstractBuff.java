@@ -31,6 +31,7 @@ public abstract class AbstractBuff {
     // TODO: Consider removing this. If there's going to be way to
     private static SyncManager syncManager;
     protected String name = null;
+
     private long buffGroupId;
     protected float duration;
     protected InfluenceInterfaceControl targetInterface = null;
@@ -98,6 +99,10 @@ public abstract class AbstractBuff {
 
     public boolean isFriendly() {
         return this.friendly;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     private static SyncManager getSyncManager() {

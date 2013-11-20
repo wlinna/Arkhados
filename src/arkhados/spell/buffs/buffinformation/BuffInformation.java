@@ -33,6 +33,9 @@ public abstract class BuffInformation {
 
         final BuffInformation purifyingFlame = new PurifyingFlameInformation();
         Buffs.put("Purifying Flame", purifyingFlame);
+
+        final BuffInformation ignite = new IgniteInformation();
+        Buffs.put("Ignite", ignite);
     }
 
     public static BuffInformation getBuffInformation(final String name) {
