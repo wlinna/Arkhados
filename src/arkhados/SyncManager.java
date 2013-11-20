@@ -35,6 +35,7 @@ import arkhados.messages.syncmessages.AbstractSyncMessage;
 import arkhados.messages.syncmessages.GenericSyncMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.MotionEvent;
@@ -68,6 +69,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     public void initialize(AppStateManager stateManager, Application app) {
         System.out.println("Initializing SyncManager");
         super.initialize(stateManager, app);
+        AbstractBuff.setSyncManager(this);
         System.out.println("Initialized SyncManager");
     }
 

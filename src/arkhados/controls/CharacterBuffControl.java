@@ -14,7 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.spell.buffs.AbstractBuff;
+import arkhados.effects.BuffEffect;
+import arkhados.spell.buffs.buffinformation.BuffInformation;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -25,34 +26,45 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author william
  */
 public class CharacterBuffControl extends AbstractControl {
 
+    private HashMap<Long, BuffEffect> buffs = new HashMap<Long, BuffEffect>();
 
-    public void addBuff(AbstractBuff buff) {
+    public void addBuff(final long buffId, final String buffName) {
+        final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffName);
+        if (buffInfo == null) {
+            return;
+        }
+        final BuffEffect buff = buffInfo.createBuffEffect(this);
+        this.buffs.put(buffId, buff);
+    }
 
+    public void removeBuff(final long buffId) {
+        final BuffEffect buffEffect = this.buffs.remove(buffId);
+        buffEffect.destroy();
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-//        for (Iterator<AbstractBuff> it = buffs.iterator(); it.hasNext();) {
-//            AbstractBuff buff = it.next();
-//            boolean shouldContinue = buff.update(tpf);
-//            if (!shouldContinue) {
-//                it.remove();
-//            }
-//        }
+        for (Map.Entry<Long, BuffEffect> entry : buffs.entrySet()) {
+            BuffEffect buffEffect = entry.getValue();
+            buffEffect.update(tpf);
+        }
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-
+//        for (Map.Entry<Long, BuffEffect> entry : buffs.entrySet()) {
+//            BuffEffect buffEffect = entry.getValue();
+//            buffEffect.updateRender(rm, vp);
+//        }
     }
 
     public Control cloneForSpatial(Spatial spatial) {

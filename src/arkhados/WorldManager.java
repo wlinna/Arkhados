@@ -36,11 +36,13 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
+import arkhados.effects.BuffEffect;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
@@ -112,6 +114,8 @@ public class WorldManager extends AbstractAppState {
         }
 
         Spell.initSpells(assetManager, this);
+        BuffInformation.initBuffs();
+        BuffEffect.setAssetManager(assetManager);
         System.out.println("Initialized WorldManager");
     }
 

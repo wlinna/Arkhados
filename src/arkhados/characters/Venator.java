@@ -16,6 +16,7 @@ package arkhados.characters;
 
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
+import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -77,6 +78,11 @@ public class Venator extends NodeBuilder {
         entity.addControl(animControl);
 
         entity.addControl(new InfluenceInterfaceControl());
+
+        if (worldManager.isClient()) {
+            entity.addControl(new CharacterBuffControl());
+        }
+
 
         return entity;
     }

@@ -42,6 +42,7 @@ import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
+import arkhados.messages.syncmessages.BuffMessage;
 import arkhados.messages.syncmessages.GenericSyncMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
@@ -143,7 +144,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 GenericSyncMessage.class,
                 SyncCharacterMessage.class,
                 SyncProjectileMessage.class,
-                StartCastingSpellMessage.class);
+                StartCastingSpellMessage.class,
+                BuffMessage.class);
         this.worldManager = new WorldManager();
 
         this.userCommandManager = new UserCommandManager(this.client, this.inputManager);

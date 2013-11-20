@@ -161,6 +161,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             AbstractBuff buff = it.next();
             buff.update(tpf);
             if (!buff.shouldContinue()) {
+                buff.destroy();
                 it.remove();
                 continue;
             }
@@ -169,6 +170,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             CrowdControlBuff cc = it.next();
             cc.update(tpf);
             if (!cc.shouldContinue()) {
+                cc.destroy();
                 it.remove();
                 continue;
             }

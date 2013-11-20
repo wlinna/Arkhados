@@ -14,7 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.SyncManager;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.messages.syncmessages.BuffMessage;
+import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
 
 /**
@@ -23,13 +26,18 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public abstract class AbstractBuff {
+    private static long currentBuffId = 0;
 
+    // TODO: Consider removing this. If there's going to be way to
+    private static SyncManager syncManager;
+    protected String name = null;
     private long buffGroupId;
     protected float duration;
     protected InfluenceInterfaceControl targetInterface = null;
     private InfluenceInterfaceControl ownerInterface = null;
     protected boolean friendly = false;
 
+    private long buffId = ++currentBuffId;
     /**
      * @param buffGroupId identifies group of buffs so that they can be removed
      * with single dispel. Not used currently
@@ -42,6 +50,10 @@ public abstract class AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
+        if (this.name != null) {
+            final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, true));
+        }
     }
 
     /**
@@ -69,6 +81,13 @@ public abstract class AbstractBuff {
         return true;
     }
 
+    public void destroy() {
+        if (this.name != null) {
+            final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            getSyncManager().broadcast(new BuffMessage(entityId, null, this.buffId, false));
+        }
+    }
+
     public InfluenceInterfaceControl getOwnerInterface() {
         return ownerInterface;
     }
@@ -79,5 +98,13 @@ public abstract class AbstractBuff {
 
     public boolean isFriendly() {
         return this.friendly;
+    }
+
+    private static SyncManager getSyncManager() {
+        return syncManager;
+    }
+
+    public static void setSyncManager(SyncManager aSyncManager) {
+        syncManager = aSyncManager;
     }
 }

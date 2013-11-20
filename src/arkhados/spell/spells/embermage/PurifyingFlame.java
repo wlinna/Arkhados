@@ -50,10 +50,9 @@ public class PurifyingFlame extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-                // TODO: When team play is implemented, make this targetable to
-                // team mates!
                 // TODO: Make this visible!
 
+                // TODO: Get this from BuffInformation
                 final float duration = 3f;
                 final CastSelfBuffAction action = new CastSelfBuffAction();
                 final Node aoeContainer = new Node("purifying-flame");
@@ -99,6 +98,7 @@ class AbsorbingShieldBuff extends AbstractBuff {
 
     {
         super.friendly = true;
+        super.name = "Purifying Flame";
     }
     public AbsorbingShieldBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
