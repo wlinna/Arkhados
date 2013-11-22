@@ -19,7 +19,6 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.SyncInterpolationControl;
-import arkhados.controls.CharacterMovementControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.util.UserDataStrings;
@@ -48,9 +47,6 @@ public class SyncCharacterMessage extends AbstractSyncMessage {
         this.velocity.set(spatial.getControl(CharacterPhysicsControl.class).getVelocity());
         this.viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
         this.health = (Float) spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-    }
-
-    public void readData(CharacterMovementControl control) {
     }
 
     @Override
