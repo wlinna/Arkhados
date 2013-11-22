@@ -12,3 +12,4 @@ Note: see CREDITS.md for attributions
 
 - mage.blend and all its derivatives
 - EmberCircle.png and all its derivatives
+- skull.png and all its derivatives
