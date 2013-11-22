@@ -43,6 +43,8 @@ public class BuffMessage extends AbstractSyncMessage {
     public void applyData(Object target) {
         final Node casterNode = (Node) target;
         final CharacterBuffControl buffControl = casterNode.getControl(CharacterBuffControl.class);
+        // TODO: Add to InfluenceInterfaceControl so that its non-visual effects
+        // can be simulated
         if (this.added) {
             buffControl.addBuff(this.buffId, this.buffName);
         } else {

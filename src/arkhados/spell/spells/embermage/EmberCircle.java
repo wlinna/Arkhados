@@ -109,7 +109,7 @@ class EmberCircleBuilder extends NodeBuilder {
                     Float dps = (Float) super.spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
                     areaEffectControl.addInfluence(new DamagOverTimeInfluence(dps));
 
-                    node.addControl(new TimedExistenceControl(10f, true));
+                    node.addControl(new TimedExistenceControl(5f, true));
 
                     return false;
                 }

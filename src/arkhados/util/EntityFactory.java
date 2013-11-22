@@ -20,6 +20,7 @@ import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.DebugControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.Spell;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
@@ -77,7 +78,6 @@ public class EntityFactory {
      */
     public Spatial createEntityById(String id) {
         Node entity = null;
-
         if ("Mage".equals(id)) {
             entity = new EmberMage().build();
             entity.addControl(new DebugControl(this.assetManager));
@@ -85,6 +85,7 @@ public class EntityFactory {
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
                 entity.addControl(new SyncInterpolationControl());
+                entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
             }
 
         } else if ("Venator".equals(id)) {
@@ -93,11 +94,14 @@ public class EntityFactory {
             if (worldManager.isClient()) {
                 this.clientHudManager.addCharacter(entity);
                 entity.addControl(new SyncInterpolationControl());
+                entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
             }
         } else if (Spell.getSpells().containsKey(id)) {
             Spell spell = Spell.getSpells().get(id);
             entity = spell.buildNode();
         }
+
+        // TODO: Detect if entity is character
         assert entity != null;
         return entity;
     }

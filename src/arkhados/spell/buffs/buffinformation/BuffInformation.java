@@ -39,6 +39,9 @@ public abstract class BuffInformation {
 
         final BuffInformation survivalInstinct = new SurvivalInstinctInformation();
         Buffs.put("Survival Instinct", survivalInstinct);
+
+        final BuffInformation deepWounds = new DeepWoundsInformation();
+        Buffs.put("Deep Wounds", deepWounds);
     }
 
     public static BuffInformation getBuffInformation(final String name) {

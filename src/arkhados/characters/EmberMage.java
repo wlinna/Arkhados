@@ -99,6 +99,7 @@ public class EmberMage extends NodeBuilder {
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
+
         }
 
         return entity;

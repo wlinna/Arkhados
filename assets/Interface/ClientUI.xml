@@ -21,7 +21,7 @@
 
                 <text style="nifty-label" text="Welcome to Arkhados!" >
                     <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="400" startDelay="250"/>
                     </effect>
                 </text>
                 <control id="goto_join_server" name="button" label="Join Game" align="center">
@@ -134,7 +134,7 @@
                 </effect>
                 <text style="nifty-label" text="Join server" >
                     <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
                     </effect>
                 </text>
                 <text style="nifty-label" text=""/>
@@ -158,7 +158,7 @@
                 <control id="start_button" name="button" label="Start Game" align="center">
                     <interact onClick="connect()"/>
                     <effect>
-                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
                     </effect>
                 </control>
 

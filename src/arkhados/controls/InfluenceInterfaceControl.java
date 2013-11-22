@@ -47,6 +47,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
     private boolean immuneToProjectiles = false;
+    // HACK: Maybe this should be global?
+    private boolean isServer = true;
 
     /**
      * Do damage to character (damage can be mitigated).
@@ -177,14 +179,16 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
 
         if (this.canMove()) {
-            CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-            if (this.canControlMovement) {
-                physics.restoreWalking();
-            } else {
-                Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-                Vector3f walkDir = physics.getWalkDirection();
-                Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
-                physics.setWalkDirection(newWalkDir);
+            if (this.isServer) {
+                CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+                if (this.canControlMovement) {
+                    physics.restoreWalking();
+                } else {
+                    Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                    Vector3f walkDir = physics.getWalkDirection();
+                    Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+                    physics.setWalkDirection(newWalkDir);
+                }
             }
         }
     }
@@ -213,6 +217,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public boolean isDead() {
         return dead;
+    }
+
+    public void setIsServer(boolean flag) {
+        this.isServer = flag;
     }
 
     private void removeDamageSensitiveBuffs() {

@@ -18,7 +18,6 @@ import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
@@ -139,6 +138,10 @@ class BleedBuff extends AbstractBuff {
     private CharacterPhysicsControl physics = null;
     private Spatial spatial = null;
     private float dmgPerUnit = 2f;
+
+    {
+        this.name = "Deep Wounds";
+    }
 
     public BleedBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
