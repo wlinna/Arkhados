@@ -36,6 +36,9 @@ public abstract class BuffInformation {
 
         final BuffInformation ignite = new IgniteInformation();
         Buffs.put("Ignite", ignite);
+
+        final BuffInformation survivalInstinct = new SurvivalInstinctInformation();
+        Buffs.put("Survival Instinct", survivalInstinct);
     }
 
     public static BuffInformation getBuffInformation(final String name) {

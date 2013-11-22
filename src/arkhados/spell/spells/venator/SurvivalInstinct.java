@@ -92,6 +92,7 @@ class MovementSpeedPerHealthMissingBuff extends AbstractBuff {
     private Spatial spatial;
     private float originalHealth;
     {
+        super.name = "Survival Instinct";
         super.friendly = true;
     }
 
