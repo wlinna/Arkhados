@@ -14,8 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.controls.ActionQueueControl;
+import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.font.BitmapFont;
@@ -25,20 +26,15 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.ArrayList;
-import java.util.List;
-import arkhados.actions.EntityAction;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.util.UserDataStrings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

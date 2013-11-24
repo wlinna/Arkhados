@@ -152,7 +152,6 @@ public class SpellCastControl extends AbstractControl {
         Vector3f displacement = super.getSpatial().getLocalTranslation().subtract(targetLocation);
         if (displacement.lengthSquared() <= FastMath.sqr(range)) {
             return super.getSpatial().getLocalTranslation();
-
         }
         displacement.normalizeLocal().multLocal(range);
         return displacement.addLocal(targetLocation);

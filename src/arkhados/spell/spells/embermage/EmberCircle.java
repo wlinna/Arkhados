@@ -19,7 +19,6 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastOnGroundAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.AreaEffectControl;
-import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
@@ -34,13 +33,9 @@ import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
 /**
  * Embermage's Ember Circle (Q) spell. Area of Effect spell that deals damage
@@ -54,7 +49,7 @@ public class EmberCircle extends Spell {
 
     public static EmberCircle create() {
         final float cooldown = 6f;
-        final float range = 40f;
+        final float range = 100f;
         final float castTime = 0.4f;
 
         final EmberCircle spell = new EmberCircle("Ember Circle", cooldown, range, castTime);

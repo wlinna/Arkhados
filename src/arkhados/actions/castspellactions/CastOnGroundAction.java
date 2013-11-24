@@ -23,6 +23,7 @@ import arkhados.controls.SpellBuffControl;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -48,8 +49,9 @@ public class CastOnGroundAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         final Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
+        final Vector3f adjustedTarget = this.getClosestPointToTarget().setY(0.1f);
         final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final Long entityId = worldManager.addNewEntity(spell.getName(), targetLocation.setY(0.1f), Quaternion.IDENTITY, playerId);
+        final Long entityId = worldManager.addNewEntity(spell.getName(), adjustedTarget, Quaternion.IDENTITY, playerId);
 
         final Spatial entity = worldManager.getEntity(entityId);
         final AreaEffectControl aoeControl = entity.getControl(AreaEffectControl.class);
@@ -62,5 +64,16 @@ public class CastOnGroundAction extends EntityAction {
 
     public void addEnterBuff(final AbstractBuff buff) {
         this.additionalEnterBuffs.add(buff);
+    }
+
+    public Vector3f getClosestPointToTarget() {
+        final Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
+        final Vector3f displacement = targetLocation.subtract(super.spatial.getLocalTranslation());
+
+        if (displacement.lengthSquared() <= FastMath.sqr(this.spell.getRange())) {
+            return targetLocation;
+        }
+        displacement.normalizeLocal().multLocal(this.spell.getRange());
+        return displacement.addLocal(super.spatial.getLocalTranslation());
     }
 }
