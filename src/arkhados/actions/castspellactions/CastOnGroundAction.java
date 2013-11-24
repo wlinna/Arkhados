@@ -20,6 +20,7 @@ import arkhados.controls.AreaEffectControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
@@ -48,8 +49,8 @@ public class CastOnGroundAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
-        final Vector3f adjustedTarget = this.getClosestPointToTarget().setY(0.1f);
+        final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+        final Vector3f adjustedTarget = castControl.getClosestPointToTarget(this.spell).setY(0.1f);
         final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
         final Long entityId = worldManager.addNewEntity(spell.getName(), adjustedTarget, Quaternion.IDENTITY, playerId);
 
@@ -64,16 +65,5 @@ public class CastOnGroundAction extends EntityAction {
 
     public void addEnterBuff(final AbstractBuff buff) {
         this.additionalEnterBuffs.add(buff);
-    }
-
-    public Vector3f getClosestPointToTarget() {
-        final Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
-        final Vector3f displacement = targetLocation.subtract(super.spatial.getLocalTranslation());
-
-        if (displacement.lengthSquared() <= FastMath.sqr(this.spell.getRange())) {
-            return targetLocation;
-        }
-        displacement.normalizeLocal().multLocal(this.spell.getRange());
-        return displacement.addLocal(super.spatial.getLocalTranslation());
     }
 }
