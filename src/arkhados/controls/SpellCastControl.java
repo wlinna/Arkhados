@@ -159,13 +159,15 @@ public class SpellCastControl extends AbstractControl {
 
     public Vector3f getClosestPointToTarget(final Spell spell) {
         final Vector3f targetLocation = super.spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
-        final Vector3f displacement = targetLocation.subtract(super.spatial.getLocalTranslation());
 
-        if (displacement.lengthSquared() <= FastMath.sqr(spell.getRange())) {
-            return targetLocation;
+        final float distance = targetLocation.distance(super.spatial.getLocalTranslation());
+        float interpolationFactor = spell.getRange() / distance;
+        if (interpolationFactor > 1f) {
+            interpolationFactor = 1f;
         }
-        displacement.normalizeLocal().multLocal(spell.getRange());
-        return displacement.addLocal(super.spatial.getLocalTranslation());
+
+        final Vector3f target = super.spatial.getLocalTranslation().clone().interpolate(targetLocation, interpolationFactor);
+        return target;
     }
 
     @Override

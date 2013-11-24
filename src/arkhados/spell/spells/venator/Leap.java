@@ -20,6 +20,7 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -28,9 +29,6 @@ import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
@@ -55,7 +53,7 @@ public class Leap extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastLeapAction();
+                return new CastLeapAction(spell);
             }
         };
         spell.nodeBuilder = null;
@@ -67,29 +65,27 @@ public class Leap extends Spell {
 class CastLeapAction extends EntityAction {
 
     private float forwardSpeed = 105f;
+    private final Spell spell;
+
+    public CastLeapAction(final Spell spell) {
+        this.spell = spell;
+    }
 
     private void motionPathVersion() {
-
-
         final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
         physics.switchToMotionCollisionMode();
-        final Vector3f displacement = physics.getTargetLocation().subtract(super.spatial.getLocalTranslation());
-
 
         final MotionPath path = new MotionPath();
-        // We set y to 1 to prevent ground collision on start
 
+        // We set y to 1 to prevent ground collision on start
         final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
-        final Vector3f finalLocation = physics.getTargetLocation().clone().setY(1f);
+        final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
+        
         path.addWayPoint(startLocation);
-        path.addWayPoint(super.spatial.getLocalTranslation().add(displacement.divide(2)).setY(displacement.length() / 3f));
+        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation.divide(2)).setY(finalLocation.length() / 3f));
         path.addWayPoint(finalLocation);
-//        path.setCurveTension(1f);
-//        path.setPathSplineType(Spline.SplineType.CatmullRom);
 
         MotionEvent motionControl = new MotionEvent(super.spatial, path);
-//        motionControl.setDirectionType(MotionEvent.Direction.PathAndRotation);
-//        motionControl.setRotation(new Quaternion().fromAngleNormalAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y));
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / this.forwardSpeed);
         motionControl.setSpeed(2f);
 
@@ -102,7 +98,6 @@ class CastLeapAction extends EntityAction {
                 SpatialDistancePair pairWithSmallestDistance = null;
                 for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
                     // Check if spatial is character
-
                     if (spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class) == null) {
                         continue;
                     }

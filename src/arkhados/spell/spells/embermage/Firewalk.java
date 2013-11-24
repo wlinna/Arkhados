@@ -20,6 +20,7 @@ import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -109,7 +110,9 @@ public class Firewalk extends Spell {
 
             final MotionPath path = new MotionPath();
             path.setPathSplineType(Spline.SplineType.Linear);
-            final Vector3f finalLocation = physics.getTargetLocation().clone().setY(1f);
+
+            final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+            final Vector3f finalLocation = castControl.getClosestPointToTarget(this.spell).setY(1f);
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
 

@@ -22,6 +22,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -93,14 +94,7 @@ class CastMeteorAction extends EntityAction {
     public boolean update(float tpf) {
         final Vector3f startingPoint = super.spatial.getLocalTranslation().add(0f, 60f, 0f);
 
-        final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        final float distance = physics.getTargetLocation().distance(super.spatial.getLocalTranslation());
-        float interpolationFactor = spell.getRange() / distance;
-        if (interpolationFactor > 1f) {
-            interpolationFactor = 1f;
-        }
-
-        final Vector3f target = super.spatial.getLocalTranslation().clone().interpolate(physics.getTargetLocation(), interpolationFactor);
+        final Vector3f target = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startingPoint);
