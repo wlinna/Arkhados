@@ -18,7 +18,6 @@ import arkhados.SyncManager;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.syncmessages.BuffMessage;
 import arkhados.util.UserDataStrings;
-import com.jme3.scene.Spatial;
 
 /**
  * Base class for all buffs, negative or positive.
@@ -105,11 +104,15 @@ public abstract class AbstractBuff {
         this.name = name;
     }
 
-    private static SyncManager getSyncManager() {
+    protected static SyncManager getSyncManager() {
         return syncManager;
     }
 
     public static void setSyncManager(SyncManager aSyncManager) {
         syncManager = aSyncManager;
+    }
+
+    protected long getBuffId() {
+        return this.buffId;
     }
 }

@@ -26,6 +26,10 @@ import com.jme3.scene.Spatial;
  */
 public class FearCC extends CrowdControlBuff {
     private Vector3f initialDirection = new Vector3f();
+    {
+        super.name = "Fear";
+    }
+
     public FearCC(long id, float duration) {
         super(id, duration);
     }

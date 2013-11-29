@@ -42,6 +42,9 @@ public abstract class BuffInformation {
 
         final BuffInformation deepWounds = new DeepWoundsInformation();
         Buffs.put("Deep Wounds", deepWounds);
+
+        final BuffInformation fear = new FearInformation();
+        Buffs.put("Fear", fear);
     }
 
     public static BuffInformation getBuffInformation(final String name) {

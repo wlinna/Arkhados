@@ -15,6 +15,8 @@
 package arkhados.spell.buffs;
 
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.messages.syncmessages.BuffMessage;
+import arkhados.util.UserDataStrings;
 
 /**
  * Base class for all buffs that somehow restricts or limits the entity that is
@@ -38,5 +40,9 @@ public abstract class CrowdControlBuff extends AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
         this.targetInterface = influenceInterface;
         influenceInterface.addCrowdControlBuff(this);
+        if (super.name != null) {
+            final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            getSyncManager().broadcast(new BuffMessage(entityId, this.name, super.getBuffId(), true));
+        }
     }
 }
