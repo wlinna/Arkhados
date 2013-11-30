@@ -23,6 +23,8 @@ import arkhados.controls.EntityEventControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.controls.TimedExistenceControl;
+import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -33,9 +35,9 @@ import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -203,11 +205,51 @@ class MeteorNodeBuilder extends NodeBuilder {
         node.addControl(spellBuffControl);
 
         if (NodeBuilder.worldManager.isClient()) {
+            node.addControl(new EntityEventControl());
             final ParticleEmitter fire = this.createFireEmitter();
             node.attachChild(fire);
+
+            final MeteorRemovalAction removalAction = new MeteorRemovalAction();
+            removalAction.setEmitter(fire);
+
+            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
 
         }
 
         return node;
     }
+}
+
+class MeteorRemovalAction implements RemovalEventAction {
+    private ParticleEmitter emitter;
+
+    public void exec(WorldManager worldManager, String reason) {
+        if (!"collision".equals(reason)) {
+            return;
+        }
+        Vector3f worldTranslation = emitter.getParent().getLocalTranslation();
+        emitter.removeFromParent();
+        worldManager.getWorldRoot().attachChild(emitter);
+        emitter.setLocalTranslation(worldTranslation);
+        emitter.addControl(new TimedExistenceControl(4f));
+        emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(1f, 0.1f, 1f).mult(2.0f));
+//        emitter.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        emitter.getParticleInfluencer().setVelocityVariation(1f);
+        emitter.setStartSize(6f);
+        emitter.setEndSize(40f);
+        emitter.setLowLife(2f);
+        emitter.setHighLife(2f);
+//        emitter.setEndColor(ColorRGBA.Yellow);
+        emitter.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.01f));
+        emitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 6.0f));
+
+        emitter.setNumParticles(20);
+        emitter.emitAllParticles();
+        emitter.setParticlesPerSec(0.0f);
+    }
+
+    void setEmitter(ParticleEmitter emitter) {
+        this.emitter = emitter;
+    }
+
 }
