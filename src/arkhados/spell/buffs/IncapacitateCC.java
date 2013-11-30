@@ -21,6 +21,9 @@ package arkhados.spell.buffs;
  * @author william
  */
 public class IncapacitateCC extends CrowdControlBuff {
+    {
+        super.name = "Incapacitate";
+    }
     public IncapacitateCC(float duration, long id) {
         super(id, duration);
     }

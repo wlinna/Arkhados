@@ -45,6 +45,9 @@ public abstract class BuffInformation {
 
         final BuffInformation fear = new FearInformation();
         Buffs.put("Fear", fear);
+
+        final BuffInformation incapacitate = new IncapacitateInformation();
+        Buffs.put("Incapacitate", incapacitate);
     }
 
     public static BuffInformation getBuffInformation(final String name) {
