@@ -49,7 +49,6 @@ public class FeralScream extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-
                 return new FeralScreamAction(range, 45f);
             }
         };
@@ -83,12 +82,12 @@ class FeralScreamAction extends EntityAction {
         Quaternion yaw = new Quaternion();
         yaw.fromAngleAxis(this.maxRotationalDifference, Vector3f.UNIT_Y);
         final Vector3f leftNormal = yaw.mult(forward);
-        leftNormal.set(-leftNormal.z, 0, leftNormal.y);
+        leftNormal.set(-leftNormal.z, 0, leftNormal.x);
         Plane leftPlane = new Plane(leftNormal, super.spatial.getLocalTranslation().dot(leftNormal));
 
         yaw.fromAngleAxis(-this.maxRotationalDifference, Vector3f.UNIT_Y);
         final Vector3f rightNormal = yaw.mult(forward);
-        rightNormal.set(rightNormal.z, 0, rightNormal.x);
+        rightNormal.set(rightNormal.z, 0, -rightNormal.x);
         Plane rightPlane = new Plane(rightNormal, super.spatial.getLocalTranslation().dot(rightNormal));
 
         List<SpatialDistancePair> spatialDistances = WorldManager.getSpatialsWithinDistance(super.spatial, this.range);
