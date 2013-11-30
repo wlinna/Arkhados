@@ -15,8 +15,10 @@
 package arkhados.controls;
 
 import arkhados.spell.Spell;
+import arkhados.util.AnimationData;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Animation;
 import com.jme3.animation.LoopMode;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -43,6 +45,7 @@ public class CharacterAnimationControl extends AbstractControl {
     private AnimChannel channel;
     private float castTime = 0f;
     private HashMap<String, String> spellAnimationMap = new HashMap<String, String>(6);
+    private HashMap<String, AnimationData> actionAnimationData = new HashMap<String, AnimationData>(8);
     private String walkAnimation;
     private String deathAnimation;
 

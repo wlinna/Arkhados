@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.WorldManager;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
 import com.jme3.asset.AssetManager;
