@@ -23,7 +23,7 @@ import com.jme3.scene.Spatial;
  */
 public abstract class EntityAction {
 
-    protected String name;
+    protected String name = null;
     protected Spatial spatial;
     /**
      *

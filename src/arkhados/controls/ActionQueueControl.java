@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.WorldManager;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import arkhados.actions.EntityAction;
+import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -37,6 +39,7 @@ public class ActionQueueControl extends AbstractControl {
 
     private Queue<EntityAction> actions = new LinkedList<EntityAction>();
     private EntityAction current = null;
+    private boolean shouldSimulate = false;
 
     public void enqueueAction(EntityAction action) {
         if (!this.enabled) {
@@ -45,6 +48,7 @@ public class ActionQueueControl extends AbstractControl {
         action.setSpatial(super.getSpatial());
         if (this.current == null) {
             this.current = action;
+            this.shouldSimulate = true;
         } else {
             this.actions.add(action);
         }
@@ -64,9 +68,14 @@ public class ActionQueueControl extends AbstractControl {
             return;
         }
         boolean active = this.current.update(tpf);
+        if (this.shouldSimulate) {
+            this.simulateAction(this.current);
+            this.shouldSimulate = false;
+        }
         if (!active) {
             this.current.end();
             this.current = this.actions.poll();
+            this.shouldSimulate = true;
         }
     }
 
@@ -99,5 +108,21 @@ public class ActionQueueControl extends AbstractControl {
 
     public EntityAction getCurrent() {
         return this.current;
+    }
+
+    private void simulateAction(final EntityAction action) {
+        if (action.getName() == null) {
+            return;
+        }
+        CharacterAnimationControl animationControl = super.spatial.getControl(CharacterAnimationControl.class);
+        if (animationControl != null) {
+            animationControl.animateAction(action.getName());
+        }
+
+        final WorldManager world = super.spatial.getControl(EntityVariableControl.class).getWorldManager();
+        if (world.isServer()) {
+            final Long id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            world.getSyncManager().broadcast(new ActionMessage(id, action.getName()));
+        }
     }
 }
