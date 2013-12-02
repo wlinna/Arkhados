@@ -34,6 +34,7 @@ import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
+import arkhados.controls.EntityVariableControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.BuffEffect;
@@ -181,6 +182,8 @@ public class WorldManager extends AbstractAppState {
         this.syncManager.addObject(id, entitySpatial);
         this.space.addAll(entitySpatial);
         this.worldRoot.attachChild(entitySpatial);
+        EntityVariableControl variableControl = new EntityVariableControl(this);
+        entitySpatial.addControl(variableControl);
 
         if (this.isClient()) {
             this.clientMain.getUserCommandManager().trySetPlayersCharacter(entitySpatial);

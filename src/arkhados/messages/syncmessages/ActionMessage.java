@@ -12,37 +12,26 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.messages.syncmessages;
 
-package arkhados.actions;
-
+import arkhados.controls.CharacterAnimationControl;
 import com.jme3.scene.Spatial;
 
 /**
  *
  * @author william
  */
-public abstract class EntityAction {
+public class ActionMessage extends AbstractSyncMessage{
+    private String name;
 
-    protected String name;
-    protected Spatial spatial;
-    /**
-     *
-     * @param tpf
-     * @return true if action is still active and should not be removed, false if
-     * action is completed and should be removed
-     */
-    public abstract boolean update(float tpf);
-    public void setSpatial(Spatial spatial) {
-        this.spatial = spatial;
+    public ActionMessage(long id, String name) {
+        super(id);
+        this.name = name;
     }
 
-    /**
-     * ActionQueueControl calls end method when it's removed from queue if it's active
-     */
-    public void end() {
-    }
-
-    public String getName() {
-        return this.name;
+    @Override
+    public void applyData(Object target) {
+        Spatial character = (Spatial) target;
+        character.getControl(CharacterAnimationControl.class).animateAction(this.name);
     }
 }
