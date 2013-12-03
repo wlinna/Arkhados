@@ -14,14 +14,15 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 
 /**
  *
  * @author william
  */
-
 public class AnimationData {
+
     private String name;
     private float speed;
     private LoopMode loopMode;
@@ -33,11 +34,11 @@ public class AnimationData {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public float getSpeed() {
-        return speed;
+        return this.speed;
     }
 
     public void setSpeed(float speed) {
@@ -45,7 +46,18 @@ public class AnimationData {
     }
 
     public LoopMode getLoopMode() {
-        return loopMode;
+        return this.loopMode;
     }
 
+    static public float calculateSpeedForAnimation(
+            final AnimControl animControl,
+            final String animationName,
+            final float relativeMoment,
+            final float timeWanted) {
+
+        final float animLength = animControl.getAnimationLength(animationName);
+        final float moment = relativeMoment * animLength;
+        final float speed = moment / timeWanted;
+        return speed;
+    }
 }

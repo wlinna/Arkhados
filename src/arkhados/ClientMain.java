@@ -14,8 +14,28 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.messages.ChatMessage;
+import arkhados.messages.ClientSelectHeroMessage;
+import arkhados.messages.MessageUtils;
+import arkhados.messages.PlayerDataTableMessage;
+import arkhados.messages.ServerLoginMessage;
+import arkhados.messages.SetPlayersCharacterMessage;
+import arkhados.messages.StartGameMessage;
+import arkhados.messages.syncmessages.ActionMessage;
+import arkhados.messages.syncmessages.AddEntityMessage;
+import arkhados.messages.syncmessages.BuffMessage;
+import arkhados.messages.syncmessages.GenericSyncMessage;
+import arkhados.messages.syncmessages.RemoveEntityMessage;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
+import arkhados.messages.syncmessages.StartCastingSpellMessage;
+import arkhados.messages.syncmessages.SyncCharacterMessage;
+import arkhados.messages.syncmessages.SyncProjectileMessage;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
+import arkhados.util.InputMappingStrings;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.network.Network;
 import com.jme3.network.NetworkClient;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -34,25 +54,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientSelectHeroMessage;
-import arkhados.messages.MessageUtils;
-import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.ServerLoginMessage;
-import arkhados.messages.SetPlayersCharacterMessage;
-import arkhados.messages.StartGameMessage;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.GenericSyncMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.StartCastingSpellMessage;
-import arkhados.messages.syncmessages.SyncCharacterMessage;
-import arkhados.messages.syncmessages.SyncProjectileMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
-import arkhados.util.InputMappingStrings;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import java.util.prefs.BackingStoreException;
 
 public class ClientMain extends SimpleApplication implements ScreenController {
@@ -145,6 +146,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 SyncCharacterMessage.class,
                 SyncProjectileMessage.class,
                 StartCastingSpellMessage.class,
+                ActionMessage.class,
                 BuffMessage.class);
         this.worldManager = new WorldManager();
 

@@ -15,14 +15,20 @@
 package arkhados.messages.syncmessages;
 
 import arkhados.controls.CharacterAnimationControl;
+import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
 /**
  *
  * @author william
  */
+
+@Serializable
 public class ActionMessage extends AbstractSyncMessage{
     private String name;
+
+    public ActionMessage() {
+    }
 
     public ActionMessage(long id, String name) {
         super(id);

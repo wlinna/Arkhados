@@ -21,9 +21,11 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
+import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 
 /**
@@ -56,26 +58,50 @@ public class Venator extends NodeBuilder {
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
-        final SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
+        final SpellCastControl spellCastControl = new SpellCastControl(Venator.worldManager);
         entity.addControl(spellCastControl);
-        spellCastControl.putSpell(Spell.getSpells().get("Rend"), InputMappingStrings.M1);
-        spellCastControl.putSpell(Spell.getSpells().get("Damaging Dagger"), InputMappingStrings.M2);
-        spellCastControl.putSpell(Spell.getSpells().get("Leap"), InputMappingStrings.SPACE);
-        spellCastControl.putSpell(Spell.getSpells().get("Feral Scream"), InputMappingStrings.Q);
-        spellCastControl.putSpell(Spell.getSpells().get("Deep Wounds"), InputMappingStrings.E);
+        final Spell rend = Spell.getSpells().get("Rend");
+        final Spell dagger = Spell.getSpells().get("Damaging Dagger");
+        final Spell leap = Spell.getSpells().get("Leap");
+        final Spell scream = Spell.getSpells().get("Feral Scream");
+        final Spell deepWounds = Spell.getSpells().get("Deep Wounds");
+
+        spellCastControl.putSpell(rend, InputMappingStrings.M1);
+        spellCastControl.putSpell(dagger, InputMappingStrings.M2);
+        spellCastControl.putSpell(leap, InputMappingStrings.SPACE);
+        spellCastControl.putSpell(scream, InputMappingStrings.Q);
+        spellCastControl.putSpell(deepWounds, InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Survival Instinct"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpells().get("Ignite"), null);
 
         final CharacterAnimationControl animControl = new CharacterAnimationControl();
-        animControl.setDeathAnimation("Die-1");
-        animControl.setWalkAnimation("Run");
-        animControl.addSpellAnimation("Rend", "Swipe-Left");
-        animControl.addSpellAnimation("Damaging Dagger", "Throw");
-        animControl.addSpellAnimation("Leap", "Jump");
-        animControl.addSpellAnimation("Feral Scream", "Roar");
-        animControl.addSpellAnimation("Deep Wounds", "Charge");
-        animControl.addSpellAnimation("Survival Instinct", "");
+
+        final AnimationData deathAnim = new AnimationData("Die-1", 1f, LoopMode.DontLoop);
+        final AnimationData walkAnim = new AnimationData("Run", 0.8f, LoopMode.DontLoop);
+        animControl.setDeathAnimation(deathAnim);
+        animControl.setWalkAnimation(walkAnim);
+
         entity.addControl(animControl);
+
+
+        final float swipeSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Swipe-Left", 2f / 5f, rend.getCastTime());
+        final float throwSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Throw", 4f / 9f, dagger.getCastTime());
+        final float jumpSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Jump", 9f / 17f, leap.getCastTime());
+        final float roarSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Roar", 4f / 9f, scream.getCastTime());
+        final float chargeSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Charge", 2f / 5f, deepWounds.getCastTime());
+
+        final AnimationData swipeAnim = new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
+        final AnimationData throwAnim = new AnimationData("Throw", throwSpeed, LoopMode.DontLoop);
+        final AnimationData jumpAnim = new AnimationData("Jump", jumpSpeed, LoopMode.DontLoop);
+        final AnimationData roarAnim = new AnimationData("Roar", roarSpeed, LoopMode.DontLoop);
+        final AnimationData chargeAnim = new AnimationData("Charge", chargeSpeed, LoopMode.DontLoop);
+
+        animControl.addSpellAnimation("Rend", swipeAnim);
+        animControl.addSpellAnimation("Damaging Dagger", throwAnim);
+        animControl.addSpellAnimation("Leap", jumpAnim);
+        animControl.addSpellAnimation("Feral Scream", roarAnim);
+        animControl.addSpellAnimation("Deep Wounds", chargeAnim);
+        animControl.addSpellAnimation("Survival Instinct", null);
+
 
         entity.addControl(new InfluenceInterfaceControl());
 

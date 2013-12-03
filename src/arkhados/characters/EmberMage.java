@@ -21,9 +21,11 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
+import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.animation.LoopMode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.scene.Node;
@@ -73,36 +75,34 @@ public class EmberMage extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
         spellCastControl.putSpell(Spell.getSpells().get("Ignite"), null);
 
-//        GhostControl testGhost = new GhostControl(new SphereCollisionShape(8f));
-//        testGhost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
-//        testGhost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02 | GhostControl.COLLISION_GROUP_16);
-//
-//        entity.addControl(testGhost);
-//
-
         /**
          * Map Spell names to casting animation's name. In this case all spells
          * use same animation.
          */
         CharacterAnimationControl animControl = new CharacterAnimationControl();
-        animControl.setDeathAnimation("Die");
-        animControl.setWalkAnimation("Walk");
+        final AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
+        final AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
+
+        animControl.setDeathAnimation(deathAnim);
+        animControl.setWalkAnimation(walkAnim);
         entity.addControl(animControl);
-        animControl.addSpellAnimation("Fireball", "Idle");
-        animControl.addSpellAnimation("Magma Bash", "Idle");
-        animControl.addSpellAnimation("Ember Circle", "Idle");
-        animControl.addSpellAnimation("Meteor", "Idle");
-        animControl.addSpellAnimation("Purifying Flame", "");
-        animControl.addSpellAnimation("Firewalk", "Idle");
+
+        final AnimationData animationData = new AnimationData("Idle", 1f, LoopMode.Loop);
+        animControl.addActionAnimation("Cast", animationData);
+
+        animControl.addSpellAnimation("Fireball", animationData);
+        animControl.addSpellAnimation("Magma Bash", animationData);
+        animControl.addSpellAnimation("Ember Circle", animationData);
+        animControl.addSpellAnimation("Meteor", animationData);
+        animControl.addSpellAnimation("Purifying Flame", null);
+        animControl.addSpellAnimation("Firewalk", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
-
         }
 
         return entity;
-
     }
 }

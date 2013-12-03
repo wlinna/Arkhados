@@ -56,7 +56,8 @@ public class MagmaBash extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastProjectileAction(spell, worldManager);
+                final CastProjectileAction action = new CastProjectileAction(spell, worldManager);
+                return action;
             }
         };
 

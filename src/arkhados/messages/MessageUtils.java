@@ -21,6 +21,7 @@ import arkhados.messages.roundprotocol.ClientWorldCreatedMessage;
 import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.CreateWorldMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
+import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.BuffMessage;
 import arkhados.messages.syncmessages.GenericSyncMessage;
@@ -71,6 +72,7 @@ public class MessageUtils {
         Serializer.registerClass(SyncCharacterMessage.class);
         Serializer.registerClass(SyncProjectileMessage.class);
         Serializer.registerClass(StartCastingSpellMessage.class);
+        Serializer.registerClass(ActionMessage.class);
         Serializer.registerClass(BuffMessage.class);
         // </Sync>
 
