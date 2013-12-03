@@ -89,13 +89,13 @@ public class Venator extends NodeBuilder {
         final float roarSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Roar", 4f / 9f, scream.getCastTime());
         final float chargeSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Charge", 2f / 5f, deepWounds.getCastTime());
 
-        final AnimationData swipeAnim = new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
+        final AnimationData swipeLeftAnim = new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
         final AnimationData throwAnim = new AnimationData("Throw", throwSpeed, LoopMode.DontLoop);
         final AnimationData jumpAnim = new AnimationData("Jump", jumpSpeed, LoopMode.DontLoop);
         final AnimationData roarAnim = new AnimationData("Roar", roarSpeed, LoopMode.DontLoop);
         final AnimationData chargeAnim = new AnimationData("Charge", chargeSpeed, LoopMode.DontLoop);
 
-        animControl.addSpellAnimation("Rend", swipeAnim);
+        animControl.addSpellAnimation("Rend", swipeLeftAnim);
         animControl.addSpellAnimation("Damaging Dagger", throwAnim);
         animControl.addSpellAnimation("Leap", jumpAnim);
         animControl.addSpellAnimation("Feral Scream", roarAnim);
@@ -108,6 +108,11 @@ public class Venator extends NodeBuilder {
         final float swipeUpSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Swipe-Up", 3f / 5f, 0.2f);
         final AnimationData swipeUpAnim = new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
         animControl.addActionAnimation("Swipe-Up", swipeUpAnim);
+
+        final AnimationData swipeRightAnim = new AnimationData("Swipe-Right", swipeSpeed, LoopMode.DontLoop);
+        animControl.addActionAnimation("Swipe-Right", swipeRightAnim);
+
+        animControl.addActionAnimation("Swipe-Left", swipeLeftAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
 
