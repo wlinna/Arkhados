@@ -153,9 +153,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     protected void controlUpdate(float tpf) {
         super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         this.immuneToProjectiles = false;
-        this.canControlMovement = true;
 
-        if (!this.speedConstant) {
+        if (!this.isSpeedConstant()) {
             Float msBase = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
             super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
         }
@@ -181,13 +180,15 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (this.canMove()) {
             if (this.isServer) {
                 CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-                if (this.canControlMovement) {
+                if (this.canControlMovement()) {
                     physics.restoreWalking();
                 } else {
-                    Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-                    Vector3f walkDir = physics.getWalkDirection();
-                    Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
-                    physics.setWalkDirection(newWalkDir);
+                    if (!this.isSpeedConstant()) {
+                        Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                        Vector3f walkDir = physics.getWalkDirection();
+                        Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+                        physics.setWalkDirection(newWalkDir);
+                    }
                 }
             }
         }

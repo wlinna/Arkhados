@@ -61,6 +61,7 @@ class CastDeepWoundsAction extends EntityAction {
 
     public CastDeepWoundsAction(DeepWounds spell) {
         this.spell = spell;
+        super.name = "Swipe-Up";
     }
 
     @Override

@@ -105,6 +105,10 @@ public class Venator extends NodeBuilder {
         final AnimationData landAnim = new AnimationData("Land", 1f, LoopMode.DontLoop);
         animControl.addActionAnimation("Land", landAnim);
 
+        final float swipeUpSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Swipe-Up", 3f / 5f, 0.2f);
+        final AnimationData swipeUpAnim = new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
+        animControl.addActionAnimation("Swipe-Up", swipeUpAnim);
+
         entity.addControl(new InfluenceInterfaceControl());
 
         if (worldManager.isClient()) {

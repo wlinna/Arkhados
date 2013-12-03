@@ -54,5 +54,10 @@ public class FearCC extends CrowdControlBuff {
         this.targetInterface.setCanControlMovement(false);
     }
 
+    @Override
+    public void destroy() {
+        this.targetInterface.setCanControlMovement(true);
+        super.destroy();
 
+    }
 }
