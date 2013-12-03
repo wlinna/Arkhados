@@ -102,6 +102,8 @@ public class Venator extends NodeBuilder {
         animControl.addSpellAnimation("Deep Wounds", chargeAnim);
         animControl.addSpellAnimation("Survival Instinct", null);
 
+        final AnimationData landAnim = new AnimationData("Land", 1f, LoopMode.DontLoop);
+        animControl.addActionAnimation("Land", landAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
 

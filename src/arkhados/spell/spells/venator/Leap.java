@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -33,6 +34,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractAction;
 
 /**
  *
@@ -80,7 +82,7 @@ class CastLeapAction extends EntityAction {
         // We set y to 1 to prevent ground collision on start
         final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
         final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
-        
+
         path.addWayPoint(startLocation);
         path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation.divide(2)).setY(finalLocation.length() / 3f));
         path.addWayPoint(finalLocation);
@@ -124,8 +126,12 @@ class CastLeapAction extends EntityAction {
             }
 
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
-                if (path.getNbWayPoints() == wayPointIndex + 1) {
+                if (wayPointIndex == path.getNbWayPoints() - 2) {
+
+                }
+                else if (wayPointIndex == path.getNbWayPoints() - 1) {
                     physics.switchToNormalPhysicsMode();
+                    spatial.getControl(ActionQueueControl.class).enqueueAction(new ChangeAnimationAction("Land"));
                     this.landingEffect();
                 }
             }
@@ -139,4 +145,21 @@ class CastLeapAction extends EntityAction {
         this.motionPathVersion();
         return false;
     }
+}
+
+/**
+ * EntityAction that does nothing but chages animation by having name
+ * @author william
+ */
+class ChangeAnimationAction extends EntityAction {
+
+    public ChangeAnimationAction(String animName) {
+        super.name = animName;
+    }
+
+    @Override
+    public boolean update(float tpf) {
+        return false;
+    }
+
 }
