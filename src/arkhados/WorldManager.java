@@ -62,8 +62,8 @@ public class WorldManager extends AbstractAppState {
     // TODO: Add new starting locations
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(10f, 0, 10.0f), new Vector3f(-10.0f, 0, -10f),
-        new Vector3f(10f, 0, -10f), new Vector3f(-10f, 0, 10f)
+        new Vector3f(20f, 0, 20.0f), new Vector3f(-20.0f, 0, -20f),
+        new Vector3f(20f, 0, -20f), new Vector3f(-20f, 0, 20f)
     };
     private Node worldRoot;
     private HashMap<Long, Spatial> entities = new HashMap<Long, Spatial>();
