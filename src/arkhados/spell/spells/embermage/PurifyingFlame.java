@@ -49,14 +49,12 @@ public class PurifyingFlame extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
-                // TODO: Make this visible!
 
                 // TODO: Get this from BuffInformation
                 final float duration = 3f;
                 final CastSelfBuffAction action = new CastSelfBuffAction();
                 final Node aoeContainer = new Node("purifying-flame");
                 if (worldManager.isServer()) {
-                    // TODO: Remove some negative buffs
                     final Long playerId = caster.getUserData(UserDataStrings.PLAYER_ID);
                     aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
 

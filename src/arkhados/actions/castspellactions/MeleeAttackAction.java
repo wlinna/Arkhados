@@ -35,7 +35,6 @@ import java.util.List;
  */
 public class MeleeAttackAction extends EntityAction {
 
-    // TODO: Make melee attack effect more generic
     private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
     private float damage;
     private float range;

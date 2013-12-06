@@ -14,13 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.effects;
 
-import arkhados.spell.buffs.buffinformation.BuffInformation;
 import com.jme3.asset.AssetManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import java.util.HashMap;
 
 /**
  *

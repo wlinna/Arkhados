@@ -70,8 +70,6 @@ class CastDeepWoundsAction extends EntityAction {
         ActionQueueControl actionQueue = super.spatial.getControl(ActionQueueControl.class);
         actionQueue.enqueueAction(new ChargeAction(this.spell));
 
-        // TODO: Set animation for attack
-        // CharacterAnimationControl animControl =  super.spatial.getControl(CharacterAnimationControl.class);
         MeleeAttackAction meleeAction = new MeleeAttackAction(100f, 15f);
 
         BleedBuff bleedBuff = new BleedBuff(-1, 3f);

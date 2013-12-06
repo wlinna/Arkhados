@@ -23,7 +23,6 @@ import com.jme3.scene.Spatial;
  */
 public  interface Influence {
 
-    // TODO IMPORTANT: Redesign how Influences work
     public boolean isFriendly();
     public void affect(InfluenceInterfaceControl target, float tpf);
 }

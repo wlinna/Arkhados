@@ -47,6 +47,8 @@ public class CharacterAnimationControl extends AbstractControl {
     private float castTime = 0f;
     private HashMap<String, AnimationData> spellAnimationMap = new HashMap<String, AnimationData>(6);
     private HashMap<String, AnimationData> actionAnimationData = new HashMap<String, AnimationData>(8);
+    // TODO: Allow mapping of animations to specific AnimChannels
+
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
 
