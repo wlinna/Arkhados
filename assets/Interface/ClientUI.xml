@@ -281,14 +281,18 @@
     </screen>
 
     <screen id="default_hud" controller="arkhados.ClientHudManager">
-        <layer id="bars" childLayout="vertical">
+        <layer id="bars" childLayout="vertical" valign="bottom">
 <!--            <panel id="panel_top" childLayout="horizontal">
                 <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">
                 </panel>
             </panel>
 
-            <panel id="panel_bottom" childLayout="horizontal" width="100%"  height="80px" style="nifty-panel" align="left"valign="center">
-            </panel>-->
+            -->
+            <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
+                <panel id="spacer" height="*" valign="top"></panel>
+                <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom" backgroundColor="0f08">
+                </panel>
+            </panel>
         </layer>
         <layer id="layer_countdown" childLayout="center" valign="center">
             <panel id="panel_countdown" valign="center" align="center" childLayout="absolute">

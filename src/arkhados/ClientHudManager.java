@@ -29,11 +29,18 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.TextBuilder;
+import de.lessvoid.nifty.controls.dynamic.ImageCreator;
+import de.lessvoid.nifty.controls.dynamic.PanelCreator;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -74,6 +81,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         for (int i = 0; i < this.characters.size(); ++i) {
             this.updateHpBar(i);
         }
+
+
     }
 
     public void addCharacter(Spatial character) {
@@ -159,8 +168,47 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 //            layer.disable();
 //            layer.hideWithoutEffect();
         }
+        final Element bottomPanel = this.screen.findElementByName("panel_bottom");
+        final String placeHolderPath = "Interface/Images/SpellIcons/placeholder.png";
+        final Element m1 = new SpellIconBuilder("M1", placeHolderPath).build(nifty, screen, bottomPanel);
+        final Element m2 = new SpellIconBuilder("M2", placeHolderPath).build(nifty, screen, bottomPanel);
+        final Element q = new SpellIconBuilder("Q", placeHolderPath).build(nifty, screen, bottomPanel);
+        final Element e = new SpellIconBuilder("E", placeHolderPath).build(nifty, screen, bottomPanel);
+        final Element r = new SpellIconBuilder("R", placeHolderPath).build(nifty, screen, bottomPanel);
+        final Element space = new SpellIconBuilder("Space", placeHolderPath).build(nifty, screen, bottomPanel);
     }
 
     public void onEndScreen() {
+    }
+}
+
+class SpellIconBuilder extends ImageBuilder {
+
+    private static Color overlayColor = new Color(0f, 0f, 0f, 0.8f);
+
+    public SpellIconBuilder(final String id, final String path) {
+        super(id);
+        super.valignCenter();
+        super.alignCenter();
+        super.height("64px");
+        super.width("64px");
+        super.marginLeft("12px");
+        super.filename(path);
+        super.childLayoutOverlay();
+        super.panel(new PanelBuilder() {
+            {
+                super.id(id + "-overlay");
+                super.height("64px");
+                super.width("64px");
+                super.backgroundColor(overlayColor);
+
+//                super.text(new TextBuilder() {
+//                    {
+//                        super.id(id + "-counter");
+//
+//                    }
+//                });
+            }
+        });
     }
 }
