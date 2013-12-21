@@ -221,6 +221,12 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 if (!overlay.isVisible()) {
                     overlay.show();
                 }
+                Element cooldownText = overlay.findElementByName(entry.getKey() + "-counter");
+                if (cooldown > 3) {
+                    cooldownText.getRenderer(TextRenderer.class).setText(String.format("%d", (int) cooldown));
+                } else {
+                    cooldownText.getRenderer(TextRenderer.class).setText(String.format("%.1f", cooldown));
+                }
             }
         }
     }
@@ -245,13 +251,15 @@ class SpellIconBuilder extends ImageBuilder {
                 super.height("64px");
                 super.width("64px");
                 super.backgroundColor(overlayColor);
+                super.childLayoutOverlay();
 
-//                super.text(new TextBuilder() {
-//                    {
-//                        super.id(id + "-counter");
-//
-//                    }
-//                });
+                super.text(new TextBuilder() {
+                    {
+                        super.id(id + "-counter");
+                        super.text("");
+                        super.style("nifty-label");
+                    }
+                });
             }
         });
     }

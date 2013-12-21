@@ -131,7 +131,6 @@ public class SpellCastControl extends AbstractControl {
                     new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
         }
         this.globalCooldown();
-//        this.cooldowns.put(spell.getName(), spell.getCooldown());
         this.putOnCooldown(spell);
     }
 
