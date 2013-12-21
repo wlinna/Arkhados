@@ -15,6 +15,8 @@
 package arkhados;
 
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.SpellCastControl;
+import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -42,6 +44,7 @@ import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -57,6 +60,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private List<Node> characters = new ArrayList<Node>();
     private List<BitmapText> hpBars = new ArrayList<BitmapText>();
     private int currentSeconds = -1;
+    private HashMap<String, Element> spellIcons = new HashMap<String, Element>(6);
+    private Spatial playerCharacter = null;
+    private AppStateManager stateManager;
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -74,14 +80,24 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.cam = app.getCamera();
+        this.stateManager = stateManager;
     }
 
     @Override
     public void update(float tpf) {
+        if (playerCharacter == null) {
+            UserCommandManager userCommandManager = this.stateManager.getState(UserCommandManager.class);
+            this.playerCharacter = userCommandManager.getCharacter();
+            if (this.playerCharacter != null) {
+                this.loadSpellIcons();
+            }
+        } else {
+            this.updateSpellIcons();
+        }
+
         for (int i = 0; i < this.characters.size(); ++i) {
             this.updateHpBar(i);
         }
-
 
     }
 
@@ -168,17 +184,45 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 //            layer.disable();
 //            layer.hideWithoutEffect();
         }
-        final Element bottomPanel = this.screen.findElementByName("panel_bottom");
-        final String placeHolderPath = "Interface/Images/SpellIcons/placeholder.png";
-        final Element m1 = new SpellIconBuilder("M1", placeHolderPath).build(nifty, screen, bottomPanel);
-        final Element m2 = new SpellIconBuilder("M2", placeHolderPath).build(nifty, screen, bottomPanel);
-        final Element q = new SpellIconBuilder("Q", placeHolderPath).build(nifty, screen, bottomPanel);
-        final Element e = new SpellIconBuilder("E", placeHolderPath).build(nifty, screen, bottomPanel);
-        final Element r = new SpellIconBuilder("R", placeHolderPath).build(nifty, screen, bottomPanel);
-        final Element space = new SpellIconBuilder("Space", placeHolderPath).build(nifty, screen, bottomPanel);
     }
 
     public void onEndScreen() {
+    }
+
+    private void loadSpellIcons() {
+        final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
+        final Element bottomPanel = this.screen.findElementByName("panel_bottom");
+        final String placeHolderPath = "Interface/Images/SpellIcons/placeholder.png";
+        final String m1 = castControl.getKeySpellNameMapping(InputMappingStrings.M1).getName();
+        final String m2 = castControl.getKeySpellNameMapping(InputMappingStrings.M2).getName();
+        final String q = castControl.getKeySpellNameMapping(InputMappingStrings.Q).getName();
+        final String e = castControl.getKeySpellNameMapping(InputMappingStrings.E).getName();
+        final String r = castControl.getKeySpellNameMapping(InputMappingStrings.R).getName();
+        final String space = castControl.getKeySpellNameMapping(InputMappingStrings.SPACE).getName();
+        this.spellIcons.put(m1, new SpellIconBuilder(m1, placeHolderPath).build(nifty, screen, bottomPanel));
+        this.spellIcons.put(m2, new SpellIconBuilder(m2, placeHolderPath).build(nifty, screen, bottomPanel));
+        this.spellIcons.put(q, new SpellIconBuilder(q, placeHolderPath).build(nifty, screen, bottomPanel));
+        this.spellIcons.put(e, new SpellIconBuilder(e, placeHolderPath).build(nifty, screen, bottomPanel));
+        this.spellIcons.put(r, new SpellIconBuilder(r, placeHolderPath).build(nifty, screen, bottomPanel));
+        this.spellIcons.put(space, new SpellIconBuilder(space, placeHolderPath).build(nifty, screen, bottomPanel));
+    }
+
+    private void updateSpellIcons() {
+        final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
+
+        for (Map.Entry<String, Element> entry : this.spellIcons.entrySet()) {
+            float cooldown = castControl.getCooldown(entry.getKey());
+            Element overlay = entry.getValue().findElementByName(entry.getKey() + "-overlay");
+            if (cooldown <= 0) {
+                if (overlay.isVisible()) {
+                    overlay.hide();
+                }
+            } else {
+                if (!overlay.isVisible()) {
+                    overlay.show();
+                }
+            }
+        }
     }
 }
 

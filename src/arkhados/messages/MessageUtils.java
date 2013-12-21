@@ -27,6 +27,7 @@ import arkhados.messages.syncmessages.BuffMessage;
 import arkhados.messages.syncmessages.GenericSyncMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
+import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
@@ -72,6 +73,7 @@ public class MessageUtils {
         Serializer.registerClass(SyncCharacterMessage.class);
         Serializer.registerClass(SyncProjectileMessage.class);
         Serializer.registerClass(StartCastingSpellMessage.class);
+        Serializer.registerClass(SetCooldownMessage.class);
         Serializer.registerClass(ActionMessage.class);
         Serializer.registerClass(BuffMessage.class);
         // </Sync>

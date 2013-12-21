@@ -237,7 +237,7 @@ public class UserCommandManager extends AbstractAppState {
         boolean intersects = ray.intersectsWherePlane(this.floorPlane, this.mouseGroundPosition);
     }
 
-    private Spatial getCharacter() {
+    public Spatial getCharacter() {
         if (this.character == null) {
             Spatial spatial = this.worldManager.getEntity(this.characterId);
             if (spatial != null) {

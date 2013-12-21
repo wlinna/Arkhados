@@ -31,6 +31,7 @@ import java.util.Map;
 import arkhados.WorldManager;
 import arkhados.actions.CastingSpellAction;
 import arkhados.actions.EntityAction;
+import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
@@ -130,7 +131,8 @@ public class SpellCastControl extends AbstractControl {
                     new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
         }
         this.globalCooldown();
-        this.cooldowns.put(spell.getName(), spell.getCooldown());
+//        this.cooldowns.put(spell.getName(), spell.getCooldown());
+        this.putOnCooldown(spell);
     }
 
     public void putOnCooldown(final String spellName) {
@@ -138,8 +140,19 @@ public class SpellCastControl extends AbstractControl {
         this.putOnCooldown(spell);
     }
 
+    public void putOnCooldown(final String spellName, float cooldown) {
+        this.cooldowns.put(spellName, cooldown);
+        // FIXME: Send SetCooldownMessage
+    }
+
     public void putOnCooldown(final Spell spell) {
         this.cooldowns.put(spell.getName(), spell.getCooldown());
+
+        if (this.worldManager.isServer()) {
+            final Long entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            // TODO: Consider NOT sending this message to all players
+            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spell.getName(), spell.getCooldown(), true));
+        }
     }
 
     public boolean isOnCooldown(final String spellName) {
@@ -204,11 +217,19 @@ public class SpellCastControl extends AbstractControl {
         OutputCapsule out = ex.getCapsule(this);
     }
 
-    private void globalCooldown() {
+    public void globalCooldown() {
         for (String spell : this.cooldowns.keySet()) {
             if (this.cooldowns.get(spell) < GLOBAL_COOLDOWN) {
                 this.cooldowns.put(spell, GLOBAL_COOLDOWN);
             }
         }
+    }
+
+    public Spell getKeySpellNameMapping(final String key) {
+        return this.keySpellMappings.get(key);
+    }
+
+    public float getCooldown(final String spellName) {
+        return this.cooldowns.get(spellName);
     }
 }
