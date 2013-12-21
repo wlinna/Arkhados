@@ -18,7 +18,6 @@ import arkhados.spell.Spell;
 import arkhados.util.AnimationData;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.animation.Animation;
 import com.jme3.animation.LoopMode;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -44,7 +43,7 @@ public class CharacterAnimationControl extends AbstractControl {
     private AnimControl animControl;
     private CharacterPhysicsControl characterControl;
     private AnimChannel channel;
-    private float castTime = 0f;
+    private float actionTime = 0f;
     private HashMap<String, AnimationData> spellAnimationMap = new HashMap<String, AnimationData>(6);
     private HashMap<String, AnimationData> actionAnimationData = new HashMap<String, AnimationData>(8);
     // TODO: Allow mapping of animations to specific AnimChannels
@@ -65,8 +64,8 @@ public class CharacterAnimationControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        this.castTime -= tpf;
-        if (this.castTime > 0f) {
+        this.actionTime -= tpf;
+        if (this.actionTime > 0f) {
             return;
         }
         if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
@@ -75,9 +74,9 @@ public class CharacterAnimationControl extends AbstractControl {
             }
             this.channel.setSpeed(this.walkAnimation.getSpeed());
         } else {
-            if (this.walkAnimation.getName().equals(this.channel.getAnimationName())) {
+//            if (this.walkAnimation.getName().equals(this.channel.getAnimationName())) {
                 this.channel.setSpeed(0.0f);
-            }
+//            }
         }
     }
 
@@ -94,18 +93,27 @@ public class CharacterAnimationControl extends AbstractControl {
             return;
         }
 
-        this.castTime = spell.getCastTime();
+        this.actionTime = spell.getCastTime();
 
         this.channel.setAnim(animationData.getName());
         this.channel.setSpeed(animationData.getSpeed());
         this.channel.setLoopMode(animationData.getLoopMode());
     }
 
-    public void animateAction(final String actionName) {
+    public void animateAction(final String actionName, final float actionDuration) {
         final AnimationData data = this.actionAnimationData.get(actionName);
         this.channel.setAnim(data.getName());
         this.channel.setSpeed(data.getSpeed());
         this.channel.setLoopMode(data.getLoopMode());
+        if ((data.getLoopMode() == LoopMode.Loop || data.getLoopMode() == data.getLoopMode().Cycle) && actionDuration != -1) {
+            this.actionTime = actionDuration;
+        } else {
+            this.actionTime = this.channel.getAnimMaxTime() / data.getSpeed();
+        }
+    }
+
+    public void animateAction(final String actionName) {
+        this.animateAction(actionName, -1);
     }
 
     @Override
