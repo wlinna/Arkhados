@@ -34,13 +34,15 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractAction;
 
 /**
  *
  * @author william
  */
 public class Leap extends Spell {
+    {
+        super.iconName = "leap.png";
+    }
 
     public Leap(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

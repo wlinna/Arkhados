@@ -59,6 +59,9 @@ import java.util.Set;
  * @author william
  */
 public class Firewalk extends Spell {
+    {
+        super.iconName = "flame_walk.png";
+    }
 
     public Firewalk(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

@@ -42,6 +42,9 @@ import com.jme3.scene.Node;
  * over time in certain area. Has small activation delay.
  */
 public class EmberCircle extends Spell {
+    {
+        super.iconName = "ember_circle.png";
+    }
 
     public EmberCircle(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

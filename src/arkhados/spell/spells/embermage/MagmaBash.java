@@ -42,6 +42,9 @@ import java.util.Iterator;
  * knockback but incapacitates enemy for specified time.
  */
 public class MagmaBash extends Spell {
+    {
+        super.iconName = "magma_bash.png";
+    }
 
     public MagmaBash(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

@@ -41,3 +41,18 @@ Paulius Jurgelevičius for following spell icons:
 - Rend
 Icons are licensed under CC0-license. Original icons can be found from
 [OGA](http://opengameart.org/content/skill-item-and-spell-icons).
+
+Warlock Gauntlet's artists, rAum, jackFlower, DrZoliparia and Neil2D
+for following spells' icons:
+- Magma Bash
+- Ember Circle
+- Meteor
+- Firewalk
+- Purifying Flame
+- Leap
+Icons are licensed under CC-BY 3.0. Original icons can be found from
+following Spell icon collection pages:
+- [1](http://opengameart.org/content/spell-icon-collection-part-1)
+- [2](http://opengameart.org/content/spell-icon-collection-part-2)
+- [3](http://opengameart.org/content/spell-icon-collection-part-3)
+- [4](http://opengameart.org/content/spell-icon-collection-part-4)

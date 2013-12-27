@@ -35,6 +35,9 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class PurifyingFlame extends Spell {
+    {
+        super.iconName = "purifying_flame.png";
+    }
 
     public PurifyingFlame(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

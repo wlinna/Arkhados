@@ -52,6 +52,9 @@ import java.util.List;
  * @author william
  */
 public class Meteor extends Spell {
+    {
+        super.iconName = "meteor.png";
+    }
 
     public Meteor(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

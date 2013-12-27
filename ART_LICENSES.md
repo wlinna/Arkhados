@@ -1,6 +1,7 @@
 # Art licenses #
 
-Note: see CREDITS.md for attributions
+Note: Most of the assets are done by artists that are not part of the project.
+See CREDITS.md for attributions.
 
 ## CC0 ##
 
@@ -20,3 +21,7 @@ Note: see CREDITS.md for attributions
 - skull.png and all its derivatives
 - fireball.png
 - survival_instinct.png
+- leap.png
+- meteor.png
+- ember_circle.png
+- purifying_flame.png

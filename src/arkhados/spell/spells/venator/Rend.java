@@ -30,7 +30,7 @@ import com.jme3.scene.Node;
 public class Rend extends Spell {
 
     {
-        this.iconName = "rend.png";
+        super.iconName = "rend.png";
     }
     public Rend(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
