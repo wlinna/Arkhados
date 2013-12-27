@@ -127,6 +127,9 @@ public abstract class Spell {
     private final float range;
     private final float castTime;
     private boolean canMoveWhileCasting = false;
+    protected String iconName = null;
+
+
     protected CastSpellActionBuilder castSpellActionBuilder;
     protected NodeBuilder nodeBuilder;
 
@@ -158,6 +161,10 @@ public abstract class Spell {
 
     public float getCastTime() {
         return this.castTime;
+    }
+
+    public String getIconName() {
+        return iconName;
     }
 
     /**

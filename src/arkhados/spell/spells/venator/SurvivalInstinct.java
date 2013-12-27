@@ -31,6 +31,10 @@ import com.jme3.scene.Spatial;
  */
 public class SurvivalInstinct extends Spell {
 
+    {
+        this.iconName = "survival_instinct.png";
+    }
+
     public SurvivalInstinct(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
     }

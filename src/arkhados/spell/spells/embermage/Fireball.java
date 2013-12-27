@@ -45,6 +45,9 @@ import com.jme3.scene.shape.Sphere;
  * moderate damage. Has small knockback effect on hit.
  */
 public class Fireball extends Spell {
+    {
+        this.iconName = "fireball.png";
+    }
 
     public Fireball(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

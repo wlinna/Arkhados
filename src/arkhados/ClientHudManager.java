@@ -16,6 +16,7 @@ package arkhados;
 
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
@@ -190,21 +191,25 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void loadSpellIcons() {
-        final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
+        this.addSpellIcon(InputMappingStrings.M1);
+        this.addSpellIcon(InputMappingStrings.M2);
+        this.addSpellIcon(InputMappingStrings.Q);
+        this.addSpellIcon(InputMappingStrings.E);
+        this.addSpellIcon(InputMappingStrings.R);
+        this.addSpellIcon(InputMappingStrings.SPACE);
+    }
+
+    private void addSpellIcon(final String key) {
         final Element bottomPanel = this.screen.findElementByName("panel_bottom");
-        final String placeHolderPath = "Interface/Images/SpellIcons/placeholder.png";
-        final String m1 = castControl.getKeySpellNameMapping(InputMappingStrings.M1).getName();
-        final String m2 = castControl.getKeySpellNameMapping(InputMappingStrings.M2).getName();
-        final String q = castControl.getKeySpellNameMapping(InputMappingStrings.Q).getName();
-        final String e = castControl.getKeySpellNameMapping(InputMappingStrings.E).getName();
-        final String r = castControl.getKeySpellNameMapping(InputMappingStrings.R).getName();
-        final String space = castControl.getKeySpellNameMapping(InputMappingStrings.SPACE).getName();
-        this.spellIcons.put(m1, new SpellIconBuilder(m1, placeHolderPath).build(nifty, screen, bottomPanel));
-        this.spellIcons.put(m2, new SpellIconBuilder(m2, placeHolderPath).build(nifty, screen, bottomPanel));
-        this.spellIcons.put(q, new SpellIconBuilder(q, placeHolderPath).build(nifty, screen, bottomPanel));
-        this.spellIcons.put(e, new SpellIconBuilder(e, placeHolderPath).build(nifty, screen, bottomPanel));
-        this.spellIcons.put(r, new SpellIconBuilder(r, placeHolderPath).build(nifty, screen, bottomPanel));
-        this.spellIcons.put(space, new SpellIconBuilder(space, placeHolderPath).build(nifty, screen, bottomPanel));
+        final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
+        final Spell spell = castControl.getKeySpellNameMapping(key);
+        String iconPath;
+        if (spell.getIconName() != null) {
+            iconPath = "Interface/Images/SpellIcons/" + spell.getIconName();
+        } else {
+            iconPath = "Interface/Images/SpellIcons/placeholder.png";
+        }
+        this.spellIcons.put(spell.getName(), new SpellIconBuilder(spell.getName(), iconPath).build(nifty, screen, bottomPanel));
     }
 
     private void updateSpellIcons() {

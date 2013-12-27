@@ -33,6 +33,9 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class DeepWounds extends Spell {
+    {
+        this.iconName = "deep_wounds.png";
+    }
 
     public DeepWounds(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

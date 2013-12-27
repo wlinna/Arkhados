@@ -28,3 +28,16 @@ from [OGA](http://opengameart.org/node/10483)
 
 Horrorpen for skull-icon (skull.png). skull.png is CC-BY 3.0 -licensed and can
 be found from [OGA](http://opengameart.org/content/random-rpg-icons-part-1)
+
+J. W. Bjerk (eleazzaar) for Fireball's and Survival Instinct's icons. Icons are
+licensed under multiple licenses, inluding CC-BY 3.0 which we use for
+this project. Original icons can be found from
+[OGA](http://opengameart.org/content/painterly-spell-icons-part-1). J. W. Bjerk's
+[homepage](http://www.jwbjerk.com/art/main.php)
+
+Paulius Jurgelevičius for following spell icons:
+- Deep Wounds
+- Feral Scream
+- Rend
+Icons are licensed under CC0-license. Original icons can be found from
+[OGA](http://opengameart.org/content/skill-item-and-spell-icons).

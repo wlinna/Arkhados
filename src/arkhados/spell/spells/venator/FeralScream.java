@@ -35,6 +35,9 @@ import java.util.List;
  * @author william
  */
 public class FeralScream extends Spell {
+    {
+        this.iconName = "feral_scream.png";
+    }
 
     public FeralScream(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

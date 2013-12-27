@@ -37,6 +37,9 @@ import com.jme3.scene.shape.Sphere;
  * @author william
  */
 public class Dagger extends Spell {
+    {
+        this.iconName = "damaging_dagger.png";
+    }
 
     public Dagger(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
