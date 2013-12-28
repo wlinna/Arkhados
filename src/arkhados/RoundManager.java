@@ -169,6 +169,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         this.syncManager.addObject(-1, this.worldManager);
         if (this.worldManager.isClient()) {
             this.stateManager.getState(ClientHudManager.class).clear();
+            this.clientMain.getUserCommandManager().nullifyCharacter();
         }
     }
 
@@ -190,7 +191,6 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
         if (this.worldManager.isClient()) {
             this.clientMain.getUserCommandManager().setEnabled(false);
-
         }
 
         // TODO: Add wait time so players can watch their stats and get ready

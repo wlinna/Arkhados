@@ -248,6 +248,10 @@ public class UserCommandManager extends AbstractAppState {
         return this.character;
     }
 
+    public void nullifyCharacter() {
+        this.character = null;
+    }
+
     private InfluenceInterfaceControl getCharacterInterface() {
         Spatial spatial = this.getCharacter();
         if (spatial == null) {

@@ -44,6 +44,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -142,6 +143,14 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
         this.hpBars.clear();
         this.currentSeconds = -1;
+        this.playerCharacter = null;
+
+        for (Iterator<Element> it = this.screen.findElementByName("panel_bottom").getElements().iterator(); it.hasNext();) {
+            Element element = it.next();
+            this.nifty.removeElement(this.screen, element);
+        }
+
+        this.spellIcons.clear();
     }
 
     private void createHpBar() {
@@ -213,6 +222,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void updateSpellIcons() {
+        if (this.playerCharacter == null) {
+            return;
+        }
         final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
 
         for (Map.Entry<String, Element> entry : this.spellIcons.entrySet()) {
