@@ -76,6 +76,9 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
+        if (!newWalkDirection.equals(Vector3f.ZERO)) {
+            super.setViewDirection(newWalkDirection);
+        }
         super.setWalkDirection(newWalkDirection);
     }
 
