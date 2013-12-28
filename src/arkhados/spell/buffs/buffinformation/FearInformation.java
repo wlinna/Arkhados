@@ -15,7 +15,6 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.RelativeLocationControl;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
