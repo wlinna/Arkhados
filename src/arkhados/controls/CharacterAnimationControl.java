@@ -68,9 +68,11 @@ public class CharacterAnimationControl extends AbstractControl {
         if (this.actionTime > 0f) {
             return;
         }
+
         if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
             if (!this.walkAnimation.getName().equals(this.channel.getAnimationName())) {
-                this.channel.setAnim(this.walkAnimation.getName(), 0.5f);
+//                this.characterControl.setViewDirection(this.characterControl.getWalkDirection());
+                this.channel.setAnim(this.walkAnimation.getName(), this.walkAnimation.getSpeed());
             }
             this.channel.setSpeed(this.walkAnimation.getSpeed());
         } else {
@@ -163,5 +165,9 @@ public class CharacterAnimationControl extends AbstractControl {
 
     public AnimControl getAnimControl() {
         return this.animControl;
+    }
+
+    public float getActionTime() {
+        return actionTime;
     }
 }
