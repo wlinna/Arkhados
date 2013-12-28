@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.arena.AbstractArena;
+import arkhados.arena.BasicSquareArena;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -66,6 +68,7 @@ public class WorldManager extends AbstractAppState {
         new Vector3f(20f, 0, -20f), new Vector3f(-20f, 0, 20f)
     };
     private Node worldRoot;
+    private AbstractArena arena = new BasicSquareArena();
     private HashMap<Long, Spatial> entities = new HashMap<Long, Spatial>();
     private SyncManager syncManager;
     private int idCounter = 0;
@@ -138,6 +141,7 @@ public class WorldManager extends AbstractAppState {
             lod.setCamera(this.cam);
         }
         this.worldRoot.setName("world-root");
+        this.arena.readWorld(this.worldRoot);
 
     }
 
@@ -333,5 +337,9 @@ public class WorldManager extends AbstractAppState {
 
     public Spatial getEntity(long id) {
         return this.entities.get(id);
+    }
+
+    public boolean validateLocation(Vector3f location) {
+        return this.arena.validateLocation(location);
     }
 }
