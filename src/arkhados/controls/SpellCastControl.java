@@ -121,6 +121,8 @@ public class SpellCastControl extends AbstractControl {
                 return;
             }
 
+            final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+            physics.setViewDirection(physics.calculateTargetDirection());
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell));
 //            this.activeCastTimeLeft = spell.getCastTime();
