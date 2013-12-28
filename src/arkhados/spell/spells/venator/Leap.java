@@ -86,12 +86,14 @@ class CastLeapAction extends EntityAction {
         final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
 
         path.addWayPoint(startLocation);
-        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation.divide(2)).setY(finalLocation.length() / 3f));
+        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation).divideLocal(2).setY(finalLocation.length() / 2f));
         path.addWayPoint(finalLocation);
 
         MotionEvent motionControl = new MotionEvent(super.spatial, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / this.forwardSpeed);
         motionControl.setSpeed(2f);
+
+        physics.setViewDirection(finalLocation.subtract(startLocation));
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
