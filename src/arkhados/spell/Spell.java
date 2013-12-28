@@ -129,6 +129,8 @@ public abstract class Spell {
     private boolean canMoveWhileCasting = false;
     private boolean moveTowardsTarget = true;
 
+    // HACK: This is used by SpellCastControl to determine if character should restore walking after casting action
+    protected boolean multipart = false;
     protected String iconName = null;
 
     protected CastSpellActionBuilder castSpellActionBuilder;
@@ -196,5 +198,9 @@ public abstract class Spell {
 
     public void setMoveTowardsTarget(boolean mustMoveTowardsViewDirection) {
         this.moveTowardsTarget = mustMoveTowardsViewDirection;
+    }
+
+    public boolean isMultipart() {
+        return multipart;
     }
 }

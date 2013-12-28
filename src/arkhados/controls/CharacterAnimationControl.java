@@ -107,7 +107,7 @@ public class CharacterAnimationControl extends AbstractControl {
         this.channel.setAnim(data.getName());
         this.channel.setSpeed(data.getSpeed());
         this.channel.setLoopMode(data.getLoopMode());
-        if ((data.getLoopMode() == LoopMode.Loop || data.getLoopMode() == data.getLoopMode().Cycle) && actionDuration != -1) {
+        if ((data.getLoopMode() == LoopMode.Loop || data.getLoopMode() == LoopMode.Cycle) && actionDuration != -1) {
             this.actionTime = actionDuration;
         } else {
             this.actionTime = this.channel.getAnimMaxTime() / data.getSpeed();

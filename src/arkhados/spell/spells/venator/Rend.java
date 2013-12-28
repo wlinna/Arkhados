@@ -31,6 +31,7 @@ public class Rend extends Spell {
 
     {
         super.iconName = "rend.png";
+        super.multipart = true;
     }
     public Rend(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
@@ -68,9 +69,9 @@ class TripleMeleeAttackAction extends EntityAction {
         final float range = this.spell.getRange();
         final ActionQueueControl queue = super.spatial.getControl(ActionQueueControl.class);
         final MeleeAttackAction action1 = new MeleeAttackAction(50f, range);
-        final CastingSpellAction action2Anim = new CastingSpellAction(this.spell);
+        final CastingSpellAction action2Anim = new CastingSpellAction(this.spell, true);
         final MeleeAttackAction action2 = new MeleeAttackAction(60f, range);
-        final CastingSpellAction action3Anim = new CastingSpellAction(this.spell);
+        final CastingSpellAction action3Anim = new CastingSpellAction(this.spell, false);
         final MeleeAttackAction action3 = new MeleeAttackAction(70f, range);
 
         // action1 already has the default spell casting animation

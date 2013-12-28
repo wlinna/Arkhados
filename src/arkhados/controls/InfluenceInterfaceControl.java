@@ -94,6 +94,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         if (crowdControlInfluence instanceof IncapacitateCC) {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+            super.spatial.getControl(SpellCastControl.class).setCasting(false);
+            super.spatial.getControl(ActionQueueControl.class).clear();
         }
     }
 
@@ -118,7 +120,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
             if (crowdControlInfluence instanceof IncapacitateCC) {
                 return false;
             }
-
         }
         return true;
     }
@@ -177,7 +178,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-        if (this.canMove()) {
+        if (this.canMove() && !super.spatial.getControl(SpellCastControl.class).isCasting()) {
             if (this.isServer) {
                 CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
                 if (this.canControlMovement()) {

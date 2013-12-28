@@ -16,6 +16,7 @@ package arkhados.actions;
 
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
@@ -29,27 +30,36 @@ public class CastingSpellAction extends EntityAction {
     private float delay;
     private final Spell spell;
     private Vector3f movementDirection = null;
+    private boolean followedByAnotherAnimation = false;
 
     public CastingSpellAction(final Spell spell) {
         this.spell = spell;
         this.delay = spell.getCastTime();
     }
 
+    public CastingSpellAction(final Spell spell, boolean followedByAnother) {
+        this(spell);
+        this.followedByAnotherAnimation = followedByAnother;
+    }
+
     @Override
     public boolean update(float tpf) {
         this.delay -= tpf;
         if (this.delay <= 0f) {
-            if (!this.spell.canMoveWhileCasting()) {
+            if (!this.spell.canMoveWhileCasting() && !this.followedByAnotherAnimation) {
                 super.spatial.getControl(CharacterPhysicsControl.class).restoreWalking();
             }
 
-            super.spatial.getControl(InfluenceInterfaceControl.class).setCanControlMovement(true);
+            if (!this.followedByAnotherAnimation) {
+                super.spatial.getControl(SpellCastControl.class).setCasting(false);
+            }
             return false;
         }
+        super.spatial.getControl(SpellCastControl.class).setCasting(true);
+
         if (!this.spell.canMoveWhileCasting()) {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
         } else {
-            super.spatial.getControl(InfluenceInterfaceControl.class).setCanControlMovement(false);
             if (this.spell.moveTowardsTarget()) {
                 final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
                 if (!physics.getWalkDirection().equals(Vector3f.ZERO)) {
