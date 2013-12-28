@@ -1,7 +1,7 @@
 # Arkhados #
 
-Arkhados is fast paced MOBA game where mages cast entirely skill based spells to kill each other.
-It's programmed in Java with jMonkeyEngine 3.
+Arkhados is fast paced multiplayer action arena game where players cast entirely skill based spells to kill each other.
+It's programmed in Java using jMonkeyEngine 3.
 
 ## Dependencies ##
 

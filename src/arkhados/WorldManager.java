@@ -225,7 +225,6 @@ public class WorldManager extends AbstractAppState {
         this.setEntityTranslation(spatial, location, rotation);
     }
 
-
     private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {
         if (entityModel.getControl(RigidBodyControl.class) != null) {
             entityModel.getControl(RigidBodyControl.class).setPhysicsLocation(location);
