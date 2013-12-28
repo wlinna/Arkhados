@@ -15,7 +15,9 @@
 package arkhados.actions;
 
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.Spell;
+import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 
 /**
@@ -26,6 +28,7 @@ public class CastingSpellAction extends EntityAction {
 
     private float delay;
     private final Spell spell;
+    private Vector3f movementDirection = null;
 
     public CastingSpellAction(final Spell spell) {
         this.spell = spell;
@@ -39,12 +42,26 @@ public class CastingSpellAction extends EntityAction {
             if (!this.spell.canMoveWhileCasting()) {
                 super.spatial.getControl(CharacterPhysicsControl.class).restoreWalking();
             }
+
+            super.spatial.getControl(InfluenceInterfaceControl.class).setCanControlMovement(true);
             return false;
         }
         if (!this.spell.canMoveWhileCasting()) {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        } else {
+            super.spatial.getControl(InfluenceInterfaceControl.class).setCanControlMovement(false);
+            if (this.spell.moveTowardsTarget()) {
+                final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+                if (!physics.getWalkDirection().equals(Vector3f.ZERO)) {
+                    if (this.movementDirection == null) {
+                        final Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                        this.movementDirection = physics.calculateTargetDirection();
+                        this.movementDirection.normalizeLocal().multLocal(speedMovement);
+                    }
+                    physics.setWalkDirection(this.movementDirection);
+                }
+            }
         }
-
         return true;
     }
 

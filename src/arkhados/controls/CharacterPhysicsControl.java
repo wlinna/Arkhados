@@ -126,4 +126,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     public void switchToNormalPhysicsMode() {
         super.setEnabled(true);
     }
+
+    public Vector3f calculateTargetDirection() {
+        return this.targetLocation.subtract(super.spatial.getLocalTranslation());
+    }
 }

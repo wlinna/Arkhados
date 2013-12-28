@@ -127,8 +127,9 @@ public abstract class Spell {
     private final float range;
     private final float castTime;
     private boolean canMoveWhileCasting = false;
-    protected String iconName = null;
+    private boolean moveTowardsTarget = true;
 
+    protected String iconName = null;
 
     protected CastSpellActionBuilder castSpellActionBuilder;
     protected NodeBuilder nodeBuilder;
@@ -187,5 +188,13 @@ public abstract class Spell {
 
     public void setCanMoveWhileCasting(boolean canMoveWhileCasting) {
         this.canMoveWhileCasting = canMoveWhileCasting;
+    }
+
+    public boolean moveTowardsTarget() {
+        return moveTowardsTarget;
+    }
+
+    public void setMoveTowardsTarget(boolean mustMoveTowardsViewDirection) {
+        this.moveTowardsTarget = mustMoveTowardsViewDirection;
     }
 }

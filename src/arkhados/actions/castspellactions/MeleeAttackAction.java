@@ -51,7 +51,7 @@ public class MeleeAttackAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
-        Vector3f hitDirection = physicsControl.getTargetLocation().subtract(super.spatial.getLocalTranslation()).normalize().multLocal(this.range);
+        Vector3f hitDirection = physicsControl.calculateTargetDirection().normalize().multLocal(this.range);
 
         // FIXME: Don't allow character to run to wrong direction while attacking
         physicsControl.setViewDirection(hitDirection);
