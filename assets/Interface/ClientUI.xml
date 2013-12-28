@@ -290,7 +290,7 @@
             -->
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
                 <panel id="spacer" height="*" valign="top"></panel>
-                <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom" backgroundColor="0f08">
+                <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom">
                 </panel>
             </panel>
         </layer>

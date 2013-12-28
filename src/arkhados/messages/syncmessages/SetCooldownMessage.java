@@ -42,7 +42,7 @@ public class SetCooldownMessage extends AbstractSyncMessage {
     public void applyData(Object target) {
         final Spatial character = (Spatial) target;
         final SpellCastControl castControl = character.getControl(SpellCastControl.class);
-        castControl.putOnCooldown(this.spellName, this.cooldown);
+        castControl.setCooldown(this.spellName, this.cooldown);
         if (this.globalCooldown) {
             castControl.globalCooldown();
         }

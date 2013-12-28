@@ -48,6 +48,7 @@ public class SpellCastControl extends AbstractControl {
     private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
     private HashMap<String, Spell> keySpellMappings = new HashMap<String, Spell>();
     private static final float GLOBAL_COOLDOWN = 0.2f;
+    private boolean casting = false;
 
 //    private float activeCastTimeLeft = 0f;
     public SpellCastControl(WorldManager worldManager) {
@@ -71,19 +72,13 @@ public class SpellCastControl extends AbstractControl {
         return this.spells.get(name);
     }
 
-//    public boolean isCasting() {
-//        if (activeCastTimeLeft <= 0f) {
-//            return true;
-//        }
-//        return false;
-//    }
     public void safeInterrupt() {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
-
+            this.casting = false;
             final Spell spell = ((CastingSpellAction) action).getSpell();
             super.spatial.getControl(ActionQueueControl.class).clear();
-            this.cooldowns.put(spell.getName(), 0f);
+            this.setCooldown(spell.getName(), 0f);
         }
     }
 
@@ -124,7 +119,7 @@ public class SpellCastControl extends AbstractControl {
             final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
             physics.setViewDirection(physics.calculateTargetDirection());
             super.spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
-            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell));
+            super.spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell, spell.isMultipart()));
 //            this.activeCastTimeLeft = spell.getCastTime();
             final EntityAction castingAction = spell.buildCastAction((Node) super.spatial, targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
@@ -141,9 +136,13 @@ public class SpellCastControl extends AbstractControl {
         this.putOnCooldown(spell);
     }
 
-    public void putOnCooldown(final String spellName, float cooldown) {
+    public void setCooldown(final String spellName, float cooldown) {
         this.cooldowns.put(spellName, cooldown);
-        // FIXME: Send SetCooldownMessage
+         if (this.worldManager.isServer()) {
+            final Long entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            // TODO: Consider NOT sending this message to all players
+            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spellName, 0f, true));
+        }
     }
 
     public void putOnCooldown(final Spell spell) {
@@ -232,5 +231,13 @@ public class SpellCastControl extends AbstractControl {
 
     public float getCooldown(final String spellName) {
         return this.cooldowns.get(spellName);
+    }
+
+    public boolean isCasting() {
+        return casting;
+    }
+
+    public void setCasting(boolean casting) {
+        this.casting = casting;
     }
 }
