@@ -17,6 +17,7 @@ package arkhados.arena;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 /**
  *
  * @author william
@@ -27,11 +28,13 @@ public class BasicSquareArena extends AbstractArena {
     @Override
     public void readWorld(Node worldRoot) {
         super.readWorld(worldRoot);
+
+        Spatial terrain = super.getWorldRoot().getChild("terrain");
+        terrain.scale(5f);
+
         Vector3f extent = ((BoundingBox) worldRoot.getWorldBound()).getExtent(new Vector3f());
-        this.radius = extent.x;
+        this.radius = extent.x - 20;
     }
-
-
 
     @Override
     public boolean validateLocation(Vector3f location) {

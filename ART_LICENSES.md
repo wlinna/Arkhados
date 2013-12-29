@@ -25,3 +25,7 @@ See CREDITS.md for attributions.
 - meteor.png
 - ember_circle.png
 - purifying_flame.png
+
+## CC-BY-SA 3.0 ##
+
+- All LavaArena related files

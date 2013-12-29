@@ -56,3 +56,8 @@ following Spell icon collection pages:
 - [2](http://opengameart.org/content/spell-icon-collection-part-2)
 - [3](http://opengameart.org/content/spell-icon-collection-part-3)
 - [4](http://opengameart.org/content/spell-icon-collection-part-4)
+
+Skorpio for LavaArena's tileset. LavaArena's tileset uses Skorpio's 3D
+Dungeon Tileset that is made for OpenDungeons. 3D Dungeon Tileset is
+licensed under multiple licenses, including CC-BY-SA 3.0, which I used
+for LavaArena. Original work can be found from [OGA](http://opengameart.org/content/3d-dungeon-tileset)

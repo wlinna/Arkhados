@@ -1,0 +1,24 @@
+<scene formatVersion="1.0.1" export_time="1388328476.3831525" previous_export_time="1388327377.6797962" exported_by="william" >
+  <nodes >
+    <node name="terrain" >
+      <position x="0.000000" y="0.000000" z="-0.000000" />
+      <rotation qx="0.000000" qy="0.000000" qz="-0.000000" qw="1.000000" />
+      <scale x="1.891077" y="1.891077" z="1.891077" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Dirt101N-A.mesh" anisotropic_friction="False" lock_trans_z="False" damping_trans="0.03999999910593033" lock_trans_x="False" lock_trans_y="False" friction_x="1.0" mass="1.0" friction_z="1.0" friction_y="1.0" actor="False" ghost="False" velocity_max="0.0" lock_rot_y="False" lock_rot_x="False" lock_rot_z="False" physics_type="STATIC" name="Dirt101N-A" velocity_min="0.0" inertia_tensor="0.4000000059604645" damping_rot="0.10000000149011612" mass_radius="1.0" />
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="/home/william/projects/Arkhados/assets/Textures/LavaArena/LavaArena.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourAmbient r="0.0" b="0.0" g="0.0" />
+    <colourBackground r="0.6666980981826782" b="0.40436848998069763" g="0.5557668805122375" />
+    <colourDiffuse r="0.6666980981826782" b="0.40436848998069763" g="0.5557668805122375" />
+  </environment>
+</scene>
