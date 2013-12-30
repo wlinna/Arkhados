@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.arena;
 
+import arkhados.WorldManager;
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -22,15 +24,26 @@ import com.jme3.scene.Node;
  * @author william
  */
 public abstract class AbstractArena {
-    private Node worldRoot;
+    private Node terrain;
+    private WorldManager worldManager;
+    private AssetManager assetManager;
 
-    public void readWorld(Node worldRoot) {
-        this.worldRoot = worldRoot;
+    public void readWorld(WorldManager worldManager, AssetManager assetManager) {
+        this.worldManager = worldManager;
+        this.terrain = (Node)this.worldManager.getWorldRoot().getChild("terrain");
     }
 
     public abstract boolean validateLocation(Vector3f location);
 
-    public Node getWorldRoot() {
-        return this.worldRoot;
+    public Node getTerrainNode() {
+        return this.terrain;
+    }
+
+    public WorldManager getWorldManager() {
+        return this.worldManager;
+    }
+
+    protected AssetManager getAssetManager() {
+        return this.assetManager;
     }
 }

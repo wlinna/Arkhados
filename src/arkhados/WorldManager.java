@@ -51,6 +51,8 @@ import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.math.Plane;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,7 +87,6 @@ public class WorldManager extends AbstractAppState {
     private Camera cam;
     private EntityFactory entityFactory;
     private ServerWorldCollisionListener serverCollisionListener = null;
-
     private ClientMain clientMain;
 
     @Override
@@ -137,20 +138,29 @@ public class WorldManager extends AbstractAppState {
         physics.setRestitution(0f);
         this.worldRoot.addControl(physics);
         Spatial terrain = this.worldRoot.getChild("terrain");
-        TerrainLodControl lod =  terrain.getControl(TerrainLodControl.class);
+        TerrainLodControl lod = terrain.getControl(TerrainLodControl.class);
         if (lod != null) {
             lod.setCamera(this.cam);
         }
         this.worldRoot.setName("world-root");
-        this.arena.readWorld(this.worldRoot);
+        this.arena.readWorld(this, this.assetManager);
 
     }
 
     public void attachLevel() {
+
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
         this.worldRoot.addLight(sun);
 
+        if (this.isClient()) {
+            final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
+            final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
+            bf.setBloomIntensity(0.41f);
+            bf.setDownSamplingFactor(2f);
+            fpp.addFilter(bf);
+            this.viewPort.addProcessor(fpp);
+        }
         this.space.addAll(this.worldRoot);
         this.space.setGravity(new Vector3f(0f, -98.1f, 0));
         this.rootNode.attachChild(this.worldRoot);

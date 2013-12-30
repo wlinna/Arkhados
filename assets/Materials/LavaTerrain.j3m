@@ -1,0 +1,10 @@
+Material LavaTerrain : Common/MatDefs/Terrain/TerrainLighting.j3md {
+     MaterialParameters {
+        DiffuseMap : Repeat Textures/LavaArena/lava.jpg
+        Shininess : 1.0
+        useTriPlanarMapping : false
+        GlowMap : Textures/LavaArena/lava_glowmap.jpg
+     }
+    AdditionalRenderState {
+    }
+}

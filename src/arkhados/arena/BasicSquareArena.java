@@ -14,10 +14,25 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.arena;
 
+import arkhados.WorldManager;
+import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
+import com.jme3.light.AmbientLight;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Quad;
+import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.heightmap.FluidSimHeightMap;
+import com.jme3.terrain.heightmap.HeightMap;
+import com.jme3.terrain.heightmap.HillHeightMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author william
@@ -26,14 +41,38 @@ public class BasicSquareArena extends AbstractArena {
     private float radius;
 
     @Override
-    public void readWorld(Node worldRoot) {
-        super.readWorld(worldRoot);
+    public void readWorld(WorldManager worldManager, AssetManager assetManager) {
+        super.readWorld(worldManager, assetManager);
 
-        Spatial terrain = super.getWorldRoot().getChild("terrain");
-        terrain.scale(5f);
+        super.getTerrainNode().scale(5f);
 
-        Vector3f extent = ((BoundingBox) worldRoot.getWorldBound()).getExtent(new Vector3f());
-        this.radius = extent.x - 20;
+        final Vector3f extent = ((BoundingBox) super.getTerrainNode().getWorldBound()).getExtent(new Vector3f());
+        this.radius = extent.x - 15;
+
+//        final Quad lavaShape = new Quad(500f, 500f);
+        TerrainQuad lavaTerrainShape = null;
+        try {
+            HillHeightMap heightMap = new HillHeightMap(512, 1, 1f, 200f, (byte) 3);
+            lavaTerrainShape = new TerrainQuad("lava-terrain", 65, 513, heightMap.getHeightMap());
+
+        } catch (Exception ex) {
+            Logger.getLogger(BasicSquareArena.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        lavaShape.scaleTextureCoordinates(new Vector2f(10f, 10f));
+//        final Geometry lavaGeom = new Geometry("lava-plane", lavaShape);
+
+        final Material lavaMaterial = assetManager.loadMaterial("Materials/LavaTerrain.j3m");
+        lavaMaterial.setFloat("DiffuseMap_0_scale", 0.05f);
+//        lavaMaterial.setFloat("GlowMap_0_scale", 0.25f);
+        lavaTerrainShape.setMaterial(lavaMaterial);
+        super.getWorldManager().getWorldRoot().attachChild(lavaTerrainShape);
+        lavaTerrainShape.setLocalTranslation(0f, -2f, 0f);
+//        lavaTerrainShape.scale(2f);
+
+        final AmbientLight ambientLight = new AmbientLight();
+        ambientLight.setColor(ColorRGBA.White.mult(0.3f));
+        super.getTerrainNode().addLight(ambientLight);
+
     }
 
     @Override
