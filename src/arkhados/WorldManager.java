@@ -50,9 +50,11 @@ import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
+import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
+import com.jme3.scene.control.LightControl;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import java.util.LinkedList;
 import java.util.List;
@@ -273,6 +275,13 @@ public class WorldManager extends AbstractAppState {
             }
         }
         spatial.removeFromParent();
+        LightControl lightControl = spatial.getControl(LightControl.class);
+        if (lightControl != null) {
+            Light light = lightControl.getLight();
+            if (light != null) {
+                this.getWorldRoot().removeLight(light);
+            }
+        }
         this.space.removeAll(spatial);
     }
 
