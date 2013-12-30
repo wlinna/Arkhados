@@ -30,6 +30,7 @@ public abstract class AbstractArena {
 
     public void readWorld(WorldManager worldManager, AssetManager assetManager) {
         this.worldManager = worldManager;
+        this.assetManager = assetManager;
         this.terrain = (Node)this.worldManager.getWorldRoot().getChild("terrain");
     }
 

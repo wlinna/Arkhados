@@ -49,7 +49,12 @@ public class BasicSquareArena extends AbstractArena {
         final Vector3f extent = ((BoundingBox) super.getTerrainNode().getWorldBound()).getExtent(new Vector3f());
         this.radius = extent.x - 15;
 
-//        final Quad lavaShape = new Quad(500f, 500f);
+        if (worldManager.isClient()) {
+            this.createLavaTerrain();
+        }
+    }
+
+    private void createLavaTerrain() {
         TerrainQuad lavaTerrainShape = null;
         try {
             HillHeightMap heightMap = new HillHeightMap(512, 1, 1f, 200f, (byte) 3);
@@ -58,12 +63,9 @@ public class BasicSquareArena extends AbstractArena {
         } catch (Exception ex) {
             Logger.getLogger(BasicSquareArena.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        lavaShape.scaleTextureCoordinates(new Vector2f(10f, 10f));
-//        final Geometry lavaGeom = new Geometry("lava-plane", lavaShape);
 
-        final Material lavaMaterial = assetManager.loadMaterial("Materials/LavaTerrain.j3m");
+        final Material lavaMaterial = super.getAssetManager().loadMaterial("Materials/LavaTerrain.j3m");
         lavaMaterial.setFloat("DiffuseMap_0_scale", 0.05f);
-//        lavaMaterial.setFloat("GlowMap_0_scale", 0.25f);
         lavaTerrainShape.setMaterial(lavaMaterial);
         super.getWorldManager().getWorldRoot().attachChild(lavaTerrainShape);
         lavaTerrainShape.setLocalTranslation(0f, -2f, 0f);
@@ -72,7 +74,6 @@ public class BasicSquareArena extends AbstractArena {
         final AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(ColorRGBA.White.mult(0.3f));
         super.getTerrainNode().addLight(ambientLight);
-
     }
 
     @Override
