@@ -102,6 +102,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         settings.setTitle("Arkhados Client");
         ClientMain app = new ClientMain();
         app.setSettings(settings);
+        ClientSettings.setAppSettings(settings);
         app.setPauseOnLostFocus(false);
         app.start();
 
@@ -121,6 +122,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void simpleInitApp() {
         this.setDisplayStatView(false);
+        ClientSettings.initialize(this);
+        ClientSettings.setAppSettings(settings);
         this.bulletState = new BulletAppState();
         this.bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
 
@@ -154,7 +157,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         this.userCommandManager = new UserCommandManager(this.client, this.inputManager);
 
-
         this.listenerManager = new ClientNetListener(this, client, this.worldManager);
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
@@ -185,7 +187,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 this.inputManager, this.audioRenderer, this.guiViewPort);
 
         this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager), this.clientHudManager);
+        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager), this.clientHudManager, ClientSettings.getClientSettings());
         this.guiViewPort.addProcessor(this.niftyDisplay);
 
         this.clientHudManager.setNifty(nifty);
@@ -243,7 +245,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.nifty.gotoScreen("lobby");
     }
 
+
     // TODO: Change playerDatas type to something that holds all necessary data
+
     public void refreshPlayerData(final List<String> playerData) {
         this.enqueue(new Callable<Void>() {
             public Void call() throws Exception {

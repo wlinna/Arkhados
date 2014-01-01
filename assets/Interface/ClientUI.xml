@@ -49,6 +49,13 @@
                 </effect>
                 <text style="nifty-label" text="Settings" />
                 <text style="nifty-label" text="" />
+                <control id="graphics_settings_button" name="button" label="Graphic settings" align="center" width="200px">
+                    <interact onClick="gotoMenu(graphics_settings)"/>
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
+                    </effect>
+                </control>
+                <text style="nifty-label" text=""/>
                 <control id="input_settings_button" name="button" label="Configure controls" align="center" width="200px">
                     <interact onClick="gotoMenu(input_settings)"/>
                     <effect>
@@ -118,6 +125,31 @@
                         </control>
                     </panel>
                 </panel>
+                <control id="exit_button" name="button" label="Back" align="center" width="200px">
+                    <interact onClick="gotoMenu(settings)" />
+                </control>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="graphics_settings" controller="arkhados.ClientSettings">
+        <layer id="layer" childLayout="center">
+            <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+
+                <text style="nifty-label" text=""/>
+                <panel height="*" width="*" align="center" childLayout="horizontal">
+                    <panel height="700px" width="100px" align="left" childLayout="vertical">
+                        <text style="nifty-label" text="Free camera speed" align="center" />
+
+                    </panel>
+                    <panel height="700px" width="300px" align="center" childLayout="vertical">
+                        <control id="free_camera_speed" name="textfield" align="center" width="120px" text="500"></control>
+                    </panel>
+                </panel>
+
+                <control id="apply_button" name="button" label="Apply" align="center" width="200px">
+                    <interact onClick="applyGraphicsSettings()" />
+                </control>
                 <control id="exit_button" name="button" label="Back" align="center" width="200px">
                     <interact onClick="gotoMenu(settings)" />
                 </control>

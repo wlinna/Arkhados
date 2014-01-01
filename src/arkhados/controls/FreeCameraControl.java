@@ -31,6 +31,7 @@
  */
 package arkhados.controls;
 
+import arkhados.ClientSettings;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -64,8 +65,6 @@ public class FreeCameraControl extends AbstractControl {
     private float timeToReach = 20f;
     private float timeMoved = this.timeToReach;
 
-    private float camSpeed = 500f;
-
     public FreeCameraControl(Node character, Camera cam, InputManager inputManager) {
         this.character = character;
         this.cam = cam;
@@ -74,32 +73,19 @@ public class FreeCameraControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-//        if (this.timeMoved < this.timeToReach) {
-//            this.timeMoved += tpf;
-//        }
         this.calculateMouseLocation();
         Vector3f midPoint = this.intersectionPoint.subtract(character.getLocalTranslation()).multLocal(0.5f);
         midPoint.addLocal(this.relativePosition);
         midPoint.addLocal(character.getLocalTranslation());
         this.targetDestination.set(midPoint);
 
-//        this.cam.setLocation(this.targetDestination);
-//        this.cam.
         float distance = this.cam.getLocation().distance(this.targetDestination);
 
-        float factor = tpf * this.camSpeed / distance;
+        float factor = tpf * ClientSettings.getFreeCameraSpeed() / distance;
         if (factor > 1f) {
             factor = 1f;
         }
         this.cam.setLocation(this.cam.getLocation().interpolate(this.targetDestination, factor));
-//
-//        if (this.timeMoved < this.timeToReach) {
-//            this.timeMoved += tpf;
-//            this.cam.setLocation(Vector3f.NAN.interpolate(this.cam.getLocation(), this.targetDestination, this.timeMoved / this.timeToReach));
-//        } else {
-//            this.timeMoved = 0f;
-//            this.cam.setLocation(this.targetDestination);
-//    }
     }
 
     @Override
