@@ -30,6 +30,8 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -212,7 +214,7 @@ class MeteorNodeBuilder extends NodeBuilder {
             final ParticleEmitter fire = this.createFireEmitter();
             node.attachChild(fire);
 
-            final MeteorRemovalAction removalAction = new MeteorRemovalAction();
+            final MeteorRemovalAction removalAction = new MeteorRemovalAction(assetManager);
             removalAction.setEmitter(fire);
 
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
@@ -225,17 +227,30 @@ class MeteorNodeBuilder extends NodeBuilder {
 
 class MeteorRemovalAction implements RemovalEventAction {
     private ParticleEmitter emitter;
+    private AudioNode sound;
+
+    MeteorRemovalAction(AssetManager assetManager) {
+        this.sound = new AudioNode(assetManager, "Effects/Sound/MeteorBoom.wav");
+        this.sound.setPositional(true);
+        this.sound.setReverbEnabled(false);
+        this.sound.setVolume(5f);
+    }
 
     public void exec(WorldManager worldManager, String reason) {
         if (!"collision".equals(reason)) {
             return;
         }
         Vector3f worldTranslation = emitter.getParent().getLocalTranslation();
+        worldManager.getWorldRoot().attachChild(this.sound);
+        this.sound.setLocalTranslation(worldTranslation);
+        this.sound.play();
+
         emitter.removeFromParent();
         worldManager.getWorldRoot().attachChild(emitter);
+
         emitter.setLocalTranslation(worldTranslation);
         emitter.addControl(new TimedExistenceControl(4f));
-        emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(1f, 0.1f, 1f).mult(2.0f));
+        emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(1f, 0.01f, 1f).mult(16.0f));
 //        emitter.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         emitter.getParticleInfluencer().setVelocityVariation(1f);
         emitter.setStartSize(6f);

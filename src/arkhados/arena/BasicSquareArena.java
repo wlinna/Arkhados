@@ -16,6 +16,7 @@ package arkhados.arena;
 
 import arkhados.WorldManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.Environment;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
@@ -51,6 +52,7 @@ public class BasicSquareArena extends AbstractArena {
 
         if (worldManager.isClient()) {
             this.createLavaTerrain();
+            worldManager.getClientMain().getAudioRenderer().setEnvironment(new Environment(Environment.Cavern));
         }
     }
 

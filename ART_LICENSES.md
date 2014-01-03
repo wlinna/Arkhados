@@ -25,6 +25,7 @@ See CREDITS.md for attributions.
 - meteor.png
 - ember_circle.png
 - purifying_flame.png
+- MeteorBoom.wav
 
 ## CC-BY-SA 3.0 ##
 

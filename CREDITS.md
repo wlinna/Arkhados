@@ -61,3 +61,7 @@ Skorpio for LavaArena's tileset. LavaArena's tileset uses Skorpio's 3D
 Dungeon Tileset that is made for OpenDungeons. 3D Dungeon Tileset is
 licensed under multiple licenses, including CC-BY-SA 3.0, which I used
 for LavaArena. Original work can be found from [OGA](http://opengameart.org/content/3d-dungeon-tileset)
+
+Blender Foundation for Meteor's explosion sound. Explosion sound was
+made for "Yo Frankie!". It is licensed under CC-BY 3.0. Original work
+can be found from [OGA](http://opengameart.org/content/big-explosion)

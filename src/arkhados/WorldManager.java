@@ -49,6 +49,7 @@ import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
+import com.jme3.audio.Environment;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
@@ -361,5 +362,9 @@ public class WorldManager extends AbstractAppState {
 
     public boolean validateLocation(Vector3f location) {
         return this.arena.validateLocation(location);
+    }
+
+    public ClientMain getClientMain() {
+        return clientMain;
     }
 }
