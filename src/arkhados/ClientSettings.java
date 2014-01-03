@@ -51,7 +51,7 @@ public class ClientSettings implements ScreenController {
     public static void setAppSettings(AppSettings aAppSettings) {
         clientSettings.appSettings = aAppSettings;
         if (getAppSettings().containsKey("free_camera_speed")) {
-            final float freeCamSpeed = getAppSettings().getFloat("free_camera_speed");
+            final float freeCamSpeed = getAppSettings().getInteger("free_camera_speed");
             if (freeCamSpeed > 0f) {
                 clientSettings.freeCameraSpeed = freeCamSpeed;
             }
