@@ -57,8 +57,11 @@ class SurvivalInstinctEffect extends BuffEffect {
 
             Geometry childGeometry = (Geometry) childSpatial;
             Material material = childGeometry.getMaterial();
-            // FIXME: Material parameter not defined
-            material.setColor("Diffuse", color);
+            // TODO: Investingate if there is better solution for "Material parameter not defined"
+            MatParam param = material.getParam("Diffuse");
+            if (param != null) {
+                material.setColor("Diffuse", color);
+            }
         }
     }
 
@@ -72,12 +75,11 @@ class SurvivalInstinctEffect extends BuffEffect {
 
             Geometry childGeometry = (Geometry) childSpatial;
             Material material = childGeometry.getMaterial();
-            // FIXME: Material parameter is not defined
+            // TODO: Investingate if there is better solution for "Material parameter not defined"
             MatParam param = material.getParam("Diffuse");
             if (param != null) {
                 material.setColor("Diffuse", ColorRGBA.White);
             }
-
         }
     }
 }
