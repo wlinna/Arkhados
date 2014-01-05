@@ -16,6 +16,7 @@ package arkhados.spell.buffs.buffinformation;
 
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
+import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
@@ -71,7 +72,12 @@ class SurvivalInstinctEffect extends BuffEffect {
 
             Geometry childGeometry = (Geometry) childSpatial;
             Material material = childGeometry.getMaterial();
-            material.setColor("Diffuse", ColorRGBA.White);
+            // FIXME: Material parameter is not defined
+            MatParam param = material.getParam("Diffuse");
+            if (param != null) {
+                material.setColor("Diffuse", ColorRGBA.White);
+            }
+
         }
     }
 }
