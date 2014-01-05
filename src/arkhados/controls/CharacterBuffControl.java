@@ -48,7 +48,10 @@ public class CharacterBuffControl extends AbstractControl {
 
     public void removeBuff(final long buffId) {
         final BuffEffect buffEffect = this.buffs.remove(buffId);
-        buffEffect.destroy();
+        // TODO: Investigate NullPointerException
+        if (buffEffect != null) {
+            buffEffect.destroy();
+        }
     }
 
     @Override

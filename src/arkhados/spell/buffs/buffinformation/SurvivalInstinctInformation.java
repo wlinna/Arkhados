@@ -56,6 +56,7 @@ class SurvivalInstinctEffect extends BuffEffect {
 
             Geometry childGeometry = (Geometry) childSpatial;
             Material material = childGeometry.getMaterial();
+            // FIXME: Material parameter not defined
             material.setColor("Diffuse", color);
         }
     }
