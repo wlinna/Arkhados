@@ -26,6 +26,7 @@ import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.audio.Listener;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
@@ -61,6 +62,7 @@ public class UserCommandManager extends AbstractAppState {
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f mouseGroundPosition = new Vector3f();
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<String, Boolean>(4);
+    private Listener listener;
 
     public UserCommandManager(Client client, InputManager inputManager) {
         this.client = client;
@@ -74,6 +76,7 @@ public class UserCommandManager extends AbstractAppState {
         System.out.println("Initializing UserCommandManager");
         this.app = app;
         this.worldManager = stateManager.getState(WorldManager.class);
+        this.listener = app.getListener();
         this.cam = app.getCamera();
         System.out.println("Initialized UserCommandManager");
     }
@@ -157,6 +160,7 @@ public class UserCommandManager extends AbstractAppState {
         if (character == null) {
             return;
         }
+        this.listener.setLocation(character.getWorldTranslation());
         this.mouseTargetUpdateTimer -= tpf;
         if (this.mouseTargetUpdateTimer <= 0f) {
             this.calculateMouseGroundPosition();
