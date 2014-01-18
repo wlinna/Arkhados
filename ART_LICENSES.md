@@ -26,6 +26,7 @@ See CREDITS.md for attributions.
 - ember_circle.png
 - purifying_flame.png
 - MeteorBoom.wav
+- All DamagingDagger related files
 
 ## CC-BY-SA 3.0 ##
 

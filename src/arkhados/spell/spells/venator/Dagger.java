@@ -67,15 +67,7 @@ public class Dagger extends Spell {
 
         @Override
         public Node build() {
-            Sphere sphere = new Sphere(32, 32, 1f);
-            Geometry daggerGeom = new Geometry("projectile-geom", sphere);
-            Node node = new Node("projectile");
-            node.attachChild(daggerGeom);
-
-
-            Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            material.setColor("Color", ColorRGBA.Red);
-            node.setMaterial(material);
+            Node node = (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
 
             node.setUserData(UserDataStrings.SPEED_MOVEMENT, 170f);
             node.setUserData(UserDataStrings.MASS, 30f);

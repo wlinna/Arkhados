@@ -28,6 +28,7 @@ import com.jme3.scene.control.Control;
 import java.io.IOException;
 import arkhados.WorldManager;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.Quaternion;
 
 /**
  *
@@ -47,13 +48,16 @@ public class ProjectileControl extends AbstractControl {
 
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
-                .normalizeLocal().multLocal((Float)super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
+                .normalizeLocal().multLocal((Float) super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
+//        super.spatial.lookAt(target, Vector3f.UNIT_Y);
+        Quaternion rotation = new Quaternion();
+        rotation.lookAt(direction, Vector3f.UNIT_Y);
+//        this.rot = rotation;
+        this.rigidBodyControl.setPhysicsRotation(rotation);
 
         this.rigidBodyControl.setLinearVelocity(this.direction);
         this.speed = this.direction.length();
         this.rigidBodyControl.setGravity(Vector3f.ZERO);
-        if (this.startingLocation == null) {
-        }
     }
 
     @Override
@@ -69,7 +73,10 @@ public class ProjectileControl extends AbstractControl {
             return;
         }
         this.age += tpf;
-
+//
+//        if (this.rot != null) {
+//            this.rigidBodyControl.setPhysicsRotation(this.rot);
+//        }
         if (this.range > 0f && this.age * this.speed >= this.range) {
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }

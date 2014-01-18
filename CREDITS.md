@@ -65,3 +65,6 @@ for LavaArena. Original work can be found from [OGA](http://opengameart.org/cont
 Blender Foundation for Meteor's explosion sound. Explosion sound was
 made for "Yo Frankie!". It is licensed under CC-BY 3.0. Original work
 can be found from [OGA](http://opengameart.org/content/big-explosion)
+
+TheGoat for Venator's dagger. Dagger is licensed under CC-BY 3.0.
+Original work can be found from [BlendSwap](http://www.blendswap.com/blends/view/52857)

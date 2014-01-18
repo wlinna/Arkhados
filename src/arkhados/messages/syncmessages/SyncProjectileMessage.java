@@ -20,6 +20,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 import arkhados.controls.ProjectileControl;
+import com.jme3.math.Quaternion;
 
 /**
  *
@@ -29,6 +30,7 @@ import arkhados.controls.ProjectileControl;
 public class SyncProjectileMessage extends AbstractSyncMessage {
     private Vector3f location = new Vector3f();
     private Vector3f velocity = new Vector3f();
+    private Quaternion rotation = new Quaternion();
 
     public SyncProjectileMessage() {
 
@@ -38,6 +40,7 @@ public class SyncProjectileMessage extends AbstractSyncMessage {
         super(id);
         control.getRigidBodyControl().getPhysicsLocation(this.location);
         control.getRigidBodyControl().getLinearVelocity(this.velocity);
+        control.getRigidBodyControl().getPhysicsRotation(this.rotation);
     }
 
     @Override
@@ -45,6 +48,7 @@ public class SyncProjectileMessage extends AbstractSyncMessage {
         Spatial spatial = (Spatial) target;
         spatial.getControl(RigidBodyControl.class).setPhysicsLocation(this.location);
         spatial.getControl(RigidBodyControl.class).setLinearVelocity(this.velocity);
+        spatial.getControl(RigidBodyControl.class).setPhysicsRotation(this.rotation);
     }
 
 
