@@ -152,6 +152,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        // TODO: Refactor InfluenceInterfaceControl's controlUpdate. It is very hard to understand.
         super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         this.immuneToProjectiles = false;
 
@@ -229,10 +230,15 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
             CrowdControlBuff cc = it.next();
+            boolean remove = false;
             // TODO: Use some kind of flag instance of detecting type
             if (cc instanceof IncapacitateCC) {
-                it.remove();
+                remove = true;
             } else if (cc instanceof FearCC) {
+                remove = true;
+            }
+            if (remove) {
+                cc.destroy();
                 it.remove();
             }
         }
