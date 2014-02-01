@@ -39,6 +39,7 @@ Paulius Jurgelevičius for following spell icons:
 - Deep Wounds
 - Feral Scream
 - Rend
+
 Icons are licensed under CC0-license. Original icons can be found from
 [OGA](http://opengameart.org/content/skill-item-and-spell-icons).
 
@@ -50,6 +51,7 @@ for following spells' icons:
 - Firewalk
 - Purifying Flame
 - Leap
+
 Icons are licensed under CC-BY 3.0. Original icons can be found from
 following Spell icon collection pages:
 - [1](http://opengameart.org/content/spell-icon-collection-part-1)
