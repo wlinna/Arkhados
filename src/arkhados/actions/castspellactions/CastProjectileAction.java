@@ -70,9 +70,9 @@ public class CastProjectileAction extends EntityAction {
         final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
+        // FIXME: Projectile should use GhostControl instead of RigidBodyControl
         final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
 
-        // FIXME: Get radius of BetterCharacterControl's capsule
         final float radius = collisionSphere.getRadius() * 1.0f;
 
         final RigidBodyControl body = projectile.getControl(RigidBodyControl.class);

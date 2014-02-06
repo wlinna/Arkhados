@@ -25,22 +25,23 @@ public class DamageOverTimeBuff extends AbstractBuff {
      * Damage per second
      */
     private float dps;
+    private float time;
 
     public DamageOverTimeBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
 
     @Override
-    public void update(float time) {
-        super.update(time);
-        // TODO: Calling harm on each update may cause significant rounding error, especially if dps is high. There might be performance penalties too.
-        CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, this.dps * time, null, false);
+    public void update(float tpf) {
+        super.update(tpf);
+        this.time += tpf;        
+        if (time > 0.05) {            
+            CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, this.dps * time, null, false);
+            this.time = 0f;
+        }
     }
 
     public void setDps(float dps) {
         this.dps = dps;
     }
-
-
-
 }
