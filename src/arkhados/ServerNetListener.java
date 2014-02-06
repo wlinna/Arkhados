@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginMessage;
 import arkhados.messages.ClientSelectHeroMessage;
+import arkhados.messages.ConnectionEstablishedMessage;
 import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
@@ -56,8 +57,10 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
         final int clientId = conn.getId();
         System.out.println("New connection");
         if (!ServerClientData.exists(clientId)) {
-            System.out.println("Adding connection");
+            System.out.println("Adding connection with id: " + clientId);
             ServerClientData.add(clientId);
+            final ConnectionEstablishedMessage connectionMessage = new ConnectionEstablishedMessage();
+            conn.send(connectionMessage);            
         } else {
             Logger.getLogger(ServerNetListener.class.getName()).log(Level.SEVERE, "Client ID exists!");
             conn.close("ID exists already");
@@ -73,7 +76,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             final int clientId = source.getId();
 
             if (!ServerClientData.exists(clientId)) {
-                Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING, "Receiving join message from unknown client");
+                Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING, "Receiving join message from unknown client (id: " + clientId + ")");
                 return;
             }
             final long playerId = PlayerData.getNew(message.getName());

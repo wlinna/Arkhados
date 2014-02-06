@@ -16,6 +16,7 @@ package arkhados;
 
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientSelectHeroMessage;
+import arkhados.messages.ConnectionEstablishedMessage;
 import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
@@ -160,7 +161,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.listenerManager = new ClientNetListener(this, client, this.worldManager);
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
-                ServerLoginMessage.class, PlayerDataTableMessage.class,
+                ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
                 ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class);
 
         MessageUtils.registerMessages();
@@ -315,23 +316,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 try {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
-                            worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o"});
+                            worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
                             ClientMain.this.worldManager.loadLevel();
                             ClientMain.this.nifty.gotoScreen("default_hud");
                             return null;
                         }
-                    }).get();
-                    ClientMain.this.enqueue(new Callable<Void>() {
-                        public Void call() throws Exception {
-//                            ClientMain.this.worldManager.attachLevel();
-                            return null;
-                        }
-                    }).get();
-                    ClientMain.this.enqueue(new Callable<Void>() {
-                        public Void call() throws Exception {
-                            return null;
-                        }
-                    }).get();
+                    }).get();                                        
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {
@@ -355,12 +345,15 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         });
     }
 
+    @Override
     public void bind(Nifty nifty, Screen screen) {
     }
 
+    @Override
     public void onStartScreen() {
     }
 
+    @Override
     public void onEndScreen() {
     }
 

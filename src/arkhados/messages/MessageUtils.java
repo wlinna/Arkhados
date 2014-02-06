@@ -45,6 +45,7 @@ public class MessageUtils {
     public static void registerMessages() {
 
         // <Lobby>
+        Serializer.registerClass(ConnectionEstablishedMessage.class);
         Serializer.registerClass(ServerLoginMessage.class);
         Serializer.registerClass(ClientLoginMessage.class);
         Serializer.registerClass(PlayerDataTableMessage.class);

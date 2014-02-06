@@ -18,17 +18,14 @@ import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
-import com.jme3.scene.Spatial;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginMessage;
+import arkhados.messages.ConnectionEstablishedMessage;
 import arkhados.messages.MessageUtils;
-import arkhados.messages.roundprotocol.NewRoundMessage;
 import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
-import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 
 /**
  *
@@ -49,13 +46,16 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
     }
 
     public void messageReceived(Object source, Message m) {
-        if (m instanceof ServerLoginMessage) {
+        if (m instanceof ConnectionEstablishedMessage) {
+            System.out.println("Connected to server");
+            ClientLoginMessage message = new ClientLoginMessage(this.name);
+            this.client.send(message);
+        } else if (m instanceof ServerLoginMessage) {
             ServerLoginMessage message = (ServerLoginMessage) m;
             if (message.isAccepted()) {
                 this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
                 System.out.println(String.format("Your playerId: %d", message.getPlayerId()));
             }
-
         } else if (m instanceof PlayerDataTableMessage) {
             PlayerDataTableMessage message = (PlayerDataTableMessage) m;
             this.app.refreshPlayerData(message.getNames());
@@ -74,10 +74,7 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
         }
     }
 
-    public void clientConnected(Client c) {
-        System.out.println("Connected to server");
-        ClientLoginMessage message = new ClientLoginMessage(this.name);
-        this.client.send(message);
+    public void clientConnected(Client c) {     
     }
 
     public void clientDisconnected(Client c, DisconnectInfo info) {
