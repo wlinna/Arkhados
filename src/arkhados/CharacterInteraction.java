@@ -16,15 +16,18 @@ package arkhados;
 
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.RoundStats;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author william
  */
-public class CharacterInteraction {
+public class CharacterInteraction {    
+    private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
 
     public static void harm(final InfluenceInterfaceControl attacker,
             final InfluenceInterfaceControl target, final float rawDamage,
@@ -37,15 +40,37 @@ public class CharacterInteraction {
             final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
             final float lifeStolen = lifeSteal * damageDone;
             attacker.heal(lifeStolen);
+            
+            final Long playerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
+            getCurrentRoundStats().addDamageForPlayer(playerId, damageDone);
+            getCurrentRoundStats().addHealthRestorationForPlayer(playerId, lifeStolen);
+            
+            if (target.isDead()) {
+                getCurrentRoundStats().addKill(playerId);
+            }
         }
         if (buffs != null) {
             for (AbstractBuff buff : buffs) {
                 if (buff != null && !buff.isFriendly()) {
                     buff.attachToCharacter(target);
+                } else if (buff == null) {
+                    System.out.println("Null in buff-list");
                 }
             }
         }
-
-        // TODO: Collect stats
+    }
+    
+    public static void startNewRound() {        
+        final RoundStats roundStats = new RoundStats();
+        roundStats.initializeRound();
+        roundStatList.add(roundStats);       
+    }
+    
+    public static RoundStats getCurrentRoundStats() {
+        return roundStatList.get(roundStatList.size() - 1);
+    }
+    
+    public static void cleanup() {
+        roundStatList.clear();
     }
 }

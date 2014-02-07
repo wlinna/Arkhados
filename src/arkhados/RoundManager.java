@@ -40,6 +40,7 @@ import arkhados.util.UserDataStrings;
 /**
  *
  * @author william
+ * TODO: I think that current Round-protocol is very confusing and hard to understand. It might need rework
  */
 public class RoundManager extends AbstractAppState implements MessageListener {
 
@@ -155,6 +156,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         logger.log(Level.INFO, "Starting new round");
         if (this.worldManager.isServer()) {
             this.syncManager.getServer().broadcast(new NewRoundMessage());
+            CharacterInteraction.startNewRound();
         }
         this.roundRunning = true;
         if (this.worldManager.isClient()) {
