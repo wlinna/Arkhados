@@ -64,7 +64,7 @@ public class Meteor extends Spell {
 
     public static Meteor create() {
         final float cooldown = 8f;
-        final float range = 60f;
+        final float range = 90f;
         final float castTime = 0.4f;
 
         final Meteor spell = new Meteor("Meteor", cooldown, range, castTime);
@@ -94,7 +94,9 @@ class CastMeteorAction extends EntityAction {
     }
 
     public void addAdditionalBuff(final AbstractBuff buff) {
-        this.additionalBuffs.add(buff);
+        if (buff != null) {
+            this.additionalBuffs.add(buff);
+        }
     }
 
     @Override
@@ -140,7 +142,8 @@ class CastMeteorAction extends EntityAction {
 
                     // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
                     final float distanceFactor = 1f - (pair.distance / maxDistance);
-                    final float damage = 300f * distanceFactor;
+                    final Float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
+                    final float damage = baseDamage * distanceFactor;
 
                     final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
@@ -201,9 +204,7 @@ class MeteorNodeBuilder extends NodeBuilder {
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
-//        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
-//        node.setUserData(UserDataStrings.MASS, 30f);
-//        node.setUserData(UserDataStrings.DAMAGE, 150f);
+        node.setUserData(UserDataStrings.DAMAGE, 300f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 15000f);
 
         final SpellBuffControl spellBuffControl = new SpellBuffControl();
@@ -251,13 +252,11 @@ class MeteorRemovalAction implements RemovalEventAction {
         emitter.setLocalTranslation(worldTranslation);
         emitter.addControl(new TimedExistenceControl(4f));
         emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(1f, 0.01f, 1f).mult(16.0f));
-//        emitter.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         emitter.getParticleInfluencer().setVelocityVariation(1f);
         emitter.setStartSize(6f);
         emitter.setEndSize(40f);
         emitter.setLowLife(2f);
         emitter.setHighLife(2f);
-//        emitter.setEndColor(ColorRGBA.Yellow);
         emitter.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.01f));
         emitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 6.0f));
 
@@ -269,5 +268,4 @@ class MeteorRemovalAction implements RemovalEventAction {
     void setEmitter(ParticleEmitter emitter) {
         this.emitter = emitter;
     }
-
 }
