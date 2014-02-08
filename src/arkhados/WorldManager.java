@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.ui.hud.ClientHudManager;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
 import com.jme3.app.Application;

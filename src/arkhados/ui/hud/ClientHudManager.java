@@ -12,8 +12,9 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados;
+package arkhados.ui.hud;
 
+import arkhados.UserCommandManager;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
@@ -32,16 +33,10 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.ImageBuilder;
-import de.lessvoid.nifty.builder.PanelBuilder;
-import de.lessvoid.nifty.builder.TextBuilder;
-import de.lessvoid.nifty.controls.dynamic.ImageCreator;
-import de.lessvoid.nifty.controls.dynamic.PanelCreator;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -113,16 +108,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         Element layerCountdown = this.screen.findElementByName("layer_countdown");
         layerCountdown.disable();
         layerCountdown.hide();
-
-        // TODO: Show bottom bar
     }
 
     public void setSecondsLeftToStart(int seconds) {
-//        Element layerCountdown = this.screen.findElementByName("layer_countdown");
-//        if (!layerCountdown.isEnabled()) {
-//            layerCountdown.enable();
-//            layerCountdown.show();
-//        }
         if (this.currentSeconds == -1) {
             Element layerCountdown = this.screen.findElementByName("layer_countdown");
 
@@ -190,10 +178,6 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
     public void onStartScreen() {
         List<Element> layers = this.screen.getLayerElements();
-        for (Element layer : layers) {
-//            layer.disable();
-//            layer.hideWithoutEffect();
-        }
     }
 
     public void onEndScreen() {
@@ -246,38 +230,5 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 }
             }
         }
-    }
-}
-
-class SpellIconBuilder extends ImageBuilder {
-
-    private static Color overlayColor = new Color(0f, 0f, 0f, 0.8f);
-
-    public SpellIconBuilder(final String id, final String path) {
-        super(id);
-        super.valignCenter();
-        super.alignCenter();
-        super.height("64px");
-        super.width("64px");
-        super.marginLeft("12px");
-        super.filename(path);
-        super.childLayoutOverlay();
-        super.panel(new PanelBuilder() {
-            {
-                super.id(id + "-overlay");
-                super.height("64px");
-                super.width("64px");
-                super.backgroundColor(overlayColor);
-                super.childLayoutOverlay();
-
-                super.text(new TextBuilder() {
-                    {
-                        super.id(id + "-counter");
-                        super.text("");
-                        super.style("nifty-label");
-                    }
-                });
-            }
-        });
     }
 }

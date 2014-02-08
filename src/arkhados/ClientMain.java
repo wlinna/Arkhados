@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.KeySetter;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientSelectHeroMessage;
 import arkhados.messages.ConnectionEstablishedMessage;

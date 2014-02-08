@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-import arkhados.ClientHudManager;
+import arkhados.ui.hud.ClientHudManager;
 import arkhados.WorldManager;
 import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
