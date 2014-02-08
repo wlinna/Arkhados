@@ -36,6 +36,7 @@ import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
 import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.util.InputMappingStrings;
+import arkhados.util.PlayerDataStrings;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
@@ -160,13 +161,15 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         this.userCommandManager = new UserCommandManager(this.client, this.inputManager);
 
+        MessageUtils.registerDataClasses();
+        MessageUtils.registerMessages();
+        
         this.listenerManager = new ClientNetListener(this, client, this.worldManager);
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
                 ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
                 ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class);
 
-        MessageUtils.registerMessages();
         this.stateManager.attach(this.worldManager);
 
         this.roundManager = new RoundManager();
@@ -248,10 +251,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.nifty.gotoScreen("lobby");
     }
 
-
     // TODO: Change playerDatas type to something that holds all necessary data
-
-    public void refreshPlayerData(final List<String> playerData) {
+    public void refreshPlayerData(final List<PlayerData> playerDataList) {
+        PlayerData.setPlayers(playerDataList);
         this.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
                 Screen screen = ClientMain.this.nifty.getScreen("lobby");
@@ -259,8 +261,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                     System.out.println("Screen is null");
                 }
                 ListBox listBox = screen.findNiftyControl("players_list", ListBox.class);
+                assert listBox != null;
                 listBox.clear();
-                listBox.addAllItems(playerData);
+                for (PlayerData playerData : playerDataList) {
+                    listBox.addItem(playerData.getStringData(PlayerDataStrings.NAME));
+                }
 
                 return null;
             }
@@ -323,7 +328,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                             ClientMain.this.nifty.gotoScreen("default_hud");
                             return null;
                         }
-                    }).get();                                        
+                    }).get();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {

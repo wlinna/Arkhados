@@ -43,7 +43,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
 //    private WorldManager worldManager;
 
     public ServerNetListener(ServerMain app, Server server) {
-        MessageUtils.registerMessages();
+        
         this.app = app;
         this.server = server;
         this.server.addConnectionListener(this);
@@ -53,6 +53,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
                 ClientSelectHeroMessage.class);
     }
 
+    @Override
     public void connectionAdded(Server server, HostedConnection conn) {
         final int clientId = conn.getId();
         System.out.println("New connection");
@@ -67,16 +68,18 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
         }
     }
 
+    @Override
     public void connectionRemoved(Server server, HostedConnection conn) {
     }
 
+    @Override
     public void messageReceived(HostedConnection source, Message m) {
         if (m instanceof ClientLoginMessage) {
             final ClientLoginMessage message = (ClientLoginMessage) m;
             final int clientId = source.getId();
 
             if (!ServerClientData.exists(clientId)) {
-                Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING, "Receiving join message from unknown client (id: " + clientId + ")");
+                Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING, "Receiving join message from unknown client (id: {0})", clientId);
                 return;
             }
             final long playerId = PlayerData.getNew(message.getName());

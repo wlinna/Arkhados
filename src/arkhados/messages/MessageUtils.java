@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages;
 
+import arkhados.PlayerData;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.NewRoundMessage;
 import com.jme3.network.serializing.Serializer;
@@ -42,8 +43,11 @@ import arkhados.messages.usercommands.UcWalkDirection;
  */
 public class MessageUtils {
 
-    public static void registerMessages() {
+    public static void registerDataClasses() {
+        Serializer.registerClass(PlayerData.class);
+    }
 
+    public static void registerMessages() {
         // <Lobby>
         Serializer.registerClass(ConnectionEstablishedMessage.class);
         Serializer.registerClass(ServerLoginMessage.class);

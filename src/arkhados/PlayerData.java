@@ -32,6 +32,7 @@
 
 package arkhados;
 
+import com.jme3.network.serializing.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -44,20 +45,23 @@ import java.util.Map.Entry;
  * to be sequential during the game, so in theory syncing is not needed. Used on
  * server and on client.
  * @author normenhansen
+ * 
+ * TODO: Many methods use LinkedList instead of ArrayList. Consider converting to ArrayList.
  */
+@Serializable
 public class PlayerData {
 
-    private static HashMap<Long, PlayerData> players = new HashMap<Long, PlayerData>();
+    private static HashMap<Long, PlayerData> players = new HashMap<>();
     private long id;
     private int aiControl = -1;
-    private HashMap<String, Float> floatData = new HashMap<String, Float>();
-    private HashMap<String, Integer> intData = new HashMap<String, Integer>();
-    private HashMap<String, Long> longData = new HashMap<String, Long>();
-    private HashMap<String, Boolean> booleanData = new HashMap<String, Boolean>();
-    private HashMap<String, String> stringData = new HashMap<String, String>();
+    private HashMap<String, Float> floatData = new HashMap<>();
+    private HashMap<String, Integer> intData = new HashMap<>();
+    private HashMap<String, Long> longData = new HashMap<>();
+    private HashMap<String, Boolean> booleanData = new HashMap<>();
+    private HashMap<String, String> stringData = new HashMap<>();
 
     public static synchronized List<PlayerData> getHumanPlayers() {
-        LinkedList<PlayerData> list = new LinkedList<PlayerData>();
+        LinkedList<PlayerData> list = new LinkedList<>();
         for (Iterator<Entry<Long, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
             Entry<Long, PlayerData> entry = it.next();
             if (entry.getValue().isHuman()) {
@@ -68,7 +72,7 @@ public class PlayerData {
     }
 
     public static synchronized List<PlayerData> getAIPlayers() {
-        LinkedList<PlayerData> list = new LinkedList<PlayerData>();
+        LinkedList<PlayerData> list = new LinkedList<>();
         for (Iterator<Entry<Long, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
             Entry<Long, PlayerData> entry = it.next();
             if (!entry.getValue().isHuman()) {
@@ -79,8 +83,14 @@ public class PlayerData {
     }
 
     public static synchronized List<PlayerData> getPlayers() {
-        LinkedList<PlayerData> list = new LinkedList<PlayerData>(players.values());
+        LinkedList<PlayerData> list = new LinkedList<>(players.values());
         return list;
+    }
+    
+    public static synchronized void setPlayers(List<PlayerData> playerDataList) {
+        for (PlayerData playerData : playerDataList) {
+            players.put(playerData.getId(), playerData);
+        }        
     }
 
     public static synchronized long getNew(String name) {
@@ -168,6 +178,9 @@ public class PlayerData {
         }
     }
 
+    public PlayerData() {
+    }
+    
     public PlayerData(long id) {
         this.id = id;
     }

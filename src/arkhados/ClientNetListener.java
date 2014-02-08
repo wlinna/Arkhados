@@ -39,12 +39,12 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
     private WorldManager worldManager;
 
     public ClientNetListener(ClientMain app, Client client, WorldManager worldManager) {
-        MessageUtils.registerMessages();
         this.app = app;
         this.client = client;
         this.worldManager = worldManager;
     }
 
+    @Override
     public void messageReceived(Object source, Message m) {
         if (m instanceof ConnectionEstablishedMessage) {
             System.out.println("Connected to server");
@@ -58,7 +58,7 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
             }
         } else if (m instanceof PlayerDataTableMessage) {
             PlayerDataTableMessage message = (PlayerDataTableMessage) m;
-            this.app.refreshPlayerData(message.getNames());
+            this.app.refreshPlayerData(message.getPlayerData());
         } else if (m instanceof ChatMessage) {
             ChatMessage message = (ChatMessage) m;
             this.app.addChat(message.getName(), message.getMessage());
@@ -74,9 +74,11 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
         }
     }
 
+    @Override
     public void clientConnected(Client c) {     
     }
 
+    @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
         System.out.println("Disconnected from server");
     }

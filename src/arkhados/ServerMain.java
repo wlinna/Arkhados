@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.messages.MessageUtils;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.network.Network;
@@ -78,6 +79,8 @@ public class ServerMain extends SimpleApplication {
             this.server.start();
         } catch (IOException ex) {
         }
+        MessageUtils.registerDataClasses();
+        MessageUtils.registerMessages();
         this.listenerManager = new ServerNetListener(this, server);
         this.syncManager = new SyncManager(this, this.server);
         this.syncManager.setMessagesToListen(
