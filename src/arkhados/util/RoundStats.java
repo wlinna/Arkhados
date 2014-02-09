@@ -15,7 +15,6 @@
 package arkhados.util;
 
 import arkhados.PlayerData;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class RoundStats {
     public void initializeRound() {
         final List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
-            this.playerStats.put(playerData.getId(), new PlayerRoundStats());
+            this.playerStats.put(playerData.getId(), new PlayerRoundStats(playerData.getId()));
         }
     }
     
@@ -63,10 +62,4 @@ public class RoundStats {
 
         player.kills++;
     }
-}
-
-class PlayerRoundStats {
-    public float damageDone = 0f;
-    public float healthRestored = 0f;
-    public int kills = 0;
 }

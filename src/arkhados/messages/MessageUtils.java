@@ -36,6 +36,7 @@ import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.util.PlayerRoundStats;
 
 /**
  *
@@ -45,6 +46,7 @@ public class MessageUtils {
 
     public static void registerDataClasses() {
         Serializer.registerClass(PlayerData.class);
+        Serializer.registerClass(PlayerRoundStats.class);
     }
 
     public static void registerMessages() {
