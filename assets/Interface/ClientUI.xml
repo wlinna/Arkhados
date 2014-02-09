@@ -314,12 +314,6 @@
 
     <screen id="default_hud" controller="arkhados.ClientHudManager">
         <layer id="bars" childLayout="vertical" valign="bottom">
-<!--            <panel id="panel_top" childLayout="horizontal">
-                <panel id="top_panel_left" height="60px" width="90%" align="left" valign="top" style="nifty-panel" childLayout="horizontal">
-                </panel>
-            </panel>
-
-            -->
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
                 <panel id="spacer" height="*" valign="top"></panel>
                 <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom">
@@ -330,6 +324,17 @@
             <panel id="panel_countdown" valign="center" align="center" childLayout="absolute">
                 <!--textLineHeight doesn't appear to be working :(-->
                 <text id="text_countdown" style="nifty-label" text="#" align="center" x="50%" y="30%" height="40px" width="40px" textLineHeight="30" />
+            </panel>
+        </layer>
+        <layer id="layer_statistics" childLayout="center" valign="center" visible="false">
+            <panel id="panel_statistics" valign="center" align="center" childLayout="vertical" style="nifty-panel" width="700px" height="500px">
+                <panel valign="top" align="left" childLayout="horizontal">
+                    <!-- TODO: Replace labels with images -->
+                    <text style="nifty-label" text="Name" marginLeft="80px" width="70px" textHAlign="left" />
+                    <text style="nifty-label" text="Damage" marginLeft="80px" width="70px" textHAlign="left" />
+                    <text style="nifty-label" text="Restoration" marginLeft="80px" width="70px" textHAlign="left" />
+                    <text style="nifty-label" text="Kills" marginLeft="80px" width="70px" textHAlign="left" />
+                </panel>                                    
             </panel>
         </layer>
     </screen>

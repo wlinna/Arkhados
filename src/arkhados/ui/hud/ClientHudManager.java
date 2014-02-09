@@ -14,11 +14,15 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
+import arkhados.PlayerData;
 import arkhados.UserCommandManager;
+import arkhados.WorldManager;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.messages.BattleStatisticsRequest;
 import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
+import arkhados.util.PlayerRoundStats;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -28,6 +32,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
@@ -60,6 +65,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private HashMap<String, Element> spellIcons = new HashMap<String, Element>(6);
     private Spatial playerCharacter = null;
     private AppStateManager stateManager;
+    // HACK: This is only meant for initial implementation testing. Remove this when all round statistics are accessible via GUI
+    private boolean roundTableCreated = false;
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -95,7 +102,6 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         for (int i = 0; i < this.characters.size(); ++i) {
             this.updateHpBar(i);
         }
-
     }
 
     public void addCharacter(Spatial character) {
@@ -108,6 +114,13 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         Element layerCountdown = this.screen.findElementByName("layer_countdown");
         layerCountdown.disable();
         layerCountdown.hide();
+
+        // TODO: Create statistics panel creation to more appropriate place
+        // HACK: This is only meant for initial implementation testing. Remove this "if" when all round statistics are accessible via GUI
+        if (!this.roundTableCreated) {
+            this.roundTableCreated = true;
+            this.initializePlayerStatisticsPanels();
+        }
     }
 
     public void setSecondsLeftToStart(int seconds) {
@@ -173,14 +186,51 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         super.cleanup();
     }
 
+    @Override
     public void bind(Nifty nifty, Screen screen) {
     }
 
+    @Override
     public void onStartScreen() {
-        List<Element> layers = this.screen.getLayerElements();
     }
 
+    @Override
     public void onEndScreen() {
+    }
+
+    private void initializePlayerStatisticsPanels() {
+        final Element statisticsPanel = this.screen.findElementByName("panel_statistics");
+        assert statisticsPanel != null;
+        final List<PlayerData> playerDataList = PlayerData.getPlayers();
+        for (PlayerData playerData : playerDataList) {
+            new PlayerStatisticsPanelBuilder(playerData.getId()).build(nifty, screen, statisticsPanel);
+        }
+    }
+
+    public void showRoundStatistics() {
+        final Client client = this.stateManager.getState(WorldManager.class).getSyncManager().getClient();
+        client.send(new BattleStatisticsRequest());
+        final Element statisticsLayer = this.screen.findElementByName("layer_statistics");
+        statisticsLayer.show();
+    }
+
+    public void hideRoundStatistics() {
+        final Element statisticsLayer = this.screen.findElementByName("layer_statistics");
+        statisticsLayer.hideWithoutEffect();
+    }
+
+    public void updateStatistics(final List<PlayerRoundStats> playerRoundStatsList) {
+        final Element statisticsPanel = this.screen.findElementByName("panel_statistics");
+        for (PlayerRoundStats playerRoundStats : playerRoundStatsList) {
+
+            final Element damagePanel = statisticsPanel.findElementByName(playerRoundStats.playerId + "-damage");
+            final Element restorationPanel = statisticsPanel.findElementByName(playerRoundStats.playerId + "-restoration");
+            final Element killsPanel = statisticsPanel.findElementByName(playerRoundStats.playerId + "-kills");
+
+            damagePanel.getRenderer(TextRenderer.class).setText(String.format("%d", (int) playerRoundStats.damageDone));
+            restorationPanel.getRenderer(TextRenderer.class).setText(String.format("%d", (int) playerRoundStats.healthRestored));
+            killsPanel.getRenderer(TextRenderer.class).setText(String.format("%d", playerRoundStats.kills));
+        }
     }
 
     private void loadSpellIcons() {

@@ -40,8 +40,8 @@ import arkhados.util.UserDataStrings;
 
 /**
  *
- * @author william
- * TODO: I think that current Round-protocol is very confusing and hard to understand. It might need rework
+ * @author william TODO: I think that current Round-protocol is very confusing
+ * and hard to understand. It might need rework
  */
 public class RoundManager extends AbstractAppState implements MessageListener {
 
@@ -56,6 +56,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private boolean roundRunning = false;
     private float roundStartCountDown = 0.0f;
     private static final Logger logger = Logger.getLogger(RoundManager.class.getName());
+    private float roundEndCountDown;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -194,13 +195,10 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
         if (this.worldManager.isClient()) {
             this.clientMain.getUserCommandManager().setEnabled(false);
+            this.hudManager.showRoundStatistics();
         }
 
-        // TODO: Add wait time so players can watch their stats and get ready
-
-        if (this.worldManager.isServer() && this.currentRound < this.rounds) {
-            this.createWorld();
-        }
+        this.roundEndCountDown = 5f;
     }
 
     @Override
@@ -213,6 +211,17 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                 }
             } else if (this.worldManager.isClient()) {
                 this.hudManager.setSecondsLeftToStart((int) this.roundStartCountDown);
+            }
+        }
+
+        if (this.roundEndCountDown > 0f) {
+            this.roundEndCountDown -= tpf;
+            if (this.worldManager.isServer()) {
+                if (this.roundEndCountDown <= 0f) {
+                    if (this.currentRound < this.rounds) {
+                        this.createWorld();
+                    }
+                }
             }
         }
 
@@ -277,6 +286,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private void clientMessageReceived(Object source, Message m) {
         if (m instanceof CreateWorldMessage) {
             this.createWorld();
+            this.hudManager.hideRoundStatistics();
         } else if (m instanceof NewRoundMessage) {
             this.startNewRound();
         } else if (m instanceof RoundStartCountdownMessage) {

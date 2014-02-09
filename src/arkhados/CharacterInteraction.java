@@ -26,12 +26,16 @@ import java.util.List;
  *
  * @author william
  */
-public class CharacterInteraction {    
+public class CharacterInteraction {
     private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
 
     public static void harm(final InfluenceInterfaceControl attacker,
             final InfluenceInterfaceControl target, final float rawDamage,
             final List<AbstractBuff> buffs, final boolean canBreakCC) {
+
+        if (target.isDead()) {
+            return;
+        }
 
         final float damageDone = target.doDamage(rawDamage, canBreakCC);
 
@@ -40,11 +44,11 @@ public class CharacterInteraction {
             final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
             final float lifeStolen = lifeSteal * damageDone;
             attacker.heal(lifeStolen);
-            
+
             final Long playerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
             getCurrentRoundStats().addDamageForPlayer(playerId, damageDone);
             getCurrentRoundStats().addHealthRestorationForPlayer(playerId, lifeStolen);
-            
+
             if (target.isDead()) {
                 getCurrentRoundStats().addKill(playerId);
             }
@@ -59,17 +63,17 @@ public class CharacterInteraction {
             }
         }
     }
-    
-    public static void startNewRound() {        
+
+    public static void startNewRound() {
         final RoundStats roundStats = new RoundStats();
         roundStats.initializeRound();
-        roundStatList.add(roundStats);       
+        roundStatList.add(roundStats);
     }
-    
+
     public static RoundStats getCurrentRoundStats() {
         return roundStatList.get(roundStatList.size() - 1);
     }
-    
+
     public static void cleanup() {
         roundStatList.clear();
     }

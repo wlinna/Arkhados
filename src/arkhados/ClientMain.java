@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.messages.BattleStatisticsResponse;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.ChatMessage;
@@ -163,12 +164,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
-        
+
         this.listenerManager = new ClientNetListener(this, client, this.worldManager);
         this.client.addClientStateListener(this.listenerManager);
         this.client.addMessageListener(this.listenerManager,
                 ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class);
+                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
 
         this.stateManager.attach(this.worldManager);
 

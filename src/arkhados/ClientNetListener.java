@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
@@ -21,11 +22,11 @@ import com.jme3.network.MessageListener;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginMessage;
 import arkhados.messages.ConnectionEstablishedMessage;
-import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
+import arkhados.ui.hud.ClientHudManager;
 
 /**
  *
@@ -71,11 +72,15 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
                 this.app.getUserCommandManager().setCharacterId(message.getEntityId());
                 System.out.println(String.format("Your entityId: %d", message.getEntityId()));
             }
+        } else if (m instanceof BattleStatisticsResponse) {
+            final BattleStatisticsResponse message = (BattleStatisticsResponse) m;
+            System.out.println("Received BattleStatisticsResponse");
+            this.app.getStateManager().getState(ClientHudManager.class).updateStatistics(message.getPlayerRoundStatsList());
         }
     }
 
     @Override
-    public void clientConnected(Client c) {     
+    public void clientConnected(Client c) {
     }
 
     @Override

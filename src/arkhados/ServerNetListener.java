@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.messages.BattleStatisticsRequest;
+import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -39,18 +41,17 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
 
     private ServerMain app;
     private Server server;
-    //
-//    private WorldManager worldManager;
 
     public ServerNetListener(ServerMain app, Server server) {
-        
+
         this.app = app;
         this.server = server;
         this.server.addConnectionListener(this);
         this.server.addMessageListener(this,
                 ClientLoginMessage.class, ChatMessage.class,
                 StartGameMessage.class,
-                ClientSelectHeroMessage.class);
+                ClientSelectHeroMessage.class,
+                BattleStatisticsRequest.class);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             System.out.println("Adding connection with id: " + clientId);
             ServerClientData.add(clientId);
             final ConnectionEstablishedMessage connectionMessage = new ConnectionEstablishedMessage();
-            conn.send(connectionMessage);            
+            conn.send(connectionMessage);
         } else {
             Logger.getLogger(ServerNetListener.class.getName()).log(Level.SEVERE, "Client ID exists!");
             conn.close("ID exists already");
@@ -105,6 +106,9 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             final StartGameMessage message = (StartGameMessage) m;
             this.server.broadcast(message);
             this.app.startGame();
+        } else if (m instanceof BattleStatisticsRequest) {
+            final BattleStatisticsResponse response = BattleStatisticsResponse.buildBattleStatisticsResponse();
+            source.send(response);
         }
     }
 }

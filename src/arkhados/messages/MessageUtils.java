@@ -84,6 +84,9 @@ public class MessageUtils {
         Serializer.registerClass(ActionMessage.class);
         Serializer.registerClass(BuffMessage.class);
         // </Sync>
+        
+        Serializer.registerClass(BattleStatisticsRequest.class);
+        Serializer.registerClass(BattleStatisticsResponse.class);
 
         // <UserCommands>
         Serializer.registerClass(UcCastSpellMessage.class);
