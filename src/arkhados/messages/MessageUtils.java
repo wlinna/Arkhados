@@ -21,6 +21,7 @@ import com.jme3.network.serializing.Serializer;
 import arkhados.messages.roundprotocol.ClientWorldCreatedMessage;
 import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.CreateWorldMessage;
+import arkhados.messages.roundprotocol.GameEndedMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
 import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
@@ -67,6 +68,7 @@ public class MessageUtils {
         Serializer.registerClass(RoundStartCountdownMessage.class);
         Serializer.registerClass(NewRoundMessage.class);
         Serializer.registerClass(RoundFinishedMessage.class);
+        Serializer.registerClass(GameEndedMessage.class);
         // </RoundProtocol>
 
         Serializer.registerClass(SetPlayersCharacterMessage.class);
@@ -84,7 +86,7 @@ public class MessageUtils {
         Serializer.registerClass(ActionMessage.class);
         Serializer.registerClass(BuffMessage.class);
         // </Sync>
-        
+
         Serializer.registerClass(BattleStatisticsRequest.class);
         Serializer.registerClass(BattleStatisticsResponse.class);
 

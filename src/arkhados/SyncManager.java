@@ -32,13 +32,22 @@ import java.util.concurrent.Callable;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.messages.syncmessages.AbstractSyncMessage;
+import arkhados.messages.syncmessages.ActionMessage;
+import arkhados.messages.syncmessages.AddEntityMessage;
+import arkhados.messages.syncmessages.BuffMessage;
 import arkhados.messages.syncmessages.GenericSyncMessage;
+import arkhados.messages.syncmessages.RemoveEntityMessage;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
+import arkhados.messages.syncmessages.SetCooldownMessage;
+import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
-import com.jme3.cinematic.MotionPath;
+import arkhados.util.ValueWrapper;
 import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.network.NetworkClient;
 
 /**
  *
@@ -47,12 +56,11 @@ import com.jme3.cinematic.events.MotionEvent;
 public class SyncManager extends AbstractAppState implements MessageListener {
 
     private Server server = null;
-    private Client client = null;
+    private ValueWrapper<NetworkClient> client;
     private Application app;
-    HashMap<Long, Object> syncObjects = new HashMap<Long, Object>();
+    HashMap<Long, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
-    private Queue<AbstractSyncMessage> syncQueue =
-            new LinkedList<AbstractSyncMessage>();
+    private Queue<AbstractSyncMessage> syncQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
 
     public SyncManager(Application app, Server server) {
@@ -60,22 +68,20 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         this.server = server;
     }
 
-    public SyncManager(Application app, Client client) {
+    public SyncManager(Application app, ValueWrapper<NetworkClient> client) {
         this.app = app;
         this.client = client;
     }
 
     @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        System.out.println("Initializing SyncManager");
+    public void initialize(AppStateManager stateManager, Application app) {        
         super.initialize(stateManager, app);
         AbstractBuff.setSyncManager(this);
-        System.out.println("Initialized SyncManager");
     }
 
     @Override
     public void update(float tpf) {
-        if (this.client != null) {
+        if (this.getClient() != null) {
             for (Iterator<AbstractSyncMessage> it = this.syncQueue.iterator();
                     it.hasNext();) {
                 AbstractSyncMessage message = it.next();
@@ -121,8 +127,8 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     }
 
     public void setMessagesToListen(Class... classes) {
-        if (this.client != null) {
-            this.client.addMessageListener(this, classes);
+        if (this.getClient() != null) {
+            this.getClient().addMessageListener(this, classes);
         } else if (this.server != null) {
             this.server.addMessageListener(this, classes);
         }
@@ -132,8 +138,6 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         Object object = this.syncObjects.get(message.getSyncId());
         if (object != null) {
             message.applyData(object);
-        } else {
-//            System.out.println("SyncId does not exist");
         }
     }
 
@@ -141,11 +145,12 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         this.server.broadcast(message);
     }
 
+    @Override
     public void messageReceived(Object source, final Message m) {
 
         assert (m instanceof AbstractSyncMessage);
         final AbstractSyncMessage message = (AbstractSyncMessage) m;
-        if (this.client != null) {
+        if (this.getClient() != null) {
             this.app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
                     SyncManager.this.enqueueMessage(message);
@@ -158,15 +163,18 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             }
             HostedConnection client = (HostedConnection) source;
             final long playerId = ServerClientData.getPlayerId(client.getId());
-            // FIXME: Sometimes NullPointerException occurs when receiving UcWalkDirection at start
-            final long syncId = PlayerData.getLongData(playerId, PlayerDataStrings.ENTITY_ID);
-            message.setSyncId(syncId);
-            this.app.enqueue(new Callable<Void>() {
-                public Void call() throws Exception {
-                    SyncManager.this.doMessage(message);
-                    return null;
-                }
-            });
+            final Long syncId = PlayerData.getLongData(playerId, PlayerDataStrings.ENTITY_ID);
+            if (syncId != null) {
+                message.setSyncId(syncId);
+                this.app.enqueue(new Callable<Void>() {
+                    public Void call() throws Exception {
+                        SyncManager.this.doMessage(message);
+                        return null;
+                    }
+                });
+            } else {
+                System.out.println("Entity id for player " + playerId + " does not exist");
+            }
         }
     }
 
@@ -183,7 +191,10 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     }
 
     public Client getClient() {
-        return this.client;
+        if (this.client == null) {
+            return null;
+        }
+        return this.client.get();
     }
 
     public void removeEntity(long id) {
@@ -201,5 +212,20 @@ public class SyncManager extends AbstractAppState implements MessageListener {
 
     public void startListening() {
         this.listening = true;
+    }
+
+    public void configureForClient() {
+        this.getClient().addMessageListener(this,
+                AddEntityMessage.class,
+                RestoreTemporarilyRemovedEntityMessage.class,
+                RemoveEntityMessage.class,
+                TemporarilyRemoveEntityMessage.class,
+                GenericSyncMessage.class,
+                SyncCharacterMessage.class,
+                SyncProjectileMessage.class,
+                StartCastingSpellMessage.class,
+                SetCooldownMessage.class,
+                ActionMessage.class,
+                BuffMessage.class);
     }
 }

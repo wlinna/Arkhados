@@ -15,7 +15,6 @@
 package arkhados;
 
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.FollowCharacterControl;
 import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.usercommands.UcCastSpellMessage;
@@ -23,6 +22,7 @@ import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
+import arkhados.util.ValueWrapper;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -34,9 +34,8 @@ import com.jme3.math.Plane;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.network.Client;
+import com.jme3.network.NetworkClient;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ import java.util.HashMap;
 public class UserCommandManager extends AbstractAppState {
 
     private InputManager inputManager;
-    private Client client;
+    private ValueWrapper<NetworkClient> client;
     private WorldManager worldManager;
     private Application app;
     private Camera cam;
@@ -61,10 +60,10 @@ public class UserCommandManager extends AbstractAppState {
     private float mouseTargetUpdateTimer = 0f;
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f mouseGroundPosition = new Vector3f();
-    private HashMap<String, Boolean> movementKeyFlags = new HashMap<String, Boolean>(4);
+    private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private Listener listener;
 
-    public UserCommandManager(Client client, InputManager inputManager) {
+    public UserCommandManager(ValueWrapper<NetworkClient> client, InputManager inputManager) {
         this.client = client;
         this.inputManager = inputManager;
         this.clearMovementFlags();
@@ -73,12 +72,10 @@ public class UserCommandManager extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        System.out.println("Initializing UserCommandManager");
         this.app = app;
         this.worldManager = stateManager.getState(WorldManager.class);
         this.listener = app.getListener();
         this.cam = app.getCamera();
-        System.out.println("Initialized UserCommandManager");
     }
     private ActionListener actionCastSpell = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
@@ -92,10 +89,9 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
             if (name != null) {
-                UserCommandManager.this.client.send(
+                UserCommandManager.this.client.get().send(
                         new UcCastSpellMessage(name, UserCommandManager.this.mouseGroundPosition));
             }
-
         }
     };
     private ActionListener actionMoveDirection = new ActionListener() {
@@ -126,7 +122,7 @@ public class UserCommandManager extends AbstractAppState {
             if (walkDirection.lengthSquared() > 0f) {
                 characterPhysics.setViewDirection(walkDirection);
             }
-            UserCommandManager.this.client.send(new UcWalkDirection(down, right));
+            UserCommandManager.this.client.get().send(new UcWalkDirection(down, right));
         }
     };
 
@@ -164,7 +160,7 @@ public class UserCommandManager extends AbstractAppState {
         this.mouseTargetUpdateTimer -= tpf;
         if (this.mouseTargetUpdateTimer <= 0f) {
             this.calculateMouseGroundPosition();
-            this.client.send(new UcMouseTargetMessage(this.mouseGroundPosition));
+            this.client.get().send(new UcMouseTargetMessage(this.mouseGroundPosition));
             this.mouseTargetUpdateTimer = 0.075f;
         }
     }
@@ -291,8 +287,8 @@ public class UserCommandManager extends AbstractAppState {
         if (!super.isEnabled()) {
             return;
         }
-        if (this.client != null && this.client.isConnected()) {
-            this.client.send(new UcWalkDirection(0, 0));
+        if (this.client.get() != null && this.client.get().isConnected()) {
+            this.client.get().send(new UcWalkDirection(0, 0));
         }
     }
 }

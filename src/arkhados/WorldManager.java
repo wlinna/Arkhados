@@ -28,7 +28,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.network.Client;
 import com.jme3.network.Server;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
@@ -50,7 +49,6 @@ import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
-import com.jme3.audio.Environment;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
@@ -67,7 +65,6 @@ import java.util.List;
  */
 public class WorldManager extends AbstractAppState {
 
-    // TODO: Add new starting locations
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
         new Vector3f(20f, 0, 20.0f), new Vector3f(-20.0f, 0, -20f),
@@ -75,13 +72,17 @@ public class WorldManager extends AbstractAppState {
     };
     private Node worldRoot;
     private AbstractArena arena = new BasicSquareArena();
-    private HashMap<Long, Spatial> entities = new HashMap<Long, Spatial>();
+    private HashMap<Long, Spatial> entities = new HashMap<>();
     private SyncManager syncManager;
     private int idCounter = 0;
     private Server server;
-    private Client client;
+    private boolean isClient = false;
 
     public WorldManager() {
+    }
+
+    public WorldManager(boolean isClient) {
+        this.isClient = isClient;
     }
     private SimpleApplication app;
     private AssetManager assetManager;
@@ -96,7 +97,6 @@ public class WorldManager extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         TimedExistenceControl.setWorldManager(this);
-        System.out.println("Initializing WorldManager");
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
         this.rootNode = this.app.getRootNode();
@@ -104,14 +104,11 @@ public class WorldManager extends AbstractAppState {
         this.viewPort = this.app.getViewPort();
         this.space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
 
-//        this.space.enableDebug(this.assetManager);
-
         this.cam = this.app.getCamera();
 
         this.syncManager = this.app.getStateManager().getState(SyncManager.class);
 
         this.server = this.syncManager.getServer();
-        this.client = this.syncManager.getClient();
 
         if (this.isServer()) {
             this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
@@ -120,12 +117,18 @@ public class WorldManager extends AbstractAppState {
         } else if (this.isClient()) {
             this.clientMain = (ClientMain) app;
             this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
+
+            final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
+            final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
+            bf.setBloomIntensity(0.41f);
+            bf.setDownSamplingFactor(2f);
+            fpp.addFilter(bf);
+            this.viewPort.addProcessor(fpp);
         }
 
         Spell.initSpells(assetManager, this);
         BuffInformation.initBuffs();
         BuffEffect.setAssetManager(assetManager);
-        System.out.println("Initialized WorldManager");
     }
 
     public void preloadModels(String[] modelNames) {
@@ -157,14 +160,6 @@ public class WorldManager extends AbstractAppState {
         sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
         this.worldRoot.addLight(sun);
 
-        if (this.isClient()) {
-            final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
-            final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
-            bf.setBloomIntensity(0.41f);
-            bf.setDownSamplingFactor(2f);
-            fpp.addFilter(bf);
-            this.viewPort.addProcessor(fpp);
-        }
         this.space.addAll(this.worldRoot);
         this.space.setGravity(new Vector3f(0f, -98.1f, 0));
         this.rootNode.attachChild(this.worldRoot);
@@ -326,7 +321,7 @@ public class WorldManager extends AbstractAppState {
     }
 
     public boolean isClient() {
-        return this.client != null;
+        return this.isClient;
     }
 
     public void clear() {

@@ -59,14 +59,15 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private Camera cam;
     private Node guiNode;
     private BitmapFont guiFont;
-    private List<Node> characters = new ArrayList<Node>();
-    private List<BitmapText> hpBars = new ArrayList<BitmapText>();
+    private List<Node> characters = new ArrayList<>();
+    private List<BitmapText> hpBars = new ArrayList<>();
     private int currentSeconds = -1;
-    private HashMap<String, Element> spellIcons = new HashMap<String, Element>(6);
+    private HashMap<String, Element> spellIcons = new HashMap<>(6);
     private Spatial playerCharacter = null;
     private AppStateManager stateManager;
     // HACK: This is only meant for initial implementation testing. Remove this when all round statistics are accessible via GUI
     private boolean roundTableCreated = false;
+    private List<Element> statisticsPanels = new ArrayList<>();
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -150,6 +151,15 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             Element element = it.next();
             this.nifty.removeElement(this.screen, element);
         }
+              
+        for (Iterator<Element> it = this.statisticsPanels.iterator(); it.hasNext();) {
+            Element element = it.next();
+            this.nifty.removeElement(this.screen, element);
+        }
+        
+        statisticsPanels.clear();
+        
+        this.hideRoundStatistics();
 
         this.spellIcons.clear();
     }
@@ -203,7 +213,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         assert statisticsPanel != null;
         final List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
-            new PlayerStatisticsPanelBuilder(playerData.getId()).build(nifty, screen, statisticsPanel);
+            this.statisticsPanels.add(new PlayerStatisticsPanelBuilder(playerData.getId()).build(nifty, screen, statisticsPanel));
         }
     }
 
@@ -231,6 +241,14 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             restorationPanel.getRenderer(TextRenderer.class).setText(String.format("%d", (int) playerRoundStats.healthRestored));
             killsPanel.getRenderer(TextRenderer.class).setText(String.format("%d", playerRoundStats.kills));
         }
+    }
+
+    public void endGame() {
+        this.clear();
+        this.nifty.gotoScreen("main_menu");
+        
+        this.clear();
+        this.roundTableCreated = false;
     }
 
     private void loadSpellIcons() {

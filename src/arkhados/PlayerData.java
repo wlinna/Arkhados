@@ -45,7 +45,7 @@ import java.util.Map.Entry;
  * to be sequential during the game, so in theory syncing is not needed. Used on
  * server and on client.
  * @author normenhansen
- * 
+ *
  * TODO: Many methods use LinkedList instead of ArrayList. Consider converting to ArrayList.
  */
 @Serializable
@@ -86,11 +86,11 @@ public class PlayerData {
         LinkedList<PlayerData> list = new LinkedList<>(players.values());
         return list;
     }
-    
+
     public static synchronized void setPlayers(List<PlayerData> playerDataList) {
         for (PlayerData playerData : playerDataList) {
             players.put(playerData.getId(), playerData);
-        }        
+        }
     }
 
     public static synchronized long getNew(String name) {
@@ -142,8 +142,8 @@ public class PlayerData {
         players.get(id).setData(key, data);
     }
 
-    public static synchronized long getLongData(long id, String key) {
-        if (!players.containsKey(id)) return -1;
+    public static synchronized Long getLongData(long id, String key) {
+        if (!players.containsKey(id)) return new Long(-1);
         return players.get(id).getLongData(key);
     }
 
@@ -178,9 +178,13 @@ public class PlayerData {
         }
     }
 
+    public static synchronized void destroyAllData() {
+        players.clear();
+    }
+
     public PlayerData() {
     }
-    
+
     public PlayerData(long id) {
         this.id = id;
     }
@@ -216,7 +220,7 @@ public class PlayerData {
         return this.aiControl == -1;
     }
 
-    public float getFloatData(String key) {
+    public Float getFloatData(String key) {
         return floatData.get(key);
     }
 
@@ -224,7 +228,7 @@ public class PlayerData {
         floatData.put(key, data);
     }
 
-    public int getIntData(String key) {
+    public Integer getIntData(String key) {
         return intData.get(key);
     }
 
@@ -232,7 +236,7 @@ public class PlayerData {
         intData.put(key, data);
     }
 
-    public long getLongData(String key) {
+    public Long getLongData(String key) {
         return longData.get(key);
     }
 
@@ -240,7 +244,7 @@ public class PlayerData {
         longData.put(key, data);
     }
 
-    public boolean getBooleanData(String key) {
+    public Boolean getBooleanData(String key) {
         return booleanData.get(key);
     }
 

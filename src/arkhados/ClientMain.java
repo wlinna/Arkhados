@@ -25,19 +25,9 @@ import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
-import arkhados.messages.syncmessages.ActionMessage;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.GenericSyncMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.SetCooldownMessage;
-import arkhados.messages.syncmessages.StartCastingSpellMessage;
-import arkhados.messages.syncmessages.SyncCharacterMessage;
-import arkhados.messages.syncmessages.SyncProjectileMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
+import arkhados.util.ValueWrapper;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
@@ -114,8 +104,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
-    private TextRenderer statusText;
-    private NetworkClient client;
+    private TextRenderer statusText;    
+    private ValueWrapper<NetworkClient> clientWrapper;
     private WorldManager worldManager;
     private ClientNetListener listenerManager;
     private SyncManager syncManager;
@@ -142,34 +132,19 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.flyCam.setEnabled(false);
         this.flyCam.setMoveSpeed(25.0f);
         this.startNifty();
-        this.client = Network.createClient();
-
-        this.syncManager = new SyncManager(this, this.client);
+        this.clientWrapper = new ValueWrapper<>();
+               
+        this.syncManager = new SyncManager(this, this.clientWrapper);
         this.stateManager.attach(this.syncManager);
-        this.syncManager.setMessagesToListen(
-                AddEntityMessage.class,
-                RestoreTemporarilyRemovedEntityMessage.class,
-                RemoveEntityMessage.class,
-                TemporarilyRemoveEntityMessage.class,
-                GenericSyncMessage.class,
-                SyncCharacterMessage.class,
-                SyncProjectileMessage.class,
-                StartCastingSpellMessage.class,
-                SetCooldownMessage.class,
-                ActionMessage.class,
-                BuffMessage.class);
-        this.worldManager = new WorldManager();
+                        
+        this.worldManager = new WorldManager(true);
 
-        this.userCommandManager = new UserCommandManager(this.client, this.inputManager);
+        this.userCommandManager = new UserCommandManager(this.clientWrapper, this.inputManager);
 
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
-        this.listenerManager = new ClientNetListener(this, client, this.worldManager);
-        this.client.addClientStateListener(this.listenerManager);
-        this.client.addMessageListener(this.listenerManager,
-                ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
+        this.listenerManager = new ClientNetListener(this, clientWrapper);        
 
         this.stateManager.attach(this.worldManager);
 
@@ -177,7 +152,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.stateManager.attach(this.roundManager);
 
         ClientMain.this.stateManager
-                .attach(ClientMain.this.userCommandManager);
+                .attach(ClientMain.this.userCommandManager);                
     }
 
     @Override
@@ -227,6 +202,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         final String ip = nifty.getScreen("join_server").findElementByName("layer")
                 .findElementByName("panel").findElementByName("server_ip").getControl(TextFieldControl.class).getText();
 
+        
+        this.clientWrapper.set(Network.createClient());
+        this.roundManager.configureForClient();
+        this.clientWrapper.get().addClientStateListener(this.listenerManager);
+        this.clientWrapper.get().addMessageListener(this.listenerManager,
+                ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
+                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
 
         if (username.trim().length() == 0) {
             this.setStatusText("Username is invalid");
@@ -234,13 +216,14 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         }
         this.listenerManager.setName(username);
 
+        this.syncManager.configureForClient();
         System.out.println("Trying to connect");
         this.setStatusText("Connecting... " + username);
         try {
-            this.client.connectToServer(ip, port, port);
-            this.client.start();
-
+            this.clientWrapper.get().connectToServer(ip, port, port);
+            this.clientWrapper.get().start();
             this.toLobby();
+            this.setStatusText("");
         } catch (IOException ex) {
             this.setStatusText(ex.getMessage());
             Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -289,7 +272,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public Void call() throws Exception {
                 Screen screen = ClientMain.this.nifty.getScreen("lobby");
                 TextField textField = screen.findNiftyControl("chat_text", TextField.class);
-                ClientMain.this.client.send(new ChatMessage(
+                ClientMain.this.clientWrapper.get().send(new ChatMessage(
                         ClientMain.this.listenerManager.getName(),
                         textField.getText()));
                 textField.setText("");
@@ -299,11 +282,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void selectHero(final String heroName) {
-        this.client.send(new ClientSelectHeroMessage(heroName));
+        this.clientWrapper.get().send(new ClientSelectHeroMessage(heroName));
     }
 
     public void sendStartGameRequest() {
-        this.client.send(new StartGameMessage());
+        this.clientWrapper.get().send(new StartGameMessage());
     }
 
     public void startGame() {
@@ -371,8 +354,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void destroy() {
-        if (this.client.isConnected()) {
-            this.client.close();
+        if (this.clientWrapper.get().isConnected()) {
+            this.clientWrapper.get().close();
         }
         super.destroy();
     }
@@ -383,7 +366,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void loseFocus() {
-        super.loseFocus();
+        super.loseFocus();        
         this.userCommandManager.onLoseFocus();
     }
 }

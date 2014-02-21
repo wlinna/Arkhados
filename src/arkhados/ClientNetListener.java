@@ -27,6 +27,8 @@ import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
 import arkhados.ui.hud.ClientHudManager;
+import arkhados.util.ValueWrapper;
+import com.jme3.network.NetworkClient;
 
 /**
  *
@@ -35,27 +37,23 @@ import arkhados.ui.hud.ClientHudManager;
 public class ClientNetListener implements MessageListener, ClientStateListener {
 
     private ClientMain app;
-    private Client client;
-    private String name = "";
-    private WorldManager worldManager;
+    private ValueWrapper<NetworkClient> client;
+    private String name = "";    
 
-    public ClientNetListener(ClientMain app, Client client, WorldManager worldManager) {
+    public ClientNetListener(ClientMain app, ValueWrapper<NetworkClient> client) {
         this.app = app;
         this.client = client;
-        this.worldManager = worldManager;
     }
 
     @Override
     public void messageReceived(Object source, Message m) {
         if (m instanceof ConnectionEstablishedMessage) {
-            System.out.println("Connected to server");
             ClientLoginMessage message = new ClientLoginMessage(this.name);
-            this.client.send(message);
+            this.client.get().send(message);
         } else if (m instanceof ServerLoginMessage) {
             ServerLoginMessage message = (ServerLoginMessage) m;
             if (message.isAccepted()) {
                 this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
-                System.out.println(String.format("Your playerId: %d", message.getPlayerId()));
             }
         } else if (m instanceof PlayerDataTableMessage) {
             PlayerDataTableMessage message = (PlayerDataTableMessage) m;
@@ -68,13 +66,11 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
         } else if (m instanceof SetPlayersCharacterMessage) {
             SetPlayersCharacterMessage message = (SetPlayersCharacterMessage)m;
             if (this.app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
-//                Spatial character = this.worldManager.getEntity(message.getEntityId());
                 this.app.getUserCommandManager().setCharacterId(message.getEntityId());
                 System.out.println(String.format("Your entityId: %d", message.getEntityId()));
             }
         } else if (m instanceof BattleStatisticsResponse) {
             final BattleStatisticsResponse message = (BattleStatisticsResponse) m;
-            System.out.println("Received BattleStatisticsResponse");
             this.app.getStateManager().getState(ClientHudManager.class).updateStatistics(message.getPlayerRoundStatsList());
         }
     }
