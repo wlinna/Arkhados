@@ -27,6 +27,7 @@ import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -51,7 +52,9 @@ public class Venator extends NodeBuilder {
         // Note: This works now but later life steal is set by buffs.
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0.2f);
 
-        entity.scale(3f);
+        for (Spatial childToScale : entity.getChildren()) {
+            childToScale.scale(3f);
+        }
 
         entity.addControl(new CharacterPhysicsControl(radius, 22f, 100f));
 
