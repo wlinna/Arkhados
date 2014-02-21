@@ -20,6 +20,7 @@ import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.UserInputControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -68,8 +69,7 @@ class CastDeepWoundsAction extends EntityAction {
     }
 
     @Override
-    public boolean update(float tpf) {
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+    public boolean update(float tpf) {        
         ActionQueueControl actionQueue = super.spatial.getControl(ActionQueueControl.class);
         actionQueue.enqueueAction(new ChargeAction(this.spell));
 
@@ -82,7 +82,7 @@ class CastDeepWoundsAction extends EntityAction {
         meleeAction.addBuff(bleedBuff);
 
         actionQueue.enqueueAction(meleeAction);
-        physics.restoreWalking();
+        super.spatial.getControl(UserInputControl.class).restoreWalking();
         return false;
     }
 }

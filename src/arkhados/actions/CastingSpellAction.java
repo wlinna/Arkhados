@@ -17,6 +17,7 @@ package arkhados.actions;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.controls.UserInputControl;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
@@ -47,7 +48,7 @@ public class CastingSpellAction extends EntityAction {
         this.delay -= tpf;
         if (this.delay <= 0f) {
             if (!this.spell.canMoveWhileCasting() && !this.followedByAnotherAnimation) {
-                super.spatial.getControl(CharacterPhysicsControl.class).restoreWalking();
+                super.spatial.getControl(UserInputControl.class).restoreWalking();
             }
 
             if (!this.followedByAnotherAnimation) {

@@ -39,6 +39,7 @@ import arkhados.controls.EntityEventControl;
 import arkhados.controls.EntityVariableControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.UserInputControl;
 import arkhados.effects.BuffEffect;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
@@ -198,6 +199,10 @@ public class WorldManager extends AbstractAppState {
         this.worldRoot.attachChild(entitySpatial);
         EntityVariableControl variableControl = new EntityVariableControl(this);
         entitySpatial.addControl(variableControl);
+        
+        if (entitySpatial.getControl(CharacterPhysicsControl.class) != null && PlayerData.isHuman(playerId)) {
+            entitySpatial.addControl(new UserInputControl());
+        }
 
         if (this.isClient()) {
             this.clientMain.getUserCommandManager().trySetPlayersCharacter(entitySpatial);
@@ -237,6 +242,10 @@ public class WorldManager extends AbstractAppState {
         }
 
         this.setEntityTranslation(spatial, location, rotation);
+        
+        if (this.isClient()) {
+            this.app.getStateManager().getState(UserCommandManager.class).sendWalkDirection();
+        }
     }
 
     private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {

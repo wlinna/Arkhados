@@ -163,8 +163,6 @@ public class Firewalk extends Spell {
             fire.setLowLife(0.4f);
             fire.setHighLife(0.4f);
             fire.setParticlesPerSec(30);
-//            fire.getParticleInfluencer().setVelocityVariation(0.5f);
-//            fire.setRandomAngle(true);
             return fire;
         }
 

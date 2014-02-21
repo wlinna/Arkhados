@@ -122,7 +122,9 @@ public class UserCommandManager extends AbstractAppState {
             if (walkDirection.lengthSquared() > 0f) {
                 characterPhysics.setViewDirection(walkDirection);
             }
-            UserCommandManager.this.client.get().send(new UcWalkDirection(down, right));
+//            UserCommandManager.this.client.get().send(new UcWalkDirection(down, right));
+            
+            sendWalkDirection();
         }
     };
 
@@ -171,6 +173,10 @@ public class UserCommandManager extends AbstractAppState {
 //        camNode.addControl(new FollowCharacterControl(this.character, this.cam));
         camNode.addControl(new FreeCameraControl(this.character, this.cam, this.inputManager));
         camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 150f, 30f));
+    }
+       
+    public void sendWalkDirection() {
+        this.client.get().send(new UcWalkDirection(down, right));
     }
 
     @Override
