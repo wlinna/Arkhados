@@ -29,6 +29,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
@@ -208,9 +209,14 @@ class FireballRemovalAction implements RemovalEventAction {
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
     private AssetManager assetManager;
+    private AudioNode sound;
 
     public FireballRemovalAction(AssetManager assetManager) {
         this.assetManager = assetManager;
+        this.sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
+        this.sound.setPositional(true);
+        this.sound.setReverbEnabled(false);
+        this.sound.setVolume(1f);
     }
 
     public void setFireEmitter(ParticleEmitter fire) {
@@ -265,19 +271,20 @@ class FireballRemovalAction implements RemovalEventAction {
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
-        fire.setLowLife(0.05f);
-        fire.setHighLife(0.15f);
+        fire.setLowLife(0.1f);
+        fire.setHighLife(0.3f);
         fire.setNumParticles(100);
         fire.setStartSize(0.50f);
         fire.setEndSize(3.0f);
-        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(25.0f));
+        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(15.0f));
         fire.getParticleInfluencer().setVelocityVariation(1f);
 
         fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
-        // TODO: Add soundeffect too!
+        this.sound.setLocalTranslation(worldTranslation);
+        this.sound.play();
     }
 
     public void setSmokeTrail(ParticleEmitter smoke) {

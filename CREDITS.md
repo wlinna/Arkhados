@@ -10,6 +10,8 @@
 
 # Also thanks to #
 
+NOTE: These people in no way endorse Arkhados. I'm just using their assets.
+
 MonkeyZone developers for providing example multiplayer
 game. I copied two source files from it and made small changes. I
 retained their original license of course.
@@ -70,3 +72,6 @@ can be found from [OGA](http://opengameart.org/content/big-explosion)
 
 TheGoat for Venator's dagger. Dagger is licensed under CC-BY 3.0.
 Original work can be found from [BlendSwap](http://www.blendswap.com/blends/view/52857)
+
+ReadeOnly for Fireball's explosion sound. Sound is licensed under CC0.
+Original work can be found from [freesound](http://www.freesound.org/people/ReadeOnly/sounds/186951/)

@@ -13,6 +13,7 @@ See CREDITS.md for attributions.
 - deep_wounds.png
 - feral_scream.png
 - rend.png
+- FireballExplosion.wav
 
 ## CC-BY 3.0 ##
 
