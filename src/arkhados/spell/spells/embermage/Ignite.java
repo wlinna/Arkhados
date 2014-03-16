@@ -43,6 +43,7 @@ public class Ignite extends Spell {
     public static DamageOverTimeBuff ifNotCooldownCreateDamageOverTimeBuff(final Node caster) {
         final SpellCastControl castControl = caster.getControl(SpellCastControl.class);
         if (castControl.isOnCooldown("Ignite")) {
+            // TODO: Check if adding null causes problems
             return null;
         }
 

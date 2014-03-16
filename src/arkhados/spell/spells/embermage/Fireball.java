@@ -151,14 +151,6 @@ class FireballBuilder extends NodeBuilder {
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
         if (NodeBuilder.worldManager.isClient()) {
-//            PointLight light = new PointLight();
-//            light.setRadius(30f);
-//            light.setPosition(new Vector3f(-100f, -100f, -100f));
-//            LightControl lightControl = new LightControl(light);
-//            node.addControl(lightControl);
-//
-//            worldManager.getWorldRoot().addLight(light);
-
             final ParticleEmitter fire = this.createFireEmitter();
             node.attachChild(fire);
 

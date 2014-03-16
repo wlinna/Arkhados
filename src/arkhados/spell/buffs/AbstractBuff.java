@@ -84,7 +84,7 @@ public abstract class AbstractBuff {
     public void destroy() {
         if (this.name != null) {
             final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, null, this.buffId, false));
+            getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, false));
         }
     }
 

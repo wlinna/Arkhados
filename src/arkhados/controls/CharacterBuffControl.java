@@ -40,17 +40,22 @@ public class CharacterBuffControl extends AbstractControl {
     public void addBuff(final long buffId, final String buffName) {
         final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffName);
         if (buffInfo == null) {
+            System.out.println("No buffInfo for " + buffName + " id: " + buffId);
             return;
         }
         final BuffEffect buff = buffInfo.createBuffEffect(this);
         this.buffs.put(buffId, buff);
+        System.out.println("Added buff " + buffName + " with id: " + buffId);
     }
 
     public void removeBuff(final long buffId) {
         final BuffEffect buffEffect = this.buffs.remove(buffId);
-        // TODO: Investigate NullPointerException
+        // TODO: Investigate why buffEffect is sometimes null
+        // NOTE: It seems that this happens mostly (or only) with Ignite
         if (buffEffect != null) {
             buffEffect.destroy();
+        } else {
+            System.out.println("buffEffect not in buffs!");
         }
     }
 
@@ -64,10 +69,6 @@ public class CharacterBuffControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-//        for (Map.Entry<Long, BuffEffect> entry : buffs.entrySet()) {
-//            BuffEffect buffEffect = entry.getValue();
-//            buffEffect.updateRender(rm, vp);
-//        }
     }
 
     public Control cloneForSpatial(Spatial spatial) {

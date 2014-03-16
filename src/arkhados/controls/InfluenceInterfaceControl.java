@@ -181,9 +181,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         if (this.canMove() && !super.spatial.getControl(SpellCastControl.class).isCasting()) {
             if (this.isServer) {
-                CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+                final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);                
                 if (this.canControlMovement()) {
-                    physics.restoreWalking();
+                    super.spatial.getControl(UserInputControl.class).restoreWalking();
                 } else {
                     if (!this.isSpeedConstant()) {
                         Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
@@ -231,7 +231,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
             CrowdControlBuff cc = it.next();
             boolean remove = false;
-            // TODO: Use some kind of flag instance of detecting type
+            // TODO: Use some kind of flag instead of detecting type
             if (cc instanceof IncapacitateCC) {
                 remove = true;
             } else if (cc instanceof FearCC) {

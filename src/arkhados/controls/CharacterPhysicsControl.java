@@ -29,8 +29,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     private Vector3f impulseToApply = null;
     private Vector3f queuedLinearVelocity = null;
-    private int previousRight = 0;
-    private int previousDown = 0;
     private Vector3f targetLocation = new Vector3f();
 
     public CharacterPhysicsControl(float radius, float height, float mass) {
@@ -46,40 +44,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.rigidBody.setFriction(1f);
         super.rigidBody.setRestitution(0f);
         super.rigidBody.setGravity(Vector3f.ZERO);
-    }
-
-    public void setUpDownDirection(int right, int down) {
-        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
-        this.saveDirection(right, down);
-        if (!influenceInterface.canControlMovement()) {
-            return;
-        }
-
-        if (influenceInterface.canMove()) {
-            Vector3f newWalkDirection = new Vector3f(right, 0f, down);
-            Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-            newWalkDirection.normalizeLocal().multLocal(speedMovement);
-            super.setWalkDirection(newWalkDirection);
-            if (down != 0 || right != 0) {
-                super.spatial.getControl(SpellCastControl.class).safeInterrupt();
-                super.setViewDirection(newWalkDirection);
-            }
-        }
-    }
-
-    private void saveDirection(int right, int down) {
-        this.previousRight = right;
-        this.previousDown = down;
-    }
-
-    public void restoreWalking() {
-        Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
-        Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-        newWalkDirection.normalizeLocal().multLocal(speedMovement);
-        if (!newWalkDirection.equals(Vector3f.ZERO)) {
-            super.setViewDirection(newWalkDirection);
-        }
-        super.setWalkDirection(newWalkDirection);
     }
 
     public void lookAt(Vector3f targetlocation) {
@@ -119,7 +83,6 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public void setTargetLocation(Vector3f target) {
         this.targetLocation.set(target);
-//        this.lookAt(targetLocation);
     }
 
     public void switchToMotionCollisionMode() {
