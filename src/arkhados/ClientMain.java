@@ -104,8 +104,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
-    private TextRenderer statusText;    
-    private ValueWrapper<NetworkClient> clientWrapper;
+    private TextRenderer statusText;
+    private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
     private WorldManager worldManager;
     private ClientNetListener listenerManager;
     private SyncManager syncManager;
@@ -132,11 +132,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.flyCam.setEnabled(false);
         this.flyCam.setMoveSpeed(25.0f);
         this.startNifty();
-        this.clientWrapper = new ValueWrapper<>();
-               
+
         this.syncManager = new SyncManager(this, this.clientWrapper);
         this.stateManager.attach(this.syncManager);
-                        
+
         this.worldManager = new WorldManager(true);
 
         this.userCommandManager = new UserCommandManager(this.clientWrapper, this.inputManager);
@@ -144,7 +143,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
-        this.listenerManager = new ClientNetListener(this, clientWrapper);        
+        this.listenerManager = new ClientNetListener(this, clientWrapper);
 
         this.stateManager.attach(this.worldManager);
 
@@ -152,7 +151,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.stateManager.attach(this.roundManager);
 
         ClientMain.this.stateManager
-                .attach(ClientMain.this.userCommandManager);                
+                .attach(ClientMain.this.userCommandManager);
     }
 
     @Override
@@ -202,7 +201,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         final String ip = nifty.getScreen("join_server").findElementByName("layer")
                 .findElementByName("panel").findElementByName("server_ip").getControl(TextFieldControl.class).getText();
 
-        
+
         this.clientWrapper.set(Network.createClient());
         this.roundManager.configureForClient();
         this.clientWrapper.get().addClientStateListener(this.listenerManager);
@@ -354,7 +353,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void destroy() {
-        if (this.clientWrapper.get().isConnected()) {
+        final NetworkClient client = this.clientWrapper.get();
+        if (client != null && client.isConnected()) {
             this.clientWrapper.get().close();
         }
         super.destroy();
@@ -366,7 +366,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void loseFocus() {
-        super.loseFocus();        
+        super.loseFocus();
         this.userCommandManager.onLoseFocus();
     }
 }

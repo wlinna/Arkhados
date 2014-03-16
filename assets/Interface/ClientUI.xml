@@ -73,7 +73,7 @@
         </layer>
     </screen>
 
-    <screen id="input_settings" controller="arkhados.KeySetter">
+    <screen id="input_settings" controller="arkhados.ui.KeySetter">
         <layer id="layer" childLayout="center">
             <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
 
@@ -311,8 +311,8 @@
             </panel>
         </layer>
     </screen>
-
-    <screen id="default_hud" controller="arkhados.ClientHudManager">
+    
+    <screen id="default_hud" controller="arkhados.ui.hud.ClientHudManager">
         <layer id="bars" childLayout="vertical" valign="bottom">
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
                 <panel id="spacer" height="*" valign="top"></panel>
