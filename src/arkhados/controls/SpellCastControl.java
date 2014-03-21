@@ -34,8 +34,12 @@ import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.spell.Spell;
+import arkhados.spell.SpellCastListener;
+import arkhados.spell.SpellCastValidator;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -44,11 +48,14 @@ import com.jme3.scene.Node;
 public class SpellCastControl extends AbstractControl {
 
     private WorldManager worldManager;
-    private HashMap<String, Spell> spells = new HashMap<String, Spell>();
-    private HashMap<String, Float> cooldowns = new HashMap<String, Float>();
-    private HashMap<String, Spell> keySpellMappings = new HashMap<String, Spell>();
+    private HashMap<String, Spell> spells = new HashMap<>();
+    private HashMap<String, Float> cooldowns = new HashMap<>();
+    private HashMap<String, Spell> keySpellMappings = new HashMap<>();
     private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
+    
+    private final List<SpellCastValidator> castValidators = new ArrayList<>();
+    private final List<SpellCastListener> castListeners = new ArrayList<>();
 
 //    private float activeCastTimeLeft = 0f;
     public SpellCastControl(WorldManager worldManager) {
@@ -67,11 +74,30 @@ public class SpellCastControl extends AbstractControl {
             this.keySpellMappings.put(key, spell);
         }
     }
+    
+    /**
+     * Add validator that checks whether it is valid to cast certain spell.
+     * @param castValidator Validator that checks casting conditions
+     */
+    public void addCastValidator(SpellCastValidator castValidator) {
+        this.castValidators.add(castValidator);
+    }
 
+    /**
+     * Add listener that is notified anytime that spell is cast
+     * @param ammunitionControl 
+     */
+    public void addCastListeners(EliteSoldierAmmunitionControl ammunitionControl) {
+        this.castListeners.add(ammunitionControl);
+    }
+    
     public Spell getSpell(final String name) {
         return this.spells.get(name);
     }
 
+    /**
+     * Interrupt spell casting so that spell's cooldown is not resetted
+     */
     public void safeInterrupt() {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
@@ -101,20 +127,43 @@ public class SpellCastControl extends AbstractControl {
         this.cast(input, targetLocation);
     }
 
+    private boolean basicValidation(final Spell spell) {
+        if (spell == null || this.cooldowns.get(spell.getName()) > 0f) {
+            return false;
+        }
+        if (this.worldManager.isServer()) {
+            if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateCast(final Spell spell) {
+        if (!this.basicValidation(spell)) {
+            return false;
+        }
+        for (SpellCastValidator spellCastValidator : castValidators) {
+            if (!spellCastValidator.validateSpellCast(this, spell)) {
+                return false;
+            }
+        }
+        return true;
+    }    
+
     public void cast(final String input, Vector3f targetLocation) {
         if (!this.enabled) {
             return;
         }
 
         final Spell spell = this.keySpellMappings.get(input);
-        if (spell != null && this.cooldowns.get(spell.getName()) > 0f) {
+
+        if (!this.validateCast(spell)) {
             return;
         }
 
         if (this.worldManager.isServer()) {
-            if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
-                return;
-            }
+
 
             final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
             physics.setViewDirection(physics.calculateTargetDirection());
@@ -129,6 +178,10 @@ public class SpellCastControl extends AbstractControl {
         }
         this.globalCooldown();
         this.putOnCooldown(spell);
+        
+        for (SpellCastListener spellCastListener : this.castListeners) {
+            spellCastListener.spellCasted(this, spell);
+        }
     }
 
     public void putOnCooldown(final String spellName) {
@@ -138,7 +191,7 @@ public class SpellCastControl extends AbstractControl {
 
     public void setCooldown(final String spellName, float cooldown) {
         this.cooldowns.put(spellName, cooldown);
-         if (this.worldManager.isServer()) {
+        if (this.worldManager.isServer()) {
             final Long entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
             this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spellName, 0f, true));
@@ -188,11 +241,6 @@ public class SpellCastControl extends AbstractControl {
         for (Map.Entry<String, Float> entry : this.cooldowns.entrySet()) {
             entry.setValue(entry.getValue() - tpf);
         }
-//
-//        this.activeCastTimeLeft -= tpf;
-//        if (super.spatial.getControl(ActionQueueControl.class).getCurrent() == null) {
-//            this.activeCastTimeLeft = 0f;
-//        }
     }
 
     @Override

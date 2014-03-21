@@ -75,7 +75,7 @@ public class CastingSpellAction extends EntityAction {
         }
         return true;
     }
-
+    
     public Spell getSpell() {
         return this.spell;
     }

@@ -38,7 +38,6 @@ public class ProjectileControl extends AbstractControl {
 
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
-    private Vector3f startingLocation = null;
     private float age = 0.0f;
     private static WorldManager worldManager;
     private static final float timeToLive = 3.0f;
@@ -49,12 +48,27 @@ public class ProjectileControl extends AbstractControl {
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
                 .normalizeLocal().multLocal((Float) super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
-//        super.spatial.lookAt(target, Vector3f.UNIT_Y);
         Quaternion rotation = new Quaternion();
         rotation.lookAt(direction, Vector3f.UNIT_Y);
-//        this.rot = rotation;
         this.rigidBodyControl.setPhysicsRotation(rotation);
 
+        this.rigidBodyControl.setLinearVelocity(this.direction);
+        this.speed = this.direction.length();
+        this.rigidBodyControl.setGravity(Vector3f.ZERO);
+    }
+
+    /**
+     * Use this method to set projectiles direction if you have it already.
+     * @param direction Direction of projectile. ProjectileControl takes its
+     * ownerships.
+     */
+    public void setDirection(Vector3f direction) {
+        this.direction = direction.setY(0f).normalizeLocal().multLocal(
+                (Float) super.getSpatial().getUserData(
+                UserDataStrings.SPEED_MOVEMENT));
+        Quaternion rotation = new Quaternion();
+        rotation.lookAt(direction, Vector3f.UNIT_Y);
+        this.rigidBodyControl.setPhysicsRotation(rotation);
         this.rigidBodyControl.setLinearVelocity(this.direction);
         this.speed = this.direction.length();
         this.rigidBodyControl.setGravity(Vector3f.ZERO);
@@ -73,10 +87,7 @@ public class ProjectileControl extends AbstractControl {
             return;
         }
         this.age += tpf;
-//
-//        if (this.rot != null) {
-//            this.rigidBodyControl.setPhysicsRotation(this.rot);
-//        }
+
         if (this.range > 0f && this.age * this.speed >= this.range) {
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }

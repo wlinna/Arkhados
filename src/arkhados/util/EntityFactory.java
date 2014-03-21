@@ -16,6 +16,7 @@ package arkhados.util;
 
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.WorldManager;
+import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
 import arkhados.controls.SyncInterpolationControl;
@@ -83,6 +84,7 @@ public class EntityFactory {
             entity.addControl(new DebugControl(this.assetManager));
 
             if (worldManager.isClient()) {
+                // TODO: Get rid of this repetition
                 this.clientHudManager.addCharacter(entity);
                 entity.addControl(new SyncInterpolationControl());
                 entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
@@ -96,7 +98,18 @@ public class EntityFactory {
                 entity.addControl(new SyncInterpolationControl());
                 entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
             }
-        } else if (Spell.getSpells().containsKey(id)) {
+        } else if ("Elite Soldier".equals(id)) {
+            entity = new EliteSoldier().build();
+             entity.addControl(new DebugControl(this.assetManager));
+
+            if (worldManager.isClient()) {
+                this.clientHudManager.addCharacter(entity);
+                entity.addControl(new SyncInterpolationControl());
+                entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+            }
+        }
+        
+        else if (Spell.getSpells().containsKey(id)) {
             Spell spell = Spell.getSpells().get(id);
             entity = spell.buildNode();
         }

@@ -17,6 +17,8 @@ package arkhados.spell;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.ProjectileControl;
+import arkhados.spell.spells.elitesoldier.RocketLauncher;
+import arkhados.spell.spells.elitesoldier.Shotgun;
 import arkhados.spell.spells.embermage.EmberCircle;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.Firewalk;
@@ -112,6 +114,13 @@ public abstract class Spell {
 
         final Spell survivalInstinct = SurvivalInstinct.create();
         Spells.put(survivalInstinct.getName(), survivalInstinct);
+        
+        // Elite Soldier spells
+        final Spell shotgun = Shotgun.create();
+        Spells.put(shotgun.getName(), shotgun);
+        
+        final Spell rocketLauncher = RocketLauncher.create();
+        Spells.put(rocketLauncher.getName(), rocketLauncher);
     }
 
     /**
