@@ -30,7 +30,10 @@ import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -183,8 +186,13 @@ class FireballBuilder extends NodeBuilder {
         /**
          * Add collision group of characters
          */
-        physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
-
+//        physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
+        
+        final GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_02);
+        characterCollision.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
+        node.addControl(characterCollision);
+//
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());

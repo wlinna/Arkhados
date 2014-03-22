@@ -281,6 +281,9 @@
                         <control id="embermage" name="button" label="Embermage">
                             <interact onClick="selectHero(Mage)" />
                         </control>
+                        <control id="elitesoldier" name="button" label="Elite Soldier">
+                            <interact onClick="selectHero(Elite Soldier)" />
+                        </control>
                     </panel>
                     <panel id="melee" childLayout="vertical" >
                         <text style="nifty-label" text="Melee" />

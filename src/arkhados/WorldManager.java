@@ -51,6 +51,7 @@ import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.post.FilterPostProcessor;
@@ -196,6 +197,13 @@ public class WorldManager extends AbstractAppState {
         this.entities.put(id, entitySpatial);
         this.syncManager.addObject(id, entitySpatial);
         this.space.addAll(entitySpatial);
+        
+        // We need to add GhostControl separately
+        final GhostControl ghostControl = entitySpatial.getControl(GhostControl.class);
+        if (ghostControl != null) {
+            this.space.add(ghostControl);
+        }
+        
         this.worldRoot.attachChild(entitySpatial);
         EntityVariableControl variableControl = new EntityVariableControl(this);
         entitySpatial.addControl(variableControl);
@@ -289,6 +297,10 @@ public class WorldManager extends AbstractAppState {
             }
         }
         this.space.removeAll(spatial);
+        final GhostControl ghostControl = spatial.getControl(GhostControl.class);
+        if (ghostControl != null) {
+            this.space.remove(ghostControl);
+        }
     }
 
     public static List<SpatialDistancePair> getSpatialsWithinDistance(Spatial spatial, float distance) {

@@ -20,6 +20,7 @@ import arkhados.controls.ProjectileControl;
 import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -40,6 +41,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         this.syncManager = syncManager;
     }
 
+    @Override
     public void collision(PhysicsCollisionEvent event) {
 
         Spatial staticA = null;
@@ -66,18 +68,25 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             if (characterB != null) {
                 this.projectileCharacterCollision(projectileA, characterB);
             }
-//            this.worldManager.removeEntity((Long) projectileA.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
         }
         if (projectileB != null) {
             if (characterA != null) {
                 this.projectileCharacterCollision(projectileB, characterA);
             }
-//            this.worldManager.removeEntity((Long) projectileB.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
         }
 
     }
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl target) {
+
+        final Long projectilePlayerId = projectile.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final Long projectileTeamId = PlayerData.getLongData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
+        final Long targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final Long targetTeamId = PlayerData.getLongData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+        
+        if (targetTeamId == projectileTeamId) {
+            return;
+        }
 
         String removalReason = "collision";
         if (target.isImmuneToProjectiles()) {

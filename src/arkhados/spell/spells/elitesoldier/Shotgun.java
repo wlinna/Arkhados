@@ -31,6 +31,7 @@ import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -207,9 +208,13 @@ class PelletBuilder extends NodeBuilder {
         physicsBody.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_NONE);
 
         /**
-         * Add collision group of characters
+         * Add collision with characters
          */
-//        physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
+
+        final GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollisionGroup(GhostControl.COLLISION_GROUP_16);
+        characterCollision.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+        node.addControl(characterCollision);
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());
