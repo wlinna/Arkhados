@@ -384,4 +384,10 @@ public class WorldManager extends AbstractAppState {
     public ClientMain getClientMain() {
         return clientMain;
     }
+
+    void preloadSoundEffects(String[] string) {
+        for (String audioPath : string) {
+            this.assetManager.loadAudio("Effects/Sound/" + audioPath);
+        }        
+    }
 }

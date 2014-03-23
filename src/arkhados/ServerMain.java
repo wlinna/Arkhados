@@ -64,10 +64,11 @@ public class ServerMain extends SimpleApplication {
     private ServerGameManager gameManager;
     private WorldManager worldManager;
     private BulletAppState physicsState;
-    private SyncManager syncManager;
+    private SyncManager syncManager;   
 
     @Override
     public void simpleInitApp() {
+        Globals.assetManager = this.getAssetManager();
         this.worldManager = new WorldManager();
         this.gameManager = new ServerGameManager();
         this.physicsState = new BulletAppState();
@@ -92,6 +93,8 @@ public class ServerMain extends SimpleApplication {
         this.stateManager.attach(ServerMain.this.gameManager);
         this.stateManager.attach(ServerMain.this.physicsState);
         this.physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
+        
+        Globals.effectHandler = new EffectHandler(this, server);
     }
 
     public void startGame() {

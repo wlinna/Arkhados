@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
+import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
@@ -52,7 +53,6 @@ import com.jme3.scene.shape.Sphere;
  * on hit.
  */
 public class Shotgun extends Spell {
-
     {
         this.iconName = "fireball.png";
     }
@@ -92,6 +92,7 @@ class CastShotgunAction extends EntityAction {
     CastShotgunAction(Shotgun spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
+
     }
 
     @Override
@@ -108,33 +109,27 @@ class CastShotgunAction extends EntityAction {
 
         Quaternion currentRotation = new Quaternion();
 
-        for (int i = 0; i < PELLETS; ++i) {            
+        for (int i = 0; i < PELLETS; ++i) {
             currentRotation.fromAngleAxis(SPREAD / 2f - i * STEP, Vector3f.UNIT_Y);
             Vector3f spawnLocation = super.spatial.getLocalTranslation();
-                        
-            Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();            
+
+            Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
 
             final long projectileId = this.worldManager.addNewEntity("Shotgun",
                     spawnLocation, Quaternion.IDENTITY, playerId);
             final Spatial projectile = this.worldManager.getEntity(projectileId);
-            
+
             final Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
             final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
-
-            // FIXME: Projectile should use GhostControl instead of RigidBodyControl
-            final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
-
-            final float radius = collisionSphere.getRadius() * 1.0f;
-
-            final RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
-//            body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
 
             final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
             projectileControl.setRange(this.spell.getRange());
             projectileControl.setDirection(pelletDirection);
             projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
         }
+
+        Globals.effectHandler.sendEffect("Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
         return false;
     }
 }
@@ -150,12 +145,12 @@ class PelletBuilder extends NodeBuilder {
         trail.setImagesY(2);
         trail.setSelectRandomImage(true);
         trail.setStartColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 0.9f));
-        trail.setEndColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 0.1f));
+        trail.setEndColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 0.9f));
         trail.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         trail.setStartSize(0.5f);
         trail.setEndSize(0.1f);
         trail.setHighLife(0.1f);
-        trail.setLowLife(0.2f);
+        trail.setLowLife(0.1f);
         trail.setParticlesPerSec(100);
         trail.setRandomAngle(true);
         return trail;
@@ -184,12 +179,12 @@ class PelletBuilder extends NodeBuilder {
         if (NodeBuilder.worldManager.isClient()) {
             final ParticleEmitter trail = this.createWhiteTrailEmitter();
             node.attachChild(trail);
-            
+
             // TODO: Enable these later to add removalAction
 
 //            node.addControl(new EntityEventControl());
             /**
-             * Here we specify what happens on client side when fireball is
+             * Here we specify what happens on client side when pellet is
              * removed. In this case we want explosion effect.
              */
 //            final PelletRemovalAction removalAction = new PelletRemovalAction(assetManager);
@@ -210,7 +205,6 @@ class PelletBuilder extends NodeBuilder {
         /**
          * Add collision with characters
          */
-
         final GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollisionGroup(GhostControl.COLLISION_GROUP_16);
         characterCollision.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);

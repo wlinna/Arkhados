@@ -75,3 +75,6 @@ Original work can be found from [BlendSwap](http://www.blendswap.com/blends/view
 
 ReadeOnly for Fireball's explosion sound. Sound is licensed under CC0.
 Original work can be found from [freesound](http://www.freesound.org/people/ReadeOnly/sounds/186951/)
+
+lensflare8642 for Shotgun sound. Sound is licensed under CC0. Original
+work can be found from [freesound](http://freesound.org/people/lensflare8642/sounds/145209/)

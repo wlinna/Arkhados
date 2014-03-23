@@ -15,8 +15,10 @@
 
 package arkhados;
 
+import com.jme3.asset.AssetManager;
+
 /**
- *
+ * This has static references to few instances that are used globally.
  * @author william
  */
 public class Globals {
@@ -27,4 +29,9 @@ public class Globals {
     public static void setPacketsPerSecond(float packets) {
         DEFAULT_SYNC_FREQUENCY = 1f / packets;
     }
+    
+    public static AssetManager assetManager = null;
+    
+    // Only on server
+    public static EffectHandler effectHandler = null;
 }

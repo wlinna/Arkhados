@@ -113,9 +113,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private UserCommandManager userCommandManager;
     private ClientHudManager clientHudManager;
     private RoundManager roundManager;
+    
+    private EffectHandler effectHandler;
 
     @Override
     public void simpleInitApp() {
+        Globals.assetManager = this.getAssetManager();
         this.setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
@@ -152,6 +155,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         ClientMain.this.stateManager
                 .attach(ClientMain.this.userCommandManager);
+        
+        this.effectHandler = new EffectHandler(this);        
     }
 
     @Override
@@ -208,6 +213,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.clientWrapper.get().addMessageListener(this.listenerManager,
                 ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
                 ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
+        
+        this.effectHandler.setMessagesToListen(this.clientWrapper.get());
 
         if (username.trim().length() == 0) {
             this.setStatusText("Username is invalid");
@@ -216,7 +223,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.listenerManager.setName(username);
 
         this.syncManager.configureForClient();
-        System.out.println("Trying to connect");
         this.setStatusText("Connecting... " + username);
         try {
             this.clientWrapper.get().connectToServer(ip, port, port);
@@ -307,6 +313,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
                             worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+                            worldManager.preloadSoundEffects(new String[] {"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav" });
                             ClientMain.this.worldManager.loadLevel();
                             ClientMain.this.nifty.gotoScreen("default_hud");
                             return null;

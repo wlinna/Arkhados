@@ -14,6 +14,8 @@ See CREDITS.md for attributions.
 - feral_scream.png
 - rend.png
 - FireballExplosion.wav
+- Shotgun.wav
+
 
 ## CC-BY 3.0 ##
 
