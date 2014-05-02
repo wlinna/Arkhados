@@ -48,13 +48,11 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
 /**
- * EliteSoldiers's RocketLauncher (currently M1) spell. Projectile has moderate
- * speed and deals high damage and small splash damage. Has big knockback effect
- * on hit.
+ * EliteSoldiers's Shotgun (M1) spell. Fires 6 pellets that spread out.
  */
 public class Shotgun extends Spell {
     {
-        this.iconName = "fireball.png";
+        this.iconName = "shotgun.png";
     }
 
     public Shotgun(String name, float cooldown, float range, float castTime) {

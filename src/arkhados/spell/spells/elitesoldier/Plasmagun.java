@@ -51,7 +51,7 @@ import com.jme3.scene.shape.Sphere;
 public class Plasmagun extends Spell {
 
     {
-        this.iconName = "fireball.png";
+        this.iconName = "plasma.png";
     }
 
     public Plasmagun(String name, float cooldown, float range, float castTime) {

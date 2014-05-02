@@ -42,12 +42,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
 /**
- * EliteSoldiers's RocketLauncher (currently M1) spell. Projectile has moderate speed and deals
+ * EliteSoldiers's RocketLauncher (E) spell. Projectile has moderate speed and deals
  * high damage and small splash damage. Has big knockback effect on hit.
  */
 public class RocketLauncher extends Spell {
     {
-        this.iconName = "fireball.png";
+        this.iconName = "rocket_launcher.png";
     }
 
     public RocketLauncher(String name, float cooldown, float range, float castTime) {

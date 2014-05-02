@@ -28,6 +28,9 @@ See CREDITS.md for attributions.
 - meteor.png
 - ember_circle.png
 - purifying_flame.png
+- plasma.png
+- shotgun.png
+- rocket_launger.png
 - MeteorBoom.wav
 - All DamagingDagger related files
 
