@@ -79,7 +79,7 @@ public class EliteSoldier extends NodeBuilder {
         
         // TODO: Replace these with EliteSoldier's own spells
         spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
-        spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
+        spellCastControl.putSpell(Spell.getSpells().get("Plasmagun"), InputMappingStrings.Q);
         spellCastControl.putSpell(Spell.getSpells().get("Rocket Launcher"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Purifying Flame"), InputMappingStrings.R);
         spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);

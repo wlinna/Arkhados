@@ -17,6 +17,7 @@ package arkhados.spell;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.ProjectileControl;
+import arkhados.spell.spells.elitesoldier.Plasmagun;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
 import arkhados.spell.spells.elitesoldier.Shotgun;
 import arkhados.spell.spells.embermage.EmberCircle;
@@ -121,6 +122,9 @@ public abstract class Spell {
         
         final Spell rocketLauncher = RocketLauncher.create();
         Spells.put(rocketLauncher.getName(), rocketLauncher);
+        
+        final Spell plasmagun = Plasmagun.create();
+        Spells.put(plasmagun.getName(), plasmagun);
     }
 
     /**
