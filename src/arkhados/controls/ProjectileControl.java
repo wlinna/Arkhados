@@ -27,6 +27,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import arkhados.WorldManager;
+import arkhados.actions.SplashAction;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
 
@@ -44,6 +45,7 @@ public class ProjectileControl extends AbstractControl {
     private float range = 0f;
     private float speed = 0f;
     private InfluenceInterfaceControl ownerInterface;
+    private SplashAction splashAction = null;
 
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
@@ -76,7 +78,7 @@ public class ProjectileControl extends AbstractControl {
 
     @Override
     public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial);
+        super.setSpatial(spatial);        
         this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);
     }
 
@@ -89,10 +91,16 @@ public class ProjectileControl extends AbstractControl {
         this.age += tpf;
 
         if (this.range > 0f && this.age * this.speed >= this.range) {
+            if (this.splashAction != null) {
+                splashAction.update(tpf);
+            }
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
 
         if (this.age > ProjectileControl.timeToLive) {
+            if (this.splashAction != null) {
+                splashAction.update(tpf);
+            }
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
     }
@@ -101,6 +109,7 @@ public class ProjectileControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial) {
         ProjectileControl control = new ProjectileControl();
         return control;
@@ -136,5 +145,9 @@ public class ProjectileControl extends AbstractControl {
 
     public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
         this.ownerInterface = ownerInterface;
+    }
+    
+    public void setSplashAction(SplashAction splashAction) {
+        this.splashAction = splashAction;
     }
 }

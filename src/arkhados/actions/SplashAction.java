@@ -34,14 +34,14 @@ public class SplashAction extends EntityAction {
 
     private float radius;
     private float baseDamage;
-    private DistanceScaling distanceScaling;
+    private DistanceScaling damageDistance;
     private List<AbstractBuff> splashBuffs;
     private boolean splashBuffsOnly = false;
 
-    public SplashAction(float radius, float baseDamage, DistanceScaling distanceScaling, List<AbstractBuff> buffsToApply) {
+    public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling, List<AbstractBuff> buffsToApply) {
         this.radius = radius;
         this.baseDamage = baseDamage;
-        this.distanceScaling = distanceScaling;
+        this.damageDistance = damageDistanceScaling;
         this.splashBuffs = buffsToApply;
     }
 
@@ -61,21 +61,23 @@ public class SplashAction extends EntityAction {
             }
 
             // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
-            float distanceFactor = 1f;
-            if (this.distanceScaling == DistanceScaling.LINEAR) {
-                distanceFactor = 1f - (pair.distance / this.radius);
-            }
 
-            final float damage = baseDamage * distanceFactor;
+            float distanceFactor = 1f - (pair.distance / this.radius);
+            float damageDistanceFactor = 1f;
+
+            if (this.damageDistance == DistanceScaling.LINEAR) {
+                damageDistanceFactor = distanceFactor;
+            }
+            final float damage = baseDamage * damageDistanceFactor;
 
 
             List<AbstractBuff> buffsToApply;
             if (this.splashBuffsOnly) {
                 buffsToApply = this.splashBuffs;
-            } else {                
-                final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);                
+            } else {
+                final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);
                 buffsToApply = buffControl.getBuffs();
-                
+
                 if (this.splashBuffs != null) {
                     buffControl.getBuffs().addAll(this.splashBuffs);
                 }

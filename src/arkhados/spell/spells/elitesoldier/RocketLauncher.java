@@ -17,13 +17,16 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
+import arkhados.controls.SpellBuffControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.util.DistanceScaling;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
@@ -142,7 +145,7 @@ class RocketBuilder extends NodeBuilder {
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
         node.setUserData(UserDataStrings.DAMAGE, 150f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 15000f);
 
         if (NodeBuilder.worldManager.isClient()) {
             final ParticleEmitter fire = this.createFireEmitter();
@@ -181,9 +184,13 @@ class RocketBuilder extends NodeBuilder {
 
         node.addControl(physicsBody);
 
-        node.addControl(new ProjectileControl());
-//        final SpellBuffControl buffControl = new SpellBuffControl();
-//        node.addControl(buffControl);
+        ProjectileControl projectileControl = new ProjectileControl();
+        SplashAction splash = new SplashAction(100f, 30f, DistanceScaling.CONSTANT, null);
+        splash.setSpatial(node);
+        projectileControl.setSplashAction(splash);
+        node.addControl(projectileControl);
+        final SpellBuffControl buffControl = new SpellBuffControl();
+        node.addControl(buffControl);
         return node;
     }
 }
@@ -228,11 +235,11 @@ class RocketRemovalAction implements RemovalEventAction {
         smokePuff.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
         smokePuff.getParticleInfluencer().setVelocityVariation(1f);
 
-        smokePuff.setStartSize(2.0f);
-        smokePuff.setEndSize(6.0f);
+        smokePuff.setStartSize(8.0f);
+        smokePuff.setEndSize(30.0f);
         smokePuff.setGravity(Vector3f.ZERO);
-        smokePuff.setLowLife(0.75f);
-        smokePuff.setHighLife(1f);
+        smokePuff.setLowLife(1.75f);
+        smokePuff.setHighLife(6f);
         smokePuff.setParticlesPerSec(0);
 
         smokePuff.setRandomAngle(true);
@@ -255,19 +262,20 @@ class RocketRemovalAction implements RemovalEventAction {
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
-        fire.setLowLife(0.1f);
-        fire.setHighLife(0.3f);
-        fire.setNumParticles(100);
-        fire.setStartSize(0.50f);
-        fire.setEndSize(3.0f);
-        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(15.0f));
+        fire.setLowLife(0.4f);
+        fire.setHighLife(0.5f);
+        fire.setNumParticles(120);
+        fire.setStartSize(7.50f);
+        fire.setEndSize(25f);
+        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(45.0f));
         fire.getParticleInfluencer().setVelocityVariation(1f);
 
-        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
+//        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
         this.sound.setLocalTranslation(worldTranslation);
+        this.sound.setVolume(5f);
         this.sound.play();
     }
 

@@ -17,6 +17,7 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.WorldManager;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
+import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.EntityEventControl;
@@ -27,6 +28,7 @@ import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
+import arkhados.util.DistanceScaling;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
@@ -114,19 +116,19 @@ class PlasmaBuilder extends NodeBuilder {
     private ParticleEmitter createPlasmaEmitter() {
         final ParticleEmitter plasma = new ParticleEmitter("plasma-emitter", ParticleMesh.Type.Triangle, 200);
         Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/plasma-particle.png"));
         plasma.setMaterial(materialRed);
         plasma.setImagesX(2);
         plasma.setImagesY(2);
         plasma.setSelectRandomImage(true);
-        plasma.setStartColor(new ColorRGBA(0.5f, 0.150f, 0.9f, 1.0f));
-        plasma.setEndColor(new ColorRGBA(0.60f, 0.10f, 0.9f, 0.8f));
+        plasma.setStartColor(new ColorRGBA(0.8f, 0.350f, 0.9f, 1.0f));
+        plasma.setEndColor(new ColorRGBA(0.80f, 0.30f, 0.9f, 0.95f));        
         plasma.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-        plasma.setStartSize(7.5f);
-        plasma.setEndSize(1.5f);
+        plasma.setStartSize(5.5f);
+        plasma.setEndSize(4.5f);
         plasma.setGravity(Vector3f.ZERO);
-        plasma.setLowLife(0.1f);
-        plasma.setHighLife(0.1f);
+        plasma.setLowLife(0.05f);
+        plasma.setHighLife(0.05f);
         plasma.setParticlesPerSec(100);
 
         plasma.setRandomAngle(true);
@@ -186,11 +188,15 @@ class PlasmaBuilder extends NodeBuilder {
 
         node.addControl(physicsBody);
 
-        node.addControl(new ProjectileControl());
+        final ProjectileControl projectileControl = new ProjectileControl();        
+        final SplashAction splash = new SplashAction(23f, 20f, DistanceScaling.CONSTANT, null);
+        splash.setSpatial(node);
+        projectileControl.setSplashAction(splash);
+        node.addControl(projectileControl);
         final SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
         
-        buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
+        buffControl.addBuff(new SlowCC(-1, 11f, 0.3f));
         return node;
     }
 }
@@ -223,8 +229,8 @@ class PlasmaRemovalAction implements RemovalEventAction {
         plasma.setLowLife(0.1f);
         plasma.setHighLife(0.3f);
         plasma.setNumParticles(15);
-        plasma.setStartSize(7.5f);
-        plasma.setEndSize(12.0f);
+        plasma.setStartSize(5.5f);
+        plasma.setEndSize(10.0f);
         plasma.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(.0f));
         plasma.getParticleInfluencer().setVelocityVariation(1f);
 
