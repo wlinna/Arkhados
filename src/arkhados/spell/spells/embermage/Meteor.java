@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.actions.SplashAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -28,6 +29,7 @@ import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.DistanceScaling;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
@@ -54,6 +56,7 @@ import java.util.List;
  * @author william
  */
 public class Meteor extends Spell {
+
     {
         super.iconName = "meteor.png";
     }
@@ -86,14 +89,14 @@ class CastMeteorAction extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
-    private final List<AbstractBuff> additionalBuffs = new ArrayList<AbstractBuff>();
+    private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
 
-    public CastMeteorAction(WorldManager worldManager, final Spell spell) {
+    public CastMeteorAction(WorldManager worldManager, Spell spell) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
 
-    public void addAdditionalBuff(final AbstractBuff buff) {
+    public void addAdditionalBuff(AbstractBuff buff) {
         if (buff != null) {
             this.additionalBuffs.add(buff);
         }
@@ -122,43 +125,17 @@ class CastMeteorAction extends EntityAction {
         path.addListener(new MotionPathListener() {
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
-                    this.landingEffect();
+                    final Float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
+                    
+                    final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
+                    buffControl.getBuffs().addAll(additionalBuffs);
+                    final SplashAction splash = new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
+                    splash.setSpatial(meteor);
+                    splash.update(0f);
                     this.destroy();
                 }
             }
-
-            private void landingEffect() {
-                final float maxDistance = 30f;
-                final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(meteor, maxDistance);
-                if (spatialsOnDistance == null) {
-                    return;
-                }
-
-                for (SpatialDistancePair pair : spatialsOnDistance) {
-                    final InfluenceInterfaceControl targetInterface = pair.spatial.getControl(InfluenceInterfaceControl.class);
-                    if (targetInterface == null) {
-                        continue;
-                    }
-
-                    // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
-                    final float distanceFactor = 1f - (pair.distance / maxDistance);
-                    final Float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
-                    final float damage = baseDamage * distanceFactor;
-
-                    final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
-                    buffControl.getBuffs().addAll(additionalBuffs);
-
-                    CharacterInteraction.harm(casterInterface, targetInterface, damage, buffControl.getBuffs(), true);
-
-                    final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
-                    final Float impulseFactor = meteor.getUserData(UserDataStrings.IMPULSE_FACTOR);
-                    final Vector3f impulse = pair.spatial.getLocalTranslation().subtract(meteor.getLocalTranslation())
-                            .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
-
-                    physics.applyImpulse(impulse);
-                }
-            }
-
+            
             private void destroy() {
                 worldManager.removeEntity(entityId, "collision");
             }
@@ -227,6 +204,7 @@ class MeteorNodeBuilder extends NodeBuilder {
 }
 
 class MeteorRemovalAction implements RemovalEventAction {
+
     private ParticleEmitter emitter;
     private AudioNode sound;
 
