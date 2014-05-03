@@ -15,6 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.WorldManager;
+import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
@@ -69,45 +70,14 @@ public class Plasmagun extends Spell {
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f location) {
-                final TripleShootAction shoot = new TripleShootAction(spell, Spell.worldManager);
-                return shoot;
+                final ChannelingSpellAction channel = new ChannelingSpellAction(spell, 3, 0.12f, new CastProjectileAction(spell, worldManager), true);                
+                return channel;
             }
         };
 
         spell.nodeBuilder = new PlasmaBuilder();
 
         return spell;
-    }
-}
-
-class TripleShootAction extends EntityAction {
-
-    private Spell spell;
-    private WorldManager worldManager;
-
-    TripleShootAction(Plasmagun spell, WorldManager worldManager) {
-        this.spell = spell;
-        this.worldManager = worldManager;
-    }
-
-    @Override
-    public boolean update(float tpf) {
-        final ActionQueueControl queue = super.spatial.getControl(ActionQueueControl.class);
-        final float delayTime = 0.12f;
-
-        final CastProjectileAction plasma1 = new CastProjectileAction(spell, this.worldManager);
-        final DelayAction delay2 = new DelayAction(delayTime);
-        final CastProjectileAction plasma2 = new CastProjectileAction(spell, this.worldManager);
-        final DelayAction delay3 = new DelayAction(delayTime);
-        final CastProjectileAction plasma3 = new CastProjectileAction(spell, this.worldManager);
-
-        queue.enqueueAction(plasma1);
-        queue.enqueueAction(delay2);
-        queue.enqueueAction(plasma2);
-        queue.enqueueAction(delay3);
-        queue.enqueueAction(plasma3);
-
-        return false;
     }
 }
 

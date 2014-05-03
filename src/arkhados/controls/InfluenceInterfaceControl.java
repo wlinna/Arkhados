@@ -92,6 +92,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
         this.crowdControlInfluences.add(crowdControlInfluence);
 
+        // TODO: Check whether other buffs stop casting or not
         if (crowdControlInfluence instanceof IncapacitateCC) {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             super.spatial.getControl(SpellCastControl.class).setCasting(false);
@@ -179,7 +180,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-        if (this.canMove() && !super.spatial.getControl(SpellCastControl.class).isCasting()) {
+        final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+        if (this.canMove() && !castControl.isCasting() && !castControl.isChanneling()) {
             if (this.isServer) {
                 final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);                
                 if (this.canControlMovement()) {

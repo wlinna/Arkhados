@@ -55,7 +55,7 @@ public class Machinegun extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ShootBulletAction shoot = new ShootBulletAction(spell, worldManager);                
-                ChannelingSpellAction channeling = new ChannelingSpellAction(10, 0.2f, shoot);
+                ChannelingSpellAction channeling = new ChannelingSpellAction(spell, 10, 0.2f, shoot);
                 return channeling;
             }
         };

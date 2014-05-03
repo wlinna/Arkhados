@@ -151,11 +151,11 @@ class AmmunitionLoader {
     }
 
     public static AmmunitionLoader Machinegun() {
-        return new AmmunitionLoader(1, 1, 20, 40);
+        return new AmmunitionLoader(1, 1, 10, 25);
     }
 
     public static AmmunitionLoader Plasmagun() {
-        return new AmmunitionLoader(3, 3, 0, 20);
+        return new AmmunitionLoader(3, 6, 0, 9);
     }
 
     public static AmmunitionLoader Rocket() {

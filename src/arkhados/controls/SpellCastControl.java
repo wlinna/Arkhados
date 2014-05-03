@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import arkhados.WorldManager;
 import arkhados.actions.CastingSpellAction;
+import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
@@ -96,7 +97,7 @@ public class SpellCastControl extends AbstractControl {
     }
 
     /**
-     * Interrupt spell casting so that spell's cooldown is not resetted
+     * Interrupt spell casting so that spell's cooldown is not resetted.
      */
     public void safeInterrupt() {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
@@ -105,6 +106,10 @@ public class SpellCastControl extends AbstractControl {
             final Spell spell = ((CastingSpellAction) action).getSpell();
             super.spatial.getControl(ActionQueueControl.class).clear();
             this.setCooldown(spell.getName(), 0f);
+        } else if (action != null && action instanceof ChannelingSpellAction) {
+            ChannelingSpellAction channeling = (ChannelingSpellAction) action;
+            this.putOnCooldown(channeling.getSpell());
+            super.spatial.getControl(ActionQueueControl.class).clear();
         }
     }
 
@@ -284,7 +289,12 @@ public class SpellCastControl extends AbstractControl {
     public boolean isCasting() {
         return casting;
     }
-
+    
+    public boolean isChanneling() {
+        EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
+        return action instanceof ChannelingSpellAction;
+    }
+    
     public void setCasting(boolean casting) {
         this.casting = casting;
     }
