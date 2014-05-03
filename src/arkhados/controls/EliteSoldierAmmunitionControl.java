@@ -82,9 +82,9 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
         if ("Shotgun".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).hasEnough(6);
         } else if ("Machinegun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).hasEnough(1);
+            return ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).hasEnough(1);
         } else if ("Plasmagun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).hasEnough(3);
+            return ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).hasEnough(3);
         } else if ("Rocket Launcher".equals(spell.getName())
                 || "Rocket Jump".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).hasEnough(1);
@@ -151,11 +151,11 @@ class AmmunitionLoader {
     }
 
     public static AmmunitionLoader Machinegun() {
-        return new AmmunitionLoader(4, 1, 40, 40);
+        return new AmmunitionLoader(1, 1, 20, 40);
     }
 
     public static AmmunitionLoader Plasmagun() {
-        return new AmmunitionLoader(3, 1, 0, 20);
+        return new AmmunitionLoader(3, 3, 0, 20);
     }
 
     public static AmmunitionLoader Rocket() {

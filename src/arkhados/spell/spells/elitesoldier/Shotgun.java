@@ -17,40 +17,24 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.EntityEventControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
-import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
+import arkhados.spell.PelletBuilder;
 import arkhados.spell.Spell;
-import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
-import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioNode;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
 
 /**
  * EliteSoldiers's Shotgun (M1) spell. Fires 6 pellets that spread out.
  */
 public class Shotgun extends Spell {
+
     {
         this.iconName = "shotgun.png";
     }
@@ -73,7 +57,7 @@ public class Shotgun extends Spell {
             }
         };
 
-        spell.nodeBuilder = new PelletBuilder();
+        spell.nodeBuilder = new PelletBuilder(30);
 
         return spell;
     }
@@ -90,14 +74,11 @@ class CastShotgunAction extends EntityAction {
     CastShotgunAction(Shotgun spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
-
     }
 
     @Override
     public boolean update(float tpf) {
         final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
-
-        float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
         final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
@@ -129,146 +110,5 @@ class CastShotgunAction extends EntityAction {
 
         Globals.effectHandler.sendEffect("Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
         return false;
-    }
-}
-
-class PelletBuilder extends NodeBuilder {
-
-    private ParticleEmitter createWhiteTrailEmitter() {
-        final ParticleEmitter trail = new ParticleEmitter("trail-emitter", ParticleMesh.Type.Triangle, 200);
-        final Material materialWhite = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialWhite.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
-        trail.setMaterial(materialWhite);
-        trail.setImagesX(2);
-        trail.setImagesY(2);
-        trail.setSelectRandomImage(true);
-        trail.setStartColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 0.9f));
-        trail.setEndColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 0.9f));
-        trail.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-        trail.setStartSize(0.5f);
-        trail.setEndSize(0.1f);
-        trail.setHighLife(0.1f);
-        trail.setLowLife(0.1f);
-        trail.setParticlesPerSec(100);
-        trail.setRandomAngle(true);
-        return trail;
-    }
-
-    @Override
-    public Node build() {
-        final Sphere sphere = new Sphere(8, 8, 0.3f);
-
-        final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
-//        projectileGeom.setCullHint(Spatial.CullHint.Always);
-
-        final Node node = new Node("projectile");
-        node.attachChild(projectileGeom);
-
-        // TODO: Give at least bit better material
-        final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Black);
-        node.setMaterial(material);
-
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
-        node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, 30f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-
-        if (NodeBuilder.worldManager.isClient()) {
-            final ParticleEmitter trail = this.createWhiteTrailEmitter();
-            node.attachChild(trail);
-
-            // TODO: Enable these later to add removalAction
-
-//            node.addControl(new EntityEventControl());
-            /**
-             * Here we specify what happens on client side when pellet is
-             * removed. In this case we want explosion effect.
-             */
-//            final PelletRemovalAction removalAction = new PelletRemovalAction(assetManager);
-//            removalAction.setSmokeTrail(trail);
-//            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
-        }
-
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(1.0f);
-        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
-        /**
-         * We don't want projectiles to collide with each other so we give them
-         * their own collision group and prevent them from colliding with that
-         * group.
-         */
-        physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_NONE);
-        physicsBody.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_NONE);
-
-        /**
-         * Add collision with characters
-         */
-        final GhostControl characterCollision = new GhostControl(collisionShape);
-        characterCollision.setCollisionGroup(GhostControl.COLLISION_GROUP_16);
-        characterCollision.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
-        node.addControl(characterCollision);
-        node.addControl(physicsBody);
-
-        node.addControl(new ProjectileControl());
-
-        final SpellBuffControl buffControl = new SpellBuffControl();
-        node.addControl(buffControl);
-
-        return node;
-    }
-}
-
-class PelletRemovalAction implements RemovalEventAction {
-
-    private ParticleEmitter whiteTrail;
-    private AssetManager assetManager;
-
-    public PelletRemovalAction(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
-
-    private void leaveSmokeTrail(final Node worldRoot, Vector3f worldTranslation) {
-        this.whiteTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(this.whiteTrail);
-        this.whiteTrail.setLocalTranslation(worldTranslation);
-        this.whiteTrail.addControl(new TimedExistenceControl(0.5f));
-    }
-
-    private void createSmokePuff(final Node worldRoot, Vector3f worldTranslation) {
-        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(this.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", this.assetManager.loadTexture("Effects/flame.png"));
-        smokePuff.setMaterial(materialGray);
-        smokePuff.setImagesX(2);
-        smokePuff.setImagesY(2);
-        smokePuff.setSelectRandomImage(true);
-        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.2f));
-        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
-
-        smokePuff.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
-        smokePuff.getParticleInfluencer().setVelocityVariation(1f);
-
-        smokePuff.setStartSize(2.0f);
-        smokePuff.setEndSize(6.0f);
-        smokePuff.setGravity(Vector3f.ZERO);
-        smokePuff.setLowLife(0.75f);
-        smokePuff.setHighLife(1f);
-        smokePuff.setParticlesPerSec(0);
-
-        smokePuff.setRandomAngle(true);
-
-        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4.0f));
-        worldRoot.attachChild(smokePuff);
-        smokePuff.setLocalTranslation(worldTranslation);
-        smokePuff.emitAllParticles();
-    }
-
-    public void exec(WorldManager worldManager, String reason) {
-//        this.leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-//        this.createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
-    }
-
-    public void setSmokeTrail(ParticleEmitter smoke) {
-        this.whiteTrail = smoke;
     }
 }

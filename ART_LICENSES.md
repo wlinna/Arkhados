@@ -30,6 +30,7 @@ See CREDITS.md for attributions.
 - purifying_flame.png
 - plasma.png
 - shotgun.png
+- machine_gun.png
 - rocket_launger.png
 - MeteorBoom.wav
 - All DamagingDagger related files
