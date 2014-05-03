@@ -196,7 +196,7 @@ class PlasmaBuilder extends NodeBuilder {
         final SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
         
-        buffControl.addBuff(new SlowCC(-1, 11f, 0.3f));
+        buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
         return node;
     }
 }
