@@ -61,7 +61,7 @@ public class RocketLauncher extends Spell {
     public static Spell create() {
         final float cooldown = 4f;
         final float range = 80f;
-        final float castTime = 0.5f;
+        final float castTime = 0.3f;
 
         final RocketLauncher spell = new RocketLauncher("Rocket Launcher", cooldown, range, castTime);
 
@@ -130,7 +130,7 @@ class RocketBuilder extends NodeBuilder {
 
     @Override
     public Node build() {
-        final Sphere sphere = new Sphere(32, 32, 1.0f);
+        final Sphere sphere = new Sphere(32, 32, 1);
 
         final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
@@ -146,7 +146,7 @@ class RocketBuilder extends NodeBuilder {
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
         node.setUserData(UserDataStrings.DAMAGE, 150f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 15000f);
+        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 23000f);
 
         if (NodeBuilder.worldManager.isClient()) {
             final ParticleEmitter fire = this.createFireEmitter();
@@ -168,7 +168,7 @@ class RocketBuilder extends NodeBuilder {
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(8.0f);
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(10.0f);
         final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them

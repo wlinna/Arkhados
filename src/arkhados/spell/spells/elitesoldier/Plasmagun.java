@@ -65,7 +65,7 @@ public class Plasmagun extends Spell {
     public static Spell create() {
         final float cooldown = 4f;
         final float range = 80f;
-        final float castTime = 0.5f;
+        final float castTime = 0.3f;
 
         final Plasmagun spell = new Plasmagun("Plasmagun", cooldown, range, castTime);
 
@@ -160,7 +160,7 @@ class PlasmaBuilder extends NodeBuilder {
         node.addControl(physicsBody);
 
         final ProjectileControl projectileControl = new ProjectileControl();        
-        final SplashAction splash = new SplashAction(23f, 20f, DistanceScaling.CONSTANT, null);
+        final SplashAction splash = new SplashAction(23f, 23f, DistanceScaling.CONSTANT, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
         node.addControl(projectileControl);

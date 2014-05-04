@@ -74,7 +74,7 @@ public class PelletBuilder extends NodeBuilder {
         final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
+        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 170f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
         node.setUserData(UserDataStrings.DAMAGE, this.damage);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
@@ -91,7 +91,7 @@ public class PelletBuilder extends NodeBuilder {
             //            removalAction.setSmokeTrail(trail);
             //            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(1.0f);
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(2);
         final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
