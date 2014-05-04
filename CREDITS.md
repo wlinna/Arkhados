@@ -63,6 +63,7 @@ for following spells' icons:
 - Firewalk
 - Purifying Flame
 - Leap
+- Like a Pro
 
 Icons are licensed under CC-BY 3.0. Original icons can be found from
 following Spell icon collection pages:

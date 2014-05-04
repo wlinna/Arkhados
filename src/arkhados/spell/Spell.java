@@ -17,6 +17,7 @@ package arkhados.spell;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.ProjectileControl;
+import arkhados.spell.spells.elitesoldier.LikeAPro;
 import arkhados.spell.spells.elitesoldier.Machinegun;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
@@ -129,6 +130,9 @@ public abstract class Spell {
         
         final Spell rocketLauncher = RocketLauncher.create();
         Spells.put(rocketLauncher.getName(), rocketLauncher);
+        
+        final Spell likeAPro = LikeAPro.create();
+        Spells.put(likeAPro.getName(), likeAPro);
     }
 
     /**

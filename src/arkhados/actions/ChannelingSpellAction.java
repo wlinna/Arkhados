@@ -15,6 +15,7 @@
 package arkhados.actions;
 
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -23,8 +24,6 @@ import com.jme3.scene.Spatial;
  *
  * @author william
  */
-
-
 public class ChannelingSpellAction extends EntityAction {
     private Spell spell;
     private float timer = 0;
@@ -33,7 +32,8 @@ public class ChannelingSpellAction extends EntityAction {
     private float actionFrequency;
     private EntityAction action;
     private CharacterPhysicsControl physics;
-    
+    private InfluenceInterfaceControl inluenceControl;
+
     public ChannelingSpellAction(Spell spell, float maxTime, float actionFrequency, EntityAction action) {
         this.timeLeft = maxTime;
         this.actionFrequency = actionFrequency;
@@ -42,7 +42,7 @@ public class ChannelingSpellAction extends EntityAction {
         this.spell = spell;
         this.repeatsLeft = 0;
     }
-    
+
     public ChannelingSpellAction(Spell spell, int repeatCount, float actionFrequency, EntityAction action, boolean whatever) {
         this.spell = spell;
         this.repeatsLeft = repeatCount;
@@ -56,9 +56,9 @@ public class ChannelingSpellAction extends EntityAction {
         super.setSpatial(spatial); //To change body of generated methods, choose Tools | Templates.
         this.action.setSpatial(spatial);
         this.physics = spatial.getControl(CharacterPhysicsControl.class);
+        this.inluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
     }
-    
-    
+
     @Override
     public boolean update(float tpf) {
         this.timeLeft -= tpf;
@@ -68,16 +68,17 @@ public class ChannelingSpellAction extends EntityAction {
             action.update(tpf); // tpf should not matter for action
             --this.repeatsLeft;
         }
-        
+
         if (this.repeatsLeft <= 0 && this.timeLeft <= 0) {
             return false;
         }
-        
-        this.physics.setWalkDirection(Vector3f.ZERO);
+        if (!this.inluenceControl.isAbleToCastWhileMoving()) {
+            this.physics.setWalkDirection(Vector3f.ZERO);
+        }
         return true;
-    }    
+    }
 
     public Spell getSpell() {
         return this.spell;
-    }    
+    }
 }

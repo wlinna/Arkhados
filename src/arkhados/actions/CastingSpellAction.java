@@ -21,6 +21,7 @@ import arkhados.controls.UserInputControl;
 import arkhados.spell.Spell;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -32,6 +33,7 @@ public class CastingSpellAction extends EntityAction {
     private final Spell spell;
     private Vector3f movementDirection = null;
     private boolean followedByAnotherAnimation = false;
+    private InfluenceInterfaceControl influenceInterface;
 
     public CastingSpellAction(final Spell spell) {
         this.spell = spell;
@@ -43,6 +45,12 @@ public class CastingSpellAction extends EntityAction {
         this.followedByAnotherAnimation = followedByAnother;
     }
 
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        this.influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);        
+    }
+    
     @Override
     public boolean update(float tpf) {
         this.delay -= tpf;
@@ -58,7 +66,7 @@ public class CastingSpellAction extends EntityAction {
         }
         super.spatial.getControl(SpellCastControl.class).setCasting(true);
 
-        if (!this.spell.canMoveWhileCasting()) {
+        if (!this.spell.canMoveWhileCasting() && !this.influenceInterface.isAbleToCastWhileMoving()) {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
         } else {
             if (this.spell.moveTowardsTarget()) {

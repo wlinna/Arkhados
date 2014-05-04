@@ -57,7 +57,9 @@ public class UserInputControl extends AbstractControl {
             newWalkDirection.normalizeLocal().multLocal(speedMovement);
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
             if (down != 0 || right != 0) {
-                super.spatial.getControl(SpellCastControl.class).safeInterrupt();
+                if (!influenceInterface.isAbleToCastWhileMoving()) {
+                    super.spatial.getControl(SpellCastControl.class).safeInterrupt();
+                }
                 super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
             }
         }

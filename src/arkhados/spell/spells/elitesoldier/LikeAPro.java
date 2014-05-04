@@ -16,10 +16,9 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
-import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -32,7 +31,7 @@ import com.jme3.scene.Node;
 public class LikeAPro extends Spell {
 
     {
-        this.iconName = "survival_instinct.png";
+        this.iconName = "like_a_pro.png";
     }
 
     public LikeAPro(String name, float cooldown, float range, float castTime) {
@@ -57,33 +56,4 @@ public class LikeAPro extends Spell {
         spell.nodeBuilder = null;
         return spell;
     }
-}
-
-class AbleToCastWhileMovingBuff extends AbstractBuff {
-
-    private boolean set = false;
-
-
-    public AbleToCastWhileMovingBuff(long buffGroupId, float duration) {
-        super(buffGroupId, duration);
-    }
-
-    @Override
-    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
-        super.attachToCharacter(influenceInterface);        
-    }
-
-    @Override
-    public void update(float time) {
-        super.update(time);
-        if (this.set) {
-            return;
-        }
-        this.set = true;       
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-    }        
 }

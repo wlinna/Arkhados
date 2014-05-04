@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.FearCC;
@@ -41,8 +42,8 @@ import java.util.List;
  */
 public class InfluenceInterfaceControl extends AbstractControl {
 
-    private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<CrowdControlBuff>();
-    private List<AbstractBuff> otherBuffs = new ArrayList<AbstractBuff>();
+    private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<>();
+    private List<AbstractBuff> otherBuffs = new ArrayList<>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
@@ -181,9 +182,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
 
         final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
-        if (this.canMove() && !castControl.isCasting() && !castControl.isChanneling()) {
+        if (this.canMove() && !castControl.isCasting() && !castControl.isChanneling() && !this.isAbleToCastWhileMoving()) {
             if (this.isServer) {
-                final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);                
+                final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
                 if (this.canControlMovement()) {
                     super.spatial.getControl(UserInputControl.class).restoreWalking();
                 } else {
@@ -264,5 +265,27 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public List<AbstractBuff> getBuffs() {
         return otherBuffs;
+    }
+
+    private <T extends AbstractBuff> boolean hasBuff(Class<T> buffClass) {
+        if (buffClass.isAssignableFrom(CrowdControlBuff.class)) {
+            for (AbstractBuff buff : this.crowdControlInfluences) {
+                if (buffClass.isAssignableFrom(buff.getClass())) {
+                    return true;
+                }
+            }
+        } else {
+            for (AbstractBuff buff : this.getBuffs()) {
+                if (buffClass.isAssignableFrom(buff.getClass())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    public boolean isAbleToCastWhileMoving() {  
+        return this.hasBuff(AbleToCastWhileMovingBuff.class);
     }
 }

@@ -32,6 +32,7 @@ See CREDITS.md for attributions.
 - shotgun.png
 - machine_gun.png
 - rocket_launger.png
+- like_a_pro.png
 - MeteorBoom.wav
 - All DamagingDagger related files
 
