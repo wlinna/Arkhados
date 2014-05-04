@@ -48,7 +48,7 @@ public class Machinegun extends Spell {
     public static Spell create() {
         final float cooldown = 2f;
         final float range = 100f;
-        final float castTime = 0.5f;
+        final float castTime = 0.3f;
 
         final Machinegun spell = new Machinegun("Machinegun", cooldown, range, castTime);
 
@@ -80,8 +80,10 @@ class ShootBulletAction extends EntityAction {
     public boolean update(float tpf) {
         final EliteSoldierAmmunitionControl ammunitionControl = super.spatial.getControl(EliteSoldierAmmunitionControl.class);
         if (!ammunitionControl.validateSpellCast(null, spell)) {
-            ActionQueueControl actionQueue = super.spatial.getControl(ActionQueueControl.class);
-            actionQueue.clear();
+            EntityAction current = super.spatial.getControl(ActionQueueControl.class).getCurrent();
+            if (current instanceof ChannelingSpellAction) {
+                ((ChannelingSpellAction) current).signalEnd();
+            }            
             return false;
         }
         

@@ -33,6 +33,10 @@ public class ChannelingSpellAction extends EntityAction {
     private EntityAction action;
     private CharacterPhysicsControl physics;
     private InfluenceInterfaceControl inluenceControl;
+    
+    {
+        name = null;
+    }
 
     public ChannelingSpellAction(Spell spell, float maxTime, float actionFrequency, EntityAction action) {
         this.timeLeft = maxTime;
@@ -77,8 +81,15 @@ public class ChannelingSpellAction extends EntityAction {
         }
         return true;
     }
+    
+    public void signalEnd() {
+        this.repeatsLeft = 0;
+        this.timeLeft = 0;
+    }
 
     public Spell getSpell() {
         return this.spell;
     }
+    
+    
 }
