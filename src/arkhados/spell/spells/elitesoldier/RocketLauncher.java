@@ -51,6 +51,7 @@ import com.jme3.scene.shape.Sphere;
 public class RocketLauncher extends Spell {
     {
         this.iconName = "rocket_launcher.png";
+        this.setMoveTowardsTarget(false);
     }
 
     public RocketLauncher(String name, float cooldown, float range, float castTime) {

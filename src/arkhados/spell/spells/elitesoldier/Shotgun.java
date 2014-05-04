@@ -37,6 +37,7 @@ public class Shotgun extends Spell {
 
     {
         this.iconName = "shotgun.png";
+        this.setMoveTowardsTarget(false);
     }
 
     public Shotgun(String name, float cooldown, float range, float castTime) {

@@ -38,6 +38,7 @@ import com.jme3.scene.Spatial;
 public class Machinegun extends Spell {
     {
         this.iconName = "machine_gun.png";
+        this.setMoveTowardsTarget(false);
     }
 
     public Machinegun(String name, float cooldown, float range, float castTime) {

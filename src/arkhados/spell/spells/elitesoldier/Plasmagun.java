@@ -55,6 +55,7 @@ public class Plasmagun extends Spell {
 
     {
         this.iconName = "plasma.png";
+        this.setMoveTowardsTarget(false);
     }
 
     public Plasmagun(String name, float cooldown, float range, float castTime) {
