@@ -120,7 +120,6 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         // HACK: This is only meant for initial implementation testing. Remove this "if" when all round statistics are accessible via GUI
         if (!this.roundTableCreated) {
             this.roundTableCreated = true;
-            this.initializePlayerStatisticsPanels();
         }
     }
 
@@ -218,6 +217,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     public void showRoundStatistics() {
+        this.initializePlayerStatisticsPanels();
         final Client client = this.stateManager.getState(WorldManager.class).getSyncManager().getClient();
         client.send(new BattleStatisticsRequest());
         final Element statisticsLayer = this.screen.findElementByName("layer_statistics");
