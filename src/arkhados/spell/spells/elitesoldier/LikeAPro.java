@@ -19,6 +19,7 @@ import arkhados.actions.castspellactions.CastSelfBuffAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
+import arkhados.spell.buffs.SpeedBuff;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -48,7 +49,8 @@ public class LikeAPro extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 CastSelfBuffAction buffAction = new CastSelfBuffAction();
-                buffAction.addBuff(new AbleToCastWhileMovingBuff(-1, 5f));
+                buffAction.addBuff(new AbleToCastWhileMovingBuff(-1, 5));
+                buffAction.addBuff(new SpeedBuff(false, 6, -1, 5));
                 return buffAction;
             }
         };

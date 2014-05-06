@@ -182,7 +182,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
 
         final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
-        if (this.canMove() && !castControl.isCasting() && !castControl.isChanneling() && !this.isAbleToCastWhileMoving()) {
+        if (this.canMove() && !castControl.isCasting() && !castControl.isChanneling()) {
             if (this.isServer) {
                 final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
                 if (this.canControlMovement()) {
@@ -283,9 +283,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
         return false;
     }
-    
-    
-    public boolean isAbleToCastWhileMoving() {  
+
+    public boolean isAbleToCastWhileMoving() {
         return this.hasBuff(AbleToCastWhileMovingBuff.class);
     }
 }
