@@ -41,13 +41,13 @@ public class EliteSoldier extends NodeBuilder {
         
         // TODO: Change settings to EliteSoldier's.
         Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Mage.j3o");
-        final float movementSpeed = 35f;
+        final float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
         final float radius = 5.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        final float health = 1700f;
+        final float health = 1800f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
@@ -70,7 +70,7 @@ public class EliteSoldier extends NodeBuilder {
         final EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
         entity.addControl(ammunitionControl);
         
-        final SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
+        final SpellCastControl spellCastControl = new SpellCastControl(EliteSoldier.worldManager);
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
