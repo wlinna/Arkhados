@@ -16,6 +16,7 @@ package arkhados.controls;
 
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
@@ -56,12 +57,18 @@ public class InfluenceInterfaceControl extends AbstractControl {
      *
      * @param damage
      */
-    public float doDamage(final float damage, final boolean canBreakCC) {
+    public float doDamage(float damage, final boolean canBreakCC) {
         if (this.dead) {
             return 0f;
         }
         Float healthBefore = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        // TODO: Damage mitigation by shields
+        // TODO: Generic damage mitigation by shields
+        for (AbstractBuff buff : this.getBuffs()) {
+            if (buff instanceof ArmorBuff) {
+                damage = ((ArmorBuff) buff).mitigate(damage);
+                break;
+            }
+        }
         float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
         super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         if (health == 0.0f) {
