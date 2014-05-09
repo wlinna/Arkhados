@@ -20,6 +20,7 @@ import arkhados.controls.ProjectileControl;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
 import arkhados.spell.spells.elitesoldier.Machinegun;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
+import arkhados.spell.spells.elitesoldier.RocketJump;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
 import arkhados.spell.spells.elitesoldier.Shotgun;
 import arkhados.spell.spells.embermage.EmberCircle;
@@ -59,7 +60,7 @@ public abstract class Spell {
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
      */
-    private static HashMap<String, Spell> Spells = new HashMap<String, Spell>();
+    private static HashMap<String, Spell> Spells = new HashMap<>();
 
     /**
      * Creates each spell and saves them to Spells-map. Should be called only
@@ -133,6 +134,9 @@ public abstract class Spell {
         
         final Spell likeAPro = LikeAPro.create();
         Spells.put(likeAPro.getName(), likeAPro);
+        
+        final Spell rocketJump = RocketJump.create();
+        Spells.put(rocketJump.getName(), rocketJump);
     }
 
     /**

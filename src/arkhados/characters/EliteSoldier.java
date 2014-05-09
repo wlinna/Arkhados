@@ -82,8 +82,7 @@ public class EliteSoldier extends NodeBuilder {
         spellCastControl.putSpell(Spell.getSpells().get("Plasmagun"), InputMappingStrings.Q);
         spellCastControl.putSpell(Spell.getSpells().get("Rocket Launcher"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Like a Pro"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
-        spellCastControl.putSpell(Spell.getSpells().get("Ignite"), null);
+        spellCastControl.putSpell(Spell.getSpells().get("Rocket Jump"), InputMappingStrings.SPACE);        
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -105,7 +104,7 @@ public class EliteSoldier extends NodeBuilder {
         animControl.addSpellAnimation("Plasmagun", animationData);
         animControl.addSpellAnimation("Rocket Launcher", animationData);
         animControl.addSpellAnimation("Like a Pro", null);
-        animControl.addSpellAnimation("Firewalk", animationData);
+        animControl.addSpellAnimation("Rocket Jump", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
 

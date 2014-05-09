@@ -34,6 +34,7 @@ public class SplashAction extends EntityAction {
 
     private float radius;
     private float baseDamage;
+    private Float customImpulse;
     private DistanceScaling damageDistance;
     private List<AbstractBuff> splashBuffs;
     private boolean splashBuffsOnly = false;
@@ -43,6 +44,16 @@ public class SplashAction extends EntityAction {
         this.baseDamage = baseDamage;
         this.damageDistance = damageDistanceScaling;
         this.splashBuffs = buffsToApply;
+
+        this.customImpulse = null;
+    }
+
+    public SplashAction(float radius, float baseDamage, float impulse, DistanceScaling damageDistance, List<AbstractBuff> splashBuffs) {
+        this.radius = radius;
+        this.baseDamage = baseDamage;
+        this.customImpulse = impulse;
+        this.damageDistance = damageDistance;
+        this.splashBuffs = splashBuffs;
     }
 
     @Override
@@ -86,7 +97,12 @@ public class SplashAction extends EntityAction {
             CharacterInteraction.harm(casterInterface, targetInterface, damage, buffsToApply, true);
 
             final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
-            final Float impulseFactor = super.spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
+            Float impulseFactor;
+            if (this.customImpulse == null) {
+                impulseFactor = super.spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
+            } else {
+                impulseFactor = this.customImpulse;
+            }
             final Vector3f impulse = pair.spatial.getLocalTranslation().subtract(super.spatial.getLocalTranslation())
                     .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
 
