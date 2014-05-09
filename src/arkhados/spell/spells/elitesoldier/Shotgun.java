@@ -109,7 +109,7 @@ class CastShotgunAction extends EntityAction {
             projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
         }
 
-        Globals.effectHandler.sendEffect("Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
+        Globals.effectHandler.sendEffect("simple-sound-effect", "Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
         return false;
     }
 }

@@ -12,36 +12,28 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.effects;
 
-package arkhados.messages.effect;
-
+import arkhados.Globals;
+import arkhados.controls.TimedExistenceControl;
+import com.jme3.audio.AudioNode;
 import com.jme3.math.Vector3f;
-import com.jme3.network.AbstractMessage;
-import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Node;
 
 /**
  *
  * @author william
  */
+public class SimpleSoundEffect implements WorldEffect {
 
-@Serializable
-public class SoundEffectMessage extends AbstractMessage {
-    private String soundName;
-    private Vector3f location; 
-
-    public SoundEffectMessage() {
+    @Override
+    public void execute(Node root, Vector3f location, String path) {
+        AudioNode sound = new AudioNode(Globals.assetManager, path);
+        sound.setPositional(true);
+        sound.setLocalTranslation(location);
+        sound.addControl(new TimedExistenceControl(sound.getAudioData().getDuration()));
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
+        sound.play();
     }
-
-    public SoundEffectMessage(String soundName, Vector3f effectLocation) {
-        this.location = effectLocation;
-        this.soundName = soundName;
-    }
-
-    public String getSoundName() {
-        return soundName;
-    }
-
-    public Vector3f getLocation() {
-        return location;
-    }        
 }

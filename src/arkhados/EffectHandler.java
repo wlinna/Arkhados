@@ -14,14 +14,17 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.messages.effect.SoundEffectMessage;
+import arkhados.effects.RocketExplosionEffect;
+import arkhados.effects.SimpleSoundEffect;
+import arkhados.effects.WorldEffect;
+import arkhados.messages.effect.EffectMessage;
 import com.jme3.app.Application;
-import com.jme3.audio.AudioNode;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import com.jme3.network.Server;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 /**
@@ -32,56 +35,51 @@ public class EffectHandler implements MessageListener {
 
     private Application app;
     private Server server = null;
+    private WorldManager worldManager;
+    private HashMap<String, WorldEffect> effects = new HashMap<>();
 
-    public EffectHandler(Application app) {
+    {
+        this.effects.put("rocket-explosion", new RocketExplosionEffect());
+        this.effects.put("simple-sound-effect", new SimpleSoundEffect());
+    }
+
+    public EffectHandler(Application app, WorldManager worldManager) {
         this.app = app;
+        this.worldManager = worldManager;
     }
 
     public EffectHandler(Application app, Server server) {
         this.app = app;
         this.server = server;
     }
-    
-    
 
     @Override
     public void messageReceived(Object source, Message m) {
-        if (m instanceof SoundEffectMessage) {
-            this.soundEffect((SoundEffectMessage) m);
+        if (m instanceof EffectMessage) {
+            this.effect((EffectMessage) m);
         }
     }
 
-    /**
-     * Plays sent sound effect on client side
-     *
-     * @param message
-     */
-    private void soundEffect(final SoundEffectMessage message) {
+    private void effect(final EffectMessage message) {
+        final WorldEffect worldEffect = effects.get(message.getEffectName());
+        if (worldEffect == null) {
+            return;
+        }
+        
         this.app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                AudioNode sound = new AudioNode(Globals.assetManager, message.getSoundName());
-                sound.setPositional(true);
-                sound.setReverbEnabled(false);
-                sound.setVolume(1f);
-                sound.setLocalTranslation(message.getLocation());
-                sound.play();
+                worldEffect.execute(worldManager.getWorldRoot(), message.getLocation(), message.getParameter());
                 return null;
             }
         });
     }
 
-    /**
-     * Sends sound effect that should be played at client side
-     *
-     * @param effectResource path to sound effect
-     * @param location location where sound effect will be played
-     */
-    public void sendEffect(String effectResource, Vector3f location) {
-        this.server.broadcast(new SoundEffectMessage(effectResource, location));
+    public void sendEffect(String effectName, String effectParameter, Vector3f location) {
+        this.server.broadcast(new EffectMessage(effectName, effectParameter, location));
     }
 
     public void setMessagesToListen(Client client) {
-        client.addMessageListener(this, SoundEffectMessage.class);
+        client.addMessageListener(this, EffectMessage.class);
     }
 }

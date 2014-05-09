@@ -156,7 +156,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         ClientMain.this.stateManager
                 .attach(ClientMain.this.userCommandManager);
         
-        this.effectHandler = new EffectHandler(this);        
+        this.effectHandler = new EffectHandler(this, worldManager);        
     }
 
     @Override

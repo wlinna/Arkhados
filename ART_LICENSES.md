@@ -39,3 +39,4 @@ See CREDITS.md for attributions.
 ## CC-BY-SA 3.0 ##
 
 - All LavaArena related files
+- rocket_jump.jpeg

@@ -15,7 +15,7 @@
 package arkhados.messages;
 
 import arkhados.PlayerData;
-import arkhados.messages.effect.SoundEffectMessage;
+import arkhados.messages.effect.EffectMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.NewRoundMessage;
 import com.jme3.network.serializing.Serializer;
@@ -98,6 +98,6 @@ public class MessageUtils {
         // </UserCommands>
         
         // <Effects>
-        Serializer.registerClass(SoundEffectMessage.class);
+        Serializer.registerClass(EffectMessage.class);
     }
 }

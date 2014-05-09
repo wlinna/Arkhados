@@ -252,14 +252,18 @@ class RocketRemovalAction implements RemovalEventAction {
     }
 
     public void exec(WorldManager worldManager, String reason) {
+        Node node = new Node("rocket-explosion");
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
-        this.leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-        this.createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
+        this.leaveSmokeTrail(node, worldTranslation);
+        this.createSmokePuff(node, worldTranslation);
 
         fire.removeFromParent();
-        worldManager.getWorldRoot().attachChild(fire);
-        fire.setLocalTranslation(worldTranslation);
-        fire.addControl(new TimedExistenceControl(1f));
+        node.attachChild(fire);
+        node.attachChild(this.sound);
+        node.setLocalTranslation(worldTranslation);
+        fire.setLocalTranslation(Vector3f.ZERO);
+        worldManager.getWorldRoot().attachChild(node);
+        node.addControl(new TimedExistenceControl(1f));
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
@@ -275,7 +279,7 @@ class RocketRemovalAction implements RemovalEventAction {
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
-        this.sound.setLocalTranslation(worldTranslation);
+//        this.sound.setLocalTranslation(worldTranslation);        
         this.sound.setVolume(5f);
         this.sound.play();
     }
