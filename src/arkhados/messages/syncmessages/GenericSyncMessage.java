@@ -25,7 +25,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 @Serializable
-public class GenericSyncMessage extends AbstractSyncMessage {
+public class GenericSyncMessage extends StateSyncMessage {
 
     private Vector3f location = new Vector3f();
     private Quaternion rotation = new Quaternion();

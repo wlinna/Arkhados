@@ -27,13 +27,12 @@ import com.jme3.math.Quaternion;
  * @author william
  */
 @Serializable
-public class SyncProjectileMessage extends AbstractSyncMessage {
+public class SyncProjectileMessage extends StateSyncMessage {
     private Vector3f location = new Vector3f();
     private Vector3f velocity = new Vector3f();
     private Quaternion rotation = new Quaternion();
 
     public SyncProjectileMessage() {
-
     }
 
     public SyncProjectileMessage(long id, ProjectileControl control) {
@@ -50,6 +49,4 @@ public class SyncProjectileMessage extends AbstractSyncMessage {
         spatial.getControl(RigidBodyControl.class).setLinearVelocity(this.velocity);
         spatial.getControl(RigidBodyControl.class).setPhysicsRotation(this.rotation);
     }
-
-
 }

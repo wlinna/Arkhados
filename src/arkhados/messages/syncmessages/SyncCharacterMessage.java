@@ -28,7 +28,7 @@ import arkhados.util.UserDataStrings;
  * @author william
  */
 @Serializable
-public class SyncCharacterMessage extends AbstractSyncMessage {
+public class SyncCharacterMessage extends StateSyncMessage {
 
     private Vector3f location = new Vector3f();
     private Vector3f walkDirection = new Vector3f();

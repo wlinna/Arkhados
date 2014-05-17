@@ -24,7 +24,6 @@ import com.jme3.network.serializing.Serializable;
  */
 @Serializable
 public abstract class AbstractSyncMessage extends AbstractMessage {
-
     private long syncId = -1;
 
     public AbstractSyncMessage() {
@@ -36,6 +35,11 @@ public abstract class AbstractSyncMessage extends AbstractMessage {
         this.syncId = id;
     }
 
+    public AbstractSyncMessage(long id, boolean reliable) {
+        super(reliable);
+        this.syncId = id;
+    }
+       
     public abstract void applyData(Object target);
 
     public long getSyncId() {

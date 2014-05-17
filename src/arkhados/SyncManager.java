@@ -40,6 +40,7 @@ import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
+import arkhados.messages.syncmessages.StateSyncMessage;
 import arkhados.messages.syncmessages.SyncCharacterMessage;
 import arkhados.messages.syncmessages.SyncProjectileMessage;
 import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
@@ -62,6 +63,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private float syncTimer = 0.0f;
     private Queue<AbstractSyncMessage> syncQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
+    private long orderNum = 0;
 
     public SyncManager(Application app, Server server) {
         this.app = app;
@@ -74,7 +76,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     }
 
     @Override
-    public void initialize(AppStateManager stateManager, Application app) {        
+    public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         AbstractBuff.setSyncManager(this);
     }
@@ -151,6 +153,14 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         assert (m instanceof AbstractSyncMessage);
         final AbstractSyncMessage message = (AbstractSyncMessage) m;
         if (this.getClient() != null) {
+            if (message instanceof StateSyncMessage) {
+                StateSyncMessage stateMessage = (StateSyncMessage) message;
+                if (stateMessage.getOrderNum() <= this.getCurrentOrderNum()) {
+                    return;
+                } else {
+                    this.setCurrentOrderNum(stateMessage.getOrderNum());
+                }
+            }
             this.app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
                     SyncManager.this.enqueueMessage(message);
@@ -204,6 +214,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     public void clear() {
         this.syncObjects.clear();
         this.syncQueue.clear();
+        this.orderNum = 0;
     }
 
     public void stopListening() {
@@ -227,5 +238,13 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                 SetCooldownMessage.class,
                 ActionMessage.class,
                 BuffMessage.class);
+    }
+
+    private long getCurrentOrderNum() {
+        return this.orderNum;
+    }
+
+    private void setCurrentOrderNum(long orderNum) {
+        this.orderNum = orderNum;
     }
 }
