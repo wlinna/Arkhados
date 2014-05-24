@@ -30,7 +30,7 @@ public abstract class StateSyncMessage extends AbstractSyncMessage{
     }
     
     public StateSyncMessage(long id) {
-        super(id, false);
+        super(id, true);
     }
     
     public void resetGlobalStateSyncMessageCounter() {
