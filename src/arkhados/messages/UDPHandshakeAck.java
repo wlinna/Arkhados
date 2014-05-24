@@ -12,8 +12,10 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
 
+package arkhados.messages;
+
+import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -22,22 +24,8 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public abstract class StateSyncMessage extends AbstractSyncMessage{
-    private transient static long globalStateSyncMessageCounter = 0;
-    private long orderNum = globalStateSyncMessageCounter++;    
-
-    public StateSyncMessage() {
-    }
-    
-    public StateSyncMessage(long id) {
-        super(id, false);
-    }
-    
-    public void resetGlobalStateSyncMessageCounter() {
-        globalStateSyncMessageCounter = 0;
-    }
-
-    public long getOrderNum() {
-        return this.orderNum;
-    }       
+public class UDPHandshakeAck extends AbstractMessage {
+    public UDPHandshakeAck() {
+        super(false);
+    }        
 }

@@ -31,6 +31,8 @@ import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.StartGameMessage;
+import arkhados.messages.UDPHandshakeAck;
+import arkhados.messages.UDPHandshakeRequest;
 import arkhados.util.PlayerDataStrings;
 
 /**
@@ -48,6 +50,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
         this.server = server;
         this.server.addConnectionListener(this);
         this.server.addMessageListener(this,
+                UDPHandshakeRequest.class,
                 ClientLoginMessage.class, ChatMessage.class,
                 StartGameMessage.class,
                 ClientSelectHeroMessage.class,
@@ -57,9 +60,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
     @Override
     public void connectionAdded(Server server, HostedConnection conn) {
         final int clientId = conn.getId();
-        System.out.println("New connection");
         if (!ServerClientData.exists(clientId)) {
-            System.out.println("Adding connection with id: " + clientId);
             ServerClientData.add(clientId);
             final ConnectionEstablishedMessage connectionMessage = new ConnectionEstablishedMessage();
             conn.send(connectionMessage);
@@ -75,7 +76,9 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
 
     @Override
     public void messageReceived(HostedConnection source, Message m) {
-        if (m instanceof ClientLoginMessage) {
+        if (m instanceof UDPHandshakeRequest) {
+            source.send(new UDPHandshakeAck());
+        } else if (m instanceof ClientLoginMessage) {
             final ClientLoginMessage message = (ClientLoginMessage) m;
             final int clientId = source.getId();
 

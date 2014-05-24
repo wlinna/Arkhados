@@ -26,49 +26,95 @@ import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
+import arkhados.messages.UDPHandshakeAck;
+import arkhados.messages.UDPHandshakeRequest;
 import arkhados.ui.hud.ClientHudManager;
+import arkhados.util.Timer;
 import arkhados.util.ValueWrapper;
+import com.jme3.app.Application;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.network.NetworkClient;
 
 /**
  *
  * @author william
  */
-public class ClientNetListener implements MessageListener, ClientStateListener {
+public class ClientNetListener extends AbstractAppState implements MessageListener, ClientStateListener {
 
     private ClientMain app;
     private ValueWrapper<NetworkClient> client;
-    private String name = "";    
+    private String name = "";
+    private Timer udpHandshakeAckTimer = new Timer(1f);
+    private boolean handshakeComplete = false;
 
-    public ClientNetListener(ClientMain app, ValueWrapper<NetworkClient> client) {
-        this.app = app;
+    public ClientNetListener(ValueWrapper<NetworkClient> client) {
         this.client = client;
+    }
+
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app);
+        this.app = (ClientMain) app;
+    }
+    
+    public void reset() {
+        this.udpHandshakeAckTimer.setTimeLeft(1f);
+        this.udpHandshakeAckTimer.setActive(false);
+        this.handshakeComplete = false;
+        
+    }
+
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
+        this.udpHandshakeAckTimer.update(tpf);
+        if (udpHandshakeAckTimer.timeJustEnded()) {
+            this.client.get().send(new UDPHandshakeRequest());
+            this.udpHandshakeAckTimer.setTimeLeft(this.udpHandshakeAckTimer.getOriginal() * 2f);
+        }
     }
 
     @Override
     public void messageReceived(Object source, Message m) {
         if (m instanceof ConnectionEstablishedMessage) {
-            ClientLoginMessage message = new ClientLoginMessage(this.name);
-            this.client.get().send(message);
+            this.client.get().send(new UDPHandshakeRequest());
+            this.udpHandshakeAckTimer.setActive(true);
+            
+        } else if (m instanceof UDPHandshakeAck) {
+            this.udpHandshakeAckTimer.setActive(false);
+            if (!this.handshakeComplete) {
+                ClientLoginMessage message = new ClientLoginMessage(this.name);
+                this.client.get().send(message);
+                this.handshakeComplete = true;
+                this.app.toLobby();
+                this.app.setStatusText("");
+            }
+            
         } else if (m instanceof ServerLoginMessage) {
             ServerLoginMessage message = (ServerLoginMessage) m;
             if (message.isAccepted()) {
                 this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
             }
+            
         } else if (m instanceof PlayerDataTableMessage) {
             PlayerDataTableMessage message = (PlayerDataTableMessage) m;
             this.app.refreshPlayerData(message.getPlayerData());
+            
         } else if (m instanceof ChatMessage) {
             ChatMessage message = (ChatMessage) m;
             this.app.addChat(message.getName(), message.getMessage());
+            
         } else if (m instanceof StartGameMessage) {
             this.app.startGame();
+            
         } else if (m instanceof SetPlayersCharacterMessage) {
-            SetPlayersCharacterMessage message = (SetPlayersCharacterMessage)m;
+            SetPlayersCharacterMessage message = (SetPlayersCharacterMessage) m;
             if (this.app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
                 this.app.getUserCommandManager().setCharacterId(message.getEntityId());
                 System.out.println(String.format("Your entityId: %d", message.getEntityId()));
             }
+            
         } else if (m instanceof BattleStatisticsResponse) {
             final BattleStatisticsResponse message = (BattleStatisticsResponse) m;
             this.app.getStateManager().getState(ClientHudManager.class).updateStatistics(message.getPlayerRoundStatsList());

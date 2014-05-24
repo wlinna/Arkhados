@@ -25,6 +25,7 @@ import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
+import arkhados.messages.UDPHandshakeAck;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
@@ -146,7 +147,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
-        this.listenerManager = new ClientNetListener(this, clientWrapper);
+        this.listenerManager = new ClientNetListener(clientWrapper);
+        this.stateManager.attach(this.listenerManager);
 
         this.stateManager.attach(this.worldManager);
 
@@ -211,7 +213,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.roundManager.configureForClient();
         this.clientWrapper.get().addClientStateListener(this.listenerManager);
         this.clientWrapper.get().addMessageListener(this.listenerManager,
-                ConnectionEstablishedMessage.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
+                ConnectionEstablishedMessage.class, UDPHandshakeAck.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
                 ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
         
         this.effectHandler.setMessagesToListen(this.clientWrapper.get());
@@ -227,8 +229,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         try {
             this.clientWrapper.get().connectToServer(ip, port, port);
             this.clientWrapper.get().start();
-            this.toLobby();
-            this.setStatusText("");
         } catch (IOException ex) {
             this.setStatusText(ex.getMessage());
             Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
