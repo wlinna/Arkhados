@@ -69,8 +69,10 @@ public class WorldManager extends AbstractAppState {
 
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(20f, 0, 20.0f), new Vector3f(-20.0f, 0, -20f),
-        new Vector3f(20f, 0, -20f), new Vector3f(-20f, 0, 20f)
+        new Vector3f(20f, 0, 20.0f), new Vector3f(-50.0f, 0, -50f),
+        new Vector3f(20f, 0, -20f), new Vector3f(-50f, 0, 50f),
+        new Vector3f(20f, 0, -20f), new Vector3f(50f, 0, -50f),
+        new Vector3f(20f, 0, -20f), new Vector3f(50f, 0, 50f)
     };
     private Node worldRoot;
     private AbstractArena arena = new BasicSquareArena();
@@ -304,7 +306,6 @@ public class WorldManager extends AbstractAppState {
     }
 
     public static List<SpatialDistancePair> getSpatialsWithinDistance(Spatial spatial, float distance) {
-        // Find worldRoot first
         Node worldRoot = spatial.getParent();
         while (!"world-root".equals(worldRoot.getName())) {
             worldRoot = worldRoot.getParent();
