@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
+package arkhados.messages.syncmessages.statedata;
 
 import arkhados.controls.SyncInterpolationControl;
 import com.jme3.math.Quaternion;
@@ -25,19 +25,19 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 @Serializable
-public class GenericSyncMessage extends StateSyncMessage {
+public class GenericSyncData extends StateData {
 
     private Vector3f location = new Vector3f();
     private Quaternion rotation = new Quaternion();
 
-    public GenericSyncMessage() {
-    }
+    public GenericSyncData() {
+    }        
 
-    public GenericSyncMessage(long syncId, Spatial spatial) {
-        super(syncId);
+    public GenericSyncData(long syncId, Spatial spatial) {
+        super(syncId);        
         this.location.set(spatial.getLocalTranslation());
         this.rotation.set(spatial.getLocalRotation());
-    }
+    }        
 
     @Override
     public void applyData(Object target) {

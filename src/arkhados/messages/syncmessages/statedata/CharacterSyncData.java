@@ -12,23 +12,24 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
 
+package arkhados.messages.syncmessages.statedata;
+
+import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SyncInterpolationControl;
+import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.SyncInterpolationControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.util.UserDataStrings;
 
 /**
  *
  * @author william
  */
+
 @Serializable
-public class SyncCharacterMessage extends StateSyncMessage {
+public class CharacterSyncData extends StateData {
 
     private Vector3f location = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
@@ -36,12 +37,11 @@ public class SyncCharacterMessage extends StateSyncMessage {
     private Vector3f velocity = new Vector3f();
     private float health;
 
-    public SyncCharacterMessage() {
+    public CharacterSyncData() {        
     }
 
-    public SyncCharacterMessage(long id, Object object) {
-        super(id);
-        Spatial spatial = (Spatial) object;
+    public CharacterSyncData(long id, Spatial spatial) {
+        super(id);        
         this.location.set(spatial.getLocalTranslation());
         this.walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
         this.velocity.set(spatial.getControl(CharacterPhysicsControl.class).getVelocity());

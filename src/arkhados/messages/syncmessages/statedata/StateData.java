@@ -13,21 +13,30 @@
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages.usercommands;
+package arkhados.messages.syncmessages.statedata;
 
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 
 /**
  *
  * @author william
  */
-@Serializable
-public abstract class AbstractUserCommand extends AbstractMessage {
-    public AbstractUserCommand() {
 
+
+@Serializable
+public abstract class StateData {
+    private long syncId = -1;
+
+    public StateData() {
     }
 
-    public abstract boolean validate();
+    public StateData(long syncId) {
+        this.syncId = syncId;
+    }
+            
     public abstract void applyData(Object target);
+
+    public long getSyncId() {
+        return syncId;
+    }
 }

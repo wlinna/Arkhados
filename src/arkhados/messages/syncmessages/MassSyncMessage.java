@@ -14,30 +14,39 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages;
 
+import arkhados.messages.syncmessages.statedata.StateData;
+import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
+import java.util.List;
 
 /**
  *
  * @author william
  */
-
 @Serializable
-public abstract class StateSyncMessage extends AbstractSyncMessage{
-    private transient static long globalStateSyncMessageCounter = 0;
-    private long orderNum = globalStateSyncMessageCounter++;    
+public class MassSyncMessage extends AbstractMessage {
 
-    public StateSyncMessage() {
+    private transient static long globalStateSyncMessageCounter = 0;
+    private long orderNum = globalStateSyncMessageCounter++;
+    private List<StateData> stateData;
+
+    public MassSyncMessage() {
+        super(false);
     }
-    
-    public StateSyncMessage(long id) {
-        super(id, false);
+
+    public List<StateData> getStateData() {
+        return stateData;
     }
-    
+
+    public void setStateData(List<StateData> stateData) {
+        this.stateData = stateData;
+    }
+
     public void resetGlobalStateSyncMessageCounter() {
         globalStateSyncMessageCounter = 0;
     }
 
     public long getOrderNum() {
         return this.orderNum;
-    }       
+    }
 }
