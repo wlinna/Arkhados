@@ -155,10 +155,10 @@ class AmmunitionLoader {
     }
 
     public static AmmunitionLoader Plasmagun() {
-        return new AmmunitionLoader(3, 6, 0, 9);
+        return new AmmunitionLoader(3, 6, 6, 9);
     }
 
     public static AmmunitionLoader Rocket() {
-        return new AmmunitionLoader(1, 7, 1, 4);
+        return new AmmunitionLoader(1, 7, 3, 4);
     }
 }

@@ -44,7 +44,7 @@ public class DeepWounds extends Spell {
 
     public static DeepWounds create() {
         final float cooldown = 8f;
-        final float range = 10f;
+        final float range = 20f;
         final float castTime = 0.3f;
 
         final DeepWounds spell = new DeepWounds("Deep Wounds", cooldown, range, castTime);
@@ -90,7 +90,7 @@ class CastDeepWoundsAction extends EntityAction {
 class ChargeAction extends EntityAction {
 
     private boolean isCharging = false;
-    private final float chargeSpeed = 205f;
+    private final float chargeSpeed = 255f;
     private float distanceMoved = 0f;
     private final float range;
     private Vector3f direction;

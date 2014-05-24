@@ -124,7 +124,7 @@ public class WorldManager extends AbstractAppState {
 
             final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
             final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
-            bf.setBloomIntensity(0.41f);
+            bf.setBloomIntensity(1f);
             bf.setDownSamplingFactor(2f);
             fpp.addFilter(bf);
             this.viewPort.addProcessor(fpp);

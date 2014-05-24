@@ -121,7 +121,7 @@ class MovementSpeedPerHealthMissingBuff extends AbstractBuff {
         Float msCurrent = this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         Float healthMax = this.spatial.getUserData(UserDataStrings.HEALTH_MAX);
         float inverseHealthPercent = 1f - (this.originalHealth / healthMax);
-        msCurrent *= 1 + inverseHealthPercent / 10;
+        msCurrent *= 1 + inverseHealthPercent / 8;
         msCurrent += 5f;
         this.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msCurrent);
     }

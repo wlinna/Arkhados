@@ -74,7 +74,7 @@ public class Dagger extends Spell {
             node.setUserData(UserDataStrings.DAMAGE, 100f);
             node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
-            SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
+            SphereCollisionShape collisionShape = new SphereCollisionShape(6.0f);
             RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
 
             physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
@@ -86,7 +86,7 @@ public class Dagger extends Spell {
 
             node.addControl(new ProjectileControl());
             SpellBuffControl buffControl = new SpellBuffControl();
-            buffControl.addBuff(new SlowCC(-1, 6f, 0.2f));
+            buffControl.addBuff(new SlowCC(-1, 6f, 0.3f));
             node.addControl(buffControl);
 
             return node;
