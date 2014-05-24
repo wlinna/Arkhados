@@ -82,15 +82,16 @@ public class SplashAction extends EntityAction {
             final float damage = baseDamage * damageDistanceFactor;
 
 
-            List<AbstractBuff> buffsToApply;
+            List<AbstractBuff> buffsToApply = null;
             if (this.splashBuffsOnly) {
                 buffsToApply = this.splashBuffs;
             } else {
                 final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);
-                buffsToApply = buffControl.getBuffs();
-
-                if (this.splashBuffs != null) {
-                    buffControl.getBuffs().addAll(this.splashBuffs);
+                if (buffControl != null) {
+                    buffsToApply = buffControl.getBuffs();
+                    if (this.splashBuffs != null) {
+                        buffControl.getBuffs().addAll(this.splashBuffs);
+                    }
                 }
             }
 
