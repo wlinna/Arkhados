@@ -71,7 +71,7 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
         this.udpHandshakeAckTimer.update(tpf);
         if (udpHandshakeAckTimer.timeJustEnded()) {
             this.client.get().send(new UDPHandshakeRequest());
-            this.udpHandshakeAckTimer.setTimeLeft(this.udpHandshakeAckTimer.getOriginal() * 2f);
+            this.udpHandshakeAckTimer.setTimeLeft(this.udpHandshakeAckTimer.getOriginal());
         }
     }
 
@@ -82,7 +82,7 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
             this.udpHandshakeAckTimer.setActive(true);
             
         } else if (m instanceof UDPHandshakeAck) {
-            this.udpHandshakeAckTimer.setActive(false);
+            System.out.println("Received handshake ack");
             if (!this.handshakeComplete) {
                 ClientLoginMessage message = new ClientLoginMessage(this.name);
                 this.client.get().send(message);
@@ -107,6 +107,7 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
             
         } else if (m instanceof StartGameMessage) {
             this.app.startGame();
+            this.udpHandshakeAckTimer.setActive(false);
             
         } else if (m instanceof SetPlayersCharacterMessage) {
             SetPlayersCharacterMessage message = (SetPlayersCharacterMessage) m;

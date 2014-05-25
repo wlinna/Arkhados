@@ -211,6 +211,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         this.clientWrapper.set(Network.createClient());
         this.roundManager.configureForClient();
+        this.listenerManager.reset();
         this.clientWrapper.get().addClientStateListener(this.listenerManager);
         this.clientWrapper.get().addMessageListener(this.listenerManager,
                 ConnectionEstablishedMessage.class, UDPHandshakeAck.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
