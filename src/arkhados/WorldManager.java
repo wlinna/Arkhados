@@ -69,10 +69,10 @@ public class WorldManager extends AbstractAppState {
 
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(20f, 0, 20.0f), new Vector3f(-50.0f, 0, -50f),
-        new Vector3f(20f, 0, -20f), new Vector3f(-50f, 0, 50f),
-        new Vector3f(20f, 0, -20f), new Vector3f(50f, 0, -50f),
-        new Vector3f(20f, 0, -20f), new Vector3f(50f, 0, 50f)
+        new Vector3f(-50, 0, -50),
+        new Vector3f(-50, 0,  50),
+        new Vector3f( 50, 0, -50),
+        new Vector3f( 50, 0,  50)
     };
     private Node worldRoot;
     private AbstractArena arena = new BasicSquareArena();
@@ -199,17 +199,17 @@ public class WorldManager extends AbstractAppState {
         this.entities.put(id, entitySpatial);
         this.syncManager.addObject(id, entitySpatial);
         this.space.addAll(entitySpatial);
-        
+
         // We need to add GhostControl separately
         final GhostControl ghostControl = entitySpatial.getControl(GhostControl.class);
         if (ghostControl != null) {
             this.space.add(ghostControl);
         }
-        
+
         this.worldRoot.attachChild(entitySpatial);
         EntityVariableControl variableControl = new EntityVariableControl(this);
         entitySpatial.addControl(variableControl);
-        
+
         if (entitySpatial.getControl(CharacterPhysicsControl.class) != null && PlayerData.isHuman(playerId)) {
             entitySpatial.addControl(new UserInputControl());
         }
@@ -252,7 +252,7 @@ public class WorldManager extends AbstractAppState {
         }
 
         this.setEntityTranslation(spatial, location, rotation);
-        
+
         if (this.isClient()) {
             this.app.getStateManager().getState(UserCommandManager.class).sendWalkDirection();
         }
@@ -389,6 +389,6 @@ public class WorldManager extends AbstractAppState {
     void preloadSoundEffects(String[] string) {
         for (String audioPath : string) {
             this.assetManager.loadAudio("Effects/Sound/" + audioPath);
-        }        
+        }
     }
 }
