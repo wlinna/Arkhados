@@ -16,6 +16,7 @@ package arkhados.ui;
 
 import arkhados.ClientMain;
 import arkhados.util.InputMappingStrings;
+import arkhados.util.PlayerDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.InputManager;
@@ -34,6 +35,7 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.HashMap;
@@ -55,7 +57,7 @@ public class KeySetter implements RawInputListener, ScreenController {
     private Button currentKeyButton = null;
     private String currentInputName = null;
     private Application app;
-    private HashMap<String, String> buttonIdInputMappingMap = new HashMap<String, String>(10);
+    private HashMap<String, String> buttonIdInputMappingMap = new HashMap<>(10);
 
     public KeySetter(Application app, InputManager inputManager) {
         this.app = app;
@@ -82,23 +84,29 @@ public class KeySetter implements RawInputListener, ScreenController {
         }
     }
 
+    @Override
     public void beginInput() {
     }
 
+    @Override
     public void endInput() {
     }
 
+    @Override
     public void onJoyAxisEvent(JoyAxisEvent evt) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void onJoyButtonEvent(JoyButtonEvent evt) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void onMouseMotionEvent(MouseMotionEvent evt) {
     }
 
+    @Override
     public void onMouseButtonEvent(MouseButtonEvent evt) {
         if (this.currentInputName == null || this.currentKeyButton == null) {
             return;
@@ -138,6 +146,7 @@ public class KeySetter implements RawInputListener, ScreenController {
         evt.setConsumed();
     }
 
+    @Override
     public void onKeyEvent(KeyInputEvent evt) {
         if (this.currentInputName == null || this.currentKeyButton == null) {
             return;
@@ -170,20 +179,22 @@ public class KeySetter implements RawInputListener, ScreenController {
         });
     }
 
+    @Override
     public void onTouchEvent(TouchEvent evt) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void bind(Nifty nifty, Screen screen) {
+    @Override
+    public void bind(Nifty nifty, final Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
 
         this.app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                for (String buttonName : KeySetter.this.buttonIdInputMappingMap.keySet()) {
-                    final String inputMapping = KeySetter.this.buttonIdInputMappingMap.get(buttonName);
-                    Button button = KeySetter.this.screen.findNiftyControl(buttonName, Button.class);
-                    TriggerPair pair = KeySetter.this.loadInput(inputMapping);
+                for (String buttonName : buttonIdInputMappingMap.keySet()) {
+                    final String inputMapping = buttonIdInputMappingMap.get(buttonName);
+                    Button button = screen.findNiftyControl(buttonName, Button.class);
+                    TriggerPair pair = loadInput(inputMapping);
                     if (pair.isKeyboard) {
                         KeyTrigger keyTrigger = (KeyTrigger) pair.trigger;
                         String character = KeySetter.keyNames.getName(keyTrigger.getKeyCode());
@@ -201,14 +212,21 @@ public class KeySetter implements RawInputListener, ScreenController {
                         }
                     }
                 }
+
+                boolean moveInterrupts = app.getContext().getSettings().getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                CheckBox cbox_moveInterrupts = screen.findNiftyControl("cbox_move_interrupts", CheckBox.class);
+                cbox_moveInterrupts.setChecked(moveInterrupts);
+
                 return null;
             }
         });
     }
 
+    @Override
     public void onStartScreen() {
     }
 
+    @Override
     public void onEndScreen() {
         this.inputManager.removeRawInputListener(this);
     }
@@ -224,6 +242,30 @@ public class KeySetter implements RawInputListener, ScreenController {
             }
         });
 
+    }
+
+    public void checked(final String cboxId) {
+        final CheckBox cbox = this.screen.findNiftyControl(cboxId, CheckBox.class);
+        if (cbox == null) {
+            return;
+        }
+        this.app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                cbox.toggle();
+
+
+                if ("cbox_move_interrupts".equals(cboxId)) {
+                    app.getContext().getSettings().putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, cbox.isChecked());
+                }
+                try {
+                    app.getContext().getSettings().save(ClientMain.PREFERENCES_KEY);
+                } catch (BackingStoreException ex) {
+                    Logger.getLogger(KeySetter.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                }
+                return null;
+            }
+        });
     }
 
     public void gotoMenu(final String menu) {

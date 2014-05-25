@@ -60,6 +60,7 @@ public class MessageUtils {
         Serializer.registerClass(UDPHandshakeAck.class);
         Serializer.registerClass(ServerLoginMessage.class);
         Serializer.registerClass(ClientLoginMessage.class);
+        Serializer.registerClass(ClientSettingsMessage.class);
         Serializer.registerClass(PlayerDataTableMessage.class);
         Serializer.registerClass(ChatMessage.class);
         Serializer.registerClass(StartGameMessage.class);

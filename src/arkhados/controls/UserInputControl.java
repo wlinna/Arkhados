@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.PlayerData;
+import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
@@ -58,7 +60,12 @@ public class UserInputControl extends AbstractControl {
             super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
             if (down != 0 || right != 0) {
                 if (!influenceInterface.isAbleToCastWhileMoving()) {
-                    super.spatial.getControl(SpellCastControl.class).safeInterrupt();
+                    Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+                    Boolean commandMoveInterrupts = PlayerData.getBooleanData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                    SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+                    if (castControl.isChanneling() || commandMoveInterrupts != null && commandMoveInterrupts) {
+                        super.spatial.getControl(SpellCastControl.class).safeInterrupt();
+                    }
                 }
                 super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
             }

@@ -21,6 +21,7 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginMessage;
+import arkhados.messages.ClientSettingsMessage;
 import arkhados.messages.ConnectionEstablishedMessage;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
@@ -29,12 +30,14 @@ import arkhados.messages.StartGameMessage;
 import arkhados.messages.UDPHandshakeAck;
 import arkhados.messages.UDPHandshakeRequest;
 import arkhados.ui.hud.ClientHudManager;
+import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
 import arkhados.util.ValueWrapper;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.NetworkClient;
+import com.jme3.system.AppSettings;
 
 /**
  *
@@ -82,7 +85,6 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
             this.udpHandshakeAckTimer.setActive(true);
             
         } else if (m instanceof UDPHandshakeAck) {
-            System.out.println("Received handshake ack");
             if (!this.handshakeComplete) {
                 ClientLoginMessage message = new ClientLoginMessage(this.name);
                 this.client.get().send(message);
@@ -95,6 +97,12 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
             ServerLoginMessage message = (ServerLoginMessage) m;
             if (message.isAccepted()) {
                 this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
+                AppSettings settings = this.app.getContext().getSettings();
+                
+                boolean movingInterrupts = settings.getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                
+                ClientSettingsMessage clientSettingsMessage = new ClientSettingsMessage(movingInterrupts);
+                this.client.get().send(clientSettingsMessage);
             }
             
         } else if (m instanceof PlayerDataTableMessage) {

@@ -57,7 +57,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public final static String PREFERENCES_KEY = "arkhados";
 
-    public static void setKeySettings(AppSettings settings) {
+    public static void setInputDefaultSettings(AppSettings settings) {
         setKey(settings, InputMappingStrings.M1, false, MouseInput.BUTTON_LEFT);
         setKey(settings, InputMappingStrings.M2, false, MouseInput.BUTTON_RIGHT);
 
@@ -70,6 +70,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
         setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
         setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
+        
+        if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
+            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, false);
+        }
+    }
+
+    public static void putToSettingsIfNotExists() {
     }
 
     public static void setKey(AppSettings settings, final String inputMapping, boolean isKeyboard, int code) {
@@ -93,7 +100,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         } catch (BackingStoreException ex) {
             Logger.getLogger("").warning("Could not load preferences");
         }
-        setKeySettings(settings);
+        setInputDefaultSettings(settings);
         settings.setFrameRate(60);
         settings.setTitle("Arkhados Client");
         ClientMain app = new ClientMain();
@@ -114,7 +121,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private UserCommandManager userCommandManager;
     private ClientHudManager clientHudManager;
     private RoundManager roundManager;
-    
     private EffectHandler effectHandler;
 
     @Override
@@ -157,8 +163,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         ClientMain.this.stateManager
                 .attach(ClientMain.this.userCommandManager);
-        
-        this.effectHandler = new EffectHandler(this, worldManager);        
+
+        this.effectHandler = new EffectHandler(this, worldManager);
     }
 
     @Override
@@ -216,7 +222,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.clientWrapper.get().addMessageListener(this.listenerManager,
                 ConnectionEstablishedMessage.class, UDPHandshakeAck.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
                 ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
-        
+
         this.effectHandler.setMessagesToListen(this.clientWrapper.get());
 
         if (username.trim().length() == 0) {
@@ -314,7 +320,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
                             worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
-                            worldManager.preloadSoundEffects(new String[] {"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav" });
+                            worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav"});
                             ClientMain.this.worldManager.loadLevel();
                             ClientMain.this.nifty.gotoScreen("default_hud");
                             return null;

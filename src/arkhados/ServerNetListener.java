@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginMessage;
 import arkhados.messages.ClientSelectHeroMessage;
+import arkhados.messages.ClientSettingsMessage;
 import arkhados.messages.ConnectionEstablishedMessage;
 import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
@@ -52,7 +53,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
         this.server.addMessageListener(this,
                 UDPHandshakeRequest.class,
                 ClientLoginMessage.class, ChatMessage.class,
-                StartGameMessage.class,
+                StartGameMessage.class, ClientSettingsMessage.class,
                 ClientSelectHeroMessage.class,
                 BattleStatisticsRequest.class);
     }
@@ -78,6 +79,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
     public void messageReceived(HostedConnection source, Message m) {
         if (m instanceof UDPHandshakeRequest) {
             source.send(new UDPHandshakeAck());
+            
         } else if (m instanceof ClientLoginMessage) {
             final ClientLoginMessage message = (ClientLoginMessage) m;
             final int clientId = source.getId();
@@ -95,9 +97,15 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             source.send(serverLoginMessage);
             this.server.broadcast(PlayerDataTableMessage.makeFromPlayerDataList());
 
+        } else if (m instanceof ClientSettingsMessage) {
+            ClientSettingsMessage clientSettings = (ClientSettingsMessage) m;
+            long playerId = ServerClientData.getPlayerId(source.getId());            
+            PlayerData.setData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, clientSettings.commandMoveInterrupts());
+            
         } else if (m instanceof ChatMessage) {
             final ChatMessage message = (ChatMessage) m;
             this.server.broadcast(message);
+            
         } else if (m instanceof ClientSelectHeroMessage) {
             final ClientSelectHeroMessage message = (ClientSelectHeroMessage) m;
             final long playerId = ServerClientData.getPlayerId(source.getId());
@@ -109,6 +117,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             final StartGameMessage message = (StartGameMessage) m;
             this.server.broadcast(message);
             this.app.startGame();
+            
         } else if (m instanceof BattleStatisticsRequest) {
             final BattleStatisticsResponse response = BattleStatisticsResponse.buildBattleStatisticsResponse();
             source.send(response);

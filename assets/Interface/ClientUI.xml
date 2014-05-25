@@ -75,11 +75,11 @@
 
     <screen id="input_settings" controller="arkhados.ui.KeySetter">
         <layer id="layer" childLayout="center">
-            <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="panel" height="400px" width="420px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
-                    <panel height="700px" width="100px" align="left" childLayout="vertical">
+                    <panel height="700px" width="150px" align="left" childLayout="vertical">
                         <text style="nifty-label" text="Up" align="center" />
                         <text style="nifty-label" text="Down" align="center" />
                         <text style="nifty-label" text="Left" align="center" />
@@ -91,8 +91,12 @@
                         <text style="nifty-label" text="Spell 4" align="center" />
                         <text style="nifty-label" text="Spell 5" align="center" />
                         <text style="nifty-label" text="Spell 6" align="center" />
+                        
+                        <text style="nifty-label" text=""/>
+                        
+                        <text style="nifty-label" text="Moving interrupts casting"/>
                     </panel>
-                    <panel height="700px" width="300px" align="center" childLayout="vertical">
+                    <panel height="700px" width="320px" align="center" childLayout="vertical">
                         <control id="button_up" name="button" label="Up" align="center" width="120px">
                             <interact onClick="waitAndSetKey(button_up, move-up)" />
                         </control>
@@ -123,8 +127,16 @@
                         <control id="button_space" name="button" label="Spell 6" align="center" width="120px">
                             <interact onClick="waitAndSetKey(button_space, space)" />
                         </control>
+                        
+                        
+                        <text style="nifty-label" text=""/>
+                        <control id="cbox_move_interrupts" name="checkbox" checked="true" align="center">
+                            <interact onClick="checked(cbox_move_interrupts)" />                   
+                        </control>
                     </panel>
                 </panel>
+                
+                <text style="nifty-label" text=""/>
                 <control id="exit_button" name="button" label="Back" align="center" width="200px">
                     <interact onClick="gotoMenu(settings)" />
                 </control>

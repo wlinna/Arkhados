@@ -152,7 +152,7 @@ public class PlayerData {
         players.get(id).setData(key, data);
     }
 
-    public static synchronized boolean getBooleanData(long id, String key) {
+    public static synchronized Boolean getBooleanData(long id, String key) {
         if (!players.containsKey(id)) return false;
         return players.get(id).getBooleanData(key);
     }
