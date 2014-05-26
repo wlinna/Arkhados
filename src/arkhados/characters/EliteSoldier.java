@@ -29,6 +29,7 @@ import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  * Creates entity with EliteSoldiers's features.
@@ -39,7 +40,7 @@ public class EliteSoldier extends NodeBuilder {
 
     @Override
     public Node build() {
-        Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Mage.j3o");
+        Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Archer.j3o");
         final float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
@@ -52,6 +53,9 @@ public class EliteSoldier extends NodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
+        for (Spatial childToScale : entity.getChildren()) {
+            childToScale.scale(1.2f);
+        }
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
         /**
@@ -75,7 +79,6 @@ public class EliteSoldier extends NodeBuilder {
 
         spellCastControl.putSpell(Spell.getSpells().get("Shotgun"), InputMappingStrings.M1);
 
-        // TODO: Replace these with EliteSoldier's own spells
         spellCastControl.putSpell(Spell.getSpells().get("Machinegun"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Plasmagun"), InputMappingStrings.Q);
         spellCastControl.putSpell(Spell.getSpells().get("Rocket Launcher"), InputMappingStrings.E);
@@ -94,7 +97,7 @@ public class EliteSoldier extends NodeBuilder {
         animControl.setWalkAnimation(walkAnim);
         entity.addControl(animControl);
 
-        final AnimationData animationData = new AnimationData("Idle", 1f, LoopMode.Loop);
+        final AnimationData animationData = new AnimationData("Attack", 1f, LoopMode.DontLoop);
         animControl.addActionAnimation("Cast", animationData);
 
         animControl.addSpellAnimation("Shotgun", animationData);

@@ -35,6 +35,7 @@ See CREDITS.md for attributions.
 - like_a_pro.png
 - MeteorBoom.wav
 - All DamagingDagger related files
+- All Archer related files
 
 ## CC-BY-SA 3.0 ##
 

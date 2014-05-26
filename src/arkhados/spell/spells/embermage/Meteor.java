@@ -217,6 +217,7 @@ class MeteorRemovalAction implements RemovalEventAction {
         this.sound.setVolume(5f);
     }
 
+    @Override
     public void exec(WorldManager worldManager, String reason) {
         if (!"collision".equals(reason)) {
             return;
