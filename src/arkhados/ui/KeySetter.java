@@ -254,7 +254,6 @@ public class KeySetter implements RawInputListener, ScreenController {
             public Void call() throws Exception {
                 cbox.toggle();
 
-
                 if ("cbox_move_interrupts".equals(cboxId)) {
                     app.getContext().getSettings().putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, cbox.isChecked());
                 }

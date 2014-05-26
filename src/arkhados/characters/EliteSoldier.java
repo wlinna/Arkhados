@@ -18,6 +18,7 @@ import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -38,8 +39,6 @@ public class EliteSoldier extends NodeBuilder {
 
     @Override
     public Node build() {
-        
-        // TODO: Change settings to EliteSoldier's.
         Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Mage.j3o");
         final float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
@@ -66,23 +65,22 @@ public class EliteSoldier extends NodeBuilder {
          * To add spells to entity, create SpellCastControl and call its
          * putSpell-method with name of the spell as argument.
          */
-        
         final EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
         entity.addControl(ammunitionControl);
-        
+
         final SpellCastControl spellCastControl = new SpellCastControl(EliteSoldier.worldManager);
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
-        
+
         spellCastControl.putSpell(Spell.getSpells().get("Shotgun"), InputMappingStrings.M1);
-        
+
         // TODO: Replace these with EliteSoldier's own spells
         spellCastControl.putSpell(Spell.getSpells().get("Machinegun"), InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpells().get("Plasmagun"), InputMappingStrings.Q);
         spellCastControl.putSpell(Spell.getSpells().get("Rocket Launcher"), InputMappingStrings.E);
         spellCastControl.putSpell(Spell.getSpells().get("Like a Pro"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpells().get("Rocket Jump"), InputMappingStrings.SPACE);        
+        spellCastControl.putSpell(Spell.getSpells().get("Rocket Jump"), InputMappingStrings.SPACE);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -107,6 +105,7 @@ public class EliteSoldier extends NodeBuilder {
         animControl.addSpellAnimation("Rocket Jump", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());

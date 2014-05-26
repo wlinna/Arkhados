@@ -14,16 +14,15 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
-import arkhados.CharacterInteraction;
-import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
-import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
+import arkhados.controls.GenericSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
@@ -113,8 +112,8 @@ class CastMeteorAction extends EntityAction {
         path.addWayPoint(target);
         final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
         final long entityId = this.worldManager.addNewEntity(this.spell.getName(), startingPoint, Quaternion.IDENTITY, playerId);
-        final Spatial meteor = this.worldManager.getEntity(entityId);
-
+        final Spatial meteor = this.worldManager.getEntity(entityId);                
+        
         final MotionEvent motionControl = new MotionEvent(meteor, path);
         motionControl.setInitialDuration(1f);
         motionControl.setSpeed(1f);
@@ -174,7 +173,7 @@ class MeteorNodeBuilder extends NodeBuilder {
     public Node build() {
         final Sphere sphere = new Sphere(32, 32, 2.0f);
         final Geometry meteorGeom = new Geometry("meteor-geom", sphere);
-        final Node node = new Node("projectile");
+        final Node node = new Node("meteor");
         node.attachChild(meteorGeom);
 
         final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -187,7 +186,10 @@ class MeteorNodeBuilder extends NodeBuilder {
         final SpellBuffControl spellBuffControl = new SpellBuffControl();
         node.addControl(spellBuffControl);
 
+        node.addControl(new GenericSyncControl());
+        
         if (NodeBuilder.worldManager.isClient()) {
+            node.addControl(new SyncInterpolationControl());
             node.addControl(new EntityEventControl());
             final ParticleEmitter fire = this.createFireEmitter();
             node.attachChild(fire);

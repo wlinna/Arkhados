@@ -15,19 +15,15 @@
 package arkhados.controls;
 
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 import arkhados.WorldManager;
 import arkhados.actions.SplashAction;
+import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
+import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
 
@@ -35,7 +31,7 @@ import com.jme3.math.Quaternion;
  *
  * @author william
  */
-public class ProjectileControl extends AbstractControl {
+public class ProjectileControl extends AbstractControl implements SyncControl{
 
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
@@ -79,7 +75,7 @@ public class ProjectileControl extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);        
-        this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);
+        this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);        
     }
 
     @Override
@@ -109,24 +105,6 @@ public class ProjectileControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    @Override
-    public Control cloneForSpatial(Spatial spatial) {
-        ProjectileControl control = new ProjectileControl();
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
-    }
-
     public RigidBodyControl getRigidBodyControl() {
         return this.rigidBodyControl;
     }
@@ -149,5 +127,10 @@ public class ProjectileControl extends AbstractControl {
     
     public void setSplashAction(SplashAction splashAction) {
         this.splashAction = splashAction;
+    }    
+
+    @Override
+    public StateData getSyncableData(StateData stateData) {
+        return new ProjectileSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
     }
 }

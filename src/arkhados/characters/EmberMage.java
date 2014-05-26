@@ -18,6 +18,7 @@ import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
@@ -98,6 +99,8 @@ public class EmberMage extends NodeBuilder {
         animControl.addSpellAnimation("Firewalk", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
+        
+        entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());

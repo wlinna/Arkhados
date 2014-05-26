@@ -17,7 +17,7 @@ package arkhados.spell.spells.embermage;
 import arkhados.CharacterInteraction;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.GenericSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.SpellCastControl;
@@ -26,7 +26,6 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.SlowCC;
-import arkhados.spell.influences.Influence;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -101,7 +100,6 @@ public class Firewalk extends Spell {
         }
 
         private void motion() {
-            final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
             final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
             final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
             final long firewalkId = this.world.addNewEntity(spell.getName(), startLocation, Quaternion.IDENTITY, playerId);
@@ -188,6 +186,8 @@ public class Firewalk extends Spell {
             final SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
             buffControl.addBuff(slowCC);
             node.addControl(buffControl);
+            
+            node.addControl(new GenericSyncControl());
 
             if (worldManager.isServer()) {
                 final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
@@ -213,7 +213,7 @@ public class Firewalk extends Spell {
 class FirewalkCollisionHandler extends AbstractControl {
 
     private GhostControl ghost;
-    private final Set<Long> collidedWith = new HashSet<Long>(8);
+    private final Set<Long> collidedWith = new HashSet<>(8);
 
     @Override
     public void setSpatial(Spatial spatial) {

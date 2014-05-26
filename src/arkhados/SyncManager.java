@@ -29,8 +29,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.Callable;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.ProjectileControl;
+import arkhados.controls.SyncControl;
 import arkhados.messages.syncmessages.AbstractSyncMessage;
 import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
@@ -41,14 +40,10 @@ import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
-import arkhados.messages.syncmessages.statedata.CharacterSyncData;
-import arkhados.messages.syncmessages.statedata.GenericSyncData;
-import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
-import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.NetworkClient;
 import java.util.ArrayList;
@@ -118,19 +113,12 @@ public class SyncManager extends AbstractAppState implements MessageListener {
 
             Spatial spatial = (Spatial) entry.getValue();
 
-            CharacterPhysicsControl characterControl = spatial.getControl(CharacterPhysicsControl.class);
-            if (characterControl != null) {
-                stateData.add(new CharacterSyncData(entry.getKey(), spatial));
-            }
-
-            ProjectileControl projectileControl = spatial.getControl(ProjectileControl.class);
-            if (projectileControl != null) {
-                stateData.add(new ProjectileSyncData(entry.getKey(), projectileControl));
-            }
-
-            MotionEvent motionEvent = spatial.getControl(MotionEvent.class);
-            if (motionEvent != null && characterControl == null) {
-                stateData.add(new GenericSyncData(entry.getKey(), spatial));
+            SyncControl syncControl = spatial.getControl(SyncControl.class);
+            if (syncControl != null) {
+                StateData data = syncControl.getSyncableData(null);
+                if (data != null) {
+                    stateData.add(data);
+                }
             }
         }
 
