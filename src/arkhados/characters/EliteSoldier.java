@@ -22,14 +22,19 @@ import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.controls.SyncControl;
+import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 
 /**
  * Creates entity with EliteSoldiers's features.
@@ -108,12 +113,28 @@ public class EliteSoldier extends NodeBuilder {
         animControl.addSpellAnimation("Rocket Jump", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
-        entity.addControl(new CharacterSyncControl());
+        entity.addControl(new EliteSoldierSyncControl());
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
         }
 
         return entity;
+    }
+}
+
+class EliteSoldierSyncControl extends AbstractControl implements SyncControl {
+
+    @Override
+    public StateData getSyncableData(StateData stateData) {
+        return new EliteSoldierSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 }

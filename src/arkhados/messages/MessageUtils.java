@@ -15,6 +15,7 @@
 package arkhados.messages;
 
 import arkhados.PlayerData;
+import arkhados.characters.EliteSoldierSyncData;
 import arkhados.messages.effect.EffectMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.NewRoundMessage;
@@ -86,6 +87,7 @@ public class MessageUtils {
         Serializer.registerClass(TemporarilyRemoveEntityMessage.class);
         Serializer.registerClass(MassSyncMessage.class);
         Serializer.registerClasses(StateData.class, CharacterSyncData.class, GenericSyncData.class, ProjectileSyncData.class);
+        Serializer.registerClass(EliteSoldierSyncData.class);
         Serializer.registerClass(StartCastingSpellMessage.class);
         Serializer.registerClass(SetCooldownMessage.class);
         Serializer.registerClass(ActionMessage.class);

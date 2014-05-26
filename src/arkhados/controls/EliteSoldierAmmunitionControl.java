@@ -14,20 +14,14 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.characters.EliteSoldierSyncData;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
 import arkhados.spell.spells.elitesoldier.AmmunitionSlot;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +44,10 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
 
     @Override
     protected void controlUpdate(float tpf) {
+        if (spatial.getControl(EntityVariableControl.class).getWorldManager().isClient()) {
+            return;
+        }
+        
         for (AmmunitionLoader ammunitionLoader : ammunitionLoaders) {
             ammunitionLoader.update(tpf);
         }
@@ -57,24 +55,6 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    @Override
-    public Control cloneForSpatial(Spatial spatial) {
-        EliteSoldierAmmunitionControl control = new EliteSoldierAmmunitionControl();
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     @Override
@@ -105,6 +85,21 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
                 || "Rocket Jump".equals(spell.getName())) {
             this.ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).consumeAmmo(1);
         }
+    }
+    
+    public EliteSoldierSyncData addAmmoSynchronizationData(EliteSoldierSyncData syncData, float towardsFuture) {
+        syncData.setBullets(this.ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).predictAmmoAmount(towardsFuture));       
+        syncData.setBullets(this.ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).predictAmmoAmount(towardsFuture));       
+        syncData.setBullets(this.ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).predictAmmoAmount(towardsFuture));       
+        syncData.setBullets(this.ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).predictAmmoAmount(towardsFuture));       
+        return syncData;
+    }
+    
+    public void synchronizeAmmunition(int pellets, int bullets, int plasmas, int rockets) {
+        this.ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).setAmount(pellets);
+        this.ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).setAmount(bullets);
+        this.ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).setAmount(plasmas);
+        this.ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).setAmount(rockets);
     }
 }
 
@@ -137,6 +132,14 @@ class AmmunitionLoader {
             }
         }
     }
+    
+    public int predictAmmoAmount(float towardsFuture) {
+        if (this.timer + towardsFuture >= this.time) {
+            return this.amount + this.amountPerTick;
+        }
+        
+        return this.amount;
+    }
 
     public void consumeAmmo(int amount) {
         this.amount -= amount;
@@ -144,6 +147,10 @@ class AmmunitionLoader {
 
     public boolean hasEnough(int needed) {
         return this.amount >= needed;
+    }
+    
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public static AmmunitionLoader Shotgun() {
