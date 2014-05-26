@@ -70,9 +70,9 @@ public class WorldManager extends AbstractAppState {
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
         new Vector3f(-50, 0, -50),
-        new Vector3f(-50, 0,  50),
-        new Vector3f( 50, 0, -50),
-        new Vector3f( 50, 0,  50)
+        new Vector3f(-50, 0, 50),
+        new Vector3f(50, 0, -50),
+        new Vector3f(50, 0, 50)
     };
     private Node worldRoot;
     private AbstractArena arena = new BasicSquareArena();
@@ -122,12 +122,17 @@ public class WorldManager extends AbstractAppState {
             this.clientMain = (ClientMain) app;
             this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
 
-            final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
-            final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
-            bf.setBloomIntensity(1f);
-            bf.setDownSamplingFactor(2f);
-            fpp.addFilter(bf);
-            this.viewPort.addProcessor(fpp);
+            // FIXME: Sometimes shader linking error happens here
+            try {
+                final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
+                final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
+                bf.setBloomIntensity(1f);
+                bf.setDownSamplingFactor(2f);
+                fpp.addFilter(bf);
+                this.viewPort.addProcessor(fpp);
+            }
+            finally {
+            }
         }
 
         Spell.initSpells(assetManager, this);
