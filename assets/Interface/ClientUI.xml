@@ -41,7 +41,7 @@
     </screen>
 
     <screen id="settings" controller="arkhados.ClientMain">
-        <layer id="layer" childLayout="center">
+        <layer childLayout="center">
             <panel id="root_panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
                     <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
@@ -74,8 +74,8 @@
     </screen>
 
     <screen id="input_settings" controller="arkhados.ui.KeySetter">
-        <layer id="layer" childLayout="center">
-            <panel id="panel" height="400px" width="420px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+        <layer childLayout="center">
+            <panel height="400px" width="420px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
@@ -145,8 +145,8 @@
     </screen>
 
     <screen id="graphics_settings" controller="arkhados.ClientSettings">
-        <layer id="layer" childLayout="center">
-            <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+        <layer childLayout="center">
+            <panel height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
@@ -170,8 +170,8 @@
     </screen>
 
     <screen id="join_server" controller="arkhados.ClientMain">
-        <layer id="layer" childLayout="center">
-            <panel id="panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+        <layer childLayout="center">
+            <panel height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
                     <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
@@ -224,24 +224,20 @@
     </screen>
 
     <screen id="lobby" controller="arkhados.ClientMain">
-        <layer id="layer" childLayout="vertical">
-            <panel id="panel" childLayout="horizontal">
+        <layer childLayout="vertical">
+            <panel childLayout="horizontal" height="50%">
                 <panel id="players_panel" height="100%" width="320px" valign="center" style="nifty-panel" childLayout="vertical">
                     <text style="nifty-label" text="Players" valign="center"/>
-                    <panel id="panel" childLayout="horizontal">
-                        <control id="players_list" name="listBox" horizontal="false" width="*" height="100%" childLayout="vertical" visibleToMouse="true">
+                    <panel childLayout="horizontal">
+                        <control selectionMode="Disabled"
+                                 id="players_list" name="listBox"
+                                 horizontal="false" width="*" displayItems="6"
+                                 childLayout="vertical" visibleToMouse="false">
 
                         </control>
                     </panel>
                 </panel>
                 <panel id="maps_panel" height="100%" width="300px" valign="center" style="nifty-panel" childLayout="vertical">
-                    <text style="nifty-label" text="Available Maps" valign="center"/>
-                    <panel id="panel" childLayout="horizontal">
-                        <control id="maps_list" name="listBox" horizontal="false" height="100%" childLayout="vertical" visibleToMouse="true">
-                            <panel id="panel" childLayout="vertical" visibleToMouse="true" width="100%" padding="20px" >
-                            </panel>
-                        </control>
-                    </panel>
                     <text style="nifty-label" text="" valign="center"/>
                     <control id="select_hero_button" name="button" label="Select hero" align="center">
                         <interact onClick="gotoMenu(hero_selection)"/>
@@ -251,13 +247,13 @@
                     </control>
                 </panel>
                 <effect>
-                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
+                    <onStartScreen name="move" mode="in" direction="top" length="200" startDelay="0" inherit="true"/>
+                    <onEndScreen name="move" mode="out" direction="bottom" length="200" startDelay="0" inherit="true"/>
                 </effect>
             </panel>
-            <panel id="bottom_panel" childLayout="horizontal" style="nifty-panel" height="30%">
+            <panel id="bottom_panel" childLayout="horizontal" style="nifty-panel" height="*">
                 <panel id="chat_panel" childLayout="vertical">
-                    <control id="chat_list" name="listBox" horizontal="false" height="*" childLayout="vertical" visibleToMouse="true">
+                    <control id="chat_list" name="listBox" horizontal="false" height="*" displayItems="10" childLayout="vertical" visibleToMouse="true">
 
                     </control>
                     <panel id="chat_bottom_bar" childLayout="horizontal">
@@ -314,8 +310,8 @@
     </screen>
 
     <screen id="load_level" controller="arkhados.ClientMain">
-        <layer id="layer" childLayout="center">
-            <panel id="panel" height="140px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+        <layer childLayout="center">
+            <panel height="140px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
                     <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
@@ -330,7 +326,12 @@
     <screen id="default_hud" controller="arkhados.ui.hud.ClientHudManager">
         <layer id="bars" childLayout="vertical" valign="bottom">
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
-                <panel id="spacer" height="*" valign="top"></panel>
+                <panel id="panel_top" height="0px" valign="top"></panel>
+                <panel id="middle" height="*" valign="top" childLayout="horizontal">
+                    <panel id="panel_left" width="45px" height="*" align="left"></panel>
+                    <panel id="game_area" width="*" height="*" align="center"></panel>
+                    <panel id="panel_right" width="45px" height="*" align="right"></panel>
+                </panel>
                 <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom">
                 </panel>
             </panel>

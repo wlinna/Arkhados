@@ -187,7 +187,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.clientHudManager.setNifty(nifty);
 
         this.statusText = this.nifty.getScreen("join_server")
-                .findElementByName("layer").findElementByName("panel")
                 .findElementByName("status_text")
                 .getRenderer(TextRenderer.class);
     }
@@ -205,14 +204,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         // FIXME: TextFieldControl is deprecated
 
         final String username = nifty.getScreen("join_server")
-                .findElementByName("layer").findElementByName("panel")
                 .findElementByName("username_text")
                 .getControl(TextFieldControl.class).getText();
 
-        final int port = Integer.parseInt(nifty.getScreen("join_server").findElementByName("layer")
-                .findElementByName("panel").findElementByName("server_port").getControl(TextFieldControl.class).getText());
-        final String ip = nifty.getScreen("join_server").findElementByName("layer")
-                .findElementByName("panel").findElementByName("server_ip").getControl(TextFieldControl.class).getText();
+        final int port = Integer.parseInt(nifty.getScreen("join_server")
+                .findElementByName("server_port").getControl(TextFieldControl.class).getText());
+        final String ip = nifty.getScreen("join_server").
+                findElementByName("server_ip").getControl(TextFieldControl.class).getText();
 
 
         this.clientWrapper.set(Network.createClient());
@@ -273,7 +271,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public Void call() throws Exception {
                 Screen screen = ClientMain.this.nifty.getScreen("lobby");
                 ListBox listBox = screen.findNiftyControl("chat_list", ListBox.class);
-                listBox.addItem(String.format("<%s> %s", name, message));
+                listBox.addItem(String.format("<%s> %s", name, message));                
                 return null;
             }
         });
@@ -302,24 +300,14 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void startGame() {
-//        this.enqueue(new Callable<Void>() {
-//
-//            public Void call() throws Exception {
-//                ClientMain.this.nifty.gotoScreen("load_level");
-//                return null;
-//            }
-//        });
-
-
         this.flyCam.setEnabled(false);
-//        this.inputManager.setCursorVisible(false);
 
         new Thread(new Runnable() {
             public void run() {
                 try {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
-                            worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+                            worldManager.preloadModels(new String[]{"Models/Archer.j3o", "Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
                             worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav"});
                             ClientMain.this.worldManager.loadLevel();
                             ClientMain.this.nifty.gotoScreen("default_hud");
@@ -333,7 +321,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 }
             }
         }).start();
-
     }
 
     public UserCommandManager getUserCommandManager() {
