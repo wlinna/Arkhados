@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
@@ -95,5 +95,10 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public Vector3f calculateTargetDirection() {
         return this.targetLocation.subtract(super.spatial.getLocalTranslation());
+    }
+
+    public CapsuleCollisionShape getCapsuleShape() {
+        CapsuleCollisionShape capsuleCollisionShape = new CapsuleCollisionShape(getFinalRadius(), (getFinalHeight() - (2 * getFinalRadius())));
+        return capsuleCollisionShape;
     }
 }
