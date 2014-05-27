@@ -16,6 +16,7 @@ package arkhados.controls;
 
 import arkhados.CharacterInteraction;
 import arkhados.PlayerData;
+import arkhados.actions.DelayAction;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.util.PlayerDataStrings;
@@ -60,6 +61,11 @@ public class AreaEffectControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        // HACK
+        ActionQueueControl actionQueue = super.getSpatial().getControl(ActionQueueControl.class);
+        if (actionQueue != null &&  actionQueue.getCurrent() instanceof DelayAction) {
+            return;
+        }
         final Long myPlayerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
         final long myTeamId = PlayerData.getLongData(myPlayerId, PlayerDataStrings.TEAM_ID);
         List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
@@ -109,24 +115,6 @@ public class AreaEffectControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public Control cloneForSpatial(Spatial spatial) {
-        AreaEffectControl control = new AreaEffectControl();
-//        control.ghostControl = this.ghostControl.cloneForSpatial(spatial);
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {

@@ -33,6 +33,10 @@ public class CharacterInteraction {
             final InfluenceInterfaceControl target, final float rawDamage,
             final List<AbstractBuff> buffs, final boolean canBreakCC) {
 
+        if (target == null) {
+            return;
+        }
+        
         if (target.isDead()) {
             return;
         }

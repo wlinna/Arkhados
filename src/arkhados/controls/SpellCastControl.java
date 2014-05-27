@@ -117,9 +117,15 @@ public class SpellCastControl extends AbstractControl {
         Spell spell = this.keySpellMappings.get(input);
 
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
-        if (action != null && action instanceof CastingSpellAction) {
+        if (action != null && (action instanceof CastingSpellAction) || (action instanceof ChannelingSpellAction)) {
 
-            final Spell currentSpell = ((CastingSpellAction) action).getSpell();
+            Spell currentSpell;
+            if (action instanceof CastingSpellAction) {
+                currentSpell = ((CastingSpellAction) action).getSpell();
+            } else {
+                currentSpell = ((ChannelingSpellAction) action).getSpell();        
+            }
+            
             final String spellName = currentSpell.getName();
             // Let's not interrupt spell if you are already casting same spell
             if (spell.getName().equals(spellName)) {
