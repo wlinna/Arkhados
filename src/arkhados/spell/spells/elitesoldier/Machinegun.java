@@ -47,7 +47,7 @@ public class Machinegun extends Spell {
 
     public static Spell create() {
         final float cooldown = 2f;
-        final float range = 100f;
+        final float range = 120f;
         final float castTime = 0.3f;
 
         final Machinegun spell = new Machinegun("Machinegun", cooldown, range, castTime);
@@ -56,7 +56,7 @@ public class Machinegun extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ShootBulletAction shoot = new ShootBulletAction(spell, worldManager);                
-                ChannelingSpellAction channeling = new ChannelingSpellAction(spell, 10, 0.2f, shoot);
+                ChannelingSpellAction channeling = new ChannelingSpellAction(spell, 10, 0.16f, shoot);
                 return channeling;
             }
         };

@@ -19,6 +19,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
 import arkhados.spell.spells.elitesoldier.AmmunitionSlot;
+import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -101,6 +102,13 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
         this.ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).setAmount(plasmas);
         this.ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).setAmount(rockets);
     }
+    
+    public void likeAPro() {
+        this.ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).addAmmunition(16);
+        this.ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).addAmmunition(10);
+        this.ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).addAmmunition(3);
+        this.ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).addAmmunition(2);
+    }
 }
 
 class AmmunitionLoader {
@@ -151,6 +159,13 @@ class AmmunitionLoader {
     
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+    
+    public void addAmmunition(int amount) {
+        this.amount += amount;
+        if (this.amount > this.maxAmount) {
+            this.amount = this.maxAmount;
+        }
     }
 
     public static AmmunitionLoader Shotgun() {

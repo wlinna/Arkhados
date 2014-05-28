@@ -186,7 +186,7 @@ class RocketBuilder extends NodeBuilder {
         node.addControl(physicsBody);
 
         ProjectileControl projectileControl = new ProjectileControl();
-        SplashAction splash = new SplashAction(100f, 30f, DistanceScaling.CONSTANT, null);
+        SplashAction splash = new SplashAction(30f, 100f, DistanceScaling.CONSTANT, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
         node.addControl(projectileControl);

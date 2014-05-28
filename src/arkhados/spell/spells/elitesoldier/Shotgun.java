@@ -45,7 +45,7 @@ public class Shotgun extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 1.5f;
+        final float cooldown = 0.7f;
         final float range = 80f;
         final float castTime = 0.3f;
 
@@ -87,11 +87,11 @@ class CastShotgunAction extends EntityAction {
 
         final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
 
+        Vector3f spawnLocation = super.spatial.getLocalTranslation();
         Quaternion currentRotation = new Quaternion();
 
         for (int i = 0; i < PELLETS; ++i) {
             currentRotation.fromAngleAxis(SPREAD / 2f - i * STEP, Vector3f.UNIT_Y);
-            Vector3f spawnLocation = super.spatial.getLocalTranslation();
 
             Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
 
