@@ -67,7 +67,7 @@ public class Shotgun extends Spell {
 class CastShotgunAction extends EntityAction {
 
     private static final int PELLETS = 8;
-    private static final float SPREAD = 30f * FastMath.DEG_TO_RAD;
+    private static final float SPREAD = 20f * FastMath.DEG_TO_RAD;
     private static final float STEP = SPREAD / (PELLETS - 1);
     private WorldManager worldManager;
     private final Shotgun spell;

@@ -66,6 +66,7 @@ class TripleMeleeAttackAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
+        // TODO: Make an attack start with different animation than previous one
         final float range = this.spell.getRange();
         final ActionQueueControl queue = super.spatial.getControl(ActionQueueControl.class);
         final MeleeAttackAction action1 = new MeleeAttackAction(50f, range);

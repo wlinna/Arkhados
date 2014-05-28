@@ -60,7 +60,7 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
     @Override
     public boolean validateSpellCast(SpellCastControl castControl, Spell spell) {
         if ("Shotgun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).hasEnough(6);
+            return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).hasEnough(8);
         } else if ("Machinegun".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).hasEnough(1);
         } else if ("Plasmagun".equals(spell.getName())) {
@@ -76,7 +76,7 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
     @Override
     public void spellCasted(SpellCastControl castControl, Spell spell) {
         if ("Shotgun".equals(spell.getName())) {
-            this.ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).consumeAmmo(6);
+            this.ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).consumeAmmo(8);
         } else if ("Machinegun".equals(spell.getName())) {
             this.ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).consumeAmmo(1);
         } else if ("Plasmagun".equals(spell.getName())) {
@@ -154,7 +154,7 @@ class AmmunitionLoader {
     }
 
     public static AmmunitionLoader Shotgun() {
-        return new AmmunitionLoader(4, 1, 40, 40);
+        return new AmmunitionLoader(4, 1, 36, 36);
     }
 
     public static AmmunitionLoader Machinegun() {
