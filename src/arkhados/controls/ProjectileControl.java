@@ -25,24 +25,28 @@ import arkhados.actions.SplashAction;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
 /**
  *
  * @author william
  */
-public class ProjectileControl extends AbstractControl implements SyncControl{
+public class ProjectileControl extends AbstractControl implements SyncControl {
 
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
-    private float age = 0.0f;
+    private float age = 0;
     private static WorldManager worldManager;
     private static final float timeToLive = 3.0f;
     private float range = 0f;
     private float speed = 0f;
     private InfluenceInterfaceControl ownerInterface;
     private SplashAction splashAction = null;
+    private boolean needsSync = true;   
 
+    // Not used anymore but I'm saving it for projectiles that can be set
+    // to explode at selected location
     public void setTarget(Vector3f target) {
         this.direction = target.subtract(this.rigidBodyControl.getPhysicsLocation()).setY(0.0f)
                 .normalizeLocal().multLocal((Float) super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
@@ -57,6 +61,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl{
 
     /**
      * Use this method to set projectiles direction if you have it already.
+     *
      * @param direction Direction of projectile. ProjectileControl takes its
      * ownerships.
      */
@@ -74,8 +79,8 @@ public class ProjectileControl extends AbstractControl implements SyncControl{
 
     @Override
     public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial);        
-        this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);        
+        super.setSpatial(spatial);
+        this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);
     }
 
     @Override
@@ -83,13 +88,14 @@ public class ProjectileControl extends AbstractControl implements SyncControl{
         if (this.direction == null) {
             this.rigidBodyControl.setGravity(Vector3f.ZERO);
             return;
-        }
+        }        
         this.age += tpf;
 
         if (this.range > 0f && this.age * this.speed >= this.range) {
             if (this.splashAction != null) {
                 splashAction.update(tpf);
             }
+            
             ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
 
@@ -124,13 +130,18 @@ public class ProjectileControl extends AbstractControl implements SyncControl{
     public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
         this.ownerInterface = ownerInterface;
     }
-    
+
     public void setSplashAction(SplashAction splashAction) {
         this.splashAction = splashAction;
-    }    
+    }
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        return new ProjectileSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
+        if (this.needsSync) {
+            this.needsSync = false;
+            return new ProjectileSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
+        }
+
+        return null;
     }
 }
