@@ -59,7 +59,7 @@ public class CastProjectileAction extends EntityAction {
         super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
         float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
-        final Vector3f spawnLocation = super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius)).addLocal(0f, 10.0f, 0.0f);
+        final Vector3f spawnLocation = super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius / 1.5f)).addLocal(0f, 10.0f, 0.0f);
         final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
 
         final long projectileId = this.worldManager.addNewEntity(this.spell.getName(),
@@ -70,17 +70,9 @@ public class CastProjectileAction extends EntityAction {
         final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-        // FIXME: Projectile should use GhostControl instead of RigidBodyControl
-        final SphereCollisionShape collisionSphere = (SphereCollisionShape) projectile.getControl(RigidBodyControl.class).getCollisionShape();
-
-        final float radius = collisionSphere.getRadius() * 1.0f;
-
-        final RigidBodyControl body = projectile.getControl(RigidBodyControl.class);
-        body.setPhysicsLocation(body.getPhysicsLocation().add(viewDirection.multLocal(radius + characterRadius)).addLocal(0.0f, 10.0f, 0.0f));
-
         final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
         projectileControl.setRange(this.spell.getRange());
-        projectileControl.setTarget(targetLocation);
+        projectileControl.setDirection(viewDirection);
         projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
 
         final SpellBuffControl buffControl = projectile.getControl(SpellBuffControl.class);
