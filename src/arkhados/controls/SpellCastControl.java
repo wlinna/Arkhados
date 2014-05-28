@@ -54,7 +54,6 @@ public class SpellCastControl extends AbstractControl {
     private HashMap<String, Spell> keySpellMappings = new HashMap<>();
     private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
-    
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
     private final List<SpellCastListener> castListeners = new ArrayList<>();
 
@@ -75,9 +74,10 @@ public class SpellCastControl extends AbstractControl {
             this.keySpellMappings.put(key, spell);
         }
     }
-    
+
     /**
      * Add validator that checks whether it is valid to cast certain spell.
+     *
      * @param castValidator Validator that checks casting conditions
      */
     public void addCastValidator(SpellCastValidator castValidator) {
@@ -86,12 +86,13 @@ public class SpellCastControl extends AbstractControl {
 
     /**
      * Add listener that is notified anytime that spell is cast
-     * @param ammunitionControl 
+     *
+     * @param ammunitionControl
      */
     public void addCastListeners(EliteSoldierAmmunitionControl ammunitionControl) {
         this.castListeners.add(ammunitionControl);
     }
-    
+
     public Spell getSpell(final String name) {
         return this.spells.get(name);
     }
@@ -114,7 +115,15 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public void castIfDifferentSpell(final String input, Vector3f targetLocation) {
+        if (!this.enabled) {
+            return;
+        }
+
         Spell spell = this.keySpellMappings.get(input);
+
+        if (!this.validateCast(spell)) {
+            return;
+        }
 
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && (action instanceof CastingSpellAction) || (action instanceof ChannelingSpellAction)) {
@@ -123,14 +132,15 @@ public class SpellCastControl extends AbstractControl {
             if (action instanceof CastingSpellAction) {
                 currentSpell = ((CastingSpellAction) action).getSpell();
             } else {
-                currentSpell = ((ChannelingSpellAction) action).getSpell();        
+                currentSpell = ((ChannelingSpellAction) action).getSpell();
             }
-            
+
             final String spellName = currentSpell.getName();
             // Let's not interrupt spell if you are already casting same spell
             if (spell.getName().equals(spellName)) {
                 return;
             }
+
             super.spatial.getControl(ActionQueueControl.class).clear();
             this.cooldowns.put(spellName, 0f);
         }
@@ -142,6 +152,7 @@ public class SpellCastControl extends AbstractControl {
         if (spell == null || this.cooldowns.get(spell.getName()) > 0f) {
             return false;
         }
+
         if (this.worldManager.isServer()) {
             if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
                 return false;
@@ -160,21 +171,12 @@ public class SpellCastControl extends AbstractControl {
             }
         }
         return true;
-    }    
+    }
 
     public void cast(final String input, Vector3f targetLocation) {
-        if (!this.enabled) {
-            return;
-        }
-
         final Spell spell = this.keySpellMappings.get(input);
 
-        if (!this.validateCast(spell)) {
-            return;
-        }
-
         if (this.worldManager.isServer()) {
-
 
             final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
             physics.setViewDirection(physics.calculateTargetDirection());
@@ -189,7 +191,7 @@ public class SpellCastControl extends AbstractControl {
         }
         this.globalCooldown();
         this.putOnCooldown(spell);
-        
+
         for (SpellCastListener spellCastListener : this.castListeners) {
             spellCastListener.spellCasted(this, spell);
         }
@@ -295,12 +297,12 @@ public class SpellCastControl extends AbstractControl {
     public boolean isCasting() {
         return casting;
     }
-    
+
     public boolean isChanneling() {
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
         return action instanceof ChannelingSpellAction;
     }
-    
+
     public void setCasting(boolean casting) {
         this.casting = casting;
     }
