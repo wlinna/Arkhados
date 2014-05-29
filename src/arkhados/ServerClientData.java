@@ -31,6 +31,7 @@
  */
 package arkhados;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -39,13 +40,20 @@ import java.util.HashMap;
  */
 public class ServerClientData {
 
-    private static HashMap<Integer, ServerClientData> players = new HashMap<Integer, ServerClientData>();
+    private static HashMap<Integer, ServerClientData> players = new HashMap<>();
     private int id;
-    private long playerId;
+    private long latencySampleCount = 0;
+    private float latestLatency;
+    private float averageLatency;
+    private long playerId;    
     private boolean connected;
+    
+    public static synchronized Collection<Integer> getClients() {
+        return players.keySet();
+    }
 
     public static synchronized void add(int id) {
-        ServerClientData.players.put(id, new ServerClientData(id));
+        ServerClientData.players.put(id, new ServerClientData(id));                
     }
 
     public static synchronized void remove(int id) {
@@ -71,6 +79,18 @@ public class ServerClientData {
     public static synchronized void setPlayerId(int id, long playerId) {
         ServerClientData.players.get(id).setPlayerId(playerId);
     }
+    
+    public static synchronized void addLatencySample(int id, float sample) {
+        ServerClientData.players.get(id).addLatencySample(sample);
+    }
+    
+    public static synchronized float getLatestLatency(int id) {
+        return ServerClientData.players.get(id).getLatestLatency();
+    }
+    
+    public static synchronized float getAverageLatency(int id) {
+        return ServerClientData.players.get(id).getAverageLatency();
+    }
 
     /**
      * Object implementation of ClientData
@@ -93,5 +113,19 @@ public class ServerClientData {
 
     public void setConnected(boolean connected) {
         this.connected = connected;
+    }
+    
+    public void addLatencySample(float latency) {
+        this.averageLatency = (this.averageLatency * this.latencySampleCount + latency) / (this.latencySampleCount + 1);
+        this.latestLatency = latency;
+        ++this.latencySampleCount;
+    }
+    
+    public float getAverageLatency() {
+        return this.averageLatency;
+    }
+    
+    public float getLatestLatency() {
+        return this.latestLatency;
     }
 }

@@ -52,6 +52,8 @@ import java.util.Map;
  *
  * @author william
  */
+
+// TODO: ClientHudManager is kind of messy and fragile. Please clean it up.
 public class ClientHudManager extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;
@@ -85,7 +87,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.cam = app.getCamera();
-        this.stateManager = stateManager;
+        this.stateManager = stateManager;        
     }
 
     @Override
