@@ -37,6 +37,7 @@ import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
 import arkhados.util.PlayerDataStrings;
+import arkhados.util.Timer;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -46,6 +47,7 @@ import arkhados.util.UserDataStrings;
  */
 public class RoundManager extends AbstractAppState implements MessageListener {
 
+    private static final Logger logger = Logger.getLogger(RoundManager.class.getName());
     private WorldManager worldManager;
     private SyncManager syncManager;
     private AppStateManager stateManager;
@@ -54,9 +56,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private int currentRound = 0;
     private int rounds = 3;
     private boolean roundRunning = false;
-    private float roundStartCountDown = 0.0f;
-    private static final Logger logger = Logger.getLogger(RoundManager.class.getName());
-    private float roundEndCountDown;
+    private Timer roundStartTimer = new Timer(5);
+    private Timer roundEndTimer = new Timer(5);
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -158,8 +159,9 @@ public class RoundManager extends AbstractAppState implements MessageListener {
             });
         }
 
-        this.syncManager.getServer().broadcast(new RoundStartCountdownMessage(5));
-        this.roundStartCountDown = 5f;
+        this.syncManager.getServer().broadcast(new RoundStartCountdownMessage(5));        
+        this.roundStartTimer.setTimeLeft(5f);
+        this.roundStartTimer.setActive(true);
     }
 
     private void startNewRound() {
@@ -205,32 +207,30 @@ public class RoundManager extends AbstractAppState implements MessageListener {
             this.stateManager.getState(ClientHudManager.class).showRoundStatistics();
         }
 
-        this.roundEndCountDown = 5f;
+        this.roundEndTimer.setTimeLeft(5f);
+        this.roundEndTimer.setActive(true);
     }
 
     @Override
     public void update(float tpf) {
-        if (this.roundStartCountDown > 0f) {
-            this.roundStartCountDown -= tpf;
+        this.roundStartTimer.update(tpf);
+        if (this.roundStartTimer.timeJustEnded()) {
             if (this.worldManager.isServer()) {
-                if (this.roundStartCountDown <= 0f) {
-                    this.startNewRound();
-                }
-            } else if (this.worldManager.isClient()) {
-                this.stateManager.getState(ClientHudManager.class).setSecondsLeftToStart((int) this.roundStartCountDown);
+                this.startNewRound();
             }
+            this.roundStartTimer.setActive(false);
         }
 
-        if (this.roundEndCountDown > 0f) {
-            this.roundEndCountDown -= tpf;
-            if (this.worldManager.isServer()) {
-                if (this.roundEndCountDown <= 0f) {
-                    if (this.currentRound < this.rounds) {
-                        this.createWorld();
-                    } else {
-                        this.syncManager.getServer().broadcast(new GameEndedMessage());
-                    }
-                }
+        if (this.roundStartTimer.isActive() && this.worldManager.isClient()) {
+            this.stateManager.getState(ClientHudManager.class).setSecondsLeftToStart((int) this.roundStartTimer.getTimeLeft());
+        }
+        
+        this.roundEndTimer.update(tpf);
+        if (this.roundEndTimer.timeJustEnded() && this.worldManager.isServer()) {
+            if (this.currentRound < this.rounds) {
+                this.createWorld();
+            } else {
+                this.syncManager.getServer().broadcast(new GameEndedMessage());
             }
         }
 
@@ -290,7 +290,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
             this.startNewRound();
         } else if (m instanceof RoundStartCountdownMessage) {
             RoundStartCountdownMessage message = (RoundStartCountdownMessage) m;
-            this.roundStartCountDown = message.getTime();
+            this.roundStartTimer.setTimeLeft(message.getTime());
+            this.roundStartTimer.setActive(true);
         } else if (m instanceof RoundFinishedMessage) {
             this.endRound();
         } else if (m instanceof GameEndedMessage) {
