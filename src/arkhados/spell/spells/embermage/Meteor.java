@@ -39,6 +39,7 @@ import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -46,6 +47,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,8 +114,8 @@ class CastMeteorAction extends EntityAction {
         path.addWayPoint(target);
         final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
         final long entityId = this.worldManager.addNewEntity(this.spell.getName(), startingPoint, Quaternion.IDENTITY, playerId);
-        final Spatial meteor = this.worldManager.getEntity(entityId);                
-        
+        final Spatial meteor = this.worldManager.getEntity(entityId);
+
         final MotionEvent motionControl = new MotionEvent(meteor, path);
         motionControl.setInitialDuration(1f);
         motionControl.setSpeed(1f);
@@ -125,7 +127,7 @@ class CastMeteorAction extends EntityAction {
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
                     final Float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
-                    
+
                     final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
                     final SplashAction splash = new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
@@ -134,7 +136,7 @@ class CastMeteorAction extends EntityAction {
                     this.destroy();
                 }
             }
-            
+
             private void destroy() {
                 worldManager.removeEntity(entityId, "collision");
             }
@@ -187,7 +189,7 @@ class MeteorNodeBuilder extends NodeBuilder {
         node.addControl(spellBuffControl);
 
         node.addControl(new GenericSyncControl());
-        
+
         if (NodeBuilder.worldManager.isClient()) {
             node.addControl(new SyncInterpolationControl());
             node.addControl(new EntityEventControl());
@@ -198,6 +200,12 @@ class MeteorNodeBuilder extends NodeBuilder {
             removalAction.setEmitter(fire);
 
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
+
+            PointLight light = new PointLight();
+            light.setColor(ColorRGBA.White);
+            LightControl lightControl = new LightControl(light);
+            node.addControl(lightControl);
+            worldManager.getWorldRoot().addLight(light);
 
         }
 

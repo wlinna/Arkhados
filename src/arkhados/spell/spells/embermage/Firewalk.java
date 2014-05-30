@@ -36,6 +36,7 @@ import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -47,6 +48,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -186,7 +188,7 @@ public class Firewalk extends Spell {
             final SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
             buffControl.addBuff(slowCC);
             node.addControl(buffControl);
-            
+
             node.addControl(new GenericSyncControl());
 
             if (worldManager.isServer()) {
@@ -203,7 +205,11 @@ public class Firewalk extends Spell {
             if (NodeBuilder.worldManager.isClient()) {
                 final ParticleEmitter fire = this.createFireEmitter();
                 node.attachChild(fire);
-
+                PointLight light = new PointLight();
+                light.setColor(ColorRGBA.Yellow);
+                LightControl lightControl = new LightControl(light);
+                node.addControl(lightControl);
+                worldManager.getWorldRoot().addLight(light);
             }
             return node;
         }

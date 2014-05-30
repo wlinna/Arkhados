@@ -30,18 +30,21 @@ import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.LightControl;
 
 /**
  * Embermage's Ember Circle (Q) spell. Area of Effect spell that deals damage
  * over time in certain area. Has small activation delay.
  */
 public class EmberCircle extends Spell {
+
     {
         super.iconName = "ember_circle.png";
     }
@@ -140,6 +143,12 @@ class EmberCircleBuilder extends NodeBuilder {
                     fire.setLocalTranslation(Vector3f.ZERO);
                     EmitterCircleShape emitterShape = new EmitterCircleShape(Vector3f.ZERO, 1f);
                     fire.setShape(emitterShape);
+
+                    PointLight light = new PointLight();
+                    light.setColor(ColorRGBA.White);
+                    LightControl lightControl = new LightControl(light);
+                    node.addControl(lightControl);
+                    worldManager.getWorldRoot().addLight(light);
 
                     return false;
                 }
