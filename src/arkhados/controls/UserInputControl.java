@@ -47,28 +47,35 @@ public class UserInputControl extends AbstractControl {
     }
 
     public void setUpDownDirection(int right, int down) {
-        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        InfluenceInterfaceControl influenceInterface =
+                super.spatial.getControl(InfluenceInterfaceControl.class);
         this.saveDirection(right, down);
-        if (!influenceInterface.canControlMovement()) {
+
+        if (!influenceInterface.canControlMovement() || !influenceInterface.canMove()) {
             return;
         }
 
-        if (influenceInterface.canMove()) {
-            Vector3f newWalkDirection = new Vector3f(right, 0f, down);
-            Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-            newWalkDirection.normalizeLocal().multLocal(speedMovement);
-            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
-            if (down != 0 || right != 0) {
-                if (!influenceInterface.isAbleToCastWhileMoving()) {
-                    Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-                    Boolean commandMoveInterrupts = PlayerData.getBooleanData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
-                    SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
-                    if (castControl.isChanneling() || commandMoveInterrupts != null && commandMoveInterrupts) {
-                        super.spatial.getControl(SpellCastControl.class).safeInterrupt();
-                    }
+        Vector3f newWalkDirection = new Vector3f(right, 0f, down);
+        Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        newWalkDirection.normalizeLocal().multLocal(speedMovement);
+        super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
+
+        if (down != 0 || right != 0) {
+
+            if (!influenceInterface.isAbleToCastWhileMoving()) {
+                Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+
+                Boolean commandMoveInterrupts =
+                        PlayerData.getBooleanData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+
+                SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+                if (castControl.isChanneling()
+                        || commandMoveInterrupts != null && commandMoveInterrupts) {
+                    super.spatial.getControl(SpellCastControl.class).safeInterrupt();
                 }
-                super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
             }
+
+            super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
         }
     }
 
@@ -77,13 +84,18 @@ public class UserInputControl extends AbstractControl {
         this.previousDown = down;
     }
 
+    /**
+     * Sets walk direction based on saved saved direction
+     */
     public void restoreWalking() {
         Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
+
         if (!newWalkDirection.equals(Vector3f.ZERO)) {
             super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
         }
+
         super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
     }
 

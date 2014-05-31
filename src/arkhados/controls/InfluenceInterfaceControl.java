@@ -21,18 +21,11 @@ import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.UserDataStrings;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -162,13 +155,50 @@ public class InfluenceInterfaceControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         // TODO: Refactor InfluenceInterfaceControl's controlUpdate. It is very hard to understand.
+        /**
+         * First set entity's attributes to their defaults like damagefactor and
+         * movement speed.
+         */
         super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         this.immuneToProjectiles = false;
 
+        /**
+         * Some buff or action might require entity's speed to remain constant
+         * until the end (for example, Venator's ChargeAction).
+         */
         if (!this.isSpeedConstant()) {
             Float msBase = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
             super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
         }
+
+        this.applyBuffs(tpf);
+
+        final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+
+        /**
+         * This code here applies changes to movement if player can move.
+         */
+        if (this.canMove() && !castControl.isCasting()
+                && !castControl.isChanneling() && this.isServer) {
+
+            final CharacterPhysicsControl physics =
+                    super.spatial.getControl(CharacterPhysicsControl.class);
+            
+            if (this.canControlMovement()) {
+                super.spatial.getControl(UserInputControl.class).restoreWalking();
+
+            } else {
+                if (!this.isSpeedConstant()) {
+                    Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                    Vector3f walkDir = physics.getWalkDirection();
+                    Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+                    physics.setWalkDirection(newWalkDir);
+                }
+            }
+        }
+    }
+
+    private void applyBuffs(float tpf) {
         for (Iterator<AbstractBuff> it = this.otherBuffs.iterator(); it.hasNext();) {
             AbstractBuff buff = it.next();
             buff.update(tpf);
@@ -178,6 +208,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
                 continue;
             }
         }
+
         for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
             CrowdControlBuff cc = it.next();
             cc.update(tpf);
@@ -187,45 +218,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
                 continue;
             }
         }
-
-        final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
-        if (this.canMove() && !castControl.isCasting() && !castControl.isChanneling()) {
-            if (this.isServer) {
-                final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-                if (this.canControlMovement()) {
-                    super.spatial.getControl(UserInputControl.class).restoreWalking();
-                } else {
-                    if (!this.isSpeedConstant()) {
-                        Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-                        Vector3f walkDir = physics.getWalkDirection();
-                        Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
-                        physics.setWalkDirection(newWalkDir);
-                    }
-                }
-            }
-        }
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public Control cloneForSpatial(Spatial spatial) {
-        InfluenceInterfaceControl control = new InfluenceInterfaceControl();
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public boolean isDead() {
