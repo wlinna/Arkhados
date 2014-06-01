@@ -27,6 +27,10 @@ import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.MotionPathListener;
+import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -38,41 +42,42 @@ import java.util.List;
  * @author william
  */
 public class DeepWounds extends Spell {
-    
+
     {
         super.iconName = "deep_wounds.png";
+        super.setMoveTowardsTarget(true);
     }
-    
+
     public DeepWounds(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
     }
-    
+
     public static DeepWounds create() {
         final float cooldown = 8f;
-        final float range = 20f;
+        final float range = 30f;
         final float castTime = 0.3f;
-        
+
         final DeepWounds spell = new DeepWounds("Deep Wounds", cooldown, range, castTime);
-        
+
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastDeepWoundsAction(spell);
             }
         };
-        
+
         return spell;
     }
 }
 
 class CastDeepWoundsAction extends EntityAction {
-    
+
     private final DeepWounds spell;
-    
+
     public CastDeepWoundsAction(DeepWounds spell) {
         this.spell = spell;
         super.name = "Swipe-Up";
     }
-    
+
     @Override
     public boolean update(float tpf) {
         ActionQueueControl actionQueue = super.spatial.getControl(ActionQueueControl.class);
@@ -90,7 +95,7 @@ class CastDeepWoundsAction extends EntityAction {
 }
 
 class ChargeAction extends EntityAction {
-    
+
     private boolean isCharging = false;
     private final float chargeSpeed = 255f;
     private float distanceMoved = 0f;
@@ -99,35 +104,35 @@ class ChargeAction extends EntityAction {
     private GhostControl ghost;
     private Node ghostNode;
     private List<AbstractBuff> buffs = new ArrayList<>();
-    
+
     public ChargeAction(final DeepWounds spell) {
         this.range = spell.getRange();
     }
-    
+
     public void addBuff(AbstractBuff buff) {
         this.buffs.add(buff);
     }
-    
+
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
         CapsuleCollisionShape shape = physics.getCapsuleShape();
         shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
-        ghost = new GhostControl(shape);        
+        ghost = new GhostControl(shape);
         ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
         ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
-        
+
         this.ghostNode = new Node("Ghost Node");
         ((Node) spatial).attachChild(this.ghostNode);
-        this.ghostNode.addControl(ghost);        
-        
+        this.ghostNode.addControl(ghost);
+
         physics.getPhysicsSpace().add(ghost);
     }
-    
+
     @Override
     public boolean update(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects = this.ghost.getOverlappingObjects();        
+        List<PhysicsCollisionObject> collisionObjects = this.ghost.getOverlappingObjects();
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial target = (Spatial) collisionObject.getUserObject();
@@ -138,38 +143,40 @@ class ChargeAction extends EntityAction {
                 return false;
             }
         }
-        
-        
+
         CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
         InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(false);
+
         if (!this.isCharging) {
-            super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, this.chargeSpeed);
             this.direction = physics.getTargetLocation().subtract(super.spatial.getLocalTranslation()).normalizeLocal();
+            physics.setViewDirection(this.direction);
             direction.multLocal(this.chargeSpeed);
-            physics.setWalkDirection(direction);
+            physics.setDictatedDirection(direction);
             this.isCharging = true;
             influenceInterface.setSpeedConstant(true);
             return true;
         }
-        physics.setWalkDirection(direction);
+
+        physics.setViewDirection(this.direction);
+
         this.distanceMoved += this.chargeSpeed * tpf;
         if (this.distanceMoved >= this.range) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     private void collided(Spatial target) {
         final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         final float rawDamage = 100f * damageFactor;
-        
-        InfluenceInterfaceControl targetInfluenceControl = target.getControl(InfluenceInterfaceControl.class);        
+
+        InfluenceInterfaceControl targetInfluenceControl = target.getControl(InfluenceInterfaceControl.class);
         CharacterInteraction.harm(super.spatial.getControl(InfluenceInterfaceControl.class),
                 targetInfluenceControl, rawDamage, this.buffs, true);
     }
-    
+
     @Override
     public void end() {
         super.end();
@@ -177,10 +184,11 @@ class ChargeAction extends EntityAction {
         influenceInterface.setCanControlMovement(true);
         influenceInterface.setSpeedConstant(false);
         CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        Float baseMs = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
-        super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, baseMs);
+
+        physics.getDictatedDirection().zero();
         physics.setWalkDirection(Vector3f.ZERO);
-        
+        physics.enqueueSetLinearVelocity(Vector3f.ZERO);
+
         ghost.getPhysicsSpace().remove(this.ghost);
         this.ghostNode.removeFromParent();
         this.ghostNode.removeControl(this.ghost);
@@ -188,26 +196,26 @@ class ChargeAction extends EntityAction {
 }
 
 class BleedBuff extends AbstractBuff {
-    
+
     private CharacterPhysicsControl physics = null;
     private Spatial spatial = null;
     private float dmgPerUnit = 2f;
-    
+
     {
         this.name = "Deep Wounds";
     }
-    
+
     public BleedBuff(long buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
-    
+
     @Override
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         super.attachToCharacter(targetInterface);
         this.spatial = targetInterface.getSpatial();
         this.physics = this.spatial.getControl(CharacterPhysicsControl.class);
     }
-    
+
     @Override
     public void update(float time) {
         super.update(time);
@@ -217,7 +225,7 @@ class BleedBuff extends AbstractBuff {
         Float dmg = ((Float) this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT)) * time * dmgPerUnit;
         CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, dmg, null, true);
     }
-    
+
     public void setDamagePerUnit(float dmgPerUnit) {
         this.dmgPerUnit = dmgPerUnit;
     }

@@ -30,6 +30,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     private Vector3f impulseToApply = null;
     private Vector3f queuedLinearVelocity = null;
     private Vector3f targetLocation = new Vector3f();
+    private Vector3f dictatedDirection = new Vector3f();
 
     public CharacterPhysicsControl(float radius, float height, float mass) {
         super(radius, height, mass);
@@ -101,4 +102,13 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         CapsuleCollisionShape capsuleCollisionShape = new CapsuleCollisionShape(getFinalRadius(), (getFinalHeight() - (2 * getFinalRadius())));
         return capsuleCollisionShape;
     }
+
+    public Vector3f getDictatedDirection() {
+        return dictatedDirection;
+    }
+
+    public void setDictatedDirection(Vector3f dictatedDirection) {
+        this.dictatedDirection = dictatedDirection;
+        this.setWalkDirection(dictatedDirection);
+    }       
 }

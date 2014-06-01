@@ -127,6 +127,11 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canControlMovement() {
+        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
+            return false;
+        }
+        
         return this.canControlMovement;
     }
 
@@ -183,12 +188,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
             final CharacterPhysicsControl physics =
                     super.spatial.getControl(CharacterPhysicsControl.class);
-            
+
             if (this.canControlMovement()) {
                 super.spatial.getControl(UserInputControl.class).restoreWalking();
 
             } else {
-                if (!this.isSpeedConstant()) {
+                if (!this.isSpeedConstant() && physics.getDictatedDirection().equals(Vector3f.ZERO)) {
                     Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
                     Vector3f walkDir = physics.getWalkDirection();
                     Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);

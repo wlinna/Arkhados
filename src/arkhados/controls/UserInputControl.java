@@ -51,7 +51,8 @@ public class UserInputControl extends AbstractControl {
                 super.spatial.getControl(InfluenceInterfaceControl.class);
         this.saveDirection(right, down);
 
-        if (!influenceInterface.canControlMovement() || !influenceInterface.canMove()) {
+        if (!influenceInterface.canControlMovement()
+                || !influenceInterface.canMove()) {
             return;
         }
 
@@ -88,6 +89,11 @@ public class UserInputControl extends AbstractControl {
      * Sets walk direction based on saved saved direction
      */
     public void restoreWalking() {
+        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
+            return;
+        }
+
         Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
@@ -97,23 +103,5 @@ public class UserInputControl extends AbstractControl {
         }
 
         super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
-    }
-
-    @Override
-    public Control cloneForSpatial(Spatial spatial) {
-        UserInputControl control = new UserInputControl();
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 }
