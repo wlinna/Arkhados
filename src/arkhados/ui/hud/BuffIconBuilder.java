@@ -12,32 +12,24 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.controls;
+package arkhados.ui.hud;
 
-import arkhados.ui.hud.ClientHudManager;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
+import de.lessvoid.nifty.builder.ImageBuilder;
 
 /**
  *
  * @author william
  */
-public class CharacterHudControl extends AbstractControl {
+public class BuffIconBuilder extends ImageBuilder{
 
-    private ClientHudManager hudManager;
-
-    @Override
-    protected void controlUpdate(float tpf) {
+    public BuffIconBuilder(final String id, final String path) {
+        super(id);
+        super.valignCenter();
+        super.alignCenter();
+        super.height("64px");
+        super.width("64px");
+        super.marginLeft("12px");
+        super.filename(path);
     }
 
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public void setHudManager(ClientHudManager hudManager) {
-        this.hudManager = hudManager;
-        super.spatial.getControl(CharacterBuffControl.class).setHudManager(hudManager);
-    }
 }

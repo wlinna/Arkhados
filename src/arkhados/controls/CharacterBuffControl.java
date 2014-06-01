@@ -16,16 +16,12 @@ package arkhados.controls;
 
 import arkhados.effects.BuffEffect;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
+import arkhados.ui.hud.BuffIconBuilder;
+import arkhados.ui.hud.ClientHudManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
+import de.lessvoid.nifty.elements.Element;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,20 +31,39 @@ import java.util.Map;
  */
 public class CharacterBuffControl extends AbstractControl {
 
-    private HashMap<Long, BuffEffect> buffs = new HashMap<Long, BuffEffect>();
+    private HashMap<Long, BuffEffect> buffs = new HashMap<>();
+    private HashMap<Long, Element> buffIcons = new HashMap<>();
+    private ClientHudManager hudManager = null;
 
-    public void addBuff(final long buffId, final String buffName) {
+    public void addBuff(long buffId, String buffName) {
         final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffName);
         if (buffInfo == null) {
             System.out.println("No buffInfo for " + buffName + " id: " + buffId);
             return;
         }
         final BuffEffect buff = buffInfo.createBuffEffect(this);
-        this.buffs.put(buffId, buff);
-        System.out.println("Added buff " + buffName + " with id: " + buffId);
+
+        if (buff != null) {
+            this.buffs.put(buffId, buff);
+        }
+
+        if (this.hudManager == null) {
+            return;
+        }
+
+        String iconPath = buffInfo.getIconPath();
+        if (iconPath == null) {
+            iconPath = "Interface/Images/SpellIcons/placeholder.png";
+        }
+
+        final Element panel = this.hudManager.getScreen().findElementByName("panel_right");
+        final Element icon = new BuffIconBuilder(buffName + buffId, iconPath)
+                .build(hudManager.getNifty(), hudManager.getScreen(), panel);
+
+        this.buffIcons.put(buffId, icon);
     }
 
-    public void removeBuff(final long buffId) {
+    public void removeBuff(long buffId) {
         final BuffEffect buffEffect = this.buffs.remove(buffId);
         // TODO: Investigate why buffEffect is sometimes null
         // NOTE: It seems that this happens mostly (or only) with Ignite
@@ -57,6 +72,13 @@ public class CharacterBuffControl extends AbstractControl {
         } else {
             System.out.println("buffEffect not in buffs!");
         }
+
+        if (this.hudManager == null) {
+            return;
+        }
+
+        this.hudManager.getNifty().removeElement(this.hudManager.getScreen(), this.buffIcons.get(buffId));
+        this.buffIcons.remove(buffId);
     }
 
     @Override
@@ -71,21 +93,7 @@ public class CharacterBuffControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public Control cloneForSpatial(Spatial spatial) {
-        CharacterBuffControl control = new CharacterBuffControl();
-
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
+    void setHudManager(ClientHudManager hudManager) {
+        this.hudManager = hudManager;
     }
 }

@@ -32,6 +32,9 @@ import com.jme3.scene.shape.Sphere;
  * @author william
  */
 public class PurifyingFlameInformation extends BuffInformation {
+    {
+        super.setIconPath("Interface/Images/SpellIcons/purifying_flame.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {

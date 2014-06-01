@@ -23,6 +23,7 @@ See CREDITS.md for attributions.
 - EmberCircle.png and all its derivatives
 - skull.png and all its derivatives
 - fireball.png
+- ignite.png
 - survival_instinct.png
 - leap.png
 - meteor.png

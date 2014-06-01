@@ -17,13 +17,11 @@ package arkhados.spell.buffs.buffinformation;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 
 /**
@@ -31,6 +29,9 @@ import com.jme3.scene.shape.Quad;
  * @author william
  */
 public class FearInformation extends BuffInformation {
+    {
+        super.setIconPath("Textures/icons/skull.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
@@ -40,7 +41,7 @@ public class FearInformation extends BuffInformation {
     }
 }
 
-class FearEffect extends BuffEffect {
+class FearEffect extends BuffEffect {    
     private Spatial fearIcon = null;
 
     public FearEffect(float timeLeft) {

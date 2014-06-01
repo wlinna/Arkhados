@@ -17,8 +17,8 @@ package arkhados.characters;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -117,6 +117,7 @@ public class EliteSoldier extends NodeBuilder {
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
+            entity.addControl(new CharacterHudControl());
         }
 
         return entity;

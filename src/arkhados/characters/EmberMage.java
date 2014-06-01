@@ -17,6 +17,7 @@ package arkhados.characters;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -27,8 +28,6 @@ import arkhados.util.InputMappingStrings;
 import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.GhostControl;
 import com.jme3.scene.Node;
 
 /**
@@ -99,11 +98,12 @@ public class EmberMage extends NodeBuilder {
         animControl.addSpellAnimation("Firewalk", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
-        
+
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
+            entity.addControl(new CharacterHudControl());
         }
 
         return entity;

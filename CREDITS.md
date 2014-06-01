@@ -57,9 +57,10 @@ Icons are licensed under CC0-license. Original icons can be found from
 [OGA](http://opengameart.org/content/skill-item-and-spell-icons).
 
 Warlock Gauntlet's artists, rAum, jackFlower, DrZoliparia and Neil2D
-for following spells' icons:
+for following spells' and buffs' icons:
 - Magma Bash
 - Ember Circle
+- Ignite
 - Meteor
 - Firewalk
 - Purifying Flame

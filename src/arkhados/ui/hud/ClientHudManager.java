@@ -272,7 +272,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         } else {
             iconPath = "Interface/Images/SpellIcons/placeholder.png";
         }
-        this.spellIcons.put(spell.getName(), new SpellIconBuilder(spell.getName(), iconPath).build(nifty, screen, bottomPanel));
+        this.spellIcons.put(spell.getName(), new SpellIconBuilder(spell.getName(),
+                iconPath).build(nifty, screen, bottomPanel));
     }
 
     private void updateSpellIcons() {
@@ -300,5 +301,13 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 }
             }
         }
+    }
+
+    public Nifty getNifty() {
+        return nifty;
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
 }

@@ -29,6 +29,9 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class DeepWoundsInformation extends BuffInformation {
+    {
+        this.setIconPath("Interface/Images/SpellIcons/deep_wounds.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {

@@ -28,6 +28,9 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class IgniteInformation extends BuffInformation {
+    {        
+        super.setIconPath("Interface/Images/BuffIcons/ignite.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {

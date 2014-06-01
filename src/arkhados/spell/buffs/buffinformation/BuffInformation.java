@@ -26,7 +26,7 @@ import java.util.HashMap;
 public abstract class BuffInformation {
 
     protected static AssetManager assetManager = null;
-    private static HashMap<String, BuffInformation> Buffs = new HashMap<String, BuffInformation>();
+    private static HashMap<String, BuffInformation> Buffs = new HashMap<>();
 
     public static void initBuffs() {
 
@@ -47,6 +47,9 @@ public abstract class BuffInformation {
 
         final BuffInformation incapacitate = new IncapacitateInformation();
         Buffs.put("Incapacitate", incapacitate);
+        
+        final BuffInformation likeAPro = new LikeAProInformation();
+        Buffs.put("Like a Pro", likeAPro);
     }
 
     public static BuffInformation getBuffInformation(final String name) {
@@ -55,10 +58,19 @@ public abstract class BuffInformation {
     }
     private String name;
     private float duration;
+    private String iconPath = null;
 
     public abstract BuffEffect createBuffEffect(CharacterBuffControl buffControl);
 
     public float getDuration() {
         return this.duration;
+    }
+
+    public String getIconPath() {
+        return this.iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
     }
 }

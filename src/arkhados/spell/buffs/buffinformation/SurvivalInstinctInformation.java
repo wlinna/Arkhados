@@ -30,6 +30,9 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SurvivalInstinctInformation extends BuffInformation {
+    {
+        super.setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {

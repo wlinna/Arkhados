@@ -330,7 +330,9 @@
                 <panel id="middle" height="*" valign="top" childLayout="horizontal">
                     <panel id="panel_left" width="45px" height="*" align="left"></panel>
                     <panel id="game_area" width="*" height="*" align="center"></panel>
-                    <panel id="panel_right" width="45px" height="*" align="right"></panel>
+                    <panel id="panel_right" width="100px" height="*" childLayout="vertical"
+                               margin="20px,20px,0px,0px">
+                    </panel>
                 </panel>
                 <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom">
                 </panel>

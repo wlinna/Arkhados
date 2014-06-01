@@ -14,12 +14,14 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import arkhados.util.ValueWrapper;
@@ -271,6 +273,8 @@ public class UserCommandManager extends AbstractAppState {
         // FIXME: NullPointerException
         if ((Long) spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
             this.character = (Node) spatial;
+            ClientHudManager hudManager = this.app.getStateManager().getState(ClientHudManager.class);
+            this.character.getControl(CharacterHudControl.class).setHudManager(hudManager);
             this.followPlayer();
 
             return true;

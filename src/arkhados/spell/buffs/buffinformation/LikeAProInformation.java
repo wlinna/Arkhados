@@ -12,32 +12,22 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.controls;
+package arkhados.spell.buffs.buffinformation;
 
-import arkhados.ui.hud.ClientHudManager;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
+import arkhados.controls.CharacterBuffControl;
+import arkhados.effects.BuffEffect;
 
 /**
  *
  * @author william
  */
-public class CharacterHudControl extends AbstractControl {
-
-    private ClientHudManager hudManager;
-
-    @Override
-    protected void controlUpdate(float tpf) {
+public class LikeAProInformation extends BuffInformation {
+    {
+        super.setIconPath("Interface/Images/SpellIcons/like_a_pro.png");
     }
 
     @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public void setHudManager(ClientHudManager hudManager) {
-        this.hudManager = hudManager;
-        super.spatial.getControl(CharacterBuffControl.class).setHudManager(hudManager);
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
+        return null;
     }
 }

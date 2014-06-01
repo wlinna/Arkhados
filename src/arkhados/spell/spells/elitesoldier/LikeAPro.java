@@ -51,7 +51,9 @@ public class LikeAPro extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 CastSelfBuffAction buffAction = new CastSelfBuffAction();
-                buffAction.addBuff(new AbleToCastWhileMovingBuff(-1, 5));
+                AbleToCastWhileMovingBuff likeAPro = new AbleToCastWhileMovingBuff(-1, 5);
+                likeAPro.setName("Like a Pro");
+                buffAction.addBuff(likeAPro);
                 buffAction.addBuff(new SpeedBuff(false, 6, -1, 5));
                 buffAction.addBuff(new ArmorBuff(50, 0.6f, -1, 999999999));
                 
