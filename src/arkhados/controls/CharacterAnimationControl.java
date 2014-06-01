@@ -44,10 +44,9 @@ public class CharacterAnimationControl extends AbstractControl {
     private CharacterPhysicsControl characterControl;
     private AnimChannel channel;
     private float actionTime = 0f;
-    private HashMap<String, AnimationData> spellAnimationMap = new HashMap<String, AnimationData>(6);
-    private HashMap<String, AnimationData> actionAnimationData = new HashMap<String, AnimationData>(8);
+    private HashMap<String, AnimationData> spellAnimationMap = new HashMap<>(6);
+    private HashMap<String, AnimationData> actionAnimationData = new HashMap<>(8);
     // TODO: Allow mapping of animations to specific AnimChannels
-
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
 
@@ -69,16 +68,14 @@ public class CharacterAnimationControl extends AbstractControl {
             return;
         }
 
-        if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)) {
+        if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)
+                && !this.characterControl.isMotionControlled()) {
             if (!this.walkAnimation.getName().equals(this.channel.getAnimationName())) {
-//                this.characterControl.setViewDirection(this.characterControl.getWalkDirection());
                 this.channel.setAnim(this.walkAnimation.getName(), this.walkAnimation.getSpeed());
             }
             this.channel.setSpeed(this.walkAnimation.getSpeed());
         } else {
-//            if (this.walkAnimation.getName().equals(this.channel.getAnimationName())) {
-                this.channel.setSpeed(0.0f);
-//            }
+            this.channel.setSpeed(0.0f);
         }
     }
 
@@ -107,7 +104,8 @@ public class CharacterAnimationControl extends AbstractControl {
         this.channel.setAnim(data.getName());
         this.channel.setSpeed(data.getSpeed());
         this.channel.setLoopMode(data.getLoopMode());
-        if ((data.getLoopMode() == LoopMode.Loop || data.getLoopMode() == LoopMode.Cycle) && actionDuration != -1) {
+        if ((data.getLoopMode() == LoopMode.Loop
+                || data.getLoopMode() == LoopMode.Cycle) && actionDuration != -1) {
             this.actionTime = actionDuration;
         } else {
             this.actionTime = this.channel.getAnimMaxTime() / data.getSpeed();
@@ -120,23 +118,6 @@ public class CharacterAnimationControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public Control cloneForSpatial(Spatial spatial) {
-        CharacterAnimationControl control = new CharacterAnimationControl();
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public void addSpellAnimation(String spellName, final AnimationData animData) {

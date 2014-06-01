@@ -30,6 +30,7 @@ import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import java.util.List;
  * @author william
  */
 public class Leap extends Spell {
+
     {
         super.iconName = "leap.png";
     }
@@ -56,6 +58,7 @@ public class Leap extends Spell {
         final Leap spell = new Leap("Leap", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastLeapAction(spell);
             }
@@ -70,6 +73,9 @@ class CastLeapAction extends EntityAction {
 
     private float forwardSpeed = 105f;
     private final Spell spell;
+    private boolean motionSet = false;
+    private Vector3f direction;
+    private boolean motionPending = true;
 
     public CastLeapAction(final Spell spell) {
         this.spell = spell;
@@ -79,21 +85,26 @@ class CastLeapAction extends EntityAction {
         final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
         physics.switchToMotionCollisionMode();
 
-        final MotionPath path = new MotionPath();
-
         // We set y to 1 to prevent ground collision on start
         final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
-        final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
+        final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class)
+                .getClosestPointToTarget(this.spell);
 
+        final MotionPath path = new MotionPath();
         path.addWayPoint(startLocation);
-        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation).divideLocal(2).setY(finalLocation.length() / 2f));
+        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation)
+                .divideLocal(2).setY(finalLocation.distance(startLocation) / 2f));
         path.addWayPoint(finalLocation);
+
+        path.setPathSplineType(Spline.SplineType.CatmullRom);
+        path.setCurveTension(0.75f);
 
         MotionEvent motionControl = new MotionEvent(super.spatial, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / this.forwardSpeed);
-        motionControl.setSpeed(2f);
+        motionControl.setSpeed(1.6f);
 
-        physics.setViewDirection(finalLocation.subtract(startLocation));
+        this.direction = finalLocation.subtract(startLocation);
+        physics.setViewDirection(this.direction);
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
@@ -101,6 +112,7 @@ class CastLeapAction extends EntityAction {
                 if (spatialsOnDistance == null) {
                     return;
                 }
+
                 SpatialDistancePair pairWithSmallestDistance = null;
                 for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
                     // Check if spatial is character
@@ -108,35 +120,37 @@ class CastLeapAction extends EntityAction {
                         continue;
                     }
 
-                    if (pairWithSmallestDistance == null) {
-                        pairWithSmallestDistance = spatialDistancePair;
-                    }
-                    if (spatialDistancePair.distance < pairWithSmallestDistance.distance) {
+                    if (pairWithSmallestDistance == null
+                            || spatialDistancePair.distance < pairWithSmallestDistance.distance) {
                         pairWithSmallestDistance = spatialDistancePair;
                     }
                 }
                 if (pairWithSmallestDistance != null) {
-                    final InfluenceInterfaceControl thisInfluenceInterfaceControl = CastLeapAction.super.spatial.getControl(InfluenceInterfaceControl.class);
-                    final InfluenceInterfaceControl targetInfluenceInterface = pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
+                    final InfluenceInterfaceControl thisInfluenceInterfaceControl =
+                            spatial.getControl(InfluenceInterfaceControl.class);
+                    final InfluenceInterfaceControl targetInfluenceInterface =
+                            pairWithSmallestDistance.spatial.getControl(InfluenceInterfaceControl.class);
 
                     final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
                     final float damage = 200f * damageFactor;
 
-                    final List<AbstractBuff> buffs = new ArrayList<AbstractBuff>(1);
+                    final List<AbstractBuff> buffs = new ArrayList<>(1);
                     buffs.add(0, new IncapacitateCC(1f, -1));
 
-                    CharacterInteraction.harm(thisInfluenceInterfaceControl, targetInfluenceInterface, damage, buffs, true);
+                    CharacterInteraction.harm(thisInfluenceInterfaceControl,
+                            targetInfluenceInterface, damage, buffs, true);
                 }
             }
 
+            @Override
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex == path.getNbWayPoints() - 2) {
-
-                }
-                else if (wayPointIndex == path.getNbWayPoints() - 1) {
+                } else if (wayPointIndex == path.getNbWayPoints() - 1) {
                     physics.switchToNormalPhysicsMode();
-                    spatial.getControl(ActionQueueControl.class).enqueueAction(new ChangeAnimationAction("Land"));
+                    spatial.getControl(ActionQueueControl.class).enqueueAction(
+                            new ChangeAnimationAction("Land"));
                     this.landingEffect();
+                    motionPending = false;
                 }
             }
         });
@@ -146,13 +160,20 @@ class CastLeapAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        this.motionPathVersion();
-        return false;
+        if (!this.motionSet) {
+            this.motionPathVersion();
+        }
+
+//        final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+//        physics.setViewDirection(direction);
+        this.motionSet = true;
+        return this.motionPending;
     }
 }
 
 /**
  * EntityAction that does nothing but chages animation by having name
+ *
  * @author william
  */
 class ChangeAnimationAction extends EntityAction {
@@ -165,5 +186,4 @@ class ChangeAnimationAction extends EntityAction {
     public boolean update(float tpf) {
         return false;
     }
-
 }

@@ -90,7 +90,8 @@ public class UserCommandManager extends AbstractAppState {
             calculateMouseGroundPosition();
             if (name != null) {
                 UserCommandManager.this.client.get().send(
-                        new UcCastSpellMessage(name, UserCommandManager.this.mouseGroundPosition));
+                        new UcCastSpellMessage(name,
+                        UserCommandManager.this.mouseGroundPosition));
             }
         }
     };
@@ -115,15 +116,7 @@ public class UserCommandManager extends AbstractAppState {
             } else if ("move-down".equals(name)) {
                 UserCommandManager.this.down += isPressed ? 1 : -1;
             }
-            CharacterPhysicsControl characterPhysics = getCharacter().getControl(CharacterPhysicsControl.class);
-            Float speedMovement = getCharacter().getUserData(UserDataStrings.SPEED_MOVEMENT);
-            Vector3f walkDirection = new Vector3f(right, 0f, down).normalizeLocal().multLocal(speedMovement);
-//            characterPhysics.setWalkDirection(walkDirection);
-            if (walkDirection.lengthSquared() > 0f) {
-                characterPhysics.setViewDirection(walkDirection);
-            }
-//            UserCommandManager.this.client.get().send(new UcWalkDirection(down, right));
-            
+
             sendWalkDirection();
         }
     };
@@ -139,7 +132,8 @@ public class UserCommandManager extends AbstractAppState {
     private void enableInputListeners() {
         if (!this.inputListenersActive) {
             this.inputManager.addListener(this.actionMoveDirection,
-                    InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT, InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+                    InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
+                    InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
             this.inputManager.addListener(this.actionCastSpell,
                     InputMappingStrings.M1, InputMappingStrings.M2,
                     InputMappingStrings.Q, InputMappingStrings.E,
@@ -174,14 +168,9 @@ public class UserCommandManager extends AbstractAppState {
         camNode.addControl(new FreeCameraControl(this.character, this.cam, this.inputManager));
         camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
-       
+
     public void sendWalkDirection() {
         this.client.get().send(new UcWalkDirection(down, right));
-    }
-
-    @Override
-    public void cleanup() {
-        super.cleanup();
     }
 
     @Override

@@ -40,11 +40,12 @@ public class UcMouseTargetMessage extends AbstractSyncMessage {
 
     @Override
     public void applyData(Object target) {
-        // FIXME: Worldmanager cannot be cast to com.jme3.scene.Spatial
         Spatial character = (Spatial) target;
         CharacterPhysicsControl physicsControl = character.getControl(CharacterPhysicsControl.class);
-        physicsControl.setTargetLocation(this.location);
-        if (physicsControl.getWalkDirection().equals(Vector3f.ZERO)) {
+        physicsControl.setTargetLocation(this.location);        
+        
+        if (!physicsControl.isMotionControlled()
+                && physicsControl.getWalkDirection().equals(Vector3f.ZERO)) {
             physicsControl.lookAt(this.location);
         }
     }

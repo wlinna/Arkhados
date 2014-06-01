@@ -31,6 +31,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     private Vector3f queuedLinearVelocity = null;
     private Vector3f targetLocation = new Vector3f();
     private Vector3f dictatedDirection = new Vector3f();
+    private boolean motionControlled = false;
 
     public CharacterPhysicsControl(float radius, float height, float mass) {
         super(radius, height, mass);
@@ -88,10 +89,12 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public void switchToMotionCollisionMode() {
         super.setEnabled(false);
+        this.setMotionControlled(true);
     }
 
     public void switchToNormalPhysicsMode() {
         super.setEnabled(true);
+        this.setMotionControlled(false);
     }
 
     public Vector3f calculateTargetDirection() {
@@ -111,4 +114,12 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         this.dictatedDirection = dictatedDirection;
         this.setWalkDirection(dictatedDirection);
     }       
+
+    public boolean isMotionControlled() {
+        return this.motionControlled;
+    }
+
+    public void setMotionControlled(boolean motionControlled) {
+        this.motionControlled = motionControlled;
+    }
 }

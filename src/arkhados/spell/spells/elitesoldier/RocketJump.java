@@ -84,12 +84,13 @@ class CastRocketJumpAction extends EntityAction {
         final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
 
         path.addWayPoint(startLocation);
-        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation).divideLocal(2).setY(finalLocation.length() / 1.5f));
+        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation)
+                .divideLocal(2).setY(finalLocation.distance(startLocation) / 1.8f));
         path.addWayPoint(finalLocation);
 
         MotionEvent motionControl = new MotionEvent(super.spatial, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / CastRocketJumpAction.forwardSpeed);
-        motionControl.setSpeed(1.5f);
+        motionControl.setSpeed(1f);
 
         physics.setViewDirection(finalLocation.subtract(startLocation));
 

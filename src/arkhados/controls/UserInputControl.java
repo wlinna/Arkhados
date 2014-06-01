@@ -17,17 +17,10 @@ package arkhados.controls;
 import arkhados.PlayerData;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 
 /**
  *
@@ -51,15 +44,19 @@ public class UserInputControl extends AbstractControl {
                 super.spatial.getControl(InfluenceInterfaceControl.class);
         this.saveDirection(right, down);
 
+        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+
         if (!influenceInterface.canControlMovement()
-                || !influenceInterface.canMove()) {
+                || !influenceInterface.canMove()
+                || physics.isMotionControlled()) {
             return;
         }
 
         Vector3f newWalkDirection = new Vector3f(right, 0f, down);
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
-        super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
+
+        physics.setWalkDirection(newWalkDirection);
 
         if (down != 0 || right != 0) {
 
@@ -76,7 +73,9 @@ public class UserInputControl extends AbstractControl {
                 }
             }
 
-            super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
+            if (!physics.isMotionControlled()) {
+                physics.setViewDirection(newWalkDirection);
+            }
         }
     }
 
@@ -90,7 +89,8 @@ public class UserInputControl extends AbstractControl {
      */
     public void restoreWalking() {
         CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
+        if (!physics.getDictatedDirection().equals(Vector3f.ZERO)
+                || physics.isMotionControlled()) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class UserInputControl extends AbstractControl {
         Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
 
-        if (!newWalkDirection.equals(Vector3f.ZERO)) {
+        if (!newWalkDirection.equals(Vector3f.ZERO) && physics.isEnabled()) {
             super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
         }
 

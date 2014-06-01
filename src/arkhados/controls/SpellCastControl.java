@@ -126,7 +126,8 @@ public class SpellCastControl extends AbstractControl {
         }
 
         EntityAction action = super.spatial.getControl(ActionQueueControl.class).getCurrent();
-        if (action != null && (action instanceof CastingSpellAction) || (action instanceof ChannelingSpellAction)) {
+        if (action != null && (action instanceof CastingSpellAction)
+                || (action instanceof ChannelingSpellAction)) {
 
             Spell currentSpell;
             if (action instanceof CastingSpellAction) {
@@ -145,7 +146,9 @@ public class SpellCastControl extends AbstractControl {
             this.cooldowns.put(spellName, 0f);
         }
 
-        this.cast(input, targetLocation);
+        if (action == null) {
+            this.cast(input, targetLocation);
+        }
     }
 
     private boolean basicValidation(final Spell spell) {
