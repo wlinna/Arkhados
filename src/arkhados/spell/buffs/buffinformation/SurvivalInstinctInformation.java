@@ -19,8 +19,6 @@ import arkhados.effects.BuffEffect;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -35,8 +33,8 @@ public class SurvivalInstinctInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        final SurvivalInstinctEffect effect = new SurvivalInstinctEffect(super.getDuration());
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        final SurvivalInstinctEffect effect = new SurvivalInstinctEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }

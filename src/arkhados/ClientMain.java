@@ -98,7 +98,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         try {
             settings.load(ClientMain.PREFERENCES_KEY);
         } catch (BackingStoreException ex) {
-            Logger.getLogger("").warning("Could not load preferences");
+            Logger.getLogger("").log(Level.WARNING, "Could not load preferences: {0}", ex.getMessage());
         }
         setInputDefaultSettings(settings);
         settings.setFrameRate(60);

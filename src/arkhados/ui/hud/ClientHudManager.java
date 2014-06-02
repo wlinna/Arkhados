@@ -52,7 +52,6 @@ import java.util.Map;
  *
  * @author william
  */
-
 // TODO: ClientHudManager is kind of messy and fragile. Please clean it up.
 public class ClientHudManager extends AbstractAppState implements ScreenController {
 
@@ -87,7 +86,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.cam = app.getCamera();
-        this.stateManager = stateManager;        
+        this.stateManager = stateManager;
     }
 
     @Override
@@ -148,18 +147,20 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         this.currentSeconds = -1;
         this.playerCharacter = null;
 
-        for (Iterator<Element> it = this.screen.findElementByName("panel_bottom").getElements().iterator(); it.hasNext();) {
+        for (Iterator<Element> it = this.screen.findElementByName("panel_bottom")
+                .getElements().iterator(); it.hasNext();) {
+
             Element element = it.next();
             this.nifty.removeElement(this.screen, element);
         }
-              
+
         for (Iterator<Element> it = this.statisticsPanels.iterator(); it.hasNext();) {
             Element element = it.next();
             this.nifty.removeElement(this.screen, element);
         }
-        
+
         statisticsPanels.clear();
-        
+
         this.hideRoundStatistics();
 
         this.spellIcons.clear();
@@ -187,7 +188,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             return;
         }
         // TODO: Implement better method to get character's head's location
-        Vector3f hpBarLocation = this.cam.getScreenCoordinates(character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
+        Vector3f hpBarLocation = this.cam.getScreenCoordinates(
+                character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
     }
@@ -214,7 +216,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         assert statisticsPanel != null;
         final List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
-            this.statisticsPanels.add(new PlayerStatisticsPanelBuilder(playerData.getId()).build(nifty, screen, statisticsPanel));
+            this.statisticsPanels.add(new PlayerStatisticsPanelBuilder(
+                    playerData.getId()).build(nifty, screen, statisticsPanel));
         }
     }
 
@@ -235,20 +238,26 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         final Element statisticsPanel = this.screen.findElementByName("panel_statistics");
         for (PlayerRoundStats playerRoundStats : playerRoundStatsList) {
 
-            final Element damagePanel = statisticsPanel.findElementByName(playerRoundStats.playerId + "-damage");
-            final Element restorationPanel = statisticsPanel.findElementByName(playerRoundStats.playerId + "-restoration");
-            final Element killsPanel = statisticsPanel.findElementByName(playerRoundStats.playerId + "-kills");
+            final Element damagePanel = statisticsPanel.findElementByName(
+                    playerRoundStats.playerId + "-damage");
+            final Element restorationPanel = statisticsPanel.findElementByName(
+                    playerRoundStats.playerId + "-restoration");
+            final Element killsPanel = statisticsPanel.findElementByName(
+                    playerRoundStats.playerId + "-kills");
 
-            damagePanel.getRenderer(TextRenderer.class).setText(String.format("%d", (int) playerRoundStats.damageDone));
-            restorationPanel.getRenderer(TextRenderer.class).setText(String.format("%d", (int) playerRoundStats.healthRestored));
-            killsPanel.getRenderer(TextRenderer.class).setText(String.format("%d", playerRoundStats.kills));
+            damagePanel.getRenderer(TextRenderer.class).setText(
+                    String.format("%d", (int) playerRoundStats.damageDone));
+            restorationPanel.getRenderer(TextRenderer.class).setText(
+                    String.format("%d", (int) playerRoundStats.healthRestored));
+            killsPanel.getRenderer(TextRenderer.class).setText(
+                    String.format("%d", playerRoundStats.kills));
         }
     }
 
     public void endGame() {
         this.clear();
         this.nifty.gotoScreen("main_menu");
-        
+
         this.clear();
         this.roundTableCreated = false;
     }
@@ -293,7 +302,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 if (!overlay.isVisible()) {
                     overlay.show();
                 }
+
                 Element cooldownText = overlay.findElementByName(entry.getKey() + "-counter");
+
                 if (cooldown > 3) {
                     cooldownText.getRenderer(TextRenderer.class).setText(String.format("%d", (int) cooldown));
                 } else {

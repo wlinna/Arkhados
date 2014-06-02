@@ -36,8 +36,8 @@ import com.jme3.util.TempVars;
 public class IncapacitateInformation extends BuffInformation {
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        final IncapacitateEffect effect = new IncapacitateEffect(super.getDuration());
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        final IncapacitateEffect effect = new IncapacitateEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }

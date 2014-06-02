@@ -27,7 +27,7 @@ public class LikeAProInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        return null;
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        return new BuffEffect(duration);
     }
 }

@@ -33,8 +33,8 @@ public class IgniteInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        final IgniteEffect effect = new IgniteEffect(super.getDuration());
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        final IgniteEffect effect = new IgniteEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }

@@ -60,7 +60,7 @@ public abstract class BuffInformation {
     private float duration;
     private String iconPath = null;
 
-    public abstract BuffEffect createBuffEffect(CharacterBuffControl buffControl);
+    public abstract BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration);
 
     public float getDuration() {
         return this.duration;

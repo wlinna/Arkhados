@@ -15,12 +15,13 @@
 package arkhados.ui.hud;
 
 import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.builder.TextBuilder;
 
 /**
  *
  * @author william
  */
-public class BuffIconBuilder extends ImageBuilder{
+public class BuffIconBuilder extends ImageBuilder {
 
     public BuffIconBuilder(final String id, final String path) {
         super(id);
@@ -30,6 +31,13 @@ public class BuffIconBuilder extends ImageBuilder{
         super.width("64px");
         super.marginLeft("12px");
         super.filename(path);
+        super.childLayoutOverlay();
+        super.text(new TextBuilder() {
+            {
+                super.id(id + "-counter");
+                super.text("");
+                super.style("nifty-label");
+            }
+        });
     }
-
 }

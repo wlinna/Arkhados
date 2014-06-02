@@ -22,7 +22,7 @@ import com.jme3.renderer.ViewPort;
  *
  * @author william
  */
-public abstract class BuffEffect {
+public class BuffEffect {
 
     protected static AssetManager assetManager = null;
 
@@ -33,7 +33,7 @@ public abstract class BuffEffect {
     // TODO: Get this from some central place
     private float timeLeft;
 
-    protected BuffEffect(float timeLeft) {
+    public BuffEffect(float timeLeft) {
         this.timeLeft = timeLeft;
     }
 

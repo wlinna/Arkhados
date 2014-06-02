@@ -42,7 +42,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
         influenceInterface.addCrowdControlBuff(this);
         if (super.name != null) {
             final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.name, super.getBuffId(), true));
+            getSyncManager().broadcast(new BuffMessage(entityId, this.name, super.getBuffId(), super.duration, true));
         }
     }
 }

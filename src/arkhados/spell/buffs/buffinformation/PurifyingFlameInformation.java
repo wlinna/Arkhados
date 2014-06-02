@@ -32,13 +32,14 @@ import com.jme3.scene.shape.Sphere;
  * @author william
  */
 public class PurifyingFlameInformation extends BuffInformation {
+
     {
         super.setIconPath("Interface/Images/SpellIcons/purifying_flame.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        final FlameShield flameShield = new FlameShield(super.getDuration());
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        final FlameShield flameShield = new FlameShield(duration);
         flameShield.addToCharacter(buffControl);
         return flameShield;
     }
@@ -54,7 +55,6 @@ class FlameShield extends BuffEffect {
 
     public void addToCharacter(final CharacterBuffControl buffControl) {
         final Node characterNode = (Node) buffControl.getSpatial();
-
 
         final float radius = 12f;
         final Sphere sphere = new Sphere(32, 32, radius);

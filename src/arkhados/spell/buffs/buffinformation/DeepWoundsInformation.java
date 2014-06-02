@@ -34,8 +34,8 @@ public class DeepWoundsInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        final DeepWoundsEffect effect = new DeepWoundsEffect(super.getDuration());
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        final DeepWoundsEffect effect = new DeepWoundsEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }

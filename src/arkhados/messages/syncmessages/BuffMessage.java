@@ -27,15 +27,17 @@ public class BuffMessage extends AbstractSyncMessage {
 
     private String buffName;
     private long buffId;
-    private boolean added;
+    private float duration;
+    private boolean added;    
 
     public BuffMessage() {
     }
 
-    public BuffMessage(long entityId, String buffName, long buffId, boolean added) {
+    public BuffMessage(long entityId, String buffName, long buffId, float duration, boolean added) {
         super(entityId);
         this.buffName = buffName;
         this.buffId = buffId;
+        this.duration = duration;
         this.added = added;
     }
 
@@ -46,7 +48,7 @@ public class BuffMessage extends AbstractSyncMessage {
         // TODO: Add to InfluenceInterfaceControl so that its non-visual effects
         // can be simulated
         if (this.added) {
-            buffControl.addBuff(this.buffId, this.buffName);
+            buffControl.addBuff(this.buffId, this.buffName, duration);
         } else {
             buffControl.removeBuff(buffId);
         }

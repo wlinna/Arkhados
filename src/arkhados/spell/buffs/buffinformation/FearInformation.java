@@ -34,8 +34,8 @@ public class FearInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl) {
-        final FearEffect effect = new FearEffect(super.getDuration());
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+        final FearEffect effect = new FearEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }
