@@ -42,21 +42,46 @@ free/libre art is accepted, like Creative Commons Attributions (CC-BY)
 and Creative Commons ShareAlike (CC-BY-SA). This means that assets
 that prohibit commercial use or derivation will not accepted in Arkhados.
 
-**Replace one of the character models with better model**
+**Replace one of the character models with better model** Currently
+I'm using very low poly models for characters for various reasons. For
+mage I couldn't find 3D model with armature animations ready.
 
-**Make nicer lava texture**
+I animated Venator myself because there was no other choice but the
+quality of my animations is pretty bad. It would be nice if they were
+replaced, perhaps one by one.
 
-**Find or create good sound effect**
+Elite Soldier resembles Quake-like soldier but currently he has low
+poly Archer model because I couldn't get one of the more suitable
+model to work correctly in jMonkeyEngine. See [this thread](http://hub.jmonkeyengine.org/forum/topic/animation-working-in-blender-2-63-but-badly-distorted-in-jme/).
 
-**Find or create good music for character**
+**Make nicer lava material** Current lava material is quite boring. I'm
+using Bloom effect to compensate for it but better material would be better
+solution.
+
+**Find or create good sound effect** Currently many spells lack sound
+effect. And it would be nice if characters would scream (or something
+like that) when they die.
+
+**Find or create good music**
 I'm not actually sure if I wan't music to depend on character, arena
 or nothing but I think music depending on character is the nicest
 option.
 
+Menu music would be nice too.
+
 You can find good music with good licenses from opengameart.org and
-jamendo.com .
+jamendo.com . And remember to convert music to ogg-format because mp3
+is patent encumbered.
 
 ### Code ###
+
+**Make map that has walls and handle collisions with them** This is my
+next task. It involves creating map with walls and making sure that
+player can't end up inside or on top of wall with movement spells like
+Rocket Jump or Firewalk.
+
+**Add fog of war** This is very important because combined with walls
+it allows many new tactics that would otherwise be impossible.
 
 **Add nice trail effects**
 Shotgun and machinegun bullets would look lot nicer if they had some
@@ -157,7 +182,16 @@ sending to custom UDP port.
 
 **Design new map**
 
-**Design new hero**
+**Design new hero** The more there are heroes, the better (to certain
+limit of course). If you have good idea, you can design character and
+give me a link. Just remember that I can't do everything. For example,
+if there isn't decent model with rig and preferably working
+animations, I wont add it, unless someone makes good enough model and
+animations for it.
+
+And the hero must be compatible with Arkhados' philosophy too so there
+can't be any random elements like dodge chance and no instant hit
+spells.
 
 **Create custom UI style for Arkhados**
 Currently Arkhados' UI uses Nifty GUI's default style. We should
