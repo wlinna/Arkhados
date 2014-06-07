@@ -156,7 +156,7 @@ class PlasmaBuilder extends NodeBuilder {
         /**
          * Add collision group of characters
          */
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
 
         node.addControl(physicsBody);
 

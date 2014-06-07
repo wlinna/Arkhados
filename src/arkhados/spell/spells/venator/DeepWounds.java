@@ -118,7 +118,7 @@ class ChargeAction extends EntityAction {
         shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
         ghost = new GhostControl(shape);
         ghost.setCollisionGroup(CollisionGroups.NONE);
-        ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        ghost.setCollideWithGroups(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
 
         this.ghostNode = new Node("Ghost Node");
         ((Node) spatial).attachChild(this.ghostNode);
@@ -136,7 +136,10 @@ class ChargeAction extends EntityAction {
                 if (target == super.spatial) {
                     continue;
                 }
-                this.collided(target);
+
+                if (collisionObject.getCollisionGroup() == CollisionGroups.CHARACTERS) {
+                    this.collided(target);
+                }
                 return false;
             }
         }

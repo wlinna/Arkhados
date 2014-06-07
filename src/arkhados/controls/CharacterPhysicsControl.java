@@ -42,7 +42,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.setSpatial(spatial);
         super.rigidBody.setUserObject(spatial);
         super.rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
-        super.rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN | CollisionGroups.CHARACTERS);
+        super.rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN |
+                CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
         super.rigidBody.setFriction(1f);
         super.rigidBody.setRestitution(0f);
         super.rigidBody.setGravity(Vector3f.ZERO);

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.CollisionGroups;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -81,6 +82,9 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);
+        
+        // HACK: We need to allow projectiles to control this
+        this.rigidBodyControl.addCollideWithGroup(CollisionGroups.WALLS);
     }
 
     @Override
@@ -138,7 +142,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     @Override
     public StateData getSyncableData(StateData stateData) {
         if (this.needsSync) {
-            this.needsSync = false;
+            this.needsSync = true;
             return new ProjectileSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
         }
 

@@ -52,10 +52,9 @@ import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.scene.control.LightControl;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import java.util.LinkedList;
@@ -123,16 +122,16 @@ public class WorldManager extends AbstractAppState {
             this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
 
             // FIXME: Sometimes shader linking error happens here
-            try {
-                final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
-                final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
-                bf.setBloomIntensity(1f);
-                bf.setDownSamplingFactor(2f);
-                fpp.addFilter(bf);
-                this.viewPort.addProcessor(fpp);
-            }
-            finally {
-            }
+//            try {
+//                final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
+//                final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);
+//                bf.setBloomIntensity(1f);
+//                bf.setDownSamplingFactor(2f);
+//                fpp.addFilter(bf);
+//                this.viewPort.addProcessor(fpp);
+//            }
+//            finally {
+//            }
         }
 
         Spell.initSpells(assetManager, this);
@@ -152,15 +151,17 @@ public class WorldManager extends AbstractAppState {
         RigidBodyControl physics = new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
         physics.setFriction(1f);
         physics.setRestitution(0f);
-        this.worldRoot.addControl(physics);
+        
+        this.worldRoot.getChild("Ground").addControl(physics);
+        
         Spatial terrain = this.worldRoot.getChild("terrain");
         TerrainLodControl lod = terrain.getControl(TerrainLodControl.class);
         if (lod != null) {
             lod.setCamera(this.cam);
         }
         this.worldRoot.setName("world-root");
+        
         this.arena.readWorld(this, this.assetManager);
-
     }
 
     public void attachLevel() {
@@ -395,5 +396,9 @@ public class WorldManager extends AbstractAppState {
         for (String audioPath : string) {
             this.assetManager.loadAudio("Effects/Sound/" + audioPath);
         }
+    }
+
+    public PhysicsSpace getSpace() {
+        return space;
     }
 }

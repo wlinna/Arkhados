@@ -69,7 +69,7 @@ public class PelletBuilder extends NodeBuilder {
             //            removalAction.setSmokeTrail(trail);
             //            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(2);
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(3);
         final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
@@ -81,10 +81,11 @@ public class PelletBuilder extends NodeBuilder {
         /**
          * Add collision with characters
          */
-        final GhostControl characterCollision = new GhostControl(collisionShape);
-        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
-        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
-        node.addControl(characterCollision);
+        final GhostControl collision = new GhostControl(collisionShape);
+        collision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        collision.setCollideWithGroups(CollisionGroups.CHARACTERS |
+                CollisionGroups.WALLS);
+        node.addControl(collision);
         node.addControl(physicsBody);
         node.addControl(new ProjectileControl());
         final SpellBuffControl buffControl = new SpellBuffControl();

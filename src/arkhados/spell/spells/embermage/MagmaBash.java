@@ -115,7 +115,7 @@ class MagmaBashBuilder extends NodeBuilder {
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());
