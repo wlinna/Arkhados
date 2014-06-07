@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell;
 
+import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
@@ -75,14 +76,14 @@ public class PelletBuilder extends NodeBuilder {
          * their own collision group and prevent them from colliding with that
          * group.
          */
-        physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_NONE);
-        physicsBody.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_NONE);
+        physicsBody.setCollisionGroup(CollisionGroups.NONE);
+        physicsBody.setCollideWithGroups(CollisionGroups.NONE);
         /**
          * Add collision with characters
          */
         final GhostControl characterCollision = new GhostControl(collisionShape);
-        characterCollision.setCollisionGroup(GhostControl.COLLISION_GROUP_16);
-        characterCollision.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         node.addControl(characterCollision);
         node.addControl(physicsBody);
         node.addControl(new ProjectileControl());

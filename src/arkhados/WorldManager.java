@@ -147,7 +147,7 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void loadLevel() {
-        this.worldRoot = (Node) this.assetManager.loadModel("Scenes/LavaArena.j3o");
+        this.worldRoot = (Node) this.assetManager.loadModel("Scenes/LavaArenaWithWalls.j3o");
 
         RigidBodyControl physics = new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
         physics.setFriction(1f);

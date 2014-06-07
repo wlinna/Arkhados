@@ -14,10 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.CollisionGroups;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
@@ -41,8 +41,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         super.rigidBody.setUserObject(spatial);
-        super.rigidBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_02);
-        super.rigidBody.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_01 | RigidBodyControl.COLLISION_GROUP_02);
+        super.rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
+        super.rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN | CollisionGroups.CHARACTERS);
         super.rigidBody.setFriction(1f);
         super.rigidBody.setRestitution(0f);
         super.rigidBody.setGravity(Vector3f.ZERO);

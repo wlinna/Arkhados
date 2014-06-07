@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
@@ -30,23 +31,18 @@ import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Sphere;
 
 /**
@@ -180,17 +176,16 @@ class FireballBuilder extends NodeBuilder {
          * their own collision group and prevent them from colliding with that
          * group.
          */
-        physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
-        physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
+        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
+        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
 
         /**
          * Add collision group of characters
          */
-//        physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
         
         final GhostControl characterCollision = new GhostControl(collisionShape);
-        characterCollision.setCollideWithGroups(RigidBodyControl.COLLISION_GROUP_02);
-        characterCollision.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
         node.addControl(characterCollision);
 //
         node.addControl(physicsBody);

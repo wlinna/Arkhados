@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
+import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.DelayAction;
@@ -149,13 +150,13 @@ class PlasmaBuilder extends NodeBuilder {
          * their own collision group and prevent them from colliding with that
          * group.
          */
-        physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
-        physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
+        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
+        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
 
         /**
          * Add collision group of characters
          */
-        physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
 
         node.addControl(physicsBody);
 

@@ -15,6 +15,7 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
+import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
@@ -116,8 +117,8 @@ class ChargeAction extends EntityAction {
         CapsuleCollisionShape shape = physics.getCapsuleShape();
         shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
         ghost = new GhostControl(shape);
-        ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
-        ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+        ghost.setCollisionGroup(CollisionGroups.NONE);
+        ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
 
         this.ghostNode = new Node("Ghost Node");
         ((Node) spatial).attachChild(this.ghostNode);

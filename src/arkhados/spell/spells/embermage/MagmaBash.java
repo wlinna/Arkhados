@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -112,9 +113,9 @@ class MagmaBashBuilder extends NodeBuilder {
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
-        physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
-        physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
-        physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
+        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
+        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());

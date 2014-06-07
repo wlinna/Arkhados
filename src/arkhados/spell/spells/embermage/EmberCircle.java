@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.CollisionGroups;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastOnGroundAction;
@@ -98,7 +99,7 @@ class EmberCircleBuilder extends NodeBuilder {
 
         if (worldManager.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 0.05f, radius), 1));
-            ghost.removeCollideWithGroup(GhostControl.COLLISION_GROUP_01);
+            ghost.removeCollideWithGroup(CollisionGroups.TERRAIN);
             node.addControl(ghost);
 
             final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);

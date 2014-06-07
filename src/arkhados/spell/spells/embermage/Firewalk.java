@@ -15,6 +15,7 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.CharacterInteraction;
+import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.GenericSyncControl;
@@ -195,8 +196,8 @@ public class Firewalk extends Spell {
                 final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
 
                 final GhostControl ghost = new GhostControl(collisionShape);
-                ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_NONE);
-                ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+                ghost.setCollisionGroup(CollisionGroups.NONE);
+                ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
 
                 node.addControl(ghost);
 

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
+import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.ProjectileControl;
@@ -25,12 +26,8 @@ import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
 
 /**
  *
@@ -77,10 +74,10 @@ public class Dagger extends Spell {
             SphereCollisionShape collisionShape = new SphereCollisionShape(6.0f);
             RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
 
-            physicsBody.setCollisionGroup(RigidBodyControl.COLLISION_GROUP_16);
-            physicsBody.removeCollideWithGroup(RigidBodyControl.COLLISION_GROUP_16);
+            physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
+            physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
 
-            physicsBody.addCollideWithGroup(RigidBodyControl.COLLISION_GROUP_02);
+            physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
 
             node.addControl(physicsBody);
 

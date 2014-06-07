@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
 import arkhados.controls.AreaEffectControl;
@@ -62,8 +63,8 @@ public class PurifyingFlame extends Spell {
                     aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
 
                     final GhostControl ghost = new GhostControl(new SphereCollisionShape(8f));
-                    ghost.setCollisionGroup(GhostControl.COLLISION_GROUP_02);
-                    ghost.setCollideWithGroups(GhostControl.COLLISION_GROUP_02);
+                    ghost.setCollisionGroup(CollisionGroups.CHARACTERS);
+                    ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
                     aoeContainer.addControl(ghost);
 
                     final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
