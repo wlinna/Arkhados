@@ -28,8 +28,10 @@ import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Quad;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.List;
@@ -54,31 +56,24 @@ public class BasicSquareArena extends AbstractArena {
         this.radius = extent.x - 15;
 
         if (worldManager.isClient()) {
-            this.createLavaTerrain();
+            this.createLavaQuad();
             worldManager.getClientMain().getAudioRenderer().setEnvironment(new Environment(Environment.Cavern));
         }
-    }
-
-    private void createLavaTerrain() {
-        TerrainQuad lavaTerrainShape = null;
-        try {
-            HillHeightMap heightMap = new HillHeightMap(512, 1, 1f, 200f, (byte) 3);
-            lavaTerrainShape = new TerrainQuad("lava-terrain", 65, 513, heightMap.getHeightMap());
-
-        } catch (Exception ex) {
-            Logger.getLogger(BasicSquareArena.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+    } 
+    
+    private void createLavaQuad() {
+        Quad quad = new Quad(512, 512, true);
+        Geometry geom = new Geometry("lava-terrain", quad);
         final Material lavaMaterial = super.getAssetManager().loadMaterial("Materials/LavaTerrain.j3m");
-        lavaMaterial.setFloat("DiffuseMap_0_scale", 0.05f);
-        lavaTerrainShape.setMaterial(lavaMaterial);
-        super.getWorldManager().getWorldRoot().attachChild(lavaTerrainShape);
-        lavaTerrainShape.setLocalTranslation(0f, -2f, 0f);
-//        lavaTerrainShape.scale(2f);
-
+        geom.setMaterial(lavaMaterial);
+        ((Node)super.getWorldManager().getWorldRoot().getChild("terrain")).attachChild(geom);
+        
+        geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
+        geom.setLocalTranslation(-256, -2, -256);
+        
         final AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(ColorRGBA.White.mult(0.3f));
-        super.getTerrainNode().addLight(ambientLight);
+        super.getTerrainNode().getParent().addLight(ambientLight);
     }
 
     @Override
@@ -96,7 +91,8 @@ public class BasicSquareArena extends AbstractArena {
             wall.removeControl(PhysicsControl.class);
 
             CollisionShape meshShape = CollisionShapeFactory.createMeshShape(wall);
-            RigidBodyControl wallPhysics = new RigidBodyControl(meshShape, 0);            
+            RigidBodyControl wallPhysics = new RigidBodyControl(meshShape, 0);
+            wallPhysics.setCollideWithGroups(CollisionGroups.NONE);
             
             wallPhysics.setFriction(0.5f);
             wall.addControl(wallPhysics);

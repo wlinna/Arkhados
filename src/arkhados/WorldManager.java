@@ -52,11 +52,10 @@ import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
-import com.jme3.terrain.geomipmap.TerrainLodControl;
+import com.jme3.scene.control.LodControl;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -151,21 +150,25 @@ public class WorldManager extends AbstractAppState {
         RigidBodyControl physics = new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
         physics.setFriction(1f);
         physics.setRestitution(0f);
-        
+        physics.setCollideWithGroups(CollisionGroups.NONE);
+
         this.worldRoot.getChild("Ground").addControl(physics);
-        
-        Spatial terrain = this.worldRoot.getChild("terrain");
-        TerrainLodControl lod = terrain.getControl(TerrainLodControl.class);
-        if (lod != null) {
-            lod.setCamera(this.cam);
+
+        Spatial groundGeom = this.worldRoot.getChild("GroundGeom");
+        LodControl lod = groundGeom.getControl(LodControl.class);
+
+        if (lod == null) {
+            lod = new LodControl();            
+            groundGeom.addControl(lod);
+            lod.setTrisPerPixel(0);
         }
+
         this.worldRoot.setName("world-root");
-        
+
         this.arena.readWorld(this, this.assetManager);
     }
 
     public void attachLevel() {
-
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
         this.worldRoot.addLight(sun);

@@ -126,7 +126,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void simpleInitApp() {
         Globals.assetManager = this.getAssetManager();
-        this.setDisplayStatView(false);
+        this.setDisplayStatView(true);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
         this.bulletState = new BulletAppState();
@@ -307,9 +307,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 try {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
-                            worldManager.preloadModels(new String[]{"Models/Archer.j3o", "Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+                            worldManager.preloadModels(new String[]{"Models/Archer.j3o", "Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o", "Scenes/LavaArenaWithWalls.j3o"});
                             worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav"});
-                            ClientMain.this.worldManager.loadLevel();
                             ClientMain.this.nifty.gotoScreen("default_hud");
                             return null;
                         }
