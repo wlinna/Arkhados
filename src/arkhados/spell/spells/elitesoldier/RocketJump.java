@@ -45,7 +45,7 @@ public class RocketJump extends Spell {
 
     public static Spell create() {
         final float cooldown = 7.5f;
-        final float range = 130;
+        final float range = 100;
         final float castTime = 0.2f;
 
         final RocketJump spell = new RocketJump("Rocket Jump", cooldown, range, castTime);

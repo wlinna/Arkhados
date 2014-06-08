@@ -39,7 +39,6 @@ import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -47,7 +46,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.List;
@@ -200,13 +198,6 @@ class MeteorNodeBuilder extends NodeBuilder {
             removalAction.setEmitter(fire);
 
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
-
-            PointLight light = new PointLight();
-            light.setColor(ColorRGBA.White);
-            LightControl lightControl = new LightControl(light);
-            node.addControl(lightControl);
-            worldManager.getWorldRoot().addLight(light);
-
         }
 
         return node;

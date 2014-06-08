@@ -52,7 +52,7 @@ public class Leap extends Spell {
 
     public static Spell create() {
         final float cooldown = 10f;
-        final float range = 100f;
+        final float range = 90f;
         final float castTime = 0.2f;
 
         final Leap spell = new Leap("Leap", cooldown, range, castTime);

@@ -169,7 +169,7 @@ class RocketBuilder extends NodeBuilder {
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(10.0f);
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
         final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them

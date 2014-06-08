@@ -16,15 +16,12 @@ package arkhados.spell.buffs.buffinformation;
 
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
-import com.jme3.light.Light;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Sphere;
 
 /**
@@ -51,7 +48,6 @@ class FlameShield extends BuffEffect {
         super(timeLeft);
     }
     private Node node = null;
-    private Light light = null;
 
     public void addToCharacter(final CharacterBuffControl buffControl) {
         final Node characterNode = (Node) buffControl.getSpatial();
@@ -63,7 +59,6 @@ class FlameShield extends BuffEffect {
         this.node.attachChild(geometry);
 
 //        final Material material = BuffEffect.assetManager.loadMaterial("Materials/PurifyingMaterial.j3m");
-//        final Material material = BuffEffect.assetManager.loadMaterial("Materials/EmberCircleGround.j3m");
         final Material material = new Material(BuffEffect.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         final ColorRGBA color = ColorRGBA.Orange.clone();
         color.a = 0.2f;
@@ -71,27 +66,16 @@ class FlameShield extends BuffEffect {
 
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
-        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
-//        material.setTexture("AlphaMap", null);
+        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);;
         geometry.setMaterial(material);
 
         characterNode.attachChild(this.node);
         this.node.move(0f, 10f, 0f);
-
-        PointLight pointLight = new PointLight();
-        pointLight.setColor(ColorRGBA.Yellow);
-        LightControl lightControl = new LightControl(pointLight);
-        node.addControl(lightControl);
-
-        this.light = pointLight;
-        // We assume that characterNode's parent is worldRoot
-        characterNode.getParent().addLight(pointLight);
     }
 
     @Override
     public void destroy() {
         assert this.node != null;
-        this.node.getParent().getParent().removeLight(light);
         this.node.removeFromParent();
     }
 }
