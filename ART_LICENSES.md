@@ -15,7 +15,7 @@ See CREDITS.md for attributions.
 - rend.png
 - FireballExplosion.wav
 - Shotgun.wav
-
+- All Wall related files
 
 ## CC-BY 3.0 ##
 
@@ -40,5 +40,5 @@ See CREDITS.md for attributions.
 
 ## CC-BY-SA 3.0 ##
 
-- All LavaArena related files
+- All LavaArena related files (except Wall and lava)
 - rocket_jump.jpeg

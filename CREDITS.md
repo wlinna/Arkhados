@@ -79,6 +79,9 @@ Dungeon Tileset that is made for OpenDungeons. 3D Dungeon Tileset is
 licensed under multiple licenses, including CC-BY-SA 3.0, which I used
 for LavaArena. Original work can be found from [OGA](http://opengameart.org/content/3d-dungeon-tileset)
 
+djonvincent for LavaArena's wall. Wall-model is licensed under
+CC0. Original model can be found from [OGA](http://opengameart.org/content/wall).
+
 [Ancient Beast](http://AncientBeast.com) -project and Gergő Soós
 (random223) for Rocket Jump's icon. Icon is licensed under CC-BY-SA
 3.0. Original work can be found from random223's
