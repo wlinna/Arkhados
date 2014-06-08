@@ -36,12 +36,15 @@ import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -106,6 +109,7 @@ class CastMeteorAction extends EntityAction {
         final Vector3f startingPoint = super.spatial.getLocalTranslation().add(0f, 60f, 0f);
 
         final Vector3f target = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
+        this.raySelectPoint(startingPoint, target);
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startingPoint);
@@ -142,6 +146,20 @@ class CastMeteorAction extends EntityAction {
 
         motionControl.play();
         return false;
+    }
+
+    private Vector3f raySelectPoint(Vector3f from, Vector3f to) {
+        Vector3f direction = to.subtract(from);
+        Ray ray = new Ray(from, direction);
+        Node wallsNode = (Node) worldManager.getWorldRoot().getChild("Walls");
+
+        CollisionResults results = new CollisionResults();
+        wallsNode.collideWith(ray, results);
+        if (results.size() > 0) {
+            to.set(results.getClosestCollision().getContactPoint());
+        }
+
+        return to;
     }
 }
 
