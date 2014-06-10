@@ -24,7 +24,7 @@ public class IncapacitateCC extends CrowdControlBuff {
     {
         super.name = "Incapacitate";
     }
-    public IncapacitateCC(float duration, long id) {
+    public IncapacitateCC(float duration, int id) {
         super(id, duration);
     }
 }

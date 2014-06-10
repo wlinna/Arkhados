@@ -61,7 +61,7 @@ public class UserInputControl extends AbstractControl {
         if (down != 0 || right != 0) {
 
             if (!influenceInterface.isAbleToCastWhileMoving()) {
-                Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+                Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
 
                 Boolean commandMoveInterrupts =
                         PlayerData.getBooleanData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);

@@ -27,7 +27,7 @@ public class DamageOverTimeBuff extends AbstractBuff {
     private float dps;
     private float time;
 
-    public DamageOverTimeBuff(long buffGroupId, float duration) {
+    public DamageOverTimeBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
 

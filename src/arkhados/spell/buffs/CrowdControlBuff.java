@@ -32,7 +32,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
      * @param id buff group's id
      * @param duration how long buff is going to influence entity
      */
-    public CrowdControlBuff(long id, float duration) {
+    public CrowdControlBuff(int id, float duration) {
         super(id, duration);
     }
 
@@ -41,7 +41,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
         this.targetInterface = influenceInterface;
         influenceInterface.addCrowdControlBuff(this);
         if (super.name != null) {
-            final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
             getSyncManager().broadcast(new BuffMessage(entityId, this.name, super.getBuffId(), super.duration, true));
         }
     }

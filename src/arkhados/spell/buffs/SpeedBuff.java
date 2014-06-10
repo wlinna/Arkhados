@@ -24,7 +24,7 @@ public class SpeedBuff extends AbstractBuff {
     private boolean factorBased;
     private float amount;
 
-    public SpeedBuff(boolean factorBased, float amount, long buffGroupId, float duration) {
+    public SpeedBuff(boolean factorBased, float amount, int buffGroupId, float duration) {
         super(buffGroupId, duration);
         this.factorBased = factorBased;
         if (factorBased) {

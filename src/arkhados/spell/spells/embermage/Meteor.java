@@ -36,7 +36,6 @@ import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -114,8 +113,9 @@ class CastMeteorAction extends EntityAction {
         final MotionPath path = new MotionPath();
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
-        final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final long entityId = this.worldManager.addNewEntity(this.spell.getName(), startingPoint, Quaternion.IDENTITY, playerId);
+        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final int entityId = this.worldManager.addNewEntity(this.spell.getName(),
+                startingPoint, Quaternion.IDENTITY, playerId);
         final Spatial meteor = this.worldManager.getEntity(entityId);
 
         final MotionEvent motionControl = new MotionEvent(meteor, path);

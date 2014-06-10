@@ -32,12 +32,12 @@ import java.util.Map;
  */
 public class CharacterBuffControl extends AbstractControl {
 
-    private HashMap<Long, BuffEffect> buffs = new HashMap<>();
-    private HashMap<Long, Element> buffIcons = new HashMap<>();
+    private HashMap<Integer, BuffEffect> buffs = new HashMap<>();
+    private HashMap<Integer, Element> buffIcons = new HashMap<>();
     private ClientHudManager hudManager = null;
     private Element buffPanel = null;
 
-    public void addBuff(long buffId, String buffName, float duration) {
+    public void addBuff(int buffId, String buffName, float duration) {
         final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffName);
         if (buffInfo == null) {
             System.out.println("No buffInfo for " + buffName + " id: " + buffId);
@@ -64,7 +64,7 @@ public class CharacterBuffControl extends AbstractControl {
         this.buffIcons.put(buffId, icon);
     }
 
-    public void removeBuff(long buffId) {
+    public void removeBuff(int buffId) {
         final BuffEffect buffEffect = this.buffs.remove(buffId);
         // TODO: Investigate why buffEffect is sometimes null
         // NOTE: It seems that this happens mostly (or only) with Ignite
@@ -84,7 +84,11 @@ public class CharacterBuffControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        for (Map.Entry<Long, BuffEffect> entry : buffs.entrySet()) {
+        if (this.hudManager == null) {
+            return;
+        }
+        
+        for (Map.Entry<Integer, BuffEffect> entry : buffs.entrySet()) {
             BuffEffect buffEffect = entry.getValue();
             buffEffect.update(tpf);
 

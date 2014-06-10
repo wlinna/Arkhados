@@ -79,10 +79,10 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl target) {
 
-        final Long projectilePlayerId = projectile.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final Long projectileTeamId = PlayerData.getLongData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
-        final Long targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final Long targetTeamId = PlayerData.getLongData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+        final Integer projectilePlayerId = projectile.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final Integer projectileTeamId = PlayerData.getIntData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
+        final Integer targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final Integer targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
         
         if (targetTeamId == projectileTeamId) {
             return;
@@ -103,6 +103,6 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             target.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
         }
 
-        this.worldManager.removeEntity((Long) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), removalReason);
+        this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), removalReason);
     }
 }

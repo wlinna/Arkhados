@@ -35,7 +35,7 @@ public class ProjectileSyncData extends StateData {
     public ProjectileSyncData() {
     }
 
-    public ProjectileSyncData(long syncId, ProjectileControl control) {
+    public ProjectileSyncData(int syncId, ProjectileControl control) {
         super(syncId);
         control.getRigidBodyControl().getPhysicsLocation(this.location);
         control.getRigidBodyControl().getLinearVelocity(this.velocity);

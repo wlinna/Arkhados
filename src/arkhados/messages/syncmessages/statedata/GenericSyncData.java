@@ -33,7 +33,7 @@ public class GenericSyncData extends StateData {
     public GenericSyncData() {
     }        
 
-    public GenericSyncData(long syncId, Spatial spatial) {
+    public GenericSyncData(int syncId, Spatial spatial) {
         super(syncId);        
         this.location.set(spatial.getLocalTranslation());
         this.rotation.set(spatial.getLocalRotation());

@@ -88,7 +88,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
                 Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING, "Receiving join message from unknown client (id: {0})", clientId);
                 return;
             }
-            final long playerId = PlayerData.getNew(message.getName());
+            final int playerId = PlayerData.getNew(message.getName());
             PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
             PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
             ServerClientData.setConnected(clientId, true);
@@ -99,7 +99,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
 
         } else if (m instanceof ClientSettingsMessage) {
             ClientSettingsMessage clientSettings = (ClientSettingsMessage) m;
-            long playerId = ServerClientData.getPlayerId(source.getId());            
+            int playerId = ServerClientData.getPlayerId(source.getId());            
             PlayerData.setData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, clientSettings.commandMoveInterrupts());
             
         } else if (m instanceof ChatMessage) {
@@ -108,7 +108,7 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
             
         } else if (m instanceof ClientSelectHeroMessage) {
             final ClientSelectHeroMessage message = (ClientSelectHeroMessage) m;
-            final long playerId = ServerClientData.getPlayerId(source.getId());
+            final int playerId = ServerClientData.getPlayerId(source.getId());
 
             // TODO: Check hero name validity
             PlayerData.setData(playerId, PlayerDataStrings.HERO, message.getHeroName());

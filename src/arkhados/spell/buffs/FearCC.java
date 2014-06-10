@@ -30,7 +30,7 @@ public class FearCC extends CrowdControlBuff {
         super.name = "Fear";
     }
 
-    public FearCC(long id, float duration) {
+    public FearCC(int id, float duration) {
         super(id, duration);
     }
 

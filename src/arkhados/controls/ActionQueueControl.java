@@ -121,7 +121,7 @@ public class ActionQueueControl extends AbstractControl {
 
         final WorldManager world = super.spatial.getControl(EntityVariableControl.class).getWorldManager();
         if (world.isServer()) {
-            final Long id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            final Integer id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             world.getSyncManager().broadcast(new ActionMessage(id, action.getName()));
         }
     }

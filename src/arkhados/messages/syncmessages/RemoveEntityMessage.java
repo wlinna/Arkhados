@@ -26,18 +26,18 @@ import arkhados.WorldManager;
 @Serializable
 public class RemoveEntityMessage extends AbstractSyncMessage {
 
-    private long entityId;
+    private int entityId;
     private String reason = "";
 
     public RemoveEntityMessage() {
     }
 
-    public RemoveEntityMessage(long entityId) {
+    public RemoveEntityMessage(int entityId) {
         this.entityId = entityId;
         super.setSyncId(-1);
     }
 
-    public RemoveEntityMessage(long entityId, String reason) {
+    public RemoveEntityMessage(int entityId, String reason) {
         this.entityId = entityId;
         this.reason = reason;
         super.setSyncId(-1);

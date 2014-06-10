@@ -25,14 +25,14 @@ import com.jme3.network.serializing.Serializable;
 @Serializable
 public class ServerLoginMessage extends AbstractMessage {
     private String name;
-    private long playerId;
+    private int playerId;
     private boolean accepted;
 
     public ServerLoginMessage() {
 
     }
 
-    public ServerLoginMessage(String nick, long playerId, boolean accepted) {
+    public ServerLoginMessage(String nick, int playerId, boolean accepted) {
         this.name = nick;
         this.playerId = playerId;
         this.accepted = accepted;
@@ -42,7 +42,7 @@ public class ServerLoginMessage extends AbstractMessage {
         return this.name;
     }
 
-    public long getPlayerId() {
+    public int getPlayerId() {
         return this.playerId;
     }
 

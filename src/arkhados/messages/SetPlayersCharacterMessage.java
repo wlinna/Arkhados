@@ -24,23 +24,23 @@ import com.jme3.network.serializing.Serializable;
  */
 @Serializable
 public class SetPlayersCharacterMessage extends AbstractMessage {
-    private long entityId;
-    private long playerId;
+    private int entityId;
+    private int playerId;
 
     public SetPlayersCharacterMessage() {
 
     }
 
-    public SetPlayersCharacterMessage(long entityId, long playerId) {
+    public SetPlayersCharacterMessage(int entityId, int playerId) {
         this.entityId = entityId;
         this.playerId = playerId;
     }
 
-    public long getEntityId() {
+    public int getEntityId() {
         return this.entityId;
     }
 
-    public long getPlayerId() {
+    public int getPlayerId() {
         return this.playerId;
     }
 

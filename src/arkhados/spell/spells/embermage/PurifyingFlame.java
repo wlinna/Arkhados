@@ -59,7 +59,7 @@ public class PurifyingFlame extends Spell {
                 final CastSelfBuffAction action = new CastSelfBuffAction();
                 final Node aoeContainer = new Node("purifying-flame");
                 if (worldManager.isServer()) {
-                    final Long playerId = caster.getUserData(UserDataStrings.PLAYER_ID);
+                    final Integer playerId = caster.getUserData(UserDataStrings.PLAYER_ID);
                     aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
 
                     final GhostControl ghost = new GhostControl(new SphereCollisionShape(8f));
@@ -101,7 +101,7 @@ class AbsorbingShieldBuff extends AbstractBuff {
         super.friendly = true;
         super.name = "Purifying Flame";
     }
-    public AbsorbingShieldBuff(long buffGroupId, float duration) {
+    public AbsorbingShieldBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
 

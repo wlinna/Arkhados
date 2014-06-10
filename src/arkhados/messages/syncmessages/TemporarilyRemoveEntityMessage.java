@@ -24,12 +24,12 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class TemporarilyRemoveEntityMessage extends AbstractSyncMessage {
-    private long entityId;
+    private int entityId;
 
     public TemporarilyRemoveEntityMessage() {
     }
 
-    public TemporarilyRemoveEntityMessage(long entityId) {
+    public TemporarilyRemoveEntityMessage(int entityId) {
         this.entityId = entityId;
         super.setSyncId(-1);
     }

@@ -39,6 +39,6 @@ public class GenericSyncControl extends AbstractControl implements SyncControl{
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        return new GenericSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), spatial);
+        return new GenericSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), spatial);
     }    
 }

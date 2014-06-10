@@ -37,7 +37,7 @@ public class StartCastingSpellMessage extends AbstractSyncMessage {
 
     }
 
-    public StartCastingSpellMessage(long id, String spellName, Vector3f direction) {
+    public StartCastingSpellMessage(int id, String spellName, Vector3f direction) {
         super(id);
         this.spellName = spellName;
         this.direction.set(direction);

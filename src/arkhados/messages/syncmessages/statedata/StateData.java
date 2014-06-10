@@ -25,18 +25,18 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public abstract class StateData {
-    private long syncId = -1;
+    private int syncId = -1;
 
     public StateData() {
     }
 
-    public StateData(long syncId) {
+    public StateData(int syncId) {
         this.syncId = syncId;
     }
             
     public abstract void applyData(Object target);
 
-    public long getSyncId() {
+    public int getSyncId() {
         return syncId;
     }
 }

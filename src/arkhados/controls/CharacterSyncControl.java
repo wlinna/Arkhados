@@ -40,6 +40,6 @@ public class CharacterSyncControl extends AbstractControl implements SyncControl
 
     @Override
     public StateData getSyncableData(StateData stateData) {        
-        return new CharacterSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
+        return new CharacterSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
     }    
 }

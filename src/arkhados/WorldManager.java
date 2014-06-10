@@ -74,7 +74,7 @@ public class WorldManager extends AbstractAppState {
     };
     private Node worldRoot;
     private AbstractArena arena = new BasicSquareArena();
-    private HashMap<Long, Spatial> entities = new HashMap<>();
+    private HashMap<Integer, Spatial> entities = new HashMap<>();
     private SyncManager syncManager;
     private int idCounter = 0;
     private Server server;
@@ -190,13 +190,13 @@ public class WorldManager extends AbstractAppState {
      * @param playerId id of owning player. -1, if server owns
      * @return entity id
      */
-    public long addNewEntity(String typeId, Vector3f location, Quaternion rotation, long playerId) {
+    public int addNewEntity(String typeId, Vector3f location, Quaternion rotation, int playerId) {
         ++this.idCounter;
         this.addEntity(this.idCounter, typeId, location, rotation, playerId);
         return this.idCounter;
     }
 
-    public void addEntity(long id, String modelPath, Vector3f location, Quaternion rotation, long playerId) {
+    public void addEntity(int id, String modelPath, Vector3f location, Quaternion rotation, int playerId) {
         if (this.isServer()) {
             this.syncManager.broadcast(new AddEntityMessage(id, modelPath, location, rotation, playerId));
         }
@@ -228,7 +228,7 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public void temporarilyRemoveEntity(long id) {
+    public void temporarilyRemoveEntity(int id) {
         if (this.isServer()) {
             this.server.broadcast(new TemporarilyRemoveEntityMessage(id));
         }
@@ -242,7 +242,7 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public void restoreTemporarilyRemovedEntity(long id, Vector3f location, Quaternion rotation) {
+    public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
         if (this.isServer()) {
             this.server.broadcast(new RestoreTemporarilyRemovedEntityMessage(id, location, rotation));
         }
@@ -281,7 +281,7 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public void removeEntity(long id, String reason) {
+    public void removeEntity(int id, String reason) {
         if (this.isServer()) {
             this.syncManager.broadcast(new RemoveEntityMessage(id, reason));
         }
@@ -383,7 +383,7 @@ public class WorldManager extends AbstractAppState {
         return this.worldRoot;
     }
 
-    public Spatial getEntity(long id) {
+    public Spatial getEntity(int id) {
         return this.entities.get(id);
     }
 

@@ -85,7 +85,7 @@ class CastShotgunAction extends EntityAction {
         final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
         super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
-        final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
 
         Vector3f spawnLocation = super.spatial.getLocalTranslation();
         Quaternion currentRotation = new Quaternion();
@@ -95,7 +95,7 @@ class CastShotgunAction extends EntityAction {
 
             Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
 
-            final long projectileId = this.worldManager.addNewEntity("Shotgun",
+            final int projectileId = this.worldManager.addNewEntity("Shotgun",
                     spawnLocation, Quaternion.IDENTITY, playerId);
             final Spatial projectile = this.worldManager.getEntity(projectileId);
 

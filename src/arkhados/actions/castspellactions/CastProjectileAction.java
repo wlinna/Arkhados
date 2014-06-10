@@ -59,10 +59,11 @@ public class CastProjectileAction extends EntityAction {
         super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
         float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
-        final Vector3f spawnLocation = super.spatial.getLocalTranslation().add(viewDirection.mult(characterRadius / 1.5f)).addLocal(0f, 10.0f, 0.0f);
-        final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Vector3f spawnLocation = super.spatial.getLocalTranslation()
+                .add(viewDirection.mult(characterRadius / 1.5f)).addLocal(0f, 10.0f, 0.0f);
+        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        final long projectileId = this.worldManager.addNewEntity(this.spell.getName(),
+        final int projectileId = this.worldManager.addNewEntity(this.spell.getName(),
                 spawnLocation, Quaternion.IDENTITY, playerId);
         final Spatial projectile = this.worldManager.getEntity(projectileId);
 

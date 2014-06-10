@@ -26,14 +26,14 @@ import com.jme3.network.serializing.Serializable;
 @Serializable
 public class RestoreTemporarilyRemovedEntityMessage extends AbstractSyncMessage {
 
-    private long entityId;
+    private int entityId;
     private Vector3f location;
     private Quaternion rotation;
 
     public RestoreTemporarilyRemovedEntityMessage() {
     }
 
-    public RestoreTemporarilyRemovedEntityMessage(long entityId, Vector3f location, Quaternion rotation) {
+    public RestoreTemporarilyRemovedEntityMessage(int entityId, Vector3f location, Quaternion rotation) {
         this.entityId = entityId;
         this.location = location;
         this.rotation = rotation;

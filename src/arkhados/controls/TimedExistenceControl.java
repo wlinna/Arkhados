@@ -54,7 +54,8 @@ public class TimedExistenceControl extends AbstractControl {
         if (this.age >= this.timeOut) {
             if (this.removeEntity) {
                 if (worldManager.isServer()) {
-                    worldManager.removeEntity((Long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "expired");
+                    worldManager.removeEntity((Integer) super.getSpatial()
+                            .getUserData(UserDataStrings.ENTITY_ID), "expired");
                 }
             } else {
                 if (this.space != null) {

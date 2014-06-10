@@ -94,11 +94,11 @@ class ShootBulletAction extends EntityAction {
         final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
         super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
-        final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
         final Vector3f pelletDirection = viewDirection.clone();
         Vector3f spawnLocation = super.spatial.getLocalTranslation();
 
-        final long projectileId = this.worldManager.addNewEntity("Shotgun",
+        final int projectileId = this.worldManager.addNewEntity("Shotgun",
                 spawnLocation, Quaternion.IDENTITY, playerId);
         final Spatial projectile = this.worldManager.getEntity(projectileId);
 

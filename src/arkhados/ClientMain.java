@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -70,7 +71,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
         setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
         setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
-        
+
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
             settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, false);
         }
@@ -94,6 +95,18 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
         Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
         AppSettings settings = new AppSettings(true);
+
+        FileHandler fileHandler;
+        try {
+            fileHandler = new FileHandler();
+
+            fileHandler.setLevel(Level.FINE);
+            Logger.getLogger("").addHandler(fileHandler);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         try {
             settings.load(ClientMain.PREFERENCES_KEY);
@@ -126,7 +139,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void simpleInitApp() {
         Globals.assetManager = this.getAssetManager();
-        this.setDisplayStatView(true);
+        this.setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
         this.bulletState = new BulletAppState();
@@ -271,7 +284,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public Void call() throws Exception {
                 Screen screen = ClientMain.this.nifty.getScreen("lobby");
                 ListBox listBox = screen.findNiftyControl("chat_list", ListBox.class);
-                listBox.addItem(String.format("<%s> %s", name, message));                
+                listBox.addItem(String.format("<%s> %s", name, message));
                 return null;
             }
         });

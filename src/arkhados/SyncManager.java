@@ -59,7 +59,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private Server server = null;
     private ValueWrapper<NetworkClient> client;
     private Application app;
-    HashMap<Long, Object> syncObjects = new HashMap<>();
+    HashMap<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
     private Queue<AbstractMessage> syncQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
@@ -102,11 +102,11 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private void sendSyncData() {
         MassSyncMessage massSyncMessage = new MassSyncMessage();
 
-        Set<Entry<Long, Object>> entrySet = this.syncObjects.entrySet();
+        Set<Entry<Integer, Object>> entrySet = this.syncObjects.entrySet();
         List<StateData> stateData = new ArrayList<>(this.syncObjects.entrySet().size());
 
-        for (Iterator<Entry<Long, Object>> it = entrySet.iterator(); it.hasNext();) {
-            Entry<Long, Object> entry = it.next();
+        for (Iterator<Entry<Integer, Object>> it = entrySet.iterator(); it.hasNext();) {
+            Entry<Integer, Object> entry = it.next();
             if (!(entry.getValue() instanceof Spatial)) {
                 continue;
             }
@@ -194,8 +194,8 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     }
 
     private void serverReceivedMessage(HostedConnection source, final AbstractSyncMessage message) {
-        final long playerId = ServerClientData.getPlayerId(source.getId());
-        final Long syncId = PlayerData.getLongData(playerId, PlayerDataStrings.ENTITY_ID);
+        final int playerId = ServerClientData.getPlayerId(source.getId());
+        final Integer syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
         if (syncId != null) {
             message.setSyncId(syncId);
             this.app.enqueue(new Callable<Void>() {
@@ -213,7 +213,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         return this.server;
     }
 
-    void addObject(long id, Object object) {
+    void addObject(int id, Object object) {
         this.syncObjects.put(id, object);
     }
 
@@ -228,7 +228,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         return this.client.get();
     }
 
-    public void removeEntity(long id) {
+    public void removeEntity(int id) {
         this.syncObjects.remove(id);
     }
 

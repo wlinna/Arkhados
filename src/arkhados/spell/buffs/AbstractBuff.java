@@ -25,24 +25,24 @@ import arkhados.util.UserDataStrings;
  * @author william
  */
 public abstract class AbstractBuff {
-    private static long currentBuffId = 0;
+    private static int currentBuffId = 0;
 
     // TODO: Consider removing this. If there's going to be way to
     private static SyncManager syncManager;
     protected String name = null;
 
-    private long buffGroupId;
+    private int buffGroupId;
     protected float duration;
     protected InfluenceInterfaceControl targetInterface = null;
     private InfluenceInterfaceControl ownerInterface = null;
     protected boolean friendly = false;
 
-    private long buffId = ++currentBuffId;
+    private int buffId = ++currentBuffId;
     /**
      * @param buffGroupId identifies group of buffs so that they can be removed
      * with single dispel. Not used currently
      */
-    public AbstractBuff(long buffGroupId, float duration) {
+    public AbstractBuff(int buffGroupId, float duration) {
         this.buffGroupId = buffGroupId;
         this.duration = duration;
     }
@@ -51,8 +51,8 @@ public abstract class AbstractBuff {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
         if (this.name != null) {
-            final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, this.duration, true));
+            final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, this.duration, true));            
         }
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractBuff {
      *
      * @return Id of buff group that buff belongs to.
      */
-    public long getBuffGroupId() {
+    public int getBuffGroupId() {
         return this.buffGroupId;
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractBuff {
 
     public void destroy() {
         if (this.name != null) {
-            final Long entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
             getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, this.duration, false));
         }
     }
@@ -112,7 +112,7 @@ public abstract class AbstractBuff {
         syncManager = aSyncManager;
     }
 
-    protected long getBuffId() {
+    protected int getBuffId() {
         return this.buffId;
     }
 }

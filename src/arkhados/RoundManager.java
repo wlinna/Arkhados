@@ -142,14 +142,14 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
                         final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
-                        final long entityId = worldManager.addNewEntity(heroName, startingLocation, new Quaternion(), playerData.getId());
+                        final int entityId = worldManager.addNewEntity(heroName, startingLocation, new Quaternion(), playerData.getId());
                         playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
                     }
 
                     logger.log(Level.INFO, "Created characters");
 
                     for (PlayerData playerData : PlayerData.getPlayers()) {
-                        long entityId = playerData.getLongData(PlayerDataStrings.ENTITY_ID);
+                        int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
                         syncManager.getServer().broadcast(new SetPlayersCharacterMessage(entityId, playerData.getId()));
                     }
 
@@ -241,7 +241,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         if (this.worldManager.isServer()) {
             int aliveAmount = 0;
             for (PlayerData playerData : PlayerData.getPlayers()) {
-                long entityId = playerData.getLongData(PlayerDataStrings.ENTITY_ID);
+                int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
                 Node character = (Node) this.worldManager.getEntity(entityId);
                 if ((Float) character.getUserData(UserDataStrings.HEALTH_CURRENT) > 0f) {
                     ++aliveAmount;
@@ -316,7 +316,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         logger.log(Level.INFO, "Received {0} -message", new Object[]{m.getClass()});
 
         if (m instanceof ClientWorldCreatedMessage) {
-            long playerId = ServerClientData.getPlayerId(client.getId());
+            int playerId = ServerClientData.getPlayerId(client.getId());
             PlayerData.setData(playerId, PlayerDataStrings.WORLD_CREATED, true);
             if (this.allClientsWorldReady()) {
                 this.createCharacters();

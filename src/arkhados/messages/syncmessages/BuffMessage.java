@@ -26,14 +26,14 @@ import com.jme3.scene.Node;
 public class BuffMessage extends AbstractSyncMessage {
 
     private String buffName;
-    private long buffId;
+    private int buffId;
     private float duration;
     private boolean added;    
 
     public BuffMessage() {
     }
 
-    public BuffMessage(long entityId, String buffName, long buffId, float duration, boolean added) {
+    public BuffMessage(int entityId, String buffName, int buffId, float duration, boolean added) {
         super(entityId);
         this.buffName = buffName;
         this.buffId = buffId;

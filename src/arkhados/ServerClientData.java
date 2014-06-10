@@ -45,7 +45,7 @@ public class ServerClientData {
     private long latencySampleCount = 0;
     private float latestLatency;
     private float averageLatency;
-    private long playerId;    
+    private int playerId;    
     private boolean connected;
     
     public static synchronized Collection<Integer> getClients() {
@@ -72,11 +72,11 @@ public class ServerClientData {
         ServerClientData.players.get(id).setConnected(connected);
     }
 
-    public static synchronized long getPlayerId(int id) {
+    public static synchronized int getPlayerId(int id) {
         return ServerClientData.players.get(id).getPlayerId();
     }
 
-    public static synchronized void setPlayerId(int id, long playerId) {
+    public static synchronized void setPlayerId(int id, int playerId) {
         ServerClientData.players.get(id).setPlayerId(playerId);
     }
     
@@ -99,11 +99,11 @@ public class ServerClientData {
         this.id = id;
     }
 
-    public long getPlayerId() {
+    public int getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(long playerId) {
+    public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 

@@ -24,7 +24,7 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class PlayerRoundStats {
-    public long playerId;
+    public int playerId;
     public float damageDone = 0f;
     public float healthRestored = 0f;
     public int kills = 0;
@@ -32,7 +32,7 @@ public class PlayerRoundStats {
     public PlayerRoundStats() {
     }
 
-    public PlayerRoundStats(long playerId) {
+    public PlayerRoundStats(int playerId) {
         this.playerId = playerId;
     }
 }

@@ -49,7 +49,7 @@ public class CharacterInteraction {
             final float lifeStolen = lifeSteal * damageDone;
             attacker.heal(lifeStolen);
 
-            final Long playerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
+            final Integer playerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
             getCurrentRoundStats().addDamageForPlayer(playerId, damageDone);
             getCurrentRoundStats().addHealthRestorationForPlayer(playerId, lifeStolen);
 

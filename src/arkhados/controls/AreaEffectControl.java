@@ -66,8 +66,8 @@ public class AreaEffectControl extends AbstractControl {
         if (actionQueue != null &&  actionQueue.getCurrent() instanceof DelayAction) {
             return;
         }
-        final Long myPlayerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final long myTeamId = PlayerData.getLongData(myPlayerId, PlayerDataStrings.TEAM_ID);
+        final Integer myPlayerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final int myTeamId = PlayerData.getIntData(myPlayerId, PlayerDataStrings.TEAM_ID);
         List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
@@ -79,8 +79,8 @@ public class AreaEffectControl extends AbstractControl {
             if (targetInterface == null) {
                 continue;
             }
-            final Long othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
-            final Long othersTeamId = PlayerData.getLongData(othersPlayerId, PlayerDataStrings.TEAM_ID);
+            final Integer othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+            final Integer othersTeamId = PlayerData.getIntData(othersPlayerId, PlayerDataStrings.TEAM_ID);
             final boolean sameTeam = myTeamId == othersTeamId;
             for (Influence influence : this.influences) {
                 if (sameTeam && influence.isFriendly()) {

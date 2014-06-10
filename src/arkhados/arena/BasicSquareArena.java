@@ -32,11 +32,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
-import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

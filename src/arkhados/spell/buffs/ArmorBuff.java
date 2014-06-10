@@ -26,7 +26,7 @@ public class ArmorBuff extends AbstractBuff {
     private float amount;
     private float protectionPercent;
 
-    public ArmorBuff(float amount, float protectionPercent, long buffGroupId, float duration) {
+    public ArmorBuff(float amount, float protectionPercent, int buffGroupId, float duration) {
         super(buffGroupId, duration);
         this.amount = amount;
         this.protectionPercent = protectionPercent;

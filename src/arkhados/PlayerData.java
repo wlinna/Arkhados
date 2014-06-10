@@ -51,8 +51,8 @@ import java.util.Map.Entry;
 @Serializable
 public class PlayerData {
 
-    private static HashMap<Long, PlayerData> players = new HashMap<>();
-    private long id;
+    private static HashMap<Integer, PlayerData> players = new HashMap<>();
+    private int id;
     private int aiControl = -1;
     private HashMap<String, Float> floatData = new HashMap<>();
     private HashMap<String, Integer> intData = new HashMap<>();
@@ -62,8 +62,8 @@ public class PlayerData {
 
     public static synchronized List<PlayerData> getHumanPlayers() {
         LinkedList<PlayerData> list = new LinkedList<>();
-        for (Iterator<Entry<Long, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
-            Entry<Long, PlayerData> entry = it.next();
+        for (Iterator<Entry<Integer, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
+            Entry<Integer, PlayerData> entry = it.next();
             if (entry.getValue().isHuman()) {
                 list.add(entry.getValue());
             }
@@ -73,8 +73,8 @@ public class PlayerData {
 
     public static synchronized List<PlayerData> getAIPlayers() {
         LinkedList<PlayerData> list = new LinkedList<>();
-        for (Iterator<Entry<Long, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
-            Entry<Long, PlayerData> entry = it.next();
+        for (Iterator<Entry<Integer, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
+            Entry<Integer, PlayerData> entry = it.next();
             if (!entry.getValue().isHuman()) {
                 list.add(entry.getValue());
             }
@@ -93,8 +93,8 @@ public class PlayerData {
         }
     }
 
-    public static synchronized long getNew(String name) {
-        long id = 0;
+    public static synchronized int getNew(String name) {
+        int id = 0;
         while (players.containsKey(id)) {
             id++;
         }
@@ -102,72 +102,72 @@ public class PlayerData {
         return id;
     }
 
-    public static synchronized void add(long id, PlayerData player) {
+    public static synchronized void add(int id, PlayerData player) {
         players.put(id, player);
     }
 
-    public static synchronized void remove(long id) {
+    public static synchronized void remove(int id) {
         players.remove(id);
     }
 
-    public static synchronized int getAiControl(long id) {
+    public static synchronized int getAiControl(int id) {
         return players.get(id).getAiControl();
     }
 
-    public static synchronized void setAiControl(long id, int aiControl) {
+    public static synchronized void setAiControl(int id, int aiControl) {
         players.get(id).setAiControl(aiControl);
     }
 
-    public static synchronized boolean isHuman(long id) {
+    public static synchronized boolean isHuman(int id) {
         return players.get(id).isHuman();
     }
 
-    public static synchronized float getFloatData(long id, String key) {
+    public static synchronized float getFloatData(int id, String key) {
         if (!players.containsKey(id)) return -1;
         return players.get(id).getFloatData(key);
     }
 
-    public static synchronized void setData(long id, String key, float data) {
+    public static synchronized void setData(int id, String key, float data) {
         if (!players.containsKey(id)) return;
         players.get(id).setData(key, data);
     }
 
-    public static synchronized int getIntData(long id, String key) {
+    public static synchronized int getIntData(int id, String key) {
         if (!players.containsKey(id)) return -1;
         return players.get(id).getIntData(key);
     }
 
-    public static synchronized void setData(long id, String key, int data) {
+    public static synchronized void setData(int id, String key, int data) {
         if (!players.containsKey(id)) return;
         players.get(id).setData(key, data);
     }
 
-    public static synchronized Long getLongData(long id, String key) {
+    public static synchronized Long getLongData(int id, String key) {
         if (!players.containsKey(id)) return new Long(-1);
         return players.get(id).getLongData(key);
     }
 
-    public static synchronized void setData(long id, String key, long data) {
+    public static synchronized void setData(int id, String key, long data) {
         if (!players.containsKey(id)) return;
         players.get(id).setData(key, data);
     }
 
-    public static synchronized Boolean getBooleanData(long id, String key) {
+    public static synchronized Boolean getBooleanData(int id, String key) {
         if (!players.containsKey(id)) return false;
         return players.get(id).getBooleanData(key);
     }
 
-    public static synchronized void setData(long id, String key, boolean data) {
+    public static synchronized void setData(int id, String key, boolean data) {
         if (!players.containsKey(id)) return;
         players.get(id).setData(key, data);
     }
 
-    public static synchronized String getStringData(long id, String key) {
+    public static synchronized String getStringData(int id, String key) {
         if (!players.containsKey(id)) return "unknown";
         return players.get(id).getStringData(key);
     }
 
-    public static synchronized void setData(long id, String key, String data) {
+    public static synchronized void setData(int id, String key, String data) {
         if (!players.containsKey(id)) return;
         players.get(id).setData(key, data);
     }
@@ -185,26 +185,26 @@ public class PlayerData {
     public PlayerData() {
     }
 
-    public PlayerData(long id) {
+    public PlayerData(int id) {
         this.id = id;
     }
 
     /**
      * Object implementation of PlayerData
      */
-    public PlayerData(long id, String name) {
+    public PlayerData(int id, String name) {
         this(id, name, -1);
     }
 
 
-    public PlayerData(long id, String name, int aiControl) {
+    public PlayerData(int id, String name, int aiControl) {
         this.id = id;
         this.aiControl = aiControl;
         this.setData("name", name);
-        this.setData("entity-id", (long) -1);
+        this.setData("entity-id", -1);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

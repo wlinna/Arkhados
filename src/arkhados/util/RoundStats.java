@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class RoundStats {
 
-    private HashMap<Long, PlayerRoundStats> playerStats = new HashMap<>();    
+    private HashMap<Integer, PlayerRoundStats> playerStats = new HashMap<>();    
     
     public void initializeRound() {
         final List<PlayerData> playerDataList = PlayerData.getPlayers();
@@ -34,7 +34,7 @@ public class RoundStats {
         }
     }
     
-    public void addDamageForPlayer(final Long playerId, float damage) {
+    public void addDamageForPlayer(final Integer playerId, float damage) {
         final PlayerRoundStats player = this.playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
@@ -44,7 +44,7 @@ public class RoundStats {
         player.damageDone += damage;
     }
 
-    public void addHealthRestorationForPlayer(final Long playerId, float restoration) {
+    public void addHealthRestorationForPlayer(final Integer playerId, float restoration) {
         final PlayerRoundStats player = this.playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
@@ -54,7 +54,7 @@ public class RoundStats {
         player.healthRestored += restoration;
     }
     
-    public void addKill(final Long playerId) {
+    public void addKill(final Integer playerId) {
         final PlayerRoundStats player = this.playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here

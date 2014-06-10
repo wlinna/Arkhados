@@ -205,7 +205,7 @@ class BleedBuff extends AbstractBuff {
         this.name = "Deep Wounds";
     }
 
-    public BleedBuff(long buffGroupId, float duration) {
+    public BleedBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
 

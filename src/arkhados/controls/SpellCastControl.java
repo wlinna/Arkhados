@@ -190,7 +190,7 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(
-                    new StartCastingSpellMessage((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
+                    new StartCastingSpellMessage((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
         }
         this.globalCooldown();
         this.putOnCooldown(spell);
@@ -208,7 +208,7 @@ public class SpellCastControl extends AbstractControl {
     public void setCooldown(final String spellName, float cooldown) {
         this.cooldowns.put(spellName, cooldown);
         if (this.worldManager.isServer()) {
-            final Long entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            final Integer entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
             this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spellName, 0f, true));
         }
@@ -218,7 +218,7 @@ public class SpellCastControl extends AbstractControl {
         this.cooldowns.put(spell.getName(), spell.getCooldown());
 
         if (this.worldManager.isServer()) {
-            final Long entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            final Integer entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
             this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spell.getName(), spell.getCooldown(), true));
         }

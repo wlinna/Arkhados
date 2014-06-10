@@ -130,7 +130,7 @@ class MagmaBashBuilder extends NodeBuilder {
 
 class BrimstoneIncapacitate extends IncapacitateCC {
 
-    public BrimstoneIncapacitate(float duration, long id) {
+    public BrimstoneIncapacitate(float duration, int id) {
         super(duration, id);
     }
 

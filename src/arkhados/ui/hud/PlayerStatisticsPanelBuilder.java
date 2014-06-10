@@ -25,7 +25,7 @@ import de.lessvoid.nifty.builder.TextBuilder;
  */
 public class PlayerStatisticsPanelBuilder extends PanelBuilder {
 
-    public PlayerStatisticsPanelBuilder(long playerId) {
+    public PlayerStatisticsPanelBuilder(int playerId) {
         super(String.valueOf(playerId) + "-statistics");
         super.alignLeft();
         super.valignTop();

@@ -27,7 +27,7 @@ public class SlowCC extends CrowdControlBuff {
     private float slowFactor;
     private Spatial spatial;
 
-    public SlowCC(long id, float duration, float slow) {
+    public SlowCC(int id, float duration, float slow) {
         super(id, duration);
         this.slowFactor = 1f - slow;
     }

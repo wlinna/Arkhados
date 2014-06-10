@@ -30,7 +30,7 @@ public class ActionMessage extends AbstractSyncMessage{
     public ActionMessage() {
     }
 
-    public ActionMessage(long id, String name) {
+    public ActionMessage(int id, String name) {
         super(id);
         this.name = name;
     }

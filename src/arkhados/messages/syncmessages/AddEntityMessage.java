@@ -26,16 +26,17 @@ import com.jme3.network.serializing.Serializable;
  */
 @Serializable
 public class AddEntityMessage extends AbstractSyncMessage {
-    private long entityId;
+    private int entityId;
     private String modelId;
     private Vector3f location;
     private Quaternion rotation;
-    private long playerId;
+    private int playerId;
 
     public AddEntityMessage() {
     }
 
-    public AddEntityMessage(long entityId, String modelId, Vector3f location, Quaternion rotation, long playerId) {
+    public AddEntityMessage(int entityId, String modelId, Vector3f location,
+            Quaternion rotation, int playerId) {
         this.entityId = entityId;
         this.modelId = modelId;
         this.location = location;

@@ -53,8 +53,8 @@ public class UserCommandManager extends AbstractAppState {
     private WorldManager worldManager;
     private Application app;
     private Camera cam;
-    private long playerId;
-    private long characterId;
+    private int playerId;
+    private int characterId;
     private Node character;
     private int down = 0;
     private int right = 0;
@@ -257,21 +257,21 @@ public class UserCommandManager extends AbstractAppState {
         return spatial.getControl(InfluenceInterfaceControl.class);
     }
 
-    public long getPlayerId() {
+    public int getPlayerId() {
         return this.playerId;
     }
 
-    public void setPlayerId(long playerId) {
+    public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 
-    public void setCharacterId(long characterId) {
+    public void setCharacterId(int characterId) {
         this.characterId = characterId;
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
         // FIXME: NullPointerException
-        if ((Long) spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
+        if ((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
             this.character = (Node) spatial;
             ClientHudManager hudManager = this.app.getStateManager().getState(ClientHudManager.class);
             this.character.getControl(CharacterHudControl.class).setHudManager(hudManager);

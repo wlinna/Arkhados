@@ -100,14 +100,14 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
                 splashAction.update(tpf);
             }
             
-            ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
+            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
 
         if (this.age > ProjectileControl.timeToLive) {
             if (this.splashAction != null) {
                 splashAction.update(tpf);
             }
-            ProjectileControl.worldManager.removeEntity((Long) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
+            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
         }
     }
 
@@ -143,7 +143,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     public StateData getSyncableData(StateData stateData) {
         if (this.needsSync) {
             this.needsSync = true;
-            return new ProjectileSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
+            return new ProjectileSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
         }
 
         return null;

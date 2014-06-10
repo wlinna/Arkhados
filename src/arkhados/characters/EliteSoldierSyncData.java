@@ -20,7 +20,7 @@ public class EliteSoldierSyncData extends CharacterSyncData {
     public EliteSoldierSyncData() {
     }
 
-    public EliteSoldierSyncData(long id, Spatial spatial) {
+    public EliteSoldierSyncData(int id, Spatial spatial) {
         super(id, spatial);
         EliteSoldierAmmunitionControl ammunition = spatial.getControl(EliteSoldierAmmunitionControl.class);
         ammunition.addAmmoSynchronizationData(this, 0);

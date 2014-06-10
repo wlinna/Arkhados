@@ -128,7 +128,7 @@ class EliteSoldierSyncControl extends AbstractControl implements SyncControl {
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        return new EliteSoldierSyncData((long) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
+        return new EliteSoldierSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
     }
 
     @Override

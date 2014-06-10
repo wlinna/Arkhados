@@ -40,7 +40,7 @@ public class CharacterSyncData extends StateData {
     public CharacterSyncData() {        
     }
 
-    public CharacterSyncData(long id, Spatial spatial) {
+    public CharacterSyncData(int id, Spatial spatial) {
         super(id);        
         this.location.set(spatial.getLocalTranslation());
         this.walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());

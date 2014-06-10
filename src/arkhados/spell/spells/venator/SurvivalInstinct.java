@@ -67,7 +67,7 @@ class DamagePerHealthPercentBuff extends AbstractBuff {
         super.friendly = true;
     }
 
-    public DamagePerHealthPercentBuff(long buffGroupId, float duration) {
+    public DamagePerHealthPercentBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
 
@@ -100,7 +100,7 @@ class MovementSpeedPerHealthMissingBuff extends AbstractBuff {
         super.friendly = true;
     }
 
-    public MovementSpeedPerHealthMissingBuff(long buffGroupId, float duration) {
+    public MovementSpeedPerHealthMissingBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
 

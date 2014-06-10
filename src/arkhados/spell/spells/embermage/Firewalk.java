@@ -104,8 +104,9 @@ public class Firewalk extends Spell {
 
         private void motion() {
             final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
-            final Long playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-            final long firewalkId = this.world.addNewEntity(spell.getName(), startLocation, Quaternion.IDENTITY, playerId);
+            final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+            final int firewalkId = this.world.addNewEntity(spell.getName(),
+                    startLocation, Quaternion.IDENTITY, playerId);
             final Node firewalkNode = (Node) this.world.getEntity(firewalkId);
 
             final SpellBuffControl buffControl = firewalkNode.getControl(SpellBuffControl.class);
@@ -124,7 +125,7 @@ public class Firewalk extends Spell {
             motionControl.setSpeed(1f);
             motionControl.setInitialDuration(finalLocation.distance(startLocation) / 105f);
 
-            final long id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            final int id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             world.temporarilyRemoveEntity(id);
             path.addListener(new MotionPathListener() {
                 public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
@@ -220,7 +221,7 @@ public class Firewalk extends Spell {
 class FirewalkCollisionHandler extends AbstractControl {
 
     private GhostControl ghost;
-    private final Set<Long> collidedWith = new HashSet<>(8);
+    private final Set<Integer> collidedWith = new HashSet<>(8);
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -234,7 +235,7 @@ class FirewalkCollisionHandler extends AbstractControl {
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
-                Long entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
                 if (collidedWith.contains(entityId)) {
                     continue;
                 }

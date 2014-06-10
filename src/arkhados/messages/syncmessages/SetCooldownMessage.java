@@ -31,7 +31,7 @@ public class SetCooldownMessage extends AbstractSyncMessage {
     public SetCooldownMessage() {
     }
 
-    public SetCooldownMessage(long id, String spellName, float cooldown, boolean globalCooldown) {
+    public SetCooldownMessage(int id, String spellName, float cooldown, boolean globalCooldown) {
         super(id);
         this.spellName = spellName;
         this.cooldown = cooldown;
