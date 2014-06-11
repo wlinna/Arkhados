@@ -26,8 +26,8 @@ import java.util.List;
 @Serializable
 public class MassSyncMessage extends AbstractMessage {
 
-    private transient static long globalStateSyncMessageCounter = 0;
-    private long orderNum = globalStateSyncMessageCounter++;
+    private transient static int globalStateSyncMessageCounter = 0;
+    private int orderNum = globalStateSyncMessageCounter++;
     private List<StateData> stateData;
 
     public MassSyncMessage() {
@@ -46,7 +46,7 @@ public class MassSyncMessage extends AbstractMessage {
         globalStateSyncMessageCounter = 0;
     }
 
-    public long getOrderNum() {
+    public int getOrderNum() {
         return this.orderNum;
     }
 }

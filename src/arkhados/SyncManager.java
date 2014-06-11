@@ -63,7 +63,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     private float syncTimer = 0.0f;
     private Queue<AbstractMessage> syncQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
-    private long orderNum = 0;
+    private int orderNum = 0;
 
     public SyncManager(Application app, Server server) {
         this.app = app;
@@ -195,8 +195,8 @@ public class SyncManager extends AbstractAppState implements MessageListener {
 
     private void serverReceivedMessage(HostedConnection source, final AbstractSyncMessage message) {
         final int playerId = ServerClientData.getPlayerId(source.getId());
-        final Integer syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
-        if (syncId != null) {
+        final int syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
+        if (syncId != -1) {
             message.setSyncId(syncId);
             this.app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
@@ -259,11 +259,11 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                 BuffMessage.class);
     }
 
-    private long getCurrentOrderNum() {
+    private int getCurrentOrderNum() {
         return this.orderNum;
     }
 
-    private void setCurrentOrderNum(long orderNum) {
+    private void setCurrentOrderNum(int orderNum) {
         this.orderNum = orderNum;
     }
 }

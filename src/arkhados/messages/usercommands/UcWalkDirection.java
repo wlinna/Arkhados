@@ -16,7 +16,6 @@ package arkhados.messages.usercommands;
 
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
-import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.UserInputControl;
 import arkhados.messages.syncmessages.AbstractSyncMessage;
 
@@ -27,15 +26,15 @@ import arkhados.messages.syncmessages.AbstractSyncMessage;
 @Serializable
 public class UcWalkDirection extends AbstractSyncMessage {
 
-    private int down;
-    private int right;
+    private byte down;
+    private byte right;
 
     public UcWalkDirection() {
     }
 
     public UcWalkDirection(int down, int right) {
-        this.down = down;
-        this.right = right;
+        this.down = (byte) down;
+        this.right = (byte) right;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class AddEntityMessage extends AbstractSyncMessage {
     private String modelId;
     private Vector3f location;
     private Quaternion rotation;
-    private int playerId;
+    private byte playerId;
 
     public AddEntityMessage() {
     }
@@ -41,7 +41,7 @@ public class AddEntityMessage extends AbstractSyncMessage {
         this.modelId = modelId;
         this.location = location;
         this.rotation = rotation;
-        this.playerId = playerId;
+        this.playerId = (byte) playerId;
     }
 
     @Override
