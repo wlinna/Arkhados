@@ -22,7 +22,7 @@ import arkhados.controls.SpellBuffControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -60,7 +60,7 @@ public class Dagger extends Spell {
         return spell;
     }
 
-    private static class DaggerBuilder extends NodeBuilder {
+    private static class DaggerBuilder extends AbstractNodeBuilder {
 
         @Override
         public Node build() {

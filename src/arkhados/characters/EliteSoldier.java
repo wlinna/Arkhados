@@ -23,11 +23,13 @@ import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncControl;
+import arkhados.controls.SyncInterpolationControl;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
+import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
 import com.jme3.renderer.RenderManager;
@@ -36,16 +38,21 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
+
 /**
  * Creates entity with EliteSoldiers's features.
  *
  * @author william
  */
-public class EliteSoldier extends NodeBuilder {
-
+public class EliteSoldier extends AbstractNodeBuilder {
+    private ClientHudManager clientHudManager;    
+    
+    public EliteSoldier(ClientHudManager clientHudManager) {
+        this.clientHudManager = clientHudManager;
+    }
     @Override
     public Node build() {
-        Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Archer.j3o");
+        Node entity = (Node) AbstractNodeBuilder.assetManager.loadModel("Models/Archer.j3o");
         final float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
@@ -82,13 +89,13 @@ public class EliteSoldier extends NodeBuilder {
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
 
-        spellCastControl.putSpell(Spell.getSpells().get("Shotgun"), InputMappingStrings.M1);
+        spellCastControl.putSpell(Spell.getSpell("Shotgun"), InputMappingStrings.M1);
 
-        spellCastControl.putSpell(Spell.getSpells().get("Machinegun"), InputMappingStrings.M2);
-        spellCastControl.putSpell(Spell.getSpells().get("Plasmagun"), InputMappingStrings.Q);
-        spellCastControl.putSpell(Spell.getSpells().get("Rocket Launcher"), InputMappingStrings.E);
-        spellCastControl.putSpell(Spell.getSpells().get("Like a Pro"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpells().get("Rocket Jump"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.M2);
+        spellCastControl.putSpell(Spell.getSpell("Plasmagun"), InputMappingStrings.Q);
+        spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"), InputMappingStrings.E);
+        spellCastControl.putSpell(Spell.getSpell("Like a Pro"), InputMappingStrings.R);
+        spellCastControl.putSpell(Spell.getSpell("Rocket Jump"), InputMappingStrings.SPACE);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -118,6 +125,10 @@ public class EliteSoldier extends NodeBuilder {
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
+
+            this.clientHudManager.addCharacter(entity);
+            entity.addControl(new SyncInterpolationControl());
+            entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         }
 
         return entity;

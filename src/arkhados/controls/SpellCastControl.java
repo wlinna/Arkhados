@@ -201,7 +201,7 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public void putOnCooldown(final String spellName) {
-        final Spell spell = Spell.getSpells().get(spellName);
+        final Spell spell = Spell.getSpell(spellName);
         this.putOnCooldown(spell);
     }
 

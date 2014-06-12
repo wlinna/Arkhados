@@ -29,7 +29,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -114,7 +114,7 @@ class CastMeteorAction extends EntityAction {
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
         final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int entityId = this.worldManager.addNewEntity(this.spell.getName(),
+        final int entityId = this.worldManager.addNewEntity(this.spell.getNodeBuilderId(),
                 startingPoint, Quaternion.IDENTITY, playerId);
         final Spatial meteor = this.worldManager.getEntity(entityId);
 
@@ -163,12 +163,12 @@ class CastMeteorAction extends EntityAction {
     }
 }
 
-class MeteorNodeBuilder extends NodeBuilder {
+class MeteorNodeBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createFireEmitter() {
         final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-        final Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        final Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -194,7 +194,7 @@ class MeteorNodeBuilder extends NodeBuilder {
         final Node node = new Node("meteor");
         node.attachChild(meteorGeom);
 
-        final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
@@ -206,7 +206,7 @@ class MeteorNodeBuilder extends NodeBuilder {
 
         node.addControl(new GenericSyncControl());
 
-        if (NodeBuilder.worldManager.isClient()) {
+        if (AbstractNodeBuilder.worldManager.isClient()) {
             node.addControl(new SyncInterpolationControl());
             node.addControl(new EntityEventControl());
             final ParticleEmitter fire = this.createFireEmitter();

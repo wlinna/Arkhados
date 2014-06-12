@@ -36,7 +36,8 @@ import arkhados.spell.spells.venator.FeralScream;
 import arkhados.spell.spells.venator.Leap;
 import arkhados.spell.spells.venator.Rend;
 import arkhados.spell.spells.venator.SurvivalInstinct;
-import arkhados.util.NodeBuilder;
+import arkhados.util.EntityFactory;
+import arkhados.util.AbstractNodeBuilder;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -60,7 +61,9 @@ public abstract class Spell {
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
      */
-    private static HashMap<String, Spell> Spells = new HashMap<>();
+    private static HashMap<Integer, Spell> Spells = new HashMap<>();
+    private static HashMap<String, Integer> SpellNameCreationIdMap = new HashMap<>();
+    
 
     /**
      * Creates each spell and saves them to Spells-map. Should be called only
@@ -68,86 +71,63 @@ public abstract class Spell {
      * @param assetManager will be saved to static variable assetManager
      * @param worldManager will be save to static variable worldManager
      */
-    public static void initSpells(AssetManager assetManager, WorldManager worldManager) {
+    public static void initSpells(EntityFactory entityFactory, AssetManager assetManager, WorldManager worldManager) {
         Spell.assetManager = assetManager;
         Spell.worldManager = worldManager;
 
-        NodeBuilder.setAssetManager(assetManager);
-        NodeBuilder.setWorldManager(worldManager);
+        AbstractNodeBuilder.setAssetManager(assetManager);
+        AbstractNodeBuilder.setWorldManager(worldManager);
 
         ProjectileControl.setWorldManager(worldManager);
-
+        
         // *************** INIT spells here ************************
 
-        final Spell fireball = Fireball.create();
-        Spells.put(fireball.getName(), fireball);
-
-        final Spell magmaBash = MagmaBash.create();
-        Spells.put(magmaBash.getName(), magmaBash);
-
-        final Spell emberCircle = EmberCircle.create();
-        Spells.put(emberCircle.getName(), emberCircle);
-
-        final Spell meteor = Meteor.create();
-        Spells.put(meteor.getName(), meteor);
-
-        final Spell purifyingFlame = PurifyingFlame.create();
-        Spells.put(purifyingFlame.getName(), purifyingFlame);
-
-        final Spell firewalk = Firewalk.create();
-        Spells.put(firewalk.getName(), firewalk);
-
-        final Spell ignite = Ignite.create();
-        Spells.put(ignite.getName(), ignite);
-
-        // Venator spells
-        final Spell rend = Rend.create();
-        Spells.put(rend.getName(), rend);
-
-        final Spell dagger = Dagger.create();
-        Spells.put(dagger.getName(), dagger);
-
-        final Spell leap = Leap.create();
-        Spells.put(leap.getName(), leap);
-
-        final Spell feralScream = FeralScream.create();
-        Spells.put(feralScream.getName(), feralScream);
-
-        final Spell deepWounds = DeepWounds.create();
-        Spells.put(deepWounds.getName(), deepWounds);
-
-        final Spell survivalInstinct = SurvivalInstinct.create();
-        Spells.put(survivalInstinct.getName(), survivalInstinct);
-        
-        // Elite Soldier spells
-        final Spell shotgun = Shotgun.create();
-        Spells.put(shotgun.getName(), shotgun);
-        
-        final Spell machinegun = Machinegun.create();
-        Spells.put(machinegun.getName(), machinegun);       
-        
-        final Spell plasmagun = Plasmagun.create();
-        Spells.put(plasmagun.getName(), plasmagun);        
-        
-        final Spell rocketLauncher = RocketLauncher.create();
-        Spells.put(rocketLauncher.getName(), rocketLauncher);
-        
-        final Spell likeAPro = LikeAPro.create();
-        Spells.put(likeAPro.getName(), likeAPro);
-        
-        final Spell rocketJump = RocketJump.create();
-        Spells.put(rocketJump.getName(), rocketJump);
+        addSpell(entityFactory, Fireball.create());
+        addSpell(entityFactory, MagmaBash.create());
+        addSpell(entityFactory, EmberCircle.create());
+        addSpell(entityFactory, Meteor.create());
+        addSpell(entityFactory, PurifyingFlame.create());
+        addSpell(entityFactory, Firewalk.create());
+        addSpell(entityFactory, Ignite.create());
+       
+        addSpell(entityFactory, Rend.create());
+        addSpell(entityFactory, Dagger.create());
+        addSpell(entityFactory, Leap.create());
+        addSpell(entityFactory, FeralScream.create());
+        addSpell(entityFactory, DeepWounds.create());
+        addSpell(entityFactory, SurvivalInstinct.create());
+                
+        addSpell(entityFactory, Shotgun.create());        
+        addSpell(entityFactory, Machinegun.create());      
+        addSpell(entityFactory, Plasmagun.create());        
+        addSpell(entityFactory, RocketLauncher.create()); 
+        addSpell(entityFactory, LikeAPro.create());        
+        addSpell(entityFactory, RocketJump.create());
     }
-
-    /**
-     * Call this method to get all Spell-data.
-     * @return Spells-map
-     */
-    public static HashMap<String, Spell> getSpells() {
-        return Spells;
+    
+    private static void addSpell(EntityFactory entityFactory, Spell spell) {
+        int nodeBuilderId = entityFactory.addNodeBuilder(spell.nodeBuilder);
+        spell.setNodeBuilderId(nodeBuilderId);
+        Spells.put(nodeBuilderId, spell);
+        SpellNameCreationIdMap.put(spell.getName(), nodeBuilderId);
+    }
+    
+    public static Spell getSpell(int creationId) {
+        return Spells.get(creationId);
+    }
+    
+    public static Spell getSpell(String spellName) {
+        Integer creationId = SpellNameCreationIdMap.get(spellName);
+        
+        if (creationId == null) {
+            return null;
+        }
+       
+        return Spells.get(creationId);
     }
 
     private final String name;
+    private int nodeBuilderId;
     private final float cooldown;
     private final float range;
     private final float castTime;
@@ -159,7 +139,7 @@ public abstract class Spell {
     protected String iconName = null;
 
     protected CastSpellActionBuilder castSpellActionBuilder;
-    protected NodeBuilder nodeBuilder;
+    protected AbstractNodeBuilder nodeBuilder;
 
     /**
      * Creates spell with given parameters
@@ -227,5 +207,13 @@ public abstract class Spell {
 
     public boolean isMultipart() {
         return multipart;
+    }
+
+    public int getNodeBuilderId() {
+        return nodeBuilderId;
+    }
+
+    public void setNodeBuilderId(int nodeBuilderId) {
+        this.nodeBuilderId = nodeBuilderId;
     }
 }

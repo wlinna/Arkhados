@@ -24,7 +24,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.IncapacitateCC;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -71,7 +71,7 @@ public class MagmaBash extends Spell {
     }
 }
 
-class MagmaBashBuilder extends NodeBuilder {
+class MagmaBashBuilder extends AbstractNodeBuilder {
 
     public Node build() {
         Sphere sphere = new Sphere(32, 32, 1.0f);
@@ -80,7 +80,7 @@ class MagmaBashBuilder extends NodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 180f);
@@ -89,10 +89,10 @@ class MagmaBashBuilder extends NodeBuilder {
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
         node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 7.4f);
 
-        if (NodeBuilder.worldManager.isClient()) {
+        if (AbstractNodeBuilder.worldManager.isClient()) {
             final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 80);
-            Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-            materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+            Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+            materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
             fire.setMaterial(materialRed);
             fire.setImagesX(2);
             fire.setImagesY(2);

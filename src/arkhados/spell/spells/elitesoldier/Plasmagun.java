@@ -31,7 +31,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.DistanceScaling;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -83,12 +83,12 @@ public class Plasmagun extends Spell {
     }
 }
 
-class PlasmaBuilder extends NodeBuilder {
+class PlasmaBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createPlasmaEmitter() {
         final ParticleEmitter plasma = new ParticleEmitter("plasma-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/plasma-particle.png"));
+        Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/plasma-particle.png"));
         plasma.setMaterial(materialRed);
         plasma.setImagesX(2);
         plasma.setImagesY(2);
@@ -117,7 +117,7 @@ class PlasmaBuilder extends NodeBuilder {
         final Node node = new Node("projectile");
         node.attachChild(projectileGeom);
 
-        final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -126,7 +126,7 @@ class PlasmaBuilder extends NodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, 70f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
-        if (NodeBuilder.worldManager.isClient()) {
+        if (AbstractNodeBuilder.worldManager.isClient()) {
             final ParticleEmitter plasma = this.createPlasmaEmitter();
             node.attachChild(plasma);
 

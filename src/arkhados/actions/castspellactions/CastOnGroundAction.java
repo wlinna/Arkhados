@@ -52,7 +52,7 @@ public class CastOnGroundAction extends EntityAction {
         final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
         final Vector3f adjustedTarget = castControl.getClosestPointToTarget(this.spell).setY(0.1f);
         final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int entityId = worldManager.addNewEntity(spell.getName(), adjustedTarget, Quaternion.IDENTITY, playerId);
+        final int entityId = worldManager.addNewEntity(spell.getNodeBuilderId(), adjustedTarget, Quaternion.IDENTITY, playerId);
 
         final Spatial entity = worldManager.getEntity(entityId);
         final AreaEffectControl aoeControl = entity.getControl(AreaEffectControl.class);

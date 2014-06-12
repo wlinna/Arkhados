@@ -27,7 +27,7 @@ import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -80,12 +80,12 @@ public class Fireball extends Spell {
     }
 }
 
-class FireballBuilder extends NodeBuilder {
+class FireballBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createSmokeEmitter() {
         final ParticleEmitter smoke = new ParticleEmitter("smoke-emitter", ParticleMesh.Type.Triangle, 300);
-        Material materialGray = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        Material materialGray = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
         smoke.setMaterial(materialGray);
         smoke.setImagesX(2);
         smoke.setImagesY(2);
@@ -108,8 +108,8 @@ class FireballBuilder extends NodeBuilder {
 
     private ParticleEmitter createFireEmitter() {
         final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -140,7 +140,7 @@ class FireballBuilder extends NodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -149,7 +149,7 @@ class FireballBuilder extends NodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, 150f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
-        if (NodeBuilder.worldManager.isClient()) {
+        if (AbstractNodeBuilder.worldManager.isClient()) {
             final ParticleEmitter fire = this.createFireEmitter();
             node.attachChild(fire);
 

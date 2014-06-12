@@ -14,12 +14,25 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
+import arkhados.WorldManager;
+import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
 /**
  *
  * @author william
  */
-public interface NodeBuilder {
-    public Node build();
+public abstract class AbstractNodeBuilder implements NodeBuilder {
+    protected static WorldManager worldManager;
+    protected static AssetManager assetManager;
+
+    public abstract Node build();
+
+    public static void setWorldManager(WorldManager worldManager) {
+        AbstractNodeBuilder.worldManager = worldManager;
+    }
+
+    public static void setAssetManager(AssetManager assetManager) {
+        AbstractNodeBuilder.assetManager = assetManager;
+    }
 }

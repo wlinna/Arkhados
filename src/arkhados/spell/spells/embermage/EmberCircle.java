@@ -25,7 +25,7 @@ import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.influences.DamagOverTimeInfluence;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -73,7 +73,7 @@ public class EmberCircle extends Spell {
     }
 }
 
-class EmberCircleBuilder extends NodeBuilder {
+class EmberCircleBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
@@ -121,8 +121,8 @@ class EmberCircleBuilder extends NodeBuilder {
                 @Override
                 public boolean update(float tpf) {
                     final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50 * (int) radius);
-                    Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-                    materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+                    Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                    materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
                     fire.setMaterial(materialRed);
                     fire.setImagesX(2);
                     fire.setImagesY(2);

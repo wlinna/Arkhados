@@ -27,7 +27,7 @@ import com.jme3.network.serializing.Serializable;
 @Serializable
 public class AddEntityMessage extends AbstractSyncMessage {
     private int entityId;
-    private String modelId;
+    private short nodeBuilderId;
     private Vector3f location;
     private Quaternion rotation;
     private byte playerId;
@@ -35,10 +35,10 @@ public class AddEntityMessage extends AbstractSyncMessage {
     public AddEntityMessage() {
     }
 
-    public AddEntityMessage(int entityId, String modelId, Vector3f location,
+    public AddEntityMessage(int entityId, int nodeBuilderId, Vector3f location,
             Quaternion rotation, int playerId) {
         this.entityId = entityId;
-        this.modelId = modelId;
+        this.nodeBuilderId = (short) nodeBuilderId;
         this.location = location;
         this.rotation = rotation;
         this.playerId = (byte) playerId;
@@ -47,7 +47,7 @@ public class AddEntityMessage extends AbstractSyncMessage {
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
-        worldManager.addEntity(this.entityId, this.modelId, this.location,
+        worldManager.addEntity(this.entityId, this.nodeBuilderId, this.location,
                 this.rotation, playerId);
     }
 }

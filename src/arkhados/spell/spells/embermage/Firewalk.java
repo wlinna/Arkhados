@@ -27,7 +27,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.SlowCC;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -105,7 +105,7 @@ public class Firewalk extends Spell {
         private void motion() {
             final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
             final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-            final int firewalkId = this.world.addNewEntity(spell.getName(),
+            final int firewalkId = this.world.addNewEntity(spell.getNodeBuilderId(),
                     startLocation, Quaternion.IDENTITY, playerId);
             final Node firewalkNode = (Node) this.world.getEntity(firewalkId);
 
@@ -146,12 +146,12 @@ public class Firewalk extends Spell {
         }
     }
 
-    private static class FirewalkNodeBuilder extends NodeBuilder {
+    private static class FirewalkNodeBuilder extends AbstractNodeBuilder {
 
         private ParticleEmitter createFireEmitter() {
             final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-            final Material materialRed = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-            materialRed.setTexture("Texture", NodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+            final Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+            materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
             fire.setMaterial(materialRed);
             fire.setImagesX(2);
             fire.setImagesY(2);
@@ -177,7 +177,7 @@ public class Firewalk extends Spell {
 
             node.addControl(new SyncInterpolationControl());
             // TODO: Give at least bit better material
-            final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             material.setColor("Color", ColorRGBA.Yellow);
             node.setMaterial(material);
 
@@ -204,7 +204,7 @@ public class Firewalk extends Spell {
 
                 node.addControl(new FirewalkCollisionHandler());
             }
-            if (NodeBuilder.worldManager.isClient()) {
+            if (AbstractNodeBuilder.worldManager.isClient()) {
                 final ParticleEmitter fire = this.createFireEmitter();
                 node.attachChild(fire);
                 PointLight light = new PointLight();

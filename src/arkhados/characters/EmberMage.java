@@ -22,10 +22,12 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.controls.SyncInterpolationControl;
 import arkhados.spell.Spell;
+import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
@@ -35,11 +37,17 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class EmberMage extends NodeBuilder {
+public class EmberMage extends AbstractNodeBuilder {
+
+    private ClientHudManager clientHudManager;
+
+    public EmberMage(ClientHudManager clientHudManager) {
+        this.clientHudManager = clientHudManager;
+    }
 
     @Override
     public Node build() {
-        Node entity = (Node) NodeBuilder.assetManager.loadModel("Models/Mage.j3o");
+        Node entity = (Node) AbstractNodeBuilder.assetManager.loadModel("Models/Mage.j3o");
         final float movementSpeed = 35f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
@@ -67,13 +75,13 @@ public class EmberMage extends NodeBuilder {
          */
         SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
         entity.addControl(spellCastControl);
-        spellCastControl.putSpell(Spell.getSpells().get("Fireball"), InputMappingStrings.M1);
-        spellCastControl.putSpell(Spell.getSpells().get("Magma Bash"), InputMappingStrings.M2);
-        spellCastControl.putSpell(Spell.getSpells().get("Ember Circle"), InputMappingStrings.Q);
-        spellCastControl.putSpell(Spell.getSpells().get("Meteor"), InputMappingStrings.E);
-        spellCastControl.putSpell(Spell.getSpells().get("Purifying Flame"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpells().get("Firewalk"), InputMappingStrings.SPACE);
-        spellCastControl.putSpell(Spell.getSpells().get("Ignite"), null);
+        spellCastControl.putSpell(Spell.getSpell("Fireball"), InputMappingStrings.M1);
+        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), InputMappingStrings.M2);
+        spellCastControl.putSpell(Spell.getSpell("Ember Circle"), InputMappingStrings.Q);
+        spellCastControl.putSpell(Spell.getSpell("Meteor"), InputMappingStrings.E);
+        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), InputMappingStrings.R);
+        spellCastControl.putSpell(Spell.getSpell("Firewalk"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -104,6 +112,10 @@ public class EmberMage extends NodeBuilder {
         if (worldManager.isClient()) {
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
+
+            this.clientHudManager.addCharacter(entity);
+            entity.addControl(new SyncInterpolationControl());
+            entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         }
 
         return entity;

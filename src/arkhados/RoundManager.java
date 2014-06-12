@@ -36,6 +36,7 @@ import arkhados.messages.roundprotocol.NewRoundMessage;
 import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
+import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
 import arkhados.util.UserDataStrings;
@@ -142,7 +143,10 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
                         final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
-                        final int entityId = worldManager.addNewEntity(heroName, startingLocation, new Quaternion(), playerData.getId());
+                        final int nodeBuilderId =
+                                NodeBuilderIdHeroNameMatcherSingleton.get().getId(heroName);
+                        final int entityId = worldManager.addNewEntity(nodeBuilderId,
+                                startingLocation, new Quaternion(), playerData.getId());
                         playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
                     }
 

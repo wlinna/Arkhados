@@ -70,7 +70,8 @@ public class WorldManager extends AbstractAppState {
         new Vector3f(-50, 0, -50),
         new Vector3f(-50, 0, 50),
         new Vector3f(50, 0, -50),
-        new Vector3f(50, 0, 50)
+        new Vector3f(50, 0, 50),
+        new Vector3f(0, 0, 0)
     };
     private Node worldRoot;
     private AbstractArena arena = new BasicSquareArena();
@@ -133,7 +134,7 @@ public class WorldManager extends AbstractAppState {
 //            }
         }
 
-        Spell.initSpells(assetManager, this);
+        Spell.initSpells(entityFactory, assetManager, this);
         BuffInformation.initBuffs();
         BuffEffect.setAssetManager(assetManager);
     }
@@ -184,24 +185,24 @@ public class WorldManager extends AbstractAppState {
     /**
      * Adds new entity on server
      *
-     * @param typeId
+     * @param nodeBuilderId
      * @param location
      * @param rotation
      * @param playerId id of owning player. -1, if server owns
      * @return entity id
      */
-    public int addNewEntity(String typeId, Vector3f location, Quaternion rotation, int playerId) {
+    public int addNewEntity(int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
         ++this.idCounter;
-        this.addEntity(this.idCounter, typeId, location, rotation, playerId);
+        this.addEntity(this.idCounter, nodeBuilderId, location, rotation, playerId);
         return this.idCounter;
     }
 
-    public void addEntity(int id, String modelPath, Vector3f location, Quaternion rotation, int playerId) {
+    public void addEntity(int id, int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
         if (this.isServer()) {
-            this.syncManager.broadcast(new AddEntityMessage(id, modelPath, location, rotation, playerId));
+            this.syncManager.broadcast(new AddEntityMessage(id, nodeBuilderId, location, rotation, playerId));
         }
 
-        Spatial entitySpatial = this.entityFactory.createEntityById(modelPath);
+        Spatial entitySpatial = this.entityFactory.createEntityById(nodeBuilderId);
         this.setEntityTranslation(entitySpatial, location, rotation);
         entitySpatial.setUserData(UserDataStrings.PLAYER_ID, playerId);
         entitySpatial.setUserData(UserDataStrings.ENTITY_ID, id);

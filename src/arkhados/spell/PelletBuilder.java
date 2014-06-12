@@ -20,7 +20,7 @@ import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.entityevents.RemovalEventAction;
-import arkhados.util.NodeBuilder;
+import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -37,7 +37,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
 
-public class PelletBuilder extends NodeBuilder {
+public class PelletBuilder extends AbstractNodeBuilder {
     private float damage;
 
     public PelletBuilder(float damage) {
@@ -51,14 +51,14 @@ public class PelletBuilder extends NodeBuilder {
         final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         final Node node = new Node("projectile");
         node.attachChild(projectileGeom);
-        final Material material = new Material(NodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 220f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
         node.setUserData(UserDataStrings.DAMAGE, this.damage);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-        if (NodeBuilder.worldManager.isClient()) {
+        if (AbstractNodeBuilder.worldManager.isClient()) {
             // TODO: Enable these later to add removalAction
             //            node.addControl(new EntityEventControl());
             /**

@@ -19,15 +19,9 @@ import arkhados.WorldManager;
 import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
-import arkhados.controls.SyncInterpolationControl;
-import arkhados.controls.DebugControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.spell.Spell;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Creates all game entities
@@ -39,12 +33,8 @@ public class EntityFactory {
     private AssetManager assetManager;
     private WorldManager worldManager;
     private ClientHudManager clientHudManager = null;
-    private List<String> heroNames = new ArrayList<String>(1);
-
-    {
-        heroNames.add("Mage");
-        heroNames.add("Venator");
-    }
+    private int runningId = -1;
+    private ArrayList<NodeBuilder> nodeBuilders = new ArrayList<>(40);
 
     /**
      * Server side EntityFactory constructor. Should be called only once
@@ -55,6 +45,7 @@ public class EntityFactory {
     public EntityFactory(AssetManager assetManager, WorldManager worldManager) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
+        this.addNodeBuilders();
     }
 
     /**
@@ -68,54 +59,33 @@ public class EntityFactory {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
         this.clientHudManager = clientHudManager;
+        this.addNodeBuilders();
     }
 
-    /**
-     *
-     * @param id Id of entity to create. If id is name of entity, creates that
-     * entity. If id is spell's name, creates node of that spell (i.e
-     * projectile)
-     * @return
-     */
-    public Spatial createEntityById(String id) {
-        Node entity = null;
-        if ("Mage".equals(id)) {
-            entity = new EmberMage().build();
-            entity.addControl(new DebugControl(this.assetManager));
-
-            if (worldManager.isClient()) {
-                // TODO: Get rid of this repetition
-                this.clientHudManager.addCharacter(entity);
-                entity.addControl(new SyncInterpolationControl());
-                entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
-            }
-
-        } else if ("Venator".equals(id)) {
-            entity = new Venator().build();
-            entity.addControl(new DebugControl(this.assetManager));
-            if (worldManager.isClient()) {
-                this.clientHudManager.addCharacter(entity);
-                entity.addControl(new SyncInterpolationControl());
-                entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
-            }
-        } else if ("Elite Soldier".equals(id)) {
-            entity = new EliteSoldier().build();
-             entity.addControl(new DebugControl(this.assetManager));
-
-            if (worldManager.isClient()) {
-                this.clientHudManager.addCharacter(entity);
-                entity.addControl(new SyncInterpolationControl());
-                entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
-            }
-        }
-        
-        else if (Spell.getSpells().containsKey(id)) {
-            Spell spell = Spell.getSpells().get(id);
-            entity = spell.buildNode();
+    public Node createEntityById(int id) {
+        if (this.nodeBuilders.size() <= id) {
+            return null;
         }
 
-        // TODO: Detect if entity is character
-        assert entity != null;
-        return entity;
+        return this.nodeBuilders.get(id).build();
+    }
+
+    private void addNodeBuilders() {
+        int mageId = this.addNodeBuilder(new EmberMage(clientHudManager));
+        int venatorId = this.addNodeBuilder(new Venator(clientHudManager));
+        int soldierId = this.addNodeBuilder(new EliteSoldier(clientHudManager));
+
+        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Mage", mageId);
+        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Venator", venatorId);
+        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Elite Soldier", soldierId);
+    }
+
+    private int newNodeBuilderId() {
+        return ++this.runningId;
+    }
+
+    public int addNodeBuilder(NodeBuilder builder) {
+        this.nodeBuilders.add(builder);
+        return this.newNodeBuilderId();
     }
 }
