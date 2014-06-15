@@ -83,7 +83,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
         super.setSpatial(spatial);
         this.rigidBodyControl = spatial.getControl(RigidBodyControl.class);
         
-        // HACK: We need to allow projectiles to control this
+        // This is default behaviour and can be overridden
         this.rigidBodyControl.addCollideWithGroup(CollisionGroups.WALLS);
     }
 
@@ -142,10 +142,14 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     @Override
     public StateData getSyncableData(StateData stateData) {
         if (this.needsSync) {
-            this.needsSync = true;
+            this.needsSync = false;
             return new ProjectileSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
         }
 
         return null;
+    }
+
+    public SplashAction getSplashAction() {
+        return splashAction;
     }
 }

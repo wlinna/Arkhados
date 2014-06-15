@@ -177,12 +177,12 @@ class RocketBuilder extends AbstractNodeBuilder {
          * group.
          */
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
-        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
+        physicsBody.setCollideWithGroups(CollisionGroups.NONE);
 
         /**
          * Add collision group of characters
          */
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
 
         node.addControl(physicsBody);
 

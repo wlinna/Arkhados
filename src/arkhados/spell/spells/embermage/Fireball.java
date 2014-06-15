@@ -185,7 +185,6 @@ class FireballBuilder extends AbstractNodeBuilder {
         
         final GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
-        characterCollision.addCollideWithGroup(CollisionGroups.WALLS);
         characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
         node.addControl(characterCollision);
 //

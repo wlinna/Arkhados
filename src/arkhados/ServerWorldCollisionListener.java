@@ -43,13 +43,21 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-
-        Spatial staticA = null;
-        Spatial staticB = null;
-
         if (event.getNodeA() == null || event.getNodeB() == null) {
             return;
         }
+
+        Spatial wallA = null;
+        Spatial wallB = null;
+
+        if (event.getObjectA().getCollisionGroup() == CollisionGroups.WALLS) {
+            wallA = event.getNodeA();
+        }
+
+        if (event.getObjectB().getCollisionGroup() == CollisionGroups.WALLS) {
+            wallB = event.getNodeB();
+        }
+
         InfluenceInterfaceControl characterA = event.getNodeA().getControl(InfluenceInterfaceControl.class);
         InfluenceInterfaceControl characterB = event.getNodeB().getControl(InfluenceInterfaceControl.class);
 
@@ -65,13 +73,25 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         }
 
         if (projectileA != null) {
+            if (projectileA.getSpatial().getParent() == null) {
+                return;
+            }
+
             if (characterB != null) {
                 this.projectileCharacterCollision(projectileA, characterB);
+            } else if (wallB != null) {
+                this.projectileWallCollision(projectileA, wallB);
             }
         }
         if (projectileB != null) {
+            if (projectileB.getSpatial().getParent() == null) {
+                return;
+            }
+
             if (characterA != null) {
                 this.projectileCharacterCollision(projectileB, characterA);
+            } else if (wallA != null) {
+                this.projectileWallCollision(projectileB, wallA);
             }
         }
 
@@ -79,11 +99,11 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl target) {
 
-        final Integer projectilePlayerId = projectile.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final Integer projectileTeamId = PlayerData.getIntData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
-        final Integer targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final Integer targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
-        
+        final int projectilePlayerId = projectile.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final int projectileTeamId = PlayerData.getIntData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
+        final int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+
         if (targetTeamId == projectileTeamId) {
             return;
         }
@@ -92,7 +112,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         if (target.isImmuneToProjectiles()) {
             removalReason = "absorbed";
         } else {
-            final Float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
+            final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
             final SpellBuffControl buffControl = projectile.getSpatial().getControl(SpellBuffControl.class);
             final boolean canBreakCC = damage > 0f ? true : false;
             CharacterInteraction.harm(projectile.getOwnerInterface(), target, damage, buffControl.getBuffs(), canBreakCC);
@@ -101,8 +121,20 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             Vector3f impulse = target.getSpatial().getLocalTranslation()
                     .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
             target.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
+
+            if (projectile.getSplashAction() != null) {
+                projectile.getSplashAction().update(0);
+            }
         }
 
         this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), removalReason);
+    }
+
+    private void projectileWallCollision(ProjectileControl projectile, Spatial wall) {
+        if (projectile.getSplashAction() != null) {
+            projectile.getSplashAction().update(0);
+        }
+
+        this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
     }
 }

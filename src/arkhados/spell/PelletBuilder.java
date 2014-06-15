@@ -83,8 +83,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
          */
         final GhostControl collision = new GhostControl(collisionShape);
         collision.setCollisionGroup(CollisionGroups.PROJECTILES);
-        collision.setCollideWithGroups(CollisionGroups.CHARACTERS |
-                CollisionGroups.WALLS);
+        collision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         node.addControl(collision);
         node.addControl(physicsBody);
         node.addControl(new ProjectileControl());
