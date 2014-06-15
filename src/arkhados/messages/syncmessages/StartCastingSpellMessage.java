@@ -30,23 +30,23 @@ import arkhados.spell.Spell;
  */
 @Serializable
 public class StartCastingSpellMessage extends AbstractSyncMessage {
-    private String spellName;
+    private short spellId;
     private Vector3f direction = new Vector3f();
 
     public StartCastingSpellMessage() {
 
     }
 
-    public StartCastingSpellMessage(int id, String spellName, Vector3f direction) {
+    public StartCastingSpellMessage(int id, int spellId, Vector3f direction) {
         super(id);
-        this.spellName = spellName;
+        this.spellId = (short)spellId;
         this.direction.set(direction);
     }
 
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        Spell spell = character.getControl(SpellCastControl.class).getSpell(this.spellName);
+        Spell spell = character.getControl(SpellCastControl.class).getSpell(this.spellId);
         character.getControl(CharacterAnimationControl.class).castSpell(spell);
         character.getControl(CharacterPhysicsControl.class).setViewDirection(this.direction);
     }

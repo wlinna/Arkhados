@@ -28,7 +28,6 @@ import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
-import arkhados.util.NodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
@@ -39,6 +38,10 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class Venator extends AbstractNodeBuilder {
+    public static final int ANIM_LAND = 0;
+    public static final int ANIM_SWIPE_UP = 1;
+    public static final int ANIM_SWIPE_RIGHT = 2;
+    public static final int ANIM_SWIPE_LEFT = 3;
 
     private ClientHudManager clientHudManager;
 
@@ -116,16 +119,16 @@ public class Venator extends AbstractNodeBuilder {
         animControl.addSpellAnimation("Survival Instinct", null);
 
         final AnimationData landAnim = new AnimationData("Land", 1f, LoopMode.DontLoop);
-        animControl.addActionAnimation("Land", landAnim);
+        animControl.addActionAnimation(landAnim);
 
         final float swipeUpSpeed = AnimationData.calculateSpeedForAnimation(animControl.getAnimControl(), "Swipe-Up", 3f / 5f, 0.2f);
         final AnimationData swipeUpAnim = new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
-        animControl.addActionAnimation("Swipe-Up", swipeUpAnim);
+        animControl.addActionAnimation(swipeUpAnim);
 
         final AnimationData swipeRightAnim = new AnimationData("Swipe-Right", swipeSpeed, LoopMode.DontLoop);
-        animControl.addActionAnimation("Swipe-Right", swipeRightAnim);
+        animControl.addActionAnimation(swipeRightAnim);
 
-        animControl.addActionAnimation("Swipe-Left", swipeLeftAnim);
+        animControl.addActionAnimation(swipeLeftAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
         entity.addControl(new CharacterSyncControl());

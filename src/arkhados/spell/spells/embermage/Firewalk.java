@@ -105,7 +105,7 @@ public class Firewalk extends Spell {
         private void motion() {
             final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
             final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-            final int firewalkId = this.world.addNewEntity(spell.getNodeBuilderId(),
+            final int firewalkId = this.world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
             final Node firewalkNode = (Node) this.world.getEntity(firewalkId);
 
@@ -206,12 +206,7 @@ public class Firewalk extends Spell {
             }
             if (AbstractNodeBuilder.worldManager.isClient()) {
                 final ParticleEmitter fire = this.createFireEmitter();
-                node.attachChild(fire);
-                PointLight light = new PointLight();
-                light.setColor(ColorRGBA.Yellow);
-                LightControl lightControl = new LightControl(light);
-                node.addControl(lightControl);
-                worldManager.getWorldRoot().addLight(light);
+                node.attachChild(fire);                
             }
             return node;
         }

@@ -17,6 +17,7 @@ package arkhados.spell.spells.venator;
 import arkhados.actions.CastingSpellAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.MeleeAttackAction;
+import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -76,8 +77,8 @@ class TripleMeleeAttackAction extends EntityAction {
         final MeleeAttackAction action3 = new MeleeAttackAction(70f, range);
 
         // action1 already has the default spell casting animation
-        action2Anim.setName("Swipe-Right");
-        action3Anim.setName("Swipe-Left");
+        action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);
+        action3Anim.setTypeId(Venator.ANIM_SWIPE_LEFT);
 
         queue.enqueueAction(action1);
         queue.enqueueAction(action2Anim);

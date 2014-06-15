@@ -96,7 +96,6 @@ public class EmberMage extends AbstractNodeBuilder {
         entity.addControl(animControl);
 
         final AnimationData animationData = new AnimationData("Idle", 1f, LoopMode.Loop);
-        animControl.addActionAnimation("Cast", animationData);
 
         animControl.addSpellAnimation("Fireball", animationData);
         animControl.addSpellAnimation("Magma Bash", animationData);

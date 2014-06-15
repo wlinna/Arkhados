@@ -19,17 +19,12 @@ import arkhados.util.AnimationData;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -45,7 +40,7 @@ public class CharacterAnimationControl extends AbstractControl {
     private AnimChannel channel;
     private float actionTime = 0f;
     private HashMap<String, AnimationData> spellAnimationMap = new HashMap<>(6);
-    private HashMap<String, AnimationData> actionAnimationData = new HashMap<>(8);
+    private ArrayList<AnimationData> actionAnimations = new ArrayList<>(8);
     // TODO: Allow mapping of animations to specific AnimChannels
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
@@ -99,8 +94,8 @@ public class CharacterAnimationControl extends AbstractControl {
         this.channel.setLoopMode(animationData.getLoopMode());
     }
 
-    public void animateAction(final String actionName, final float actionDuration) {
-        final AnimationData data = this.actionAnimationData.get(actionName);
+    public void animateAction(int actionId, float actionDuration) {
+        final AnimationData data = this.actionAnimations.get(actionId);
         this.channel.setAnim(data.getName());
         this.channel.setSpeed(data.getSpeed());
         this.channel.setLoopMode(data.getLoopMode());
@@ -112,8 +107,8 @@ public class CharacterAnimationControl extends AbstractControl {
         }
     }
 
-    public void animateAction(final String actionName) {
-        this.animateAction(actionName, -1);
+    public void animateAction(int actionId) {
+        this.animateAction(actionId, -1);
     }
 
     @Override
@@ -123,9 +118,9 @@ public class CharacterAnimationControl extends AbstractControl {
     public void addSpellAnimation(String spellName, final AnimationData animData) {
         this.spellAnimationMap.put(spellName, animData);
     }
-
-    public void addActionAnimation(final String actionName, final AnimationData data) {
-        this.actionAnimationData.put(actionName, data);
+    
+    public void addActionAnimation(AnimationData data) {
+        this.actionAnimations.add(data);        
     }
 
     public AnimationData getWalkAnimation() {

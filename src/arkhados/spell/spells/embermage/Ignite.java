@@ -47,7 +47,7 @@ public class Ignite extends Spell {
             return null;
         }
 
-        castControl.putOnCooldown("Ignite");
+        castControl.putOnCooldown(Spell.getSpell("Ignite").getId());
 
         final DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(-1, 4f);
         dotBuff.setName("Ignite");

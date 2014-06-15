@@ -107,7 +107,7 @@ public abstract class Spell {
     
     private static void addSpell(EntityFactory entityFactory, Spell spell) {
         int nodeBuilderId = entityFactory.addNodeBuilder(spell.nodeBuilder);
-        spell.setNodeBuilderId(nodeBuilderId);
+        spell.setId(nodeBuilderId);
         Spells.put(nodeBuilderId, spell);
         SpellNameCreationIdMap.put(spell.getName(), nodeBuilderId);
     }
@@ -127,7 +127,7 @@ public abstract class Spell {
     }
 
     private final String name;
-    private int nodeBuilderId;
+    private int id;
     private final float cooldown;
     private final float range;
     private final float castTime;
@@ -209,11 +209,11 @@ public abstract class Spell {
         return multipart;
     }
 
-    public int getNodeBuilderId() {
-        return nodeBuilderId;
+    public int getId() {
+        return id;
     }
 
-    public void setNodeBuilderId(int nodeBuilderId) {
-        this.nodeBuilderId = nodeBuilderId;
+    public void setId(int nodeBuilderId) {
+        this.id = nodeBuilderId;
     }
 }

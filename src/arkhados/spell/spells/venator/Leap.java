@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -148,7 +149,7 @@ class CastLeapAction extends EntityAction {
                 } else if (wayPointIndex == path.getNbWayPoints() - 1) {
                     physics.switchToNormalPhysicsMode();
                     spatial.getControl(ActionQueueControl.class).enqueueAction(
-                            new ChangeAnimationAction("Land"));
+                            new ChangeAnimationAction(Venator.ANIM_LAND));
                     this.landingEffect();
                     motionPending = false;
                 }
@@ -178,8 +179,8 @@ class CastLeapAction extends EntityAction {
  */
 class ChangeAnimationAction extends EntityAction {
 
-    public ChangeAnimationAction(String animName) {
-        super.name = animName;
+    public ChangeAnimationAction(int id) {
+        super.setTypeId(id);
     }
 
     @Override

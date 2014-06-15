@@ -114,7 +114,7 @@ class CastMeteorAction extends EntityAction {
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
         final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int entityId = this.worldManager.addNewEntity(this.spell.getNodeBuilderId(),
+        final int entityId = this.worldManager.addNewEntity(this.spell.getId(),
                 startingPoint, Quaternion.IDENTITY, playerId);
         final Spatial meteor = this.worldManager.getEntity(entityId);
 

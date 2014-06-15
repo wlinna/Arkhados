@@ -17,6 +17,7 @@ package arkhados.spell.spells.venator;
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
+import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -72,7 +73,7 @@ class CastDeepWoundsAction extends EntityAction {
 
     public CastDeepWoundsAction(DeepWounds spell) {
         this.spell = spell;
-        super.name = "Swipe-Up";
+        super.setTypeId(Venator.ANIM_SWIPE_UP);
     }
 
     @Override

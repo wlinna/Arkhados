@@ -24,16 +24,16 @@ import com.jme3.scene.Spatial;
  */
 @Serializable
 public class SetCooldownMessage extends AbstractSyncMessage {
-    private String spellName;
+    private short spellId;
     private float cooldown;
     private boolean globalCooldown;
 
     public SetCooldownMessage() {
     }
 
-    public SetCooldownMessage(int id, String spellName, float cooldown, boolean globalCooldown) {
+    public SetCooldownMessage(int id, int spellId, float cooldown, boolean globalCooldown) {
         super(id);
-        this.spellName = spellName;
+        this.spellId = (short) spellId;
         this.cooldown = cooldown;
         this.globalCooldown = globalCooldown;
     }
@@ -42,7 +42,7 @@ public class SetCooldownMessage extends AbstractSyncMessage {
     public void applyData(Object target) {
         final Spatial character = (Spatial) target;
         final SpellCastControl castControl = character.getControl(SpellCastControl.class);
-        castControl.setCooldown(this.spellName, this.cooldown);
+        castControl.setCooldown(this.spellId, this.cooldown);
         if (this.globalCooldown) {
             castControl.globalCooldown();
         }

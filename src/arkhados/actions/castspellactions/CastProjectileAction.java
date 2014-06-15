@@ -63,7 +63,7 @@ public class CastProjectileAction extends EntityAction {
                 .add(viewDirection.mult(characterRadius / 1.5f)).addLocal(0f, 10.0f, 0.0f);
         final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        final int projectileId = this.worldManager.addNewEntity(this.spell.getNodeBuilderId(),
+        final int projectileId = this.worldManager.addNewEntity(this.spell.getId(),
                 spawnLocation, Quaternion.IDENTITY, playerId);
         final Spatial projectile = this.worldManager.getEntity(projectileId);
 

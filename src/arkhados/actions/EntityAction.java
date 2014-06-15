@@ -23,6 +23,7 @@ import com.jme3.scene.Spatial;
 public abstract class EntityAction {
 
     protected String name = null;
+    private int typeId = -1;
     protected Spatial spatial;
     private boolean interruptible = false;
 
@@ -59,5 +60,13 @@ public abstract class EntityAction {
 
     public void setInterruptible(boolean interruptible) {
         this.interruptible = interruptible;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+    
+    public void setTypeId(int id) {
+        this.typeId = id;
     }
 }

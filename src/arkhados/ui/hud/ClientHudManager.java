@@ -292,7 +292,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
 
         for (Map.Entry<String, Element> entry : this.spellIcons.entrySet()) {
-            float cooldown = castControl.getCooldown(entry.getKey());
+            float cooldown = castControl.getCooldown(Spell.getSpell(entry.getKey()).getId());
             Element overlay = entry.getValue().findElementByName(entry.getKey() + "-overlay");
             if (cooldown <= 0) {
                 if (overlay.isVisible()) {

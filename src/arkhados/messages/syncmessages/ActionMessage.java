@@ -25,19 +25,19 @@ import com.jme3.scene.Spatial;
 
 @Serializable
 public class ActionMessage extends AbstractSyncMessage{
-    private String name;
+    private byte actionId;
 
     public ActionMessage() {
     }
 
-    public ActionMessage(int id, String name) {
+    public ActionMessage(int id, int actionId) {
         super(id);
-        this.name = name;
+        this.actionId = (byte) actionId;
     }
 
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(CharacterAnimationControl.class).animateAction(this.name);
+        character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
     }
 }

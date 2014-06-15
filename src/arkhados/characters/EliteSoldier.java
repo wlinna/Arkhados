@@ -110,7 +110,6 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.addControl(animControl);
 
         final AnimationData animationData = new AnimationData("Attack", 1f, LoopMode.DontLoop);
-        animControl.addActionAnimation("Cast", animationData);
 
         animControl.addSpellAnimation("Shotgun", animationData);
         animControl.addSpellAnimation("Machinegun", animationData);

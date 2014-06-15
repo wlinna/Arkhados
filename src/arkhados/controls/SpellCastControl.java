@@ -49,8 +49,8 @@ import java.util.List;
 public class SpellCastControl extends AbstractControl {
 
     private WorldManager worldManager;
-    private HashMap<String, Spell> spells = new HashMap<>();
-    private HashMap<String, Float> cooldowns = new HashMap<>();
+    private HashMap<Integer, Spell> spells = new HashMap<>();
+    private HashMap<Integer, Float> cooldowns = new HashMap<>();
     private HashMap<String, Spell> keySpellMappings = new HashMap<>();
     private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
@@ -68,8 +68,8 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public void putSpell(Spell spell, String key) {
-        this.spells.put(spell.getName(), spell);
-        this.cooldowns.put(spell.getName(), 0f);
+        this.spells.put(spell.getId(), spell);
+        this.cooldowns.put(spell.getId(), 0f);
         if (key != null) {
             this.keySpellMappings.put(key, spell);
         }
@@ -93,8 +93,8 @@ public class SpellCastControl extends AbstractControl {
         this.castListeners.add(ammunitionControl);
     }
 
-    public Spell getSpell(final String name) {
-        return this.spells.get(name);
+    public Spell getSpell(int id) {
+        return this.spells.get(id);
     }
 
     /**
@@ -106,7 +106,7 @@ public class SpellCastControl extends AbstractControl {
             this.casting = false;
             final Spell spell = ((CastingSpellAction) action).getSpell();
             super.spatial.getControl(ActionQueueControl.class).clear();
-            this.setCooldown(spell.getName(), 0f);
+            this.setCooldown(spell.getId(), 0f);
         } else if (action != null && action instanceof ChannelingSpellAction) {
             ChannelingSpellAction channeling = (ChannelingSpellAction) action;
             this.putOnCooldown(channeling.getSpell());
@@ -143,7 +143,7 @@ public class SpellCastControl extends AbstractControl {
             }
 
             super.spatial.getControl(ActionQueueControl.class).clear();
-            this.cooldowns.put(spellName, 0f);
+            this.cooldowns.put(spell.getId(), 0f);
         }
 
         if (action == null) {
@@ -152,7 +152,7 @@ public class SpellCastControl extends AbstractControl {
     }
 
     private boolean basicValidation(final Spell spell) {
-        if (spell == null || this.cooldowns.get(spell.getName()) > 0f) {
+        if (spell == null || this.cooldowns.get(spell.getId()) > 0f) {
             return false;
         }
 
@@ -190,7 +190,8 @@ public class SpellCastControl extends AbstractControl {
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
             this.worldManager.getSyncManager().getServer().broadcast(
-                    new StartCastingSpellMessage((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), spell.getName(), direction));
+                    new StartCastingSpellMessage((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID),
+                    spell.getId(), direction));
         }
         this.globalCooldown();
         this.putOnCooldown(spell);
@@ -200,32 +201,32 @@ public class SpellCastControl extends AbstractControl {
         }
     }
 
-    public void putOnCooldown(final String spellName) {
-        final Spell spell = Spell.getSpell(spellName);
+    public void putOnCooldown(int spellId) {
+        final Spell spell = Spell.getSpell(spellId);
         this.putOnCooldown(spell);
     }
 
-    public void setCooldown(final String spellName, float cooldown) {
-        this.cooldowns.put(spellName, cooldown);
+    public void setCooldown(int spellId, float cooldown) {
+        this.cooldowns.put(spellId, cooldown);
         if (this.worldManager.isServer()) {
             final Integer entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spellName, 0f, true));
+            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spellId, 0f, true));
         }
     }
 
-    public void putOnCooldown(final Spell spell) {
-        this.cooldowns.put(spell.getName(), spell.getCooldown());
+    public void putOnCooldown(Spell spell) {
+        this.cooldowns.put(spell.getId(), spell.getCooldown());
 
         if (this.worldManager.isServer()) {
             final Integer entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spell.getName(), spell.getCooldown(), true));
+            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spell.getId(), spell.getCooldown(), true));
         }
     }
 
-    public boolean isOnCooldown(final String spellName) {
-        final Float cooldown = this.cooldowns.get(spellName);
+    public boolean isOnCooldown(String spellName) {
+        final Float cooldown = this.cooldowns.get(Spell.getSpell(spellName).getId());
         return cooldown > 0f;
     }
 
@@ -254,7 +255,7 @@ public class SpellCastControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        for (Map.Entry<String, Float> entry : this.cooldowns.entrySet()) {
+        for (Map.Entry<Integer, Float> entry : this.cooldowns.entrySet()) {
             entry.setValue(entry.getValue() - tpf);
         }
     }
@@ -282,7 +283,7 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public void globalCooldown() {
-        for (String spell : this.cooldowns.keySet()) {
+        for (Integer spell : this.cooldowns.keySet()) {
             if (this.cooldowns.get(spell) < GLOBAL_COOLDOWN) {
                 this.cooldowns.put(spell, GLOBAL_COOLDOWN);
             }
@@ -293,8 +294,8 @@ public class SpellCastControl extends AbstractControl {
         return this.keySpellMappings.get(key);
     }
 
-    public float getCooldown(final String spellName) {
-        return this.cooldowns.get(spellName);
+    public float getCooldown(int spellId) {
+        return this.cooldowns.get(spellId);
     }
 
     public boolean isCasting() {

@@ -22,13 +22,15 @@ import com.jme3.animation.LoopMode;
  * @author william
  */
 public class AnimationData {
-
+    private static int runningId = 0;
+    
     private String name;
+    private int id = runningId++;
     private float speed;
     private LoopMode loopMode;
 
     public AnimationData(String name, float speed, LoopMode loopMode) {
-        this.name = name;
+        this.name = name;       
         this.speed = speed;
         this.loopMode = loopMode;
     }
@@ -59,5 +61,9 @@ public class AnimationData {
         final float moment = relativeMoment * animLength;
         final float speed = moment / timeWanted;
         return speed;
+    }
+
+    public int getId() {
+        return id;
     }
 }

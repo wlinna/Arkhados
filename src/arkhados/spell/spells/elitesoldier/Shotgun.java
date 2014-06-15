@@ -95,7 +95,7 @@ class CastShotgunAction extends EntityAction {
 
             Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
 
-            final int projectileId = this.worldManager.addNewEntity(spell.getNodeBuilderId(),
+            final int projectileId = this.worldManager.addNewEntity(spell.getId(),
                     spawnLocation, Quaternion.IDENTITY, playerId);
             final Spatial projectile = this.worldManager.getEntity(projectileId);
 
