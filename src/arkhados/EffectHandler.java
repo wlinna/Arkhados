@@ -32,15 +32,41 @@ import java.util.concurrent.Callable;
  * @author william
  */
 public class EffectHandler implements MessageListener {
+    // HACK: I just wanted to get rid of Strings in messages fast. This solution
+    // is very ugly though and needs to be refactored later
 
+    public static final int ROCKET_EXPLOSION = 0;
+    public static final int SIMPLE_SOUND_EFFECT = 1;
+    
+    private static final HashMap<Integer, String> numberParameterMap = new HashMap<>();
+    private static final HashMap<String, Integer> parameterNumberMap = new HashMap<>();
+
+    {
+        mapNumberAndParameter(SHOTGUN_WAV, "Effects/Sound/Shotgun.wav");
+    }
+
+    private static void mapNumberAndParameter(int number, String parameter) {
+        numberParameterMap.put(number, parameter);
+        parameterNumberMap.put(parameter, number);
+    }
+    
+    private static int getParameterNumber(String parameter) {
+        if (parameter == null ||  !parameterNumberMap.containsKey(parameter)) {
+            return -1;
+        }
+        
+        return parameterNumberMap.get(parameter);
+    }
+    
+    public static final int SHOTGUN_WAV = 0;
     private Application app;
     private Server server = null;
     private WorldManager worldManager;
-    private HashMap<String, WorldEffect> effects = new HashMap<>();
+    private HashMap<Integer, WorldEffect> effects = new HashMap<>();
 
     {
-        this.effects.put("rocket-explosion", new RocketExplosionEffect());
-        this.effects.put("simple-sound-effect", new SimpleSoundEffect());
+        this.effects.put(ROCKET_EXPLOSION, new RocketExplosionEffect());
+        this.effects.put(SIMPLE_SOUND_EFFECT, new SimpleSoundEffect());
     }
 
     public EffectHandler(Application app, WorldManager worldManager) {
@@ -65,18 +91,18 @@ public class EffectHandler implements MessageListener {
         if (worldEffect == null) {
             return;
         }
-        
+
         this.app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                worldEffect.execute(worldManager.getWorldRoot(), message.getLocation(), message.getParameter());
+                worldEffect.execute(worldManager.getWorldRoot(), message.getLocation(), numberParameterMap.get(message.getParameter()));
                 return null;
             }
         });
     }
 
-    public void sendEffect(String effectName, String effectParameter, Vector3f location) {
-        this.server.broadcast(new EffectMessage(effectName, effectParameter, location));
+    public void sendEffect(int effectId, String effectParameter, Vector3f location) {
+        this.server.broadcast(new EffectMessage(effectId, getParameterNumber(effectParameter) , location));
     }
 
     public void setMessagesToListen(Client client) {

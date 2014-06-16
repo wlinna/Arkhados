@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
+import arkhados.EffectHandler;
 import arkhados.Globals;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
@@ -112,7 +113,7 @@ class CastRocketJumpAction extends EntityAction {
         SplashAction splash = new SplashAction(30, 100, 23000, DistanceScaling.CONSTANT, null);
         splash.setSpatial(spatial);
         splash.update(-1);
-        Globals.effectHandler.sendEffect("rocket-explosion", null, spatial.getLocalTranslation());
+        Globals.effectHandler.sendEffect(EffectHandler.ROCKET_EXPLOSION, null, spatial.getLocalTranslation());
         return false;
     }
 }

@@ -26,28 +26,28 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class EffectMessage extends AbstractMessage {
-    private String effectName;
-    private String parameter;
+    private short effectId;
+    private short parameter;
     private Vector3f location; 
 
     public EffectMessage() {
     }
 
-    public EffectMessage(String soundName, String parameter, Vector3f effectLocation) {
+    public EffectMessage(int effectId, int parameter, Vector3f effectLocation) {
         this.location = effectLocation;
-        this.effectName = soundName;
-        this.parameter = parameter;
+        this.effectId = (short) effectId;
+        this.parameter = (short) parameter;
     }
 
-    public String getEffectName() {
-        return effectName;
+    public int getEffectName() {
+        return effectId;
     }
 
     public Vector3f getLocation() {
         return location;
     }        
 
-    public String getParameter() {
+    public int getParameter() {
         return parameter;
     }
 }

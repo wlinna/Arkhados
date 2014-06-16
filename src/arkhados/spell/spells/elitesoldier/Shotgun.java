@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
+import arkhados.EffectHandler;
 import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
@@ -109,7 +110,8 @@ class CastShotgunAction extends EntityAction {
             projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
         }
 
-        Globals.effectHandler.sendEffect("simple-sound-effect", "Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
+        // NOTE: This is illusory. You can't really send path to sound effect! It is mapped in EffectHandler to certain int
+        Globals.effectHandler.sendEffect(EffectHandler.SIMPLE_SOUND_EFFECT, "Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
         return false;
     }
 }

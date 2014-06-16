@@ -22,7 +22,6 @@ import com.jme3.scene.Node;
  * @author william
  */
 
-
 public interface WorldEffect {
     public void execute(Node root, Vector3f location, String parameter);       
 }
