@@ -16,6 +16,7 @@ package arkhados.spell.buffs;
 
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -28,6 +29,7 @@ public class FearCC extends CrowdControlBuff {
     private Vector3f initialDirection = new Vector3f();
     {
         super.name = "Fear";
+        super.setTypeId(BuffTypeIds.FEAR);
     }
 
     public FearCC(int id, float duration) {

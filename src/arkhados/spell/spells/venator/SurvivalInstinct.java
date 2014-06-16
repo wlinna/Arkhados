@@ -20,6 +20,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -97,6 +98,7 @@ class MovementSpeedPerHealthMissingBuff extends AbstractBuff {
     private float originalHealth;
     {
         super.name = "Survival Instinct";
+        super.setTypeId(BuffTypeIds.SURVIVAL_INSTINCT);
         super.friendly = true;
     }
 

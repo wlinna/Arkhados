@@ -25,6 +25,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.influences.DamagOverTimeInfluence;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -100,6 +101,7 @@ class AbsorbingShieldBuff extends AbstractBuff {
     {
         super.friendly = true;
         super.name = "Purifying Flame";
+        super.setTypeId(BuffTypeIds.PURIFYING_FLAME);
     }
     public AbsorbingShieldBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);

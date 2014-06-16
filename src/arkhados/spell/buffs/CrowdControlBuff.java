@@ -40,9 +40,9 @@ public abstract class CrowdControlBuff extends AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
         this.targetInterface = influenceInterface;
         influenceInterface.addCrowdControlBuff(this);
-        if (super.name != null) {
+        if (super.getTypeId() != -1) {
             final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.name, super.getBuffId(), super.duration, true));
+            getSyncManager().broadcast(new BuffMessage(entityId, super.getTypeId(), super.getBuffId(), super.duration, true));
         }
     }
 }

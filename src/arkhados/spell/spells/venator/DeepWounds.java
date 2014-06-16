@@ -25,6 +25,7 @@ import arkhados.controls.UserInputControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -203,7 +204,8 @@ class BleedBuff extends AbstractBuff {
     private float dmgPerUnit = 2f;
 
     {
-        this.name = "Deep Wounds";
+        super.name = "Deep Wounds";
+        super.setTypeId(BuffTypeIds.DEEP_WOUNDS);
     }
 
     public BleedBuff(int buffGroupId, float duration) {

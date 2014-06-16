@@ -37,10 +37,10 @@ public class CharacterBuffControl extends AbstractControl {
     private ClientHudManager hudManager = null;
     private Element buffPanel = null;
 
-    public void addBuff(int buffId, String buffName, float duration) {
-        final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffName);
+    public void addBuff(int buffId, int buffTypeId, float duration) {
+        final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
-            System.out.println("No buffInfo for " + buffName + " id: " + buffId);
+            System.out.println("No buffInfo for " + buffTypeId + " id: " + buffId);
             return;
         }
         final BuffEffect buff = buffInfo.createBuffEffect(this, duration);

@@ -48,11 +48,9 @@ public class ArmorBuff extends AbstractBuff {
         }
         if (armorBuff == null) {
             super.attachToCharacter(targetInterface);
-            System.out.println("Added ArmorBuff. Amount of armor: " + this.getAmount());
         } else {
             final float newAmount = FastMath.clamp(armorBuff.getAmount() + this.getAmount(), armorBuff.getAmount(), 100);
-            armorBuff.setAmount(newAmount);
-            System.out.println("Stacked ArmorBuff. Total armor: " + armorBuff.getAmount());
+            armorBuff.setAmount(newAmount);           
         }
 
     }

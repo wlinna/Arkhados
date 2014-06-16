@@ -25,7 +25,7 @@ import com.jme3.scene.Node;
 @Serializable
 public class BuffMessage extends AbstractSyncMessage {
 
-    private String buffName;
+    private short buffTypeId;
     private int buffId;
     private float duration;
     private boolean added;    
@@ -33,9 +33,9 @@ public class BuffMessage extends AbstractSyncMessage {
     public BuffMessage() {
     }
 
-    public BuffMessage(int entityId, String buffName, int buffId, float duration, boolean added) {
+    public BuffMessage(int entityId, int buffTypeId, int buffId, float duration, boolean added) {
         super(entityId);
-        this.buffName = buffName;
+        this.buffTypeId = (short) buffTypeId;
         this.buffId = buffId;
         this.duration = duration;
         this.added = added;
@@ -48,7 +48,7 @@ public class BuffMessage extends AbstractSyncMessage {
         // TODO: Add to InfluenceInterfaceControl so that its non-visual effects
         // can be simulated
         if (this.added) {
-            buffControl.addBuff(this.buffId, this.buffName, duration);
+            buffControl.addBuff(this.buffId, this.buffTypeId, duration);
         } else {
             buffControl.removeBuff(buffId);
         }

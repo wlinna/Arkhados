@@ -30,6 +30,7 @@ public abstract class AbstractBuff {
     // TODO: Consider removing this. If there's going to be way to
     private static SyncManager syncManager;
     protected String name = null;
+    private int typeId = -1;
 
     private int buffGroupId;
     protected float duration;
@@ -50,9 +51,9 @@ public abstract class AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
-        if (this.name != null) {
+        if (this.typeId != -1) {
             final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, this.duration, true));            
+            getSyncManager().broadcast(new BuffMessage(entityId, this.typeId, this.buffId, this.duration, true));            
         }
     }
 
@@ -82,9 +83,9 @@ public abstract class AbstractBuff {
     }
 
     public void destroy() {
-        if (this.name != null) {
+        if (this.typeId != -1) {
             final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.name, this.buffId, this.duration, false));
+            getSyncManager().broadcast(new BuffMessage(entityId, this.typeId, this.buffId, this.duration, false));
         }
     }
 
@@ -114,5 +115,13 @@ public abstract class AbstractBuff {
 
     protected int getBuffId() {
         return this.buffId;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 }

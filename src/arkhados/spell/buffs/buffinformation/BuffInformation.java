@@ -16,6 +16,7 @@ package arkhados.spell.buffs.buffinformation;
 
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
+import arkhados.util.BuffTypeIds;
 import com.jme3.asset.AssetManager;
 import java.util.HashMap;
 
@@ -24,38 +25,45 @@ import java.util.HashMap;
  * @author william
  */
 public abstract class BuffInformation {
-
+    private static int runningCounter = 0;
+    
     protected static AssetManager assetManager = null;
-    private static HashMap<String, BuffInformation> Buffs = new HashMap<>();
+    
+    private static HashMap<Integer, BuffInformation> Buffs = new HashMap<>();
 
     public static void initBuffs() {
 
         final BuffInformation purifyingFlame = new PurifyingFlameInformation();
-        Buffs.put("Purifying Flame", purifyingFlame);
+        addBuff(BuffTypeIds.PURIFYING_FLAME, purifyingFlame);
 
         final BuffInformation ignite = new IgniteInformation();
-        Buffs.put("Ignite", ignite);
+        addBuff(BuffTypeIds.IGNITE, ignite);
 
         final BuffInformation survivalInstinct = new SurvivalInstinctInformation();
-        Buffs.put("Survival Instinct", survivalInstinct);
+        addBuff(BuffTypeIds.SURVIVAL_INSTINCT, survivalInstinct);
 
         final BuffInformation deepWounds = new DeepWoundsInformation();
-        Buffs.put("Deep Wounds", deepWounds);
+        addBuff(BuffTypeIds.DEEP_WOUNDS, deepWounds);
 
         final BuffInformation fear = new FearInformation();
-        Buffs.put("Fear", fear);
+        addBuff(BuffTypeIds.FEAR, fear);
 
         final BuffInformation incapacitate = new IncapacitateInformation();
-        Buffs.put("Incapacitate", incapacitate);
+        addBuff(BuffTypeIds.INCAPACITATE, incapacitate);
         
         final BuffInformation likeAPro = new LikeAProInformation();
-        Buffs.put("Like a Pro", likeAPro);
+        addBuff(BuffTypeIds.LIKE_A_PRO, likeAPro);
     }
 
-    public static BuffInformation getBuffInformation(final String name) {
-        final BuffInformation buffInformation = Buffs.get(name);
+    public static BuffInformation getBuffInformation(int typeId) {
+        final BuffInformation buffInformation = Buffs.get(typeId);
         return buffInformation;
     }
+    
+    private static void addBuff(int id, BuffInformation buffInfo) {
+        Buffs.put(id, buffInfo);
+    }
+    
     private String name;
     private float duration;
     private String iconPath = null;

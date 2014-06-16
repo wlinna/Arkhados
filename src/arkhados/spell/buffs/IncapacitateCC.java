@@ -14,6 +14,8 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.util.BuffTypeIds;
+
 /**
  * Crow Control buff that causes entity to not be able to move or cast spells.
  * Damage from outside removes incapacitate however. Note: CC is acronym for
@@ -23,6 +25,7 @@ package arkhados.spell.buffs;
 public class IncapacitateCC extends CrowdControlBuff {
     {
         super.name = "Incapacitate";
+        super.setTypeId(BuffTypeIds.INCAPACITATE);
     }
     public IncapacitateCC(float duration, int id) {
         super(id, duration);

@@ -18,6 +18,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.DamageOverTimeBuff;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Node;
 
@@ -51,6 +52,7 @@ public class Ignite extends Spell {
 
         final DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(-1, 4f);
         dotBuff.setName("Ignite");
+        dotBuff.setTypeId(BuffTypeIds.IGNITE);
         final InfluenceInterfaceControl ownerInterface = caster.getControl(InfluenceInterfaceControl.class);
         dotBuff.setOwnerInterface(ownerInterface);
 
