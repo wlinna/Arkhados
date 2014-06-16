@@ -83,12 +83,12 @@ public class Venator extends AbstractNodeBuilder {
         final Spell scream = Spell.getSpell("Feral Scream");
         final Spell deepWounds = Spell.getSpell("Deep Wounds");
 
-        spellCastControl.putSpell(rend, InputMappingStrings.M1);
-        spellCastControl.putSpell(dagger, InputMappingStrings.M2);
-        spellCastControl.putSpell(leap, InputMappingStrings.SPACE);
-        spellCastControl.putSpell(scream, InputMappingStrings.Q);
-        spellCastControl.putSpell(deepWounds, InputMappingStrings.E);
-        spellCastControl.putSpell(Spell.getSpell("Survival Instinct"), InputMappingStrings.R);
+        spellCastControl.putSpell(rend, InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(dagger, InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(leap, InputMappingStrings.getId(InputMappingStrings.SPACE));
+        spellCastControl.putSpell(scream, InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(deepWounds, InputMappingStrings.getId(InputMappingStrings.E));
+        spellCastControl.putSpell(Spell.getSpell("Survival Instinct"), InputMappingStrings.getId(InputMappingStrings.R));
 
         final CharacterAnimationControl animControl = new CharacterAnimationControl();
 

@@ -75,12 +75,12 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
         entity.addControl(spellCastControl);
-        spellCastControl.putSpell(Spell.getSpell("Fireball"), InputMappingStrings.M1);
-        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), InputMappingStrings.M2);
-        spellCastControl.putSpell(Spell.getSpell("Ember Circle"), InputMappingStrings.Q);
-        spellCastControl.putSpell(Spell.getSpell("Meteor"), InputMappingStrings.E);
-        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpell("Firewalk"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpell("Fireball"), InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Ember Circle"), InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(Spell.getSpell("Meteor"), InputMappingStrings.getId( InputMappingStrings.E));
+        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(Spell.getSpell("Firewalk"), InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         /**

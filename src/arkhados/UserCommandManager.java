@@ -92,7 +92,7 @@ public class UserCommandManager extends AbstractAppState {
             calculateMouseGroundPosition();
             if (name != null) {
                 UserCommandManager.this.client.get().send(
-                        new UcCastSpellMessage(name,
+                        new UcCastSpellMessage(InputMappingStrings.getId(name),
                         UserCommandManager.this.mouseGroundPosition));
             }
         }

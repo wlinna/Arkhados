@@ -263,15 +263,15 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void loadSpellIcons() {
-        this.addSpellIcon(InputMappingStrings.M1);
-        this.addSpellIcon(InputMappingStrings.M2);
-        this.addSpellIcon(InputMappingStrings.Q);
-        this.addSpellIcon(InputMappingStrings.E);
-        this.addSpellIcon(InputMappingStrings.R);
-        this.addSpellIcon(InputMappingStrings.SPACE);
+        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M1));
+        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M2));
+        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.Q));
+        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.E));
+        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.R));
+        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
     }
 
-    private void addSpellIcon(final String key) {
+    private void addSpellIcon(int key) {
         final Element bottomPanel = this.screen.findElementByName("panel_bottom");
         final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
         final Spell spell = castControl.getKeySpellNameMapping(key);

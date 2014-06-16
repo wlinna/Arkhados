@@ -14,22 +14,39 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
+import java.util.HashMap;
+
 /**
  *
  * @author william
  */
 public class InputMappingStrings {
+
     public final static String MOVE_RIGHT = "move-right";
     public final static String MOVE_LEFT = "move-left";
     public final static String MOVE_UP = "move-up";
     public final static String MOVE_DOWN = "move-down";
-
     public final static String M1 = "m1";
     public final static String M2 = "m2";
-
     public final static String Q = "q";
     public final static String E = "e";
     public final static String R = "r";
     public final static String SPACE = "space";
-
+    private final static HashMap<String, Integer> StringNumberMap = new HashMap<>(10);
+    static {
+        StringNumberMap.put(MOVE_RIGHT, 0);
+        StringNumberMap.put(MOVE_LEFT, 1);
+        StringNumberMap.put(MOVE_UP, 2);
+        StringNumberMap.put(MOVE_DOWN, 3);
+        StringNumberMap.put(M1, 4);
+        StringNumberMap.put(M2, 5);
+        StringNumberMap.put(Q, 6);
+        StringNumberMap.put(E, 7);
+        StringNumberMap.put(R, 8);
+        StringNumberMap.put(SPACE, 9);
+    }
+    
+    public static Integer getId(String name) {        
+        return StringNumberMap.get(name);
+    }
 }

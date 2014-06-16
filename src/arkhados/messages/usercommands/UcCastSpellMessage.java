@@ -28,14 +28,14 @@ import arkhados.messages.syncmessages.AbstractSyncMessage;
 @Serializable
 public class UcCastSpellMessage extends AbstractSyncMessage {
 
-    private String input;
+    private byte input;
     private Vector3f direction;
 
     public UcCastSpellMessage() {
     }
 
-    public UcCastSpellMessage(String input, Vector3f location) {
-        this.input = input;
+    public UcCastSpellMessage(int input, Vector3f location) {
+        this.input = (byte) input;
         this.direction = location;
     }
 
@@ -45,7 +45,7 @@ public class UcCastSpellMessage extends AbstractSyncMessage {
         character.getControl(SpellCastControl.class).castIfDifferentSpell(this.input, this.direction);
     }
 
-    public String getSpell() {
+    public int getInput() {
         return input;
     }
 

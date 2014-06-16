@@ -89,13 +89,13 @@ public class EliteSoldier extends AbstractNodeBuilder {
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
 
-        spellCastControl.putSpell(Spell.getSpell("Shotgun"), InputMappingStrings.M1);
+        spellCastControl.putSpell(Spell.getSpell("Shotgun"), InputMappingStrings.getId(InputMappingStrings.M1));
 
-        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.M2);
-        spellCastControl.putSpell(Spell.getSpell("Plasmagun"), InputMappingStrings.Q);
-        spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"), InputMappingStrings.E);
-        spellCastControl.putSpell(Spell.getSpell("Like a Pro"), InputMappingStrings.R);
-        spellCastControl.putSpell(Spell.getSpell("Rocket Jump"), InputMappingStrings.SPACE);
+        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Plasmagun"), InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"), InputMappingStrings.getId(InputMappingStrings.E));
+        spellCastControl.putSpell(Spell.getSpell("Like a Pro"), InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(Spell.getSpell("Rocket Jump"), InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         /**
          * Map Spell names to casting animation's name. In this case all spells

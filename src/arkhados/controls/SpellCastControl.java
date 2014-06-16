@@ -51,7 +51,7 @@ public class SpellCastControl extends AbstractControl {
     private WorldManager worldManager;
     private HashMap<Integer, Spell> spells = new HashMap<>();
     private HashMap<Integer, Float> cooldowns = new HashMap<>();
-    private HashMap<String, Spell> keySpellMappings = new HashMap<>();
+    private HashMap<Integer, Spell> keySpellMappings = new HashMap<>();
     private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
@@ -67,7 +67,7 @@ public class SpellCastControl extends AbstractControl {
         super.setSpatial(spatial);
     }
 
-    public void putSpell(Spell spell, String key) {
+    public void putSpell(Spell spell, Integer key) {
         this.spells.put(spell.getId(), spell);
         this.cooldowns.put(spell.getId(), 0f);
         if (key != null) {
@@ -114,7 +114,7 @@ public class SpellCastControl extends AbstractControl {
         }
     }
 
-    public void castIfDifferentSpell(final String input, Vector3f targetLocation) {
+    public void castIfDifferentSpell(int input, Vector3f targetLocation) {
         if (!this.enabled) {
             return;
         }
@@ -176,7 +176,7 @@ public class SpellCastControl extends AbstractControl {
         return true;
     }
 
-    public void cast(final String input, Vector3f targetLocation) {
+    public void cast(int input, Vector3f targetLocation) {
         final Spell spell = this.keySpellMappings.get(input);
 
         if (this.worldManager.isServer()) {
@@ -290,7 +290,7 @@ public class SpellCastControl extends AbstractControl {
         }
     }
 
-    public Spell getKeySpellNameMapping(final String key) {
+    public Spell getKeySpellNameMapping(int key) {
         return this.keySpellMappings.get(key);
     }
 
