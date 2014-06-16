@@ -30,6 +30,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -140,7 +141,7 @@ class CastMeteorAction extends EntityAction {
             }
 
             private void destroy() {
-                worldManager.removeEntity(entityId, "collision");
+                worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
             }
         });
 
@@ -235,8 +236,8 @@ class MeteorRemovalAction implements RemovalEventAction {
     }
 
     @Override
-    public void exec(WorldManager worldManager, String reason) {
-        if (!"collision".equals(reason)) {
+    public void exec(WorldManager worldManager, int reason) {
+        if (reason != RemovalReasons.COLLISION) {
             return;
         }
         Vector3f worldTranslation = emitter.getParent().getLocalTranslation();

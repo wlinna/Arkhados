@@ -189,7 +189,7 @@ class PlasmaRemovalAction implements RemovalEventAction {
     }   
     
     @Override
-    public void exec(WorldManager worldManager, String reason) {
+    public void exec(WorldManager worldManager, int reason) {
         Vector3f worldTranslation = plasma.getParent().getLocalTranslation();
 
         plasma.removeFromParent();

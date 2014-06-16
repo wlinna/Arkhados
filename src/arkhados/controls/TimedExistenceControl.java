@@ -23,6 +23,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import java.io.IOException;
 import arkhados.WorldManager;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
 
@@ -55,7 +56,7 @@ public class TimedExistenceControl extends AbstractControl {
             if (this.removeEntity) {
                 if (worldManager.isServer()) {
                     worldManager.removeEntity((Integer) super.getSpatial()
-                            .getUserData(UserDataStrings.ENTITY_ID), "expired");
+                            .getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
                 }
             } else {
                 if (this.space != null) {

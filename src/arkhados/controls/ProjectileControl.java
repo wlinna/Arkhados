@@ -25,6 +25,7 @@ import arkhados.WorldManager;
 import arkhados.actions.SplashAction;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -100,14 +101,14 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
                 splashAction.update(tpf);
             }
             
-            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
+            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
         }
 
         if (this.age > ProjectileControl.timeToLive) {
             if (this.splashAction != null) {
                 splashAction.update(tpf);
             }
-            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), "expiration");
+            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
         }
     }
 

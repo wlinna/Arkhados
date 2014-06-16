@@ -282,7 +282,7 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public void removeEntity(int id, String reason) {
+    public void removeEntity(int id, int reason) {
         if (this.isServer()) {
             this.syncManager.broadcast(new RemoveEntityMessage(id, reason));
         }

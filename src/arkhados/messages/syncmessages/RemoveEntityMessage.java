@@ -27,7 +27,7 @@ import arkhados.WorldManager;
 public class RemoveEntityMessage extends AbstractSyncMessage {
 
     private int entityId;
-    private String reason = "";
+    private byte reason;
 
     public RemoveEntityMessage() {
     }
@@ -37,9 +37,9 @@ public class RemoveEntityMessage extends AbstractSyncMessage {
         super.setSyncId(-1);
     }
 
-    public RemoveEntityMessage(int entityId, String reason) {
+    public RemoveEntityMessage(int entityId, int reason) {
         this.entityId = entityId;
-        this.reason = reason;
+        this.reason = (byte) reason;
         super.setSyncId(-1);
     }
 

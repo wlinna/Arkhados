@@ -252,7 +252,7 @@ class RocketRemovalAction implements RemovalEventAction {
         smokePuff.emitAllParticles();
     }
 
-    public void exec(WorldManager worldManager, String reason) {
+    public void exec(WorldManager worldManager, int reason) {
         Node node = new Node("rocket-explosion");
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
         this.leaveSmokeTrail(node, worldTranslation);

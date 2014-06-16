@@ -12,16 +12,14 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.entityevents;
-
-import com.jme3.scene.Node;
-import arkhados.WorldManager;
+package arkhados.util;
 
 /**
  *
  * @author william
  */
-public interface RemovalEventAction {
-
-    public void exec(WorldManager worldManager, int reason);
+public class RemovalReasons {    
+    public static final int COLLISION = 0;
+    public static final int EXPIRED = 1;
+    public static final int ABSORBED = 2;
 }

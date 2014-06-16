@@ -254,7 +254,7 @@ class FireballRemovalAction implements RemovalEventAction {
         smokePuff.emitAllParticles();
     }
 
-    public void exec(WorldManager worldManager, String reason) {
+    public void exec(WorldManager worldManager, int reason) {
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
         this.leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
         this.createSmokePuff(worldManager.getWorldRoot(), worldTranslation);

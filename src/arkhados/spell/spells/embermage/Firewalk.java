@@ -131,7 +131,7 @@ public class Firewalk extends Spell {
                 public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                     if (path.getNbWayPoints() == wayPointIndex + 1) {
                         world.restoreTemporarilyRemovedEntity(id, finalLocation, spatial.getLocalRotation());
-                        world.removeEntity(firewalkId, "");
+                        world.removeEntity(firewalkId, -1);
                     }
                 }
             });

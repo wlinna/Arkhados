@@ -21,6 +21,7 @@ import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -108,9 +109,9 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             return;
         }
 
-        String removalReason = "collision";
+        int removalReason = RemovalReasons.COLLISION;
         if (target.isImmuneToProjectiles()) {
-            removalReason = "absorbed";
+            removalReason = RemovalReasons.ABSORBED;
         } else {
             final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
             final SpellBuffControl buffControl = projectile.getSpatial().getControl(SpellBuffControl.class);
@@ -135,6 +136,6 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             projectile.getSplashAction().update(0);
         }
 
-        this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), "collision");
+        this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.COLLISION);
     }
 }
