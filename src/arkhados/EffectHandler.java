@@ -14,13 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.effects.EffectBox;
 import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
-import com.jme3.network.Server;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -30,10 +30,7 @@ import java.util.concurrent.Callable;
  * @author william
  */
 public class EffectHandler implements MessageListener {
-
-    public static final int SHOTGUN_WAV = 0;
     private Application app;
-    private Server server = null;
     private WorldManager worldManager;
     private HashMap<Integer, EffectBox> actionEffects = new HashMap<>();
 
