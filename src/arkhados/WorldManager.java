@@ -50,10 +50,12 @@ import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
+import arkhados.util.ValueWrapper;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
+import com.jme3.network.NetworkClient;
 import com.jme3.scene.control.LightControl;
 import com.jme3.scene.control.LodControl;
 import java.util.LinkedList;
@@ -80,13 +82,16 @@ public class WorldManager extends AbstractAppState {
     private int idCounter = 0;
     private Server server;
     private boolean isClient = false;
+    private EffectHandler effectHandler = null;
 
     public WorldManager() {
     }
 
-    public WorldManager(boolean isClient) {
-        this.isClient = isClient;
+    public WorldManager(EffectHandler effectHandler) {
+        this.effectHandler = effectHandler;
+        this.isClient = true;
     }
+    
     private SimpleApplication app;
     private AssetManager assetManager;
     private PhysicsSpace space;
@@ -119,7 +124,9 @@ public class WorldManager extends AbstractAppState {
             this.entityFactory = new EntityFactory(assetManager, this);
         } else if (this.isClient()) {
             this.clientMain = (ClientMain) app;
-            this.entityFactory = new EntityFactory(this.assetManager, this, app.getStateManager().getState(ClientHudManager.class));
+            this.entityFactory = new EntityFactory(this.assetManager, this,
+                    app.getStateManager().getState(ClientHudManager.class),
+                    this.effectHandler);
 
             // FIXME: Sometimes shader linking error happens here
 //            try {

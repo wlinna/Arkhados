@@ -14,11 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
+import arkhados.EffectHandler;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.WorldManager;
 import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
 import arkhados.characters.Venator;
+import arkhados.effects.EffectBox;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class EntityFactory {
     private ClientHudManager clientHudManager = null;
     private int runningId = -1;
     private ArrayList<NodeBuilder> nodeBuilders = new ArrayList<>(40);
+    private EffectHandler effectHandler;
 
     /**
      * Server side EntityFactory constructor. Should be called only once
@@ -55,10 +58,12 @@ public class EntityFactory {
      * @param worldManager
      * @param clientHudManager
      */
-    public EntityFactory(AssetManager assetManager, WorldManager worldManager, ClientHudManager clientHudManager) {
+    public EntityFactory(AssetManager assetManager, WorldManager worldManager,
+            ClientHudManager clientHudManager, EffectHandler effectHandler) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
         this.clientHudManager = clientHudManager;
+        this.effectHandler = effectHandler;
         this.addNodeBuilders();
     }
 
@@ -66,18 +71,22 @@ public class EntityFactory {
         if (this.nodeBuilders.size() <= id) {
             return null;
         }
-
-        return this.nodeBuilders.get(id).build();
+        Node node = this.nodeBuilders.get(id).build();
+        node.setUserData(UserDataStrings.NODE_BUILDER_ID, id);
+        return node;
     }
 
     private void addNodeBuilders() {
         int mageId = this.addNodeBuilder(new EmberMage(clientHudManager));
-        int venatorId = this.addNodeBuilder(new Venator(clientHudManager));
+        int venatorId = this.addNodeBuilder(new Venator(clientHudManager));        
         int soldierId = this.addNodeBuilder(new EliteSoldier(clientHudManager));
+
 
         NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Mage", mageId);
         NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Venator", venatorId);
         NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Elite Soldier", soldierId);
+
+
     }
 
     private int newNodeBuilderId() {
@@ -86,6 +95,13 @@ public class EntityFactory {
 
     public int addNodeBuilder(NodeBuilder builder) {
         this.nodeBuilders.add(builder);
-        return this.newNodeBuilderId();
+        int nodeBuilderId = this.newNodeBuilderId();
+        if (this.effectHandler != null && builder != null) {
+            EffectBox effectBox = builder.getEffectBox();
+            if (effectBox != null) {
+                this.effectHandler.addEffectBox(nodeBuilderId, effectBox);
+            }
+        }
+        return nodeBuilderId;
     }
 }

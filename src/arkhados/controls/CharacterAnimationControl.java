@@ -95,6 +95,9 @@ public class CharacterAnimationControl extends AbstractControl {
     }
 
     public void animateAction(int actionId, float actionDuration) {
+        if (actionId >= this.actionAnimations.size()) {
+            return;
+        }
         final AnimationData data = this.actionAnimations.get(actionId);
         this.channel.setAnim(data.getName());
         this.channel.setSpeed(data.getSpeed());

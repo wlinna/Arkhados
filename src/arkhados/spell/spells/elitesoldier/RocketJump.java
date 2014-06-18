@@ -18,6 +18,7 @@ import arkhados.EffectHandler;
 import arkhados.Globals;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
+import arkhados.characters.EliteSoldier;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.effects.RocketExplosionEffect;
@@ -72,6 +73,7 @@ class CastRocketJumpAction extends EntityAction {
 
     public CastRocketJumpAction(Spell spell) {
         this.spell = spell;
+        super.setTypeId(EliteSoldier.ACTION_ROCKET_JUMP);
     }
 
     private void motionPath() {        
@@ -113,7 +115,6 @@ class CastRocketJumpAction extends EntityAction {
         SplashAction splash = new SplashAction(30, 100, 23000, DistanceScaling.CONSTANT, null);
         splash.setSpatial(spatial);
         splash.update(-1);
-        Globals.effectHandler.sendEffect(EffectHandler.ROCKET_EXPLOSION, null, spatial.getLocalTranslation());
         return false;
     }
 }

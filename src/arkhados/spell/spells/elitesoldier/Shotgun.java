@@ -18,6 +18,7 @@ import arkhados.EffectHandler;
 import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.characters.EliteSoldier;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
@@ -76,6 +77,7 @@ class CastShotgunAction extends EntityAction {
     CastShotgunAction(Shotgun spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
+        super.setTypeId(EliteSoldier.ACTION_SHOTGUN);
     }
 
     @Override
@@ -109,9 +111,7 @@ class CastShotgunAction extends EntityAction {
             projectileControl.setDirection(pelletDirection);
             projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
         }
-
-        // NOTE: This is illusory. You can't really send path to sound effect! It is mapped in EffectHandler to certain int
-        Globals.effectHandler.sendEffect(EffectHandler.SIMPLE_SOUND_EFFECT, "Effects/Sound/Shotgun.wav", super.spatial.getWorldTranslation());
+        
         return false;
     }
 }

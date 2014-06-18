@@ -24,6 +24,9 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncControl;
 import arkhados.controls.SyncInterpolationControl;
+import arkhados.effects.EffectBox;
+import arkhados.effects.RocketExplosionEffect;
+import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
@@ -45,10 +48,15 @@ import com.jme3.scene.control.AbstractControl;
  * @author william
  */
 public class EliteSoldier extends AbstractNodeBuilder {
+    public static final int ACTION_ROCKET_JUMP = 0;
+    public static final int ACTION_SHOTGUN = 1;  
     private ClientHudManager clientHudManager;    
     
     public EliteSoldier(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
+        super.setEffectBox(new EffectBox());
+        super.getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());       
+        super.getEffectBox().addActionEffect(ACTION_SHOTGUN, new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
     }
     @Override
     public Node build() {

@@ -32,6 +32,7 @@ public class UserDataStrings {
     public final static String MASS = "mass";
     public final static String DAMAGE_FACTOR = "damage-modifier";
     public final static String LIFE_STEAL = "life-steal";
+    public final static String NODE_BUILDER_ID = "node-builder-id";
     /**
      * How much entity deals instant damage when it hits
      */

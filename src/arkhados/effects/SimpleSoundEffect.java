@@ -25,10 +25,15 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class SimpleSoundEffect implements WorldEffect {
+    private final String path;
 
+    public SimpleSoundEffect(String path) {
+        this.path = path;
+    }    
+    
     @Override
-    public void execute(Node root, Vector3f location, String path) {
-        AudioNode sound = new AudioNode(Globals.assetManager, path);
+    public void execute(Node root, Vector3f location, String parameter) {
+        AudioNode sound = new AudioNode(Globals.assetManager, this.path);
         sound.setPositional(true);
         sound.setLocalTranslation(location);
         sound.addControl(new TimedExistenceControl(sound.getAudioData().getDuration()));

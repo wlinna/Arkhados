@@ -30,8 +30,5 @@ public class Globals {
         DEFAULT_SYNC_FREQUENCY = 1f / packets;
     }
     
-    public static AssetManager assetManager = null;
-    
-    // Only on server
-    public static EffectHandler effectHandler = null;
+    public static AssetManager assetManager = null;    
 }

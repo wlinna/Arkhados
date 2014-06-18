@@ -12,42 +12,30 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
-package arkhados.messages.effect;
+package arkhados.effects;
 
 import com.jme3.math.Vector3f;
-import com.jme3.network.AbstractMessage;
-import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Node;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author william
  */
+public class EffectBox {
 
-@Serializable
-public class EffectMessage extends AbstractMessage {
-    private short effectId;
-    private short parameter;
-    private Vector3f location; 
+    private Map<Integer, WorldEffect> actionEffects = new HashMap<>();
 
-    public EffectMessage() {
+    public void addActionEffect(int id, WorldEffect effect) {
+        
+        this.actionEffects.put(id, effect);
     }
 
-    public EffectMessage(int effectId, int parameter, Vector3f effectLocation) {
-        this.location = effectLocation;
-        this.effectId = (short) effectId;
-        this.parameter = (short) parameter;
-    }
-
-    public int getEffectName() {
-        return effectId;
-    }
-
-    public Vector3f getLocation() {
-        return location;
-    }        
-
-    public int getParameter() {
-        return parameter;
+    public void executeActionEffect(int actionTypeId, Node root, Vector3f location) {
+        WorldEffect effect = this.actionEffects.get(actionTypeId);
+        if (effect != null) {
+            effect.execute(root, location, null);
+        }
     }
 }

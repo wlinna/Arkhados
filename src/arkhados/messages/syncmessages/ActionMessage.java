@@ -40,4 +40,8 @@ public class ActionMessage extends AbstractSyncMessage{
         Spatial character = (Spatial) target;
         character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
     }
+
+    public int getActionId() {
+        return actionId;
+    }
 }

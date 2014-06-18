@@ -16,7 +16,6 @@ package arkhados.messages;
 
 import arkhados.PlayerData;
 import arkhados.characters.EliteSoldierSyncData;
-import arkhados.messages.effect.EffectMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.NewRoundMessage;
 import com.jme3.network.serializing.Serializer;
@@ -101,9 +100,6 @@ public class MessageUtils {
         Serializer.registerClass(UcCastSpellMessage.class);
         Serializer.registerClass(UcWalkDirection.class);
         Serializer.registerClass(UcMouseTargetMessage.class);
-        // </UserCommands>
-        
-        // <Effects>
-        Serializer.registerClass(EffectMessage.class);
+        // </UserCommands>        
     }
 }

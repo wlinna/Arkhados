@@ -159,7 +159,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.syncManager = new SyncManager(this, this.clientWrapper);
         this.stateManager.attach(this.syncManager);
 
-        this.worldManager = new WorldManager(true);
+        
+        this.effectHandler = new EffectHandler(this);
+        this.worldManager = new WorldManager(this.effectHandler);
+        this.effectHandler.setWorldManager(worldManager);
 
         this.userCommandManager = new UserCommandManager(this.clientWrapper, this.inputManager);
 
@@ -177,7 +180,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         ClientMain.this.stateManager
                 .attach(ClientMain.this.userCommandManager);
 
-        this.effectHandler = new EffectHandler(this, worldManager);
     }
 
     @Override

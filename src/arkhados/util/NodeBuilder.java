@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
+import arkhados.effects.EffectBox;
 import com.jme3.scene.Node;
 
 /**
@@ -22,4 +23,5 @@ import com.jme3.scene.Node;
  */
 public interface NodeBuilder {
     public Node build();
+    public EffectBox getEffectBox();
 }
