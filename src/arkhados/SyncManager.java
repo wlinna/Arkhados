@@ -41,6 +41,7 @@ import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.net.Sender;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
@@ -100,10 +101,8 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     }
 
     private void sendSyncData() {
-        MassSyncMessage massSyncMessage = new MassSyncMessage();
-
+        Sender sender = app.getStateManager().getState(Sender.class);
         Set<Entry<Integer, Object>> entrySet = this.syncObjects.entrySet();
-        List<StateData> stateData = new ArrayList<>(this.syncObjects.entrySet().size());
 
         for (Iterator<Entry<Integer, Object>> it = entrySet.iterator(); it.hasNext();) {
             Entry<Integer, Object> entry = it.next();
@@ -117,14 +116,9 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             if (syncControl != null) {
                 StateData data = syncControl.getSyncableData(null);
                 if (data != null) {
-                    stateData.add(data);
+                    sender.addCommand(data);
                 }
             }
-        }
-
-        if (!stateData.isEmpty()) {
-            massSyncMessage.setStateData(stateData);
-            this.broadcast(massSyncMessage);
         }
     }
 

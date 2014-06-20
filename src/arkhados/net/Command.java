@@ -22,7 +22,4 @@ package arkhados.net;
 public interface Command {
     public int getTypeId();
     public boolean isGuaranteed();
-    
-    // On sender side this should be known (should be transient)
-    public int getId();
 }

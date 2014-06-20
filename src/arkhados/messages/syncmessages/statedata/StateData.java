@@ -15,6 +15,8 @@
 
 package arkhados.messages.syncmessages.statedata;
 
+import arkhados.net.Command;
+import arkhados.net.CommandTypeIds;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -24,7 +26,7 @@ import com.jme3.network.serializing.Serializable;
 
 
 @Serializable
-public abstract class StateData {
+public abstract class StateData implements Command {
     private int syncId = -1;
 
     public StateData() {
@@ -38,5 +40,15 @@ public abstract class StateData {
 
     public int getSyncId() {
         return syncId;
+    }
+
+    @Override
+    public int getTypeId() {
+        return CommandTypeIds.STATE_DATA;
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return false;
     }
 }

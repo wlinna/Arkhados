@@ -27,7 +27,11 @@ import java.util.List;
 @Serializable
 public class OneTrueMessage extends AbstractMessage {
     private int orderNum;
-    transient private int confirmsUnder;
+
+    public OneTrueMessage(int orderNum) {
+        super(false);
+        this.orderNum = orderNum;
+    }
     
     /**
      * Guaranteed messages must be handled first

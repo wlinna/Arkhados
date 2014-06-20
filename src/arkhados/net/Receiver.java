@@ -17,9 +17,7 @@ package arkhados.net;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *

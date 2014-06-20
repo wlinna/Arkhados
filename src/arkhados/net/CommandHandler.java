@@ -21,8 +21,6 @@ import java.util.List;
  * @author william
  */
 public interface CommandHandler {
-    public List<Integer> getHandledTypeIds();
-    public void handle(Command command);
     public void readGuaranteed(List<Command> guaranteed);
     public void readUnreliable(List<Command> unreliables);
 }

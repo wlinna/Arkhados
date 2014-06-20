@@ -14,12 +14,26 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.net;
 
+import com.jme3.network.serializing.Serializable;
+
 /**
  *
  * @author william
  */
+
+@Serializable
 public class Ack implements Command {
-    private int id;
+    transient private int id;
+    
+    private int confirmedOtmId;
+
+    public Ack(int id, int confirmedOtmId) {
+        this.id = id;
+        this.confirmedOtmId = confirmedOtmId;
+    }
+
+    public Ack() {
+    }
 
     public int getId() {
         return id;
@@ -33,5 +47,9 @@ public class Ack implements Command {
     @Override
     public boolean isGuaranteed() {
         return true;
+    }
+
+    public int getConfirmedOtmId() {
+        return confirmedOtmId;
     }
 }

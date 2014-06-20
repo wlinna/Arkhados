@@ -40,6 +40,8 @@ import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.net.Ack;
+import arkhados.net.OneTrueMessage;
 import arkhados.util.PlayerRoundStats;
 
 /**
@@ -54,6 +56,11 @@ public class MessageUtils {
     }
 
     public static void registerMessages() {
+        Serializer.registerClass(OneTrueMessage.class);
+        
+        // <Commands>
+        Serializer.registerClass(Ack.class);
+        
         // <Lobby>
         Serializer.registerClass(ConnectionEstablishedMessage.class);
         Serializer.registerClass(UDPHandshakeRequest.class);
