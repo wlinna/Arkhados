@@ -187,6 +187,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         
         this.sender = new Sender(this.clientWrapper);
         this.receiver = new Receiver();
+        this.receiver.registerCommandHandler(this.effectHandler);
         
         this.stateManager.attach(this.sender);
         this.stateManager.attach(this.receiver);
@@ -254,8 +255,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
         
         this.clientWrapper.get().addMessageListener(this.receiver, OneTrueMessage.class);
-
-        this.effectHandler.setMessagesToListen(this.clientWrapper.get());
 
         if (username.trim().length() == 0) {
             this.setStatusText("Username is invalid");
