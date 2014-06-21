@@ -21,6 +21,7 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -30,6 +31,9 @@ import java.util.logging.Logger;
 public class Receiver extends AbstractAppState implements MessageListener {
 
     private static final Logger logger = Logger.getLogger(Receiver.class.getName());
+    static {
+        logger.setLevel(Level.SEVERE);
+    }
     private List<CommandHandler> handlers = new ArrayList<>();
     private Application app;
     private int lastReceivedOrderNum = -1;

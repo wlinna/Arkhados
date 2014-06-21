@@ -138,7 +138,7 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
 
     @Override
     public void messageReceived(Object source, final Message m) {
-        if (this.server == null || this.listening) {
+        if (this.server == null || !this.listening) {
             return;
         }
 

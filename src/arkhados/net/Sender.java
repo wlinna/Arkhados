@@ -34,6 +34,9 @@ import java.util.logging.Logger;
 public class Sender extends AbstractAppState implements CommandHandler {
 
     private static final Logger logger = Logger.getLogger(Sender.class.getName());
+    static {
+        logger.setLevel(Level.SEVERE);
+    }
     // These should always be added first
     private List<List<Command>> unconfirmedGuaranteed = new ArrayList<>();
     private List<Command> enqueuedGuaranteed = new ArrayList<>();
