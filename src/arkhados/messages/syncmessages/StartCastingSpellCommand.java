@@ -22,6 +22,7 @@ import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
 
 /**
@@ -29,15 +30,15 @@ import arkhados.spell.Spell;
  * @author william
  */
 @Serializable
-public class StartCastingSpellMessage extends AbstractSyncMessage {
+public class StartCastingSpellCommand extends StateData {
     private short spellId;
     private Vector3f direction = new Vector3f();
 
-    public StartCastingSpellMessage() {
+    public StartCastingSpellCommand() {
 
     }
 
-    public StartCastingSpellMessage(int id, int spellId, Vector3f direction) {
+    public StartCastingSpellCommand(int id, int spellId, Vector3f direction) {
         super(id);
         this.spellId = (short)spellId;
         this.direction.set(direction);

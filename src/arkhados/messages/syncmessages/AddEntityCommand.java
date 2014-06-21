@@ -12,39 +12,43 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+
 package arkhados.messages.syncmessages;
 
-import arkhados.controls.SpellCastControl;
+import arkhados.WorldManager;
+import arkhados.messages.syncmessages.statedata.StateData;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Spatial;
 
 /**
  *
  * @author william
  */
 @Serializable
-public class SetCooldownMessage extends AbstractSyncMessage {
-    private short spellId;
-    private float cooldown;
-    private boolean globalCooldown;
+public class AddEntityCommand extends StateData {
+    private int entityId;
+    private short nodeBuilderId;
+    private Vector3f location;
+    private Quaternion rotation;
+    private byte playerId;
 
-    public SetCooldownMessage() {
+    public AddEntityCommand() {
     }
 
-    public SetCooldownMessage(int id, int spellId, float cooldown, boolean globalCooldown) {
-        super(id);
-        this.spellId = (short) spellId;
-        this.cooldown = cooldown;
-        this.globalCooldown = globalCooldown;
+    public AddEntityCommand(int entityId, int nodeBuilderId, Vector3f location,
+            Quaternion rotation, int playerId) {
+        this.entityId = entityId;
+        this.nodeBuilderId = (short) nodeBuilderId;
+        this.location = location;
+        this.rotation = rotation;
+        this.playerId = (byte) playerId;
     }
 
     @Override
     public void applyData(Object target) {
-        final Spatial character = (Spatial) target;
-        final SpellCastControl castControl = character.getControl(SpellCastControl.class);
-        castControl.setCooldown(this.spellId, this.cooldown);
-        if (this.globalCooldown) {
-            castControl.globalCooldown();
-        }
+        WorldManager worldManager = (WorldManager) target;
+        worldManager.addEntity(this.entityId, this.nodeBuilderId, this.location,
+                this.rotation, playerId);
     }
 }

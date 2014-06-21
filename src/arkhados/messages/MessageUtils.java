@@ -24,14 +24,14 @@ import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.CreateWorldMessage;
 import arkhados.messages.roundprotocol.GameEndedMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
-import arkhados.messages.syncmessages.ActionMessage;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.SetCooldownMessage;
-import arkhados.messages.syncmessages.StartCastingSpellMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
+import arkhados.messages.syncmessages.ActionCommand;
+import arkhados.messages.syncmessages.AddEntityCommand;
+import arkhados.messages.syncmessages.BuffCommand;
+import arkhados.messages.syncmessages.RemoveEntityCommand;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityCommand;
+import arkhados.messages.syncmessages.SetCooldownCommand;
+import arkhados.messages.syncmessages.StartCastingSpellCommand;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityCommand;
 import arkhados.messages.syncmessages.statedata.CharacterSyncData;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
@@ -86,16 +86,16 @@ public class MessageUtils {
         Serializer.registerClass(SetPlayersCharacterMessage.class);
 
         // <Sync>
-        Serializer.registerClass(AddEntityMessage.class);
-        Serializer.registerClass(RestoreTemporarilyRemovedEntityMessage.class);
-        Serializer.registerClass(RemoveEntityMessage.class);
-        Serializer.registerClass(TemporarilyRemoveEntityMessage.class);
+        Serializer.registerClass(AddEntityCommand.class);
+        Serializer.registerClass(RestoreTemporarilyRemovedEntityCommand.class);
+        Serializer.registerClass(RemoveEntityCommand.class);
+        Serializer.registerClass(TemporarilyRemoveEntityCommand.class);
         Serializer.registerClasses(StateData.class, CharacterSyncData.class, GenericSyncData.class, ProjectileSyncData.class);
         Serializer.registerClass(EliteSoldierSyncData.class);
-        Serializer.registerClass(StartCastingSpellMessage.class);
-        Serializer.registerClass(SetCooldownMessage.class);
-        Serializer.registerClass(ActionMessage.class);
-        Serializer.registerClass(BuffMessage.class);
+        Serializer.registerClass(StartCastingSpellCommand.class);
+        Serializer.registerClass(SetCooldownCommand.class);
+        Serializer.registerClass(ActionCommand.class);
+        Serializer.registerClass(BuffCommand.class);
         // </Sync>
 
         Serializer.registerClass(BattleStatisticsRequest.class);

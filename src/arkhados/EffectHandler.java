@@ -15,7 +15,7 @@
 package arkhados;
 
 import arkhados.effects.EffectBox;
-import arkhados.messages.syncmessages.ActionMessage;
+import arkhados.messages.syncmessages.ActionCommand;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.network.Client;
@@ -44,8 +44,8 @@ public class EffectHandler implements MessageListener {
 
     @Override
     public void messageReceived(Object source, Message m) {
-        if (m instanceof ActionMessage) {
-            final ActionMessage message = (ActionMessage) m;
+        if (m instanceof ActionCommand) {
+            final ActionCommand message = (ActionCommand) m;
             final Spatial entity = this.worldManager.getEntity(message.getSyncId());
             int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
             final EffectBox box = this.actionEffects.get(nodeBuilderId);
@@ -62,7 +62,7 @@ public class EffectHandler implements MessageListener {
     }
 
     public void setMessagesToListen(Client client) {
-        client.addMessageListener(this, ActionMessage.class);
+        client.addMessageListener(this, ActionCommand.class);
     }
 
     public void setWorldManager(WorldManager worldManager) {

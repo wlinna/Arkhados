@@ -75,7 +75,7 @@ public class Venator extends AbstractNodeBuilder {
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
-        final SpellCastControl spellCastControl = new SpellCastControl(Venator.worldManager);
+        final SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
         final Spell rend = Spell.getSpell("Rend");
         final Spell dagger = Spell.getSpell("Damaging Dagger");

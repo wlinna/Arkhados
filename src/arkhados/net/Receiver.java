@@ -21,6 +21,7 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,6 +29,7 @@ import java.util.List;
  */
 public class Receiver extends AbstractAppState implements MessageListener {
 
+    private static final Logger logger = Logger.getLogger(Receiver.class.getName());
     private List<CommandHandler> handlers = new ArrayList<>();
     private Application app;
     private int lastReceivedOrderNum = -1;
@@ -43,7 +45,6 @@ public class Receiver extends AbstractAppState implements MessageListener {
     }
 
     private void ack(int otmId) {
-        System.out.println("Ack called with otmId " + otmId);
         this.app.getStateManager().getState(Sender.class).addCommand(new Ack(otmId));
     }
 
@@ -55,18 +56,27 @@ public class Receiver extends AbstractAppState implements MessageListener {
             return;
         }
 
-        this.lastReceivedOrderNum = otp.getOrderNum();
-
-        if (!otp.getGuaranteed().isEmpty()) {
+        if (otp.getGuaranteed().size() != 1 || !otp.getGuaranteed().get(0).isEmpty()) {      
             this.handleGuaranteed(otp);
         }
         this.handleUnreliable(otp);
     }
 
     private void handleGuaranteed(OneTrueMessage otp) {
-        for (CommandHandler commandHandler : handlers) {
-            commandHandler.readGuaranteed(otp.getGuaranteed());
+        int versionDiff = otp.getOrderNum() - this.lastReceivedOrderNum;
+
+        // From formula: otp.getGuaranteed().size() - 1 - versionDiff + 1
+        int i = otp.getGuaranteed().size() - versionDiff;
+
+        this.lastReceivedOrderNum = otp.getOrderNum();
+
+        for (; i < otp.getGuaranteed().size(); ++i) {
+            for (CommandHandler commandHandler : handlers) {
+                commandHandler.readGuaranteed(otp.getGuaranteed().get(i));
+            }
         }
+
+        this.ack(otp.getOrderNum());
     }
 
     private void handleUnreliable(OneTrueMessage otp) {

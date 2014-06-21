@@ -14,16 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.net;
 
-import arkhados.ClientMain;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.ValueWrapper;
+import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.network.NetworkClient;
 import com.jme3.network.Server;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,23 +33,27 @@ import java.util.Map;
  */
 public class Sender extends AbstractAppState implements CommandHandler {
 
+    private static final Logger logger = Logger.getLogger(Sender.class.getName());
     // These should always be added first
-    private List<Command> unconfirmedGuaranteed = new ArrayList<>();
+    private List<List<Command>> unconfirmedGuaranteed = new ArrayList<>();
     private List<Command> enqueuedGuaranteed = new ArrayList<>();
     private List<Command> enqueuedUnreliables = new ArrayList<>();
-    private Map<Integer, Integer> otmIdConfirmsUntil = new HashMap<>();
-    private Map<Command, Integer> guaranteedCommandIdMap = new HashMap<>();
     private Server server;
     private ValueWrapper<NetworkClient> client;
     private int otmIdCounter = 0;
-    private int guaranteeCounter = 0;
 
     public Sender(ValueWrapper<NetworkClient> client) {
         this.client = client;
     }
-    
+
     public Sender(Server server) {
         this.server = server;
+    }
+
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app);
+        AbstractBuff.setSender(this);
     }
 
     private void broadcast() {
@@ -60,15 +66,15 @@ public class Sender extends AbstractAppState implements CommandHandler {
     }
 
     private OneTrueMessage createOneTrueMessage() {
+        this.unconfirmedGuaranteed.add(new ArrayList<>(this.enqueuedGuaranteed));
+
         OneTrueMessage otm = new OneTrueMessage(this.otmIdCounter++);
+        
         otm.getGuaranteed().addAll(this.unconfirmedGuaranteed);
-        otm.getGuaranteed().addAll(this.enqueuedGuaranteed);
         otm.getUnreliables().addAll(this.enqueuedUnreliables);
 
+        this.enqueuedGuaranteed.clear();
         this.enqueuedUnreliables.clear();
-        this.unconfirmedGuaranteed.addAll(enqueuedGuaranteed);
-        
-        otmIdConfirmsUntil.put(otm.getOrderNum(), this.guaranteeCounter);
 
         return otm;
     }
@@ -85,26 +91,30 @@ public class Sender extends AbstractAppState implements CommandHandler {
     }
 
     private void confirmAllUntil(int until) {
-        for (Iterator<Command> it = unconfirmedGuaranteed.iterator(); it.hasNext();) {
-            Command command = it.next();
+        logger.log(Level.INFO, "Confirming all messages until {0}", until);
 
-            if (this.guaranteedCommandIdMap.get(command) <= until) {
-                it.remove();
-                this.guaranteedCommandIdMap.remove(command);
-            }
+        int listsToRemove = this.unconfirmedGuaranteed.size() - (this.otmIdCounter - 1 - until);
+
+        Iterator<List<Command>> iterator = this.unconfirmedGuaranteed.iterator();
+
+        for (; listsToRemove > 0; --listsToRemove) {
+            iterator.next();
+            iterator.remove();
         }
+        
     }
 
     public void addCommand(Command command) {
         if (command.isGuaranteed()) {
             this.enqueuedGuaranteed.add(command);
-            this.guaranteedCommandIdMap.put(command, this.guaranteeCounter++);
+            logger.log(Level.INFO, "Adding GUARANTEED command");
 
         } else {
             this.enqueuedUnreliables.add(command);
+            logger.info("Adding UNRELIABLE command");
         }
     }
-    
+
     public void addCommands(List<? extends Command> commands) {
         for (Command command : commands) {
             this.addCommand(command);
@@ -114,9 +124,24 @@ public class Sender extends AbstractAppState implements CommandHandler {
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        if (this.enqueuedGuaranteed.isEmpty() && this.enqueuedUnreliables.isEmpty()) {
+        boolean shouldSend = false;
+
+        if (!this.enqueuedGuaranteed.isEmpty()) {
+            logger.info("Guaranteed commands waiting");
+            shouldSend = true;
+        }
+
+        if (!this.enqueuedUnreliables.isEmpty()) {
+            logger.info("Unreliable commands waiting");
+            shouldSend = true;
+        }
+
+        if (!shouldSend) {
             return;
         }
+
+        logger.info("Sending data");
+
         if (this.server != null) {
             this.broadcast();
         } else if (this.client.get() != null) {
@@ -126,17 +151,20 @@ public class Sender extends AbstractAppState implements CommandHandler {
 
     @Override
     public void readGuaranteed(List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command.getTypeId() == CommandTypeIds.ACK) {
-                Ack ack = (Ack) command;
-                if (this.otmIdConfirmsUntil.containsKey(ack.getConfirmedOtmId())) {
-                    this.confirmAllUntil(this.otmIdConfirmsUntil.get(ack.getConfirmedOtmId()));
-                }
-            }
-        }
     }
 
     @Override
     public void readUnreliable(List<Command> unreliables) {
+        for (Command command : unreliables) {
+            if (command.getTypeId() == CommandTypeIds.ACK) {
+                Ack ack = (Ack) command;
+                this.confirmAllUntil(ack.getConfirmedOtmId());
+                break;
+            }
+        }
+    }
+
+    public boolean isServer() {
+        return this.server != null;
     }
 }

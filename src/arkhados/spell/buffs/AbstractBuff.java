@@ -16,7 +16,8 @@ package arkhados.spell.buffs;
 
 import arkhados.SyncManager;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.syncmessages.BuffMessage;
+import arkhados.messages.syncmessages.BuffCommand;
+import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -28,7 +29,7 @@ public abstract class AbstractBuff {
     private static int currentBuffId = 0;
 
     // TODO: Consider removing this. If there's going to be way to
-    private static SyncManager syncManager;
+    private static Sender sender;
     protected String name = null;
     private int typeId = -1;
 
@@ -53,7 +54,7 @@ public abstract class AbstractBuff {
         targetInterface.addOtherBuff(this);
         if (this.typeId != -1) {
             final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.typeId, this.buffId, this.duration, true));            
+            getSender().addCommand(new BuffCommand(entityId, this.typeId, this.buffId, this.duration, true));            
         }
     }
 
@@ -85,7 +86,7 @@ public abstract class AbstractBuff {
     public void destroy() {
         if (this.typeId != -1) {
             final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.typeId, this.buffId, this.duration, false));
+            getSender().addCommand(new BuffCommand(entityId, this.typeId, this.buffId, this.duration, false));
         }
     }
 
@@ -105,12 +106,12 @@ public abstract class AbstractBuff {
         this.name = name;
     }
 
-    protected static SyncManager getSyncManager() {
-        return syncManager;
+    protected static Sender getSender() {
+        return sender;
     }
 
-    public static void setSyncManager(SyncManager aSyncManager) {
-        syncManager = aSyncManager;
+    public static void setSender(Sender aSender) {
+        sender = aSender;
     }
 
     protected int getBuffId() {

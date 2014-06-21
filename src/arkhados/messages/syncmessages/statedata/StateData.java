@@ -24,11 +24,12 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 
-
 @Serializable
 public abstract class StateData implements Command {
     private int syncId = -1;
-
+    private int otmId = 1;
+    
+    
     public StateData() {
     }
 
@@ -44,11 +45,11 @@ public abstract class StateData implements Command {
 
     @Override
     public int getTypeId() {
-        return CommandTypeIds.STATE_DATA;
+        return CommandTypeIds.SYNC_DATA;
     }
 
     @Override
     public boolean isGuaranteed() {
-        return false;
+        return true; // This is default that some classes need to override
     }
 }

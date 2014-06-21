@@ -41,10 +41,11 @@ import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.controls.UserInputControl;
 import arkhados.effects.BuffEffect;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
+import arkhados.messages.syncmessages.AddEntityCommand;
+import arkhados.messages.syncmessages.RemoveEntityCommand;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityCommand;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityCommand;
+import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
@@ -91,7 +92,6 @@ public class WorldManager extends AbstractAppState {
         this.effectHandler = effectHandler;
         this.isClient = true;
     }
-    
     private SimpleApplication app;
     private AssetManager assetManager;
     private PhysicsSpace space;
@@ -166,7 +166,7 @@ public class WorldManager extends AbstractAppState {
         LodControl lod = groundGeom.getControl(LodControl.class);
 
         if (lod == null) {
-            lod = new LodControl();            
+            lod = new LodControl();
             groundGeom.addControl(lod);
             lod.setTrisPerPixel(0);
         }
@@ -205,8 +205,9 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void addEntity(int id, int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
+        Sender sender = this.app.getStateManager().getState(Sender.class);
         if (this.isServer()) {
-            this.syncManager.broadcast(new AddEntityMessage(id, nodeBuilderId, location, rotation, playerId));
+            sender.addCommand(new AddEntityCommand(id, nodeBuilderId, location, rotation, playerId));
         }
 
         Spatial entitySpatial = this.entityFactory.createEntityById(nodeBuilderId);
@@ -224,7 +225,7 @@ public class WorldManager extends AbstractAppState {
         }
 
         this.worldRoot.attachChild(entitySpatial);
-        EntityVariableControl variableControl = new EntityVariableControl(this);
+        EntityVariableControl variableControl = new EntityVariableControl(this, sender);
         entitySpatial.addControl(variableControl);
 
         if (entitySpatial.getControl(CharacterPhysicsControl.class) != null && PlayerData.isHuman(playerId)) {
@@ -238,7 +239,7 @@ public class WorldManager extends AbstractAppState {
 
     public void temporarilyRemoveEntity(int id) {
         if (this.isServer()) {
-            this.server.broadcast(new TemporarilyRemoveEntityMessage(id));
+            this.app.getStateManager().getState(Sender.class).addCommand(new TemporarilyRemoveEntityCommand(id));
         }
         Spatial spatial = this.getEntity(id);
         spatial.removeFromParent();
@@ -252,7 +253,7 @@ public class WorldManager extends AbstractAppState {
 
     public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
         if (this.isServer()) {
-            this.server.broadcast(new RestoreTemporarilyRemovedEntityMessage(id, location, rotation));
+            this.app.getStateManager().getState(Sender.class).addCommand(new RestoreTemporarilyRemovedEntityCommand(id, location, rotation));
         }
         Spatial spatial = this.getEntity(id);
         this.worldRoot.attachChild(spatial);
@@ -291,7 +292,7 @@ public class WorldManager extends AbstractAppState {
 
     public void removeEntity(int id, int reason) {
         if (this.isServer()) {
-            this.syncManager.broadcast(new RemoveEntityMessage(id, reason));
+            this.app.getStateManager().getState(Sender.class).addCommand(new RemoveEntityCommand(id, reason));
         }
         this.syncManager.removeEntity(id);
         Spatial spatial = this.entities.remove(id);

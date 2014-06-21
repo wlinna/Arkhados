@@ -35,6 +35,7 @@ public class UcMouseTargetMessage extends AbstractSyncMessage {
     }
 
     public UcMouseTargetMessage(Vector3f location) {
+        super(-1, false);
         this.location = location;
     }
 

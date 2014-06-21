@@ -31,20 +31,11 @@ import java.util.Queue;
 import java.util.concurrent.Callable;
 import arkhados.controls.SyncControl;
 import arkhados.messages.syncmessages.AbstractSyncMessage;
-import arkhados.messages.syncmessages.ActionMessage;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.SetCooldownMessage;
-import arkhados.messages.syncmessages.StartCastingSpellMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.CommandTypeIds;
 import arkhados.net.Sender;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
 import com.jme3.network.AbstractMessage;
@@ -81,18 +72,11 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        AbstractBuff.setSyncManager(this);
     }
 
     @Override
     public void update(float tpf) {
         if (this.getClient() != null) {
-            for (Iterator<AbstractMessage> it = this.syncQueue.iterator();
-                    it.hasNext();) {
-                AbstractMessage message = it.next();
-                this.doMessage(message);
-                it.remove();
-            }
 
             for (Iterator<StateData> it = stateDataQueue.iterator(); it.hasNext();) {
                 StateData stateData = it.next();
@@ -152,31 +136,13 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
         }
     }
 
-    public void broadcast(AbstractMessage message) {
-        assert message.getClass().isAssignableFrom(AbstractSyncMessage.class);
-        this.server.broadcast(message);
-    }
-
     @Override
     public void messageReceived(Object source, final Message m) {
-        if (this.getClient() != null) {
-            this.clientReceivedMessage((AbstractMessage) m);
-        } else if (this.server != null) {
-            if (!this.listening) {
-                return;
-            }
-
-            this.serverReceivedMessage((HostedConnection) source, (AbstractSyncMessage) m);
+        if (this.server == null || this.listening) {
+            return;
         }
-    }
 
-    private void clientReceivedMessage(final AbstractMessage message) {
-        this.app.enqueue(new Callable<Void>() {
-            public Void call() throws Exception {
-                enqueueMessage(message);
-                return null;
-            }
-        });
+        this.serverReceivedMessage((HostedConnection) source, (AbstractSyncMessage) m);
     }
 
     private void serverReceivedMessage(HostedConnection source, final AbstractSyncMessage message) {
@@ -203,10 +169,6 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
         this.syncObjects.put(id, object);
     }
 
-    private void enqueueMessage(AbstractMessage message) {
-        this.syncQueue.add(message);
-    }
-
     public Client getClient() {
         if (this.client == null) {
             return null;
@@ -231,35 +193,26 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
         this.listening = true;
     }
 
-    public void configureForClient() {
-        this.getClient().addMessageListener(this,
-                AddEntityMessage.class,
-                RestoreTemporarilyRemovedEntityMessage.class,
-                RemoveEntityMessage.class,
-                TemporarilyRemoveEntityMessage.class,
-                StartCastingSpellMessage.class,
-                SetCooldownMessage.class,
-                ActionMessage.class,
-                BuffMessage.class);
-    }
-
     @Override
     public void readGuaranteed(List<Command> guaranteed) {
+        if (this.client.get() != null) {
+            this.clientHandleCommands(guaranteed);
+        }
     }
 
     @Override
     public void readUnreliable(List<Command> unreliables) {
         if (this.client.get() != null) {
-            this.clientHandleUnreliables(unreliables);
+            this.clientHandleCommands(unreliables);
         }
     }
 
-    private void clientHandleUnreliables(final List<Command> stateDataList) {
+    private void clientHandleCommands(final List<Command> stateDataList) {
         this.app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 for (Command command : stateDataList) {
-                    if (command.getTypeId() == CommandTypeIds.STATE_DATA) {
+                    if (command.getTypeId() == CommandTypeIds.SYNC_DATA) {
                         stateDataQueue.add((StateData) command);
                     }
                 }

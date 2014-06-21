@@ -15,7 +15,7 @@
 package arkhados.spell.buffs;
 
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.syncmessages.BuffMessage;
+import arkhados.messages.syncmessages.BuffCommand;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -42,7 +42,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
         influenceInterface.addCrowdControlBuff(this);
         if (super.getTypeId() != -1) {
             final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, super.getTypeId(), super.getBuffId(), super.duration, true));
+            getSender().addCommand(new BuffCommand(entityId, super.getTypeId(), super.getBuffId(), super.duration, true));
         }
     }
 }

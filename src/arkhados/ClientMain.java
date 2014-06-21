@@ -263,7 +263,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         }
         this.listenerManager.setName(username);
 
-        this.syncManager.configureForClient();
         this.setStatusText("Connecting... " + username);
         try {
             this.clientWrapper.get().connectToServer(ip, port, port);

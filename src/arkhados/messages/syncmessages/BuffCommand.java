@@ -15,6 +15,7 @@
 package arkhados.messages.syncmessages;
 
 import arkhados.controls.CharacterBuffControl;
+import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
 
@@ -23,17 +24,17 @@ import com.jme3.scene.Node;
  * @author william
  */
 @Serializable
-public class BuffMessage extends AbstractSyncMessage {
+public class BuffCommand extends StateData {
 
     private short buffTypeId;
     private int buffId;
     private float duration;
     private boolean added;    
 
-    public BuffMessage() {
+    public BuffCommand() {
     }
 
-    public BuffMessage(int entityId, int buffTypeId, int buffId, float duration, boolean added) {
+    public BuffCommand(int entityId, int buffTypeId, int buffId, float duration, boolean added) {
         super(entityId);
         this.buffTypeId = (short) buffTypeId;
         this.buffId = buffId;

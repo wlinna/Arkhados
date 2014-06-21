@@ -20,5 +20,5 @@ package arkhados.net;
  */
 public class CommandTypeIds {
     public static final int ACK = 0;
-    public static final int STATE_DATA = 1;
+    public static final int SYNC_DATA = 1;
 }

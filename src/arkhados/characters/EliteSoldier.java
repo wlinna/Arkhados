@@ -92,7 +92,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
         final EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
         entity.addControl(ammunitionControl);
 
-        final SpellCastControl spellCastControl = new SpellCastControl(EliteSoldier.worldManager);
+        final SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);

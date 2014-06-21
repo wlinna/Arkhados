@@ -15,28 +15,34 @@
 package arkhados.messages.syncmessages;
 
 import arkhados.WorldManager;
+import arkhados.messages.syncmessages.statedata.StateData;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 
 /**
  *
  * @author william
  */
-
 @Serializable
-public class TemporarilyRemoveEntityMessage extends AbstractSyncMessage {
-    private int entityId;
+public class RestoreTemporarilyRemovedEntityCommand extends StateData {
 
-    public TemporarilyRemoveEntityMessage() {
+    private int entityId;
+    private Vector3f location;
+    private Quaternion rotation;
+
+    public RestoreTemporarilyRemovedEntityCommand() {
     }
 
-    public TemporarilyRemoveEntityMessage(int entityId) {
+    public RestoreTemporarilyRemovedEntityCommand(int entityId, Vector3f location, Quaternion rotation) {
         this.entityId = entityId;
-        super.setSyncId(-1);
+        this.location = location;
+        this.rotation = rotation;
     }
 
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
-        worldManager.temporarilyRemoveEntity(entityId);
+        worldManager.restoreTemporarilyRemovedEntity(this.entityId, this.location, this.rotation);
     }
 }

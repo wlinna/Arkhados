@@ -28,6 +28,9 @@ import java.util.List;
 public class OneTrueMessage extends AbstractMessage {
     private int orderNum;
 
+    private List<List<Command>> guaranteed = new ArrayList<>();
+    private List<Command> unreliables = new ArrayList<>();
+    
     public OneTrueMessage() {
     }
     
@@ -36,17 +39,11 @@ public class OneTrueMessage extends AbstractMessage {
         this.orderNum = orderNum;
     }
     
-    /**
-     * Guaranteed messages must be handled first
-     */
-    private List<Command> guaranteed = new ArrayList<>();
-    private List<Command> unreliables = new ArrayList<>();
-
     public int getOrderNum() {
         return orderNum;
     }
 
-    public List<Command> getGuaranteed() {
+    public List<List<Command>> getGuaranteed() {
         return guaranteed;
     }
 
