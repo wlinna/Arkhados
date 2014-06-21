@@ -26,6 +26,9 @@ import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
 import arkhados.messages.UDPHandshakeAck;
+import arkhados.net.OneTrueMessage;
+import arkhados.net.Receiver;
+import arkhados.net.Sender;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
@@ -135,6 +138,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ClientHudManager clientHudManager;
     private RoundManager roundManager;
     private EffectHandler effectHandler;
+    
+    private Sender sender;
+    private Receiver receiver;
 
     @Override
     public void simpleInitApp() {
@@ -177,9 +183,16 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.roundManager = new RoundManager();
         this.stateManager.attach(this.roundManager);
 
-        ClientMain.this.stateManager
-                .attach(ClientMain.this.userCommandManager);
+        this.stateManager.attach(ClientMain.this.userCommandManager);
+        
+        this.sender = new Sender(this.clientWrapper);
+        this.receiver = new Receiver();
+        
+        this.stateManager.attach(this.sender);
+        this.stateManager.attach(this.receiver);
 
+        this.receiver.registerCommandHandler(sender);
+        this.receiver.registerCommandHandler(this.syncManager);
     }
 
     @Override
@@ -196,7 +209,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 this.inputManager, this.audioRenderer, this.guiViewPort);
 
         this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager), this.clientHudManager, ClientSettings.getClientSettings());
+        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this,
+                new KeySetter(this, this.inputManager), this.clientHudManager,
+                ClientSettings.getClientSettings());
         this.guiViewPort.addProcessor(this.niftyDisplay);
 
         this.clientHudManager.setNifty(nifty);
@@ -233,8 +248,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.listenerManager.reset();
         this.clientWrapper.get().addClientStateListener(this.listenerManager);
         this.clientWrapper.get().addMessageListener(this.listenerManager,
-                ConnectionEstablishedMessage.class, UDPHandshakeAck.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
+                ConnectionEstablishedMessage.class, UDPHandshakeAck.class,
+                ServerLoginMessage.class, PlayerDataTableMessage.class,
+                ChatMessage.class, StartGameMessage.class,
+                SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
+        
+        this.clientWrapper.get().addMessageListener(this.receiver, OneTrueMessage.class);
 
         this.effectHandler.setMessagesToListen(this.clientWrapper.get());
 
@@ -322,8 +341,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 try {
                     ClientMain.this.enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
-                            worldManager.preloadModels(new String[]{"Models/Archer.j3o", "Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o", "Scenes/LavaArenaWithWalls.j3o"});
-                            worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav"});
+                            worldManager.preloadModels(new String[]{"Models/Archer.j3o",
+                                "Models/Mage.j3o", "Models/Warwolf.j3o",
+                                "Models/Circle.j3o", "Models/DamagingDagger.j3o",
+                                "Scenes/LavaArenaWithWalls.j3o"});
+                            worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav",
+                                "MeteorBoom.wav", "Shotgun.wav"});
                             ClientMain.this.nifty.gotoScreen("default_hud");
                             return null;
                         }

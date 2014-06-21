@@ -29,6 +29,9 @@ import java.util.logging.Logger;
 import arkhados.messages.usercommands.UcCastSpellMessage;
 import arkhados.messages.usercommands.UcMouseTargetMessage;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.net.OneTrueMessage;
+import arkhados.net.Receiver;
+import arkhados.net.Sender;
 import java.util.logging.FileHandler;
 
 /**
@@ -63,7 +66,9 @@ public class ServerMain extends SimpleApplication {
     private ServerGameManager gameManager;
     private WorldManager worldManager;
     private BulletAppState physicsState;
-    private SyncManager syncManager;   
+    private SyncManager syncManager;
+    private Sender sender;
+    private Receiver receiver;
 
     @Override
     public void simpleInitApp() {
@@ -79,6 +84,14 @@ public class ServerMain extends SimpleApplication {
             this.server.start();
         } catch (IOException ex) {
         }
+        
+        this.receiver = new Receiver();
+        this.server.addMessageListener(this.receiver, OneTrueMessage.class);
+        
+        this.sender = new Sender(this.server);
+        
+        this.receiver.registerCommandHandler(sender);
+        
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
         this.listenerManager = new ServerNetListener(this, server);
@@ -87,11 +100,14 @@ public class ServerMain extends SimpleApplication {
                 UcCastSpellMessage.class,
                 UcWalkDirection.class, UcMouseTargetMessage.class);
 
-        this.stateManager.attach(ServerMain.this.syncManager);
-        this.stateManager.attach(ServerMain.this.worldManager);
-        this.stateManager.attach(ServerMain.this.gameManager);
-        this.stateManager.attach(ServerMain.this.physicsState);
-        this.physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);        
+        this.stateManager.attach(this.sender);
+        this.stateManager.attach(this.receiver);
+        this.stateManager.attach(this.syncManager);
+        this.stateManager.attach(this.worldManager);
+        this.stateManager.attach(this.gameManager);
+        this.stateManager.attach(this.physicsState);
+        
+        this.physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
     }
 
     public void startGame() {

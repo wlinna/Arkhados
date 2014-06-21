@@ -23,20 +23,13 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class Ack implements Command {
-    transient private int id;
-    
     private int confirmedOtmId;
 
-    public Ack(int id, int confirmedOtmId) {
-        this.id = id;
+    public Ack(int confirmedOtmId) {
         this.confirmedOtmId = confirmedOtmId;
     }
 
     public Ack() {
-    }
-
-    public int getId() {
-        return id;
     }
 
     @Override
@@ -46,7 +39,7 @@ public class Ack implements Command {
 
     @Override
     public boolean isGuaranteed() {
-        return true;
+        return false;
     }
 
     public int getConfirmedOtmId() {

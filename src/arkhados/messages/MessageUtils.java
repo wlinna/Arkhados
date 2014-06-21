@@ -27,7 +27,6 @@ import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
 import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.MassSyncMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.SetCooldownMessage;
@@ -91,7 +90,6 @@ public class MessageUtils {
         Serializer.registerClass(RestoreTemporarilyRemovedEntityMessage.class);
         Serializer.registerClass(RemoveEntityMessage.class);
         Serializer.registerClass(TemporarilyRemoveEntityMessage.class);
-        Serializer.registerClass(MassSyncMessage.class);
         Serializer.registerClasses(StateData.class, CharacterSyncData.class, GenericSyncData.class, ProjectileSyncData.class);
         Serializer.registerClass(EliteSoldierSyncData.class);
         Serializer.registerClass(StartCastingSpellMessage.class);

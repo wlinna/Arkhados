@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.net;
 
+import arkhados.ClientMain;
 import arkhados.util.ValueWrapper;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.network.NetworkClient;
@@ -40,6 +41,14 @@ public class Sender extends AbstractAppState implements CommandHandler {
     private ValueWrapper<NetworkClient> client;
     private int otmIdCounter = 0;
     private int guaranteeCounter = 0;
+
+    public Sender(ValueWrapper<NetworkClient> client) {
+        this.client = client;
+    }
+    
+    public Sender(Server server) {
+        this.server = server;
+    }
 
     private void broadcast() {
         assert this.client == null;
@@ -120,8 +129,8 @@ public class Sender extends AbstractAppState implements CommandHandler {
         for (Command command : guaranteed) {
             if (command.getTypeId() == CommandTypeIds.ACK) {
                 Ack ack = (Ack) command;
-                if (this.otmIdConfirmsUntil.containsKey(ack.getId())) {
-                    this.confirmAllUntil(this.otmIdConfirmsUntil.get(ack.getId()));
+                if (this.otmIdConfirmsUntil.containsKey(ack.getConfirmedOtmId())) {
+                    this.confirmAllUntil(this.otmIdConfirmsUntil.get(ack.getConfirmedOtmId()));
                 }
             }
         }

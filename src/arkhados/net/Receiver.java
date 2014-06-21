@@ -14,6 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.net;
 
+import com.jme3.app.Application;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.ArrayList;
@@ -23,28 +26,43 @@ import java.util.List;
  *
  * @author william
  */
-public class Receiver implements MessageListener {
+public class Receiver extends AbstractAppState implements MessageListener {
+
     private List<CommandHandler> handlers = new ArrayList<>();
-    
-    
-    public void registerCommandHandler(CommandHandler handler) {        
-        this.handlers.add(handler);        
+    private Application app;
+    private int lastReceivedOrderNum = -1;
+
+    public void registerCommandHandler(CommandHandler handler) {
+        this.handlers.add(handler);
     }
-    
-    private void ack() {
-        // TODO: Use Sender to send ack
+
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app);
+        this.app = app;
+    }
+
+    private void ack(int otmId) {
+        System.out.println("Ack called with otmId " + otmId);
+        this.app.getStateManager().getState(Sender.class).addCommand(new Ack(otmId));
     }
 
     @Override
     public void messageReceived(Object source, Message m) {
         OneTrueMessage otp = (OneTrueMessage) m;
-        
-        this.handleGuaranteed(otp);
+
+        if (otp.getOrderNum() < this.lastReceivedOrderNum) {
+            return;
+        }
+
+        this.lastReceivedOrderNum = otp.getOrderNum();
+
+        if (!otp.getGuaranteed().isEmpty()) {
+            this.handleGuaranteed(otp);
+        }
         this.handleUnreliable(otp);
-        
-        
     }
-    
+
     private void handleGuaranteed(OneTrueMessage otp) {
         for (CommandHandler commandHandler : handlers) {
             commandHandler.readGuaranteed(otp.getGuaranteed());
@@ -52,8 +70,8 @@ public class Receiver implements MessageListener {
     }
 
     private void handleUnreliable(OneTrueMessage otp) {
-        for (CommandHandler commandHandler: handlers) {
+        for (CommandHandler commandHandler : handlers) {
             commandHandler.readUnreliable(otp.getUnreliables());
         }
-    }    
+    }
 }

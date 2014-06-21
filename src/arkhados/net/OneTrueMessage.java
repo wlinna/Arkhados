@@ -28,6 +28,9 @@ import java.util.List;
 public class OneTrueMessage extends AbstractMessage {
     private int orderNum;
 
+    public OneTrueMessage() {
+    }
+    
     public OneTrueMessage(int orderNum) {
         super(false);
         this.orderNum = orderNum;

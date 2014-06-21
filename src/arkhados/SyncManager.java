@@ -34,20 +34,21 @@ import arkhados.messages.syncmessages.AbstractSyncMessage;
 import arkhados.messages.syncmessages.ActionMessage;
 import arkhados.messages.syncmessages.AddEntityMessage;
 import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.MassSyncMessage;
 import arkhados.messages.syncmessages.RemoveEntityMessage;
 import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
 import arkhados.messages.syncmessages.SetCooldownMessage;
 import arkhados.messages.syncmessages.StartCastingSpellMessage;
 import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
 import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.net.Command;
+import arkhados.net.CommandHandler;
+import arkhados.net.CommandTypeIds;
 import arkhados.net.Sender;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.NetworkClient;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ import java.util.Set;
  *
  * @author william
  */
-public class SyncManager extends AbstractAppState implements MessageListener {
+public class SyncManager extends AbstractAppState implements MessageListener, CommandHandler {
 
     private Server server = null;
     private ValueWrapper<NetworkClient> client;
@@ -63,8 +64,9 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     HashMap<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
     private Queue<AbstractMessage> syncQueue = new LinkedList<>();
+    // This queue is used only temporarily to make sure that atleast unreliables work well with new system
+    private Queue<StateData> stateDataQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
-    private int orderNum = 0;
 
     public SyncManager(Application app, Server server) {
         this.app = app;
@@ -89,6 +91,16 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                     it.hasNext();) {
                 AbstractMessage message = it.next();
                 this.doMessage(message);
+                it.remove();
+            }
+
+            for (Iterator<StateData> it = stateDataQueue.iterator(); it.hasNext();) {
+                StateData stateData = it.next();
+                Object object = this.syncObjects.get(stateData.getSyncId());
+                if (object != null) {
+                    stateData.applyData(object);
+                }
+
                 it.remove();
             }
         } else if (this.server != null) {
@@ -137,14 +149,11 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             if (object != null) {
                 message.applyData(object);
             }
-        } else if (m instanceof MassSyncMessage) {
-            this.clientApplyMassSyncMessage((MassSyncMessage) m);
         }
     }
 
     public void broadcast(AbstractMessage message) {
-        assert message.getClass().isAssignableFrom(MassSyncMessage.class)
-                || message.getClass().isAssignableFrom(AbstractSyncMessage.class);
+        assert message.getClass().isAssignableFrom(AbstractSyncMessage.class);
         this.server.broadcast(message);
     }
 
@@ -161,27 +170,10 @@ public class SyncManager extends AbstractAppState implements MessageListener {
         }
     }
 
-    private void clientApplyMassSyncMessage(MassSyncMessage message) {
-        for (StateData stateData : message.getStateData()) {
-            Object object = this.syncObjects.get(stateData.getSyncId());
-            if (object != null) {
-                stateData.applyData(object);
-            }
-        }
-    }
-
     private void clientReceivedMessage(final AbstractMessage message) {
-        if (message instanceof MassSyncMessage) {
-            MassSyncMessage stateMessage = (MassSyncMessage) message;
-            if (stateMessage.getOrderNum() <= this.getCurrentOrderNum()) {
-                return;
-            } else {
-                this.setCurrentOrderNum(stateMessage.getOrderNum());
-            }
-        }
         this.app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                SyncManager.this.enqueueMessage(message);
+                enqueueMessage(message);
                 return null;
             }
         });
@@ -194,7 +186,7 @@ public class SyncManager extends AbstractAppState implements MessageListener {
             message.setSyncId(syncId);
             this.app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
-                    SyncManager.this.doMessage(message);
+                    doMessage(message);
                     return null;
                 }
             });
@@ -229,7 +221,6 @@ public class SyncManager extends AbstractAppState implements MessageListener {
     public void clear() {
         this.syncObjects.clear();
         this.syncQueue.clear();
-        this.orderNum = 0;
     }
 
     public void stopListening() {
@@ -246,18 +237,34 @@ public class SyncManager extends AbstractAppState implements MessageListener {
                 RestoreTemporarilyRemovedEntityMessage.class,
                 RemoveEntityMessage.class,
                 TemporarilyRemoveEntityMessage.class,
-                MassSyncMessage.class,
                 StartCastingSpellMessage.class,
                 SetCooldownMessage.class,
                 ActionMessage.class,
                 BuffMessage.class);
     }
 
-    private int getCurrentOrderNum() {
-        return this.orderNum;
+    @Override
+    public void readGuaranteed(List<Command> guaranteed) {
     }
 
-    private void setCurrentOrderNum(int orderNum) {
-        this.orderNum = orderNum;
+    @Override
+    public void readUnreliable(List<Command> unreliables) {
+        if (this.client.get() != null) {
+            this.clientHandleUnreliables(unreliables);
+        }
+    }
+
+    private void clientHandleUnreliables(final List<Command> stateDataList) {
+        this.app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                for (Command command : stateDataList) {
+                    if (command.getTypeId() == CommandTypeIds.STATE_DATA) {
+                        stateDataQueue.add((StateData) command);
+                    }
+                }
+                return null;
+            }
+        });
     }
 }
