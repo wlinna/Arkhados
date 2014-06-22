@@ -19,6 +19,8 @@ import arkhados.util.ValueWrapper;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.network.Filter;
+import com.jme3.network.HostedConnection;
 import com.jme3.network.NetworkClient;
 import com.jme3.network.Server;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ import java.util.logging.Logger;
 public class Sender extends AbstractAppState implements CommandHandler {
 
     private static final Logger logger = Logger.getLogger(Sender.class.getName());
+
     static {
         logger.setLevel(Level.SEVERE);
     }
@@ -44,7 +47,6 @@ public class Sender extends AbstractAppState implements CommandHandler {
     private Server server;
     private ValueWrapper<NetworkClient> client;
     private int otmIdCounter = 0;
-    
     private OneTrueMessage reUsedOtm = new OneTrueMessage(0);
 
     public Sender(ValueWrapper<NetworkClient> client) {
@@ -62,12 +64,13 @@ public class Sender extends AbstractAppState implements CommandHandler {
     }
 
     private void broadcast() {
-        assert this.client == null;
-
-        // TODO: Consider reusing same OTM every time to reduce heap fragmentation
-
         OneTrueMessage otm = this.createOneTrueMessage();
         this.server.broadcast(otm);
+    }
+    
+    private void broadcast(Filter<HostedConnection> filter) {
+        OneTrueMessage otm = this.createOneTrueMessage();
+        this.server.broadcast(filter, otm);
     }
 
     private OneTrueMessage createOneTrueMessage() {
@@ -77,7 +80,7 @@ public class Sender extends AbstractAppState implements CommandHandler {
         otm.setOrderNum(otmIdCounter++);
         otm.getGuaranteed().clear();
         otm.getUnreliables().clear();
-        
+
         otm.getGuaranteed().addAll(this.unconfirmedGuaranteed);
         otm.getUnreliables().addAll(this.enqueuedUnreliables);
 
@@ -95,7 +98,12 @@ public class Sender extends AbstractAppState implements CommandHandler {
     }
 
     public void forceSend() {
-        this.broadcast();
+        if (this.isClient() && this.client.get() != null &&
+                this.client.get().isConnected()) {
+            
+        } else if (this.isServer() && this.server.isRunning()){
+            this.broadcast();
+        }
     }
 
     private void confirmAllUntil(int until) {
@@ -109,12 +117,12 @@ public class Sender extends AbstractAppState implements CommandHandler {
             iterator.next();
             iterator.remove();
         }
-        
+
     }
 
-    public void addCommand(Command command) {
-        if (this.isClient() &&
-                (this.client.get() == null || !this.client.get().isConnected())) {
+    public void addCommand(Command command, Filter<HostedConnection> filter) {
+        if (this.isClient()
+                && (this.client.get() == null || !this.client.get().isConnected())) {
             return;
         }
         if (command.isGuaranteed()) {
@@ -126,11 +134,19 @@ public class Sender extends AbstractAppState implements CommandHandler {
             logger.info("Adding UNRELIABLE command");
         }
     }
+    
+    public void addCommand(Command command) {
+        this.addCommand(command, null);
+    }
 
-    public void addCommands(List<? extends Command> commands) {
+    public void addCommands(List<? extends Command> commands, Filter<HostedConnection> filter) {
         for (Command command : commands) {
-            this.addCommand(command);
+            this.addCommand(command, filter);
         }
+    }
+    
+    public void addCommands(List<? extends Command> commands) {
+        this.addCommands(commands, null);
     }
 
     @Override
@@ -179,7 +195,7 @@ public class Sender extends AbstractAppState implements CommandHandler {
     public boolean isServer() {
         return this.server != null;
     }
-    
+
     public boolean isClient() {
         return this.client != null;
     }
