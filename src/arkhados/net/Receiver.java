@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 public class Receiver extends AbstractAppState implements MessageListener {
 
     private static final Logger logger = Logger.getLogger(Receiver.class.getName());
+
     static {
         logger.setLevel(Level.SEVERE);
     }
@@ -60,32 +61,31 @@ public class Receiver extends AbstractAppState implements MessageListener {
             return;
         }
 
-        if (otp.getGuaranteed().size() != 1 || !otp.getGuaranteed().get(0).isEmpty()) {      
-            this.handleGuaranteed(otp);
+        if (otp.getGuaranteed().size() != 1 || !otp.getGuaranteed().get(0).isEmpty()) {
+            this.handleGuaranteed(source, otp);
         }
-        this.handleUnreliable(otp);
+        this.handleUnreliable(source, otp);
     }
 
-    private void handleGuaranteed(OneTrueMessage otp) {
+    private void handleGuaranteed(Object source, OneTrueMessage otp) {
         int versionDiff = otp.getOrderNum() - this.lastReceivedOrderNum;
 
-        // From formula: otp.getGuaranteed().size() - 1 - versionDiff + 1
         int i = otp.getGuaranteed().size() - versionDiff;
 
         this.lastReceivedOrderNum = otp.getOrderNum();
 
         for (; i < otp.getGuaranteed().size(); ++i) {
             for (CommandHandler commandHandler : handlers) {
-                commandHandler.readGuaranteed(otp.getGuaranteed().get(i));
+                commandHandler.readGuaranteed(source, otp.getGuaranteed().get(i));
             }
         }
 
         this.ack(otp.getOrderNum());
     }
 
-    private void handleUnreliable(OneTrueMessage otp) {
+    private void handleUnreliable(Object source, OneTrueMessage otp) {
         for (CommandHandler commandHandler : handlers) {
-            commandHandler.readUnreliable(otp.getUnreliables());
+            commandHandler.readUnreliable(source, otp.getUnreliables());
         }
     }
 }

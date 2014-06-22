@@ -17,24 +17,23 @@ package arkhados.messages.usercommands;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
-import arkhados.controls.ActionQueueControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.messages.syncmessages.AbstractSyncMessage;
+import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
  *
  * @author william
  */
 @Serializable
-public class UcCastSpellMessage extends AbstractSyncMessage {
+public class UcCastSpellCommand extends StateData {
 
     private byte input;
     private Vector3f direction;
 
-    public UcCastSpellMessage() {
+    public UcCastSpellCommand() {
     }
 
-    public UcCastSpellMessage(int input, Vector3f location) {
+    public UcCastSpellCommand(int input, Vector3f location) {
         this.input = (byte) input;
         this.direction = location;
     }

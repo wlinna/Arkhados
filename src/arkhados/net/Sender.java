@@ -108,6 +108,10 @@ public class Sender extends AbstractAppState implements CommandHandler {
     }
 
     public void addCommand(Command command) {
+        if (this.isClient() &&
+                (this.client.get() == null || !this.client.get().isConnected())) {
+            return;
+        }
         if (command.isGuaranteed()) {
             this.enqueuedGuaranteed.add(command);
             logger.log(Level.INFO, "Adding GUARANTEED command");
@@ -153,11 +157,11 @@ public class Sender extends AbstractAppState implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(List<Command> guaranteed) {
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
     }
 
     @Override
-    public void readUnreliable(List<Command> unreliables) {
+    public void readUnreliable(Object source, List<Command> unreliables) {
         for (Command command : unreliables) {
             if (command.getTypeId() == CommandTypeIds.ACK) {
                 Ack ack = (Ack) command;
@@ -169,5 +173,9 @@ public class Sender extends AbstractAppState implements CommandHandler {
 
     public boolean isServer() {
         return this.server != null;
+    }
+    
+    public boolean isClient() {
+        return this.client != null;
     }
 }

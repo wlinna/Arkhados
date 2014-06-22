@@ -170,8 +170,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.worldManager = new WorldManager(this.effectHandler);
         this.effectHandler.setWorldManager(worldManager);
 
-        this.userCommandManager = new UserCommandManager(this.clientWrapper, this.inputManager);
-
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
@@ -183,11 +181,16 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.roundManager = new RoundManager();
         this.stateManager.attach(this.roundManager);
 
-        this.stateManager.attach(ClientMain.this.userCommandManager);
         
         this.sender = new Sender(this.clientWrapper);
         this.receiver = new Receiver();
         this.receiver.registerCommandHandler(this.effectHandler);
+        
+        
+        this.userCommandManager = new UserCommandManager(this.sender, this.inputManager);
+        
+        this.stateManager.attach(this.userCommandManager);
+
         
         this.stateManager.attach(this.sender);
         this.stateManager.attach(this.receiver);

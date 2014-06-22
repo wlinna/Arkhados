@@ -18,9 +18,10 @@ import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.usercommands.UcCastSpellMessage;
-import arkhados.messages.usercommands.UcMouseTargetMessage;
+import arkhados.messages.usercommands.UcCastSpellCommand;
+import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.net.Sender;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
@@ -49,7 +50,7 @@ import java.util.HashMap;
 public class UserCommandManager extends AbstractAppState {
 
     private InputManager inputManager;
-    private ValueWrapper<NetworkClient> client;
+    private Sender sender;
     private WorldManager worldManager;
     private Application app;
     private Camera cam;
@@ -65,8 +66,8 @@ public class UserCommandManager extends AbstractAppState {
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private Listener listener;
 
-    public UserCommandManager(ValueWrapper<NetworkClient> client, InputManager inputManager) {
-        this.client = client;
+    public UserCommandManager(Sender sender, InputManager inputManager) {
+        this.sender = sender;
         this.inputManager = inputManager;
         this.clearMovementFlags();
     }
@@ -91,13 +92,14 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
             if (name != null) {
-                UserCommandManager.this.client.get().send(
-                        new UcCastSpellMessage(InputMappingStrings.getId(name),
-                        UserCommandManager.this.mouseGroundPosition));
+                sender.addCommand(
+                        new UcCastSpellCommand(InputMappingStrings.getId(name),
+                        mouseGroundPosition));
             }
         }
     };
     private ActionListener actionMoveDirection = new ActionListener() {
+        @Override
         public void onAction(String name, boolean isPressed, float tpf) {
             InfluenceInterfaceControl influenceInterface = getCharacterInterface();
             if (influenceInterface == null || influenceInterface.isDead()) {
@@ -158,7 +160,7 @@ public class UserCommandManager extends AbstractAppState {
         this.mouseTargetUpdateTimer -= tpf;
         if (this.mouseTargetUpdateTimer <= 0f) {
             this.calculateMouseGroundPosition();
-            this.client.get().send(new UcMouseTargetMessage(this.mouseGroundPosition));
+            this.sender.addCommand(new UcMouseTargetCommand(this.mouseGroundPosition));
             this.mouseTargetUpdateTimer = 0.075f;
         }
     }
@@ -172,7 +174,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void sendWalkDirection() {
-        this.client.get().send(new UcWalkDirection(down, right));
+        this.sender.addCommand(new UcWalkDirection(down, right));
     }
 
     @Override
@@ -286,8 +288,7 @@ public class UserCommandManager extends AbstractAppState {
         if (!super.isEnabled()) {
             return;
         }
-        if (this.client.get() != null && this.client.get().isConnected()) {
-            this.client.get().send(new UcWalkDirection(0, 0));
-        }
+
+        this.sender.addCommand(new UcWalkDirection(0, 0));
     }
 }

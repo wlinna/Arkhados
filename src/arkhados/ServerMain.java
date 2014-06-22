@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import arkhados.messages.usercommands.UcCastSpellMessage;
-import arkhados.messages.usercommands.UcMouseTargetMessage;
+import arkhados.messages.usercommands.UcCastSpellCommand;
+import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
@@ -96,9 +96,7 @@ public class ServerMain extends SimpleApplication {
         MessageUtils.registerMessages();
         this.listenerManager = new ServerNetListener(this, server);
         this.syncManager = new SyncManager(this, this.server);
-        this.syncManager.setMessagesToListen(
-                UcCastSpellMessage.class,
-                UcWalkDirection.class, UcMouseTargetMessage.class);
+        this.receiver.registerCommandHandler(this.syncManager);
 
         this.stateManager.attach(this.sender);
         this.stateManager.attach(this.receiver);

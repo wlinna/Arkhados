@@ -36,8 +36,8 @@ import arkhados.messages.syncmessages.statedata.CharacterSyncData;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.messages.usercommands.UcCastSpellMessage;
-import arkhados.messages.usercommands.UcMouseTargetMessage;
+import arkhados.messages.usercommands.UcCastSpellCommand;
+import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
 import arkhados.net.Ack;
 import arkhados.net.OneTrueMessage;
@@ -102,9 +102,9 @@ public class MessageUtils {
         Serializer.registerClass(BattleStatisticsResponse.class);
 
         // <UserCommands>
-        Serializer.registerClass(UcCastSpellMessage.class);
+        Serializer.registerClass(UcCastSpellCommand.class);
         Serializer.registerClass(UcWalkDirection.class);
-        Serializer.registerClass(UcMouseTargetMessage.class);
+        Serializer.registerClass(UcMouseTargetCommand.class);
         // </UserCommands>        
     }
 }

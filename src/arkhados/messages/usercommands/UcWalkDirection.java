@@ -17,14 +17,14 @@ package arkhados.messages.usercommands;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
 import arkhados.controls.UserInputControl;
-import arkhados.messages.syncmessages.AbstractSyncMessage;
+import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
  *
  * @author william
  */
 @Serializable
-public class UcWalkDirection extends AbstractSyncMessage {
+public class UcWalkDirection extends StateData {
 
     private byte down;
     private byte right;

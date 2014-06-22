@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * @author william
  */
-public class SyncManager extends AbstractAppState implements MessageListener, CommandHandler {
+public class SyncManager extends AbstractAppState implements CommandHandler {
 
     private Server server = null;
     private ValueWrapper<NetworkClient> client;
@@ -118,46 +118,15 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
         }
     }
 
-    public void setMessagesToListen(Class... classes) {
-        if (this.getClient() != null) {
-            this.getClient().addMessageListener(this, classes);
-        } else if (this.server != null) {
-            this.server.addMessageListener(this, classes);
-        }
-    }
+    private void doMessage(int syncId, List<Command> m) {
 
-    private void doMessage(AbstractMessage m) {
-        if (m instanceof AbstractSyncMessage) {
-            AbstractSyncMessage message = (AbstractSyncMessage) m;
-            Object object = this.syncObjects.get(message.getSyncId());
-            if (object != null) {
-                message.applyData(object);
-            }
-        }
-    }
-
-    @Override
-    public void messageReceived(Object source, final Message m) {
-        if (this.server == null || !this.listening) {
-            return;
-        }
-
-        this.serverReceivedMessage((HostedConnection) source, (AbstractSyncMessage) m);
-    }
-
-    private void serverReceivedMessage(HostedConnection source, final AbstractSyncMessage message) {
-        final int playerId = ServerClientData.getPlayerId(source.getId());
-        final int syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
-        if (syncId != -1) {
-            message.setSyncId(syncId);
-            this.app.enqueue(new Callable<Void>() {
-                public Void call() throws Exception {
-                    doMessage(message);
-                    return null;
+        Object object = this.syncObjects.get(syncId);
+        if (object != null) {
+            for (Command command : m) {
+                if (command.getTypeId() == CommandTypeIds.SYNC_DATA) {
+                    ((StateData) command).applyData(object);
                 }
-            });
-        } else {
-            System.out.println("Entity id for player " + playerId + " does not exist");
+            }
         }
     }
 
@@ -194,16 +163,20 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
     }
 
     @Override
-    public void readGuaranteed(List<Command> guaranteed) {
-        if (this.client.get() != null) {
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
+        if (this.client != null && this.client.get() != null) {
             this.clientHandleCommands(guaranteed);
+        } else if (this.server != null) {
+            this.serverHandleCommands((HostedConnection) source, guaranteed);
         }
     }
 
     @Override
-    public void readUnreliable(List<Command> unreliables) {
-        if (this.client.get() != null) {
+    public void readUnreliable(Object source, List<Command> unreliables) {
+        if (this.client != null && this.client.get() != null) {
             this.clientHandleCommands(unreliables);
+        } else if (this.server != null) {
+            this.serverHandleCommands((HostedConnection) source, unreliables);
         }
     }
 
@@ -219,5 +192,20 @@ public class SyncManager extends AbstractAppState implements MessageListener, Co
                 return null;
             }
         });
+    }
+
+    private void serverHandleCommands(HostedConnection source, final List<Command> commands) {
+        final int playerId = ServerClientData.getPlayerId(source.getId());
+        final int syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
+        if (syncId != -1) {
+            this.app.enqueue(new Callable<Void>() {
+                public Void call() throws Exception {
+                    doMessage(syncId, commands);
+                    return null;
+                }
+            });
+        } else {
+            System.out.println("Entity id for player " + playerId + " does not exist");
+        }
     }
 }

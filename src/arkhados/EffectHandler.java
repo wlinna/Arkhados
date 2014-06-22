@@ -63,7 +63,7 @@ public class EffectHandler implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(List<Command> guaranteed) {
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
         for (Command command : guaranteed) {
             if (command instanceof ActionCommand) {
                 this.handleAction((ActionCommand) command);
@@ -72,6 +72,6 @@ public class EffectHandler implements CommandHandler {
     }
 
     @Override
-    public void readUnreliable(List<Command> unreliables) {
+    public void readUnreliable(Object source, List<Command> unreliables) {
     }
 }
