@@ -36,6 +36,11 @@ public class UcWalkDirection extends StateData {
         this.down = (byte) down;
         this.right = (byte) right;
     }
+    
+    public void setDownRight(int down, int right) {
+        this.down = (byte) down;
+        this.right = (byte) right;
+    }
 
     @Override
     public void applyData(Object target) {

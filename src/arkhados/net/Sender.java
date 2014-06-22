@@ -44,6 +44,8 @@ public class Sender extends AbstractAppState implements CommandHandler {
     private Server server;
     private ValueWrapper<NetworkClient> client;
     private int otmIdCounter = 0;
+    
+    private OneTrueMessage reUsedOtm = new OneTrueMessage(0);
 
     public Sender(ValueWrapper<NetworkClient> client) {
         this.client = client;
@@ -71,7 +73,10 @@ public class Sender extends AbstractAppState implements CommandHandler {
     private OneTrueMessage createOneTrueMessage() {
         this.unconfirmedGuaranteed.add(new ArrayList<>(this.enqueuedGuaranteed));
 
-        OneTrueMessage otm = new OneTrueMessage(this.otmIdCounter++);
+        OneTrueMessage otm = this.reUsedOtm;
+        otm.setOrderNum(otmIdCounter++);
+        otm.getGuaranteed().clear();
+        otm.getUnreliables().clear();
         
         otm.getGuaranteed().addAll(this.unconfirmedGuaranteed);
         otm.getUnreliables().addAll(this.enqueuedUnreliables);

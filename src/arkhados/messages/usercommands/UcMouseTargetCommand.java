@@ -35,6 +35,8 @@ public class UcMouseTargetCommand extends StateData {
     public UcMouseTargetCommand(Vector3f location) {  
         this.location = location;
     }
+    
+    
 
     @Override
     public void applyData(Object target) {
@@ -51,5 +53,9 @@ public class UcMouseTargetCommand extends StateData {
     @Override
     public boolean isGuaranteed() {
         return false;
+    }
+
+    public void setLocation(Vector3f location) {
+        this.location = location;
     }
 }

@@ -38,6 +38,7 @@ public class Receiver extends AbstractAppState implements MessageListener {
     private List<CommandHandler> handlers = new ArrayList<>();
     private Application app;
     private int lastReceivedOrderNum = -1;
+    private Ack reUsedAck = new Ack(-1);
 
     public void registerCommandHandler(CommandHandler handler) {
         this.handlers.add(handler);
@@ -50,7 +51,8 @@ public class Receiver extends AbstractAppState implements MessageListener {
     }
 
     private void ack(int otmId) {
-        this.app.getStateManager().getState(Sender.class).addCommand(new Ack(otmId));
+        this.reUsedAck.setConfirmedOtmId(otmId);
+        this.app.getStateManager().getState(Sender.class).addCommand(this.reUsedAck);
     }
 
     @Override

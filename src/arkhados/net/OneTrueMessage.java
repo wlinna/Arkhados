@@ -38,10 +38,6 @@ public class OneTrueMessage extends AbstractMessage {
         super(false);
         this.orderNum = orderNum;
     }
-    
-    public int getOrderNum() {
-        return orderNum;
-    }
 
     public List<List<Command>> getGuaranteed() {
         return guaranteed;
@@ -49,5 +45,13 @@ public class OneTrueMessage extends AbstractMessage {
 
     public List<Command> getUnreliables() {
         return unreliables;
+    }
+    
+    public int getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(int orderNum) {
+        this.orderNum = orderNum;
     }
 }

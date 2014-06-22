@@ -45,4 +45,8 @@ public class Ack implements Command {
     public int getConfirmedOtmId() {
         return confirmedOtmId;
     }
+
+    public void setConfirmedOtmId(int confirmedOtmId) {
+        this.confirmedOtmId = confirmedOtmId;
+    }
 }

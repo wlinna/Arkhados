@@ -15,7 +15,6 @@
 package arkhados;
 
 import arkhados.controls.CharacterHudControl;
-import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.usercommands.UcCastSpellCommand;
@@ -25,19 +24,16 @@ import arkhados.net.Sender;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
-import arkhados.util.ValueWrapper;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.Listener;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.Plane;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.network.NetworkClient;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -65,7 +61,9 @@ public class UserCommandManager extends AbstractAppState {
     private Vector3f mouseGroundPosition = new Vector3f();
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private Listener listener;
-
+    private UcMouseTargetCommand reUsedMouseTargetCommand = new UcMouseTargetCommand(mouseGroundPosition);
+    private UcWalkDirection reUsedWalkDirectionCommand = new UcWalkDirection(0, 0);
+    
     public UserCommandManager(Sender sender, InputManager inputManager) {
         this.sender = sender;
         this.inputManager = inputManager;
@@ -160,7 +158,8 @@ public class UserCommandManager extends AbstractAppState {
         this.mouseTargetUpdateTimer -= tpf;
         if (this.mouseTargetUpdateTimer <= 0f) {
             this.calculateMouseGroundPosition();
-            this.sender.addCommand(new UcMouseTargetCommand(this.mouseGroundPosition));
+            this.reUsedMouseTargetCommand.setLocation(mouseGroundPosition);
+            this.sender.addCommand(this.reUsedMouseTargetCommand);
             this.mouseTargetUpdateTimer = 0.075f;
         }
     }
@@ -174,7 +173,8 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void sendWalkDirection() {
-        this.sender.addCommand(new UcWalkDirection(down, right));
+        this.reUsedWalkDirectionCommand.setDownRight(down, right);
+        this.sender.addCommand(this.reUsedWalkDirectionCommand);
     }
 
     @Override
@@ -196,30 +196,6 @@ public class UserCommandManager extends AbstractAppState {
         this.movementKeyFlags.put("move-down", false);
         this.movementKeyFlags.put("move-left", false);
         this.movementKeyFlags.put("move-right", false);
-    }
-
-    private Vector3f getClickLocation() {
-        CollisionResults collisionResults = new CollisionResults();
-
-        final Vector2f mouse2dPosition = this.inputManager.getCursorPosition();
-        final Vector3f mouse3dPosition = this.cam
-                .getWorldCoordinates(mouse2dPosition, 0.0f);
-
-
-        final Vector3f rayDirection = this.cam
-                .getWorldCoordinates(mouse2dPosition, 1.0f)
-                .subtractLocal(mouse3dPosition).normalizeLocal();
-
-        Ray ray = new Ray(mouse3dPosition, rayDirection);
-        this.worldManager.getWorldRoot().collideWith(ray, collisionResults);
-
-        Vector3f contactPoint = null;
-        if (collisionResults.size() > 0) {
-            contactPoint = collisionResults
-                    .getClosestCollision().getContactPoint();
-
-        }
-        return contactPoint;
     }
 
     private void calculateMouseGroundPosition() {
@@ -289,6 +265,7 @@ public class UserCommandManager extends AbstractAppState {
             return;
         }
 
-        this.sender.addCommand(new UcWalkDirection(0, 0));
+        this.reUsedWalkDirectionCommand.setDownRight(0, 0);
+        this.sender.addCommand(this.reUsedWalkDirectionCommand);
     }
 }
