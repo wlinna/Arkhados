@@ -28,12 +28,13 @@ import arkhados.messages.ClientLoginMessage;
 import arkhados.messages.ClientSelectHeroMessage;
 import arkhados.messages.ClientSettingsMessage;
 import arkhados.messages.ConnectionEstablishedMessage;
-import arkhados.messages.MessageUtils;
 import arkhados.messages.PlayerDataTableMessage;
 import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.StartGameMessage;
 import arkhados.messages.UDPHandshakeAck;
 import arkhados.messages.UDPHandshakeRequest;
+import arkhados.net.Receiver;
+import arkhados.net.ServerSender;
 import arkhados.util.PlayerDataStrings;
 
 /**
@@ -62,7 +63,9 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
     public void connectionAdded(Server server, HostedConnection conn) {
         final int clientId = conn.getId();
         if (!ServerClientData.exists(clientId)) {
-            ServerClientData.add(clientId);
+            ServerClientData.add(clientId);            
+            app.getStateManager().getState(ServerSender.class).addConnection(conn);
+            app.getStateManager().getState(Receiver.class).addConnection(conn);
             final ConnectionEstablishedMessage connectionMessage = new ConnectionEstablishedMessage();
             conn.send(connectionMessage);
         } else {

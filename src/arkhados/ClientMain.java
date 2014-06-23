@@ -26,6 +26,7 @@ import arkhados.messages.ServerLoginMessage;
 import arkhados.messages.SetPlayersCharacterMessage;
 import arkhados.messages.StartGameMessage;
 import arkhados.messages.UDPHandshakeAck;
+import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
@@ -139,7 +140,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private RoundManager roundManager;
     private EffectHandler effectHandler;
     
-    private Sender sender;
+    private ClientSender sender;
     private Receiver receiver;
 
     @Override
@@ -182,7 +183,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         this.stateManager.attach(this.roundManager);
 
         
-        this.sender = new Sender(this.clientWrapper);
+        this.sender = new ClientSender(this.clientWrapper.get());
         this.receiver = new Receiver();
         this.receiver.registerCommandHandler(this.effectHandler);
         
@@ -258,6 +259,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
         
         this.clientWrapper.get().addMessageListener(this.receiver, OneTrueMessage.class);
+        this.sender.setClient(this.clientWrapper.get());
 
         if (username.trim().length() == 0) {
             this.setStatusText("Username is invalid");

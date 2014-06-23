@@ -14,9 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.net;
 
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,33 +23,23 @@ import java.util.List;
  */
 
 @Serializable
-public class OneTrueMessage extends AbstractMessage {
-    private int orderNum;
+public class OtmIdCommandListPair {
+    private int otmId;
+    private List<Command> commandList;
 
-    private List<OtmIdCommandListPair> guaranteed = new ArrayList<>();
-    private List<Command> unreliables = new ArrayList<>();
-    
-    public OneTrueMessage() {
-    }
-    
-    public OneTrueMessage(int orderNum) {
-        super(false);
-        this.orderNum = orderNum;
+    public OtmIdCommandListPair() {
     }
 
-    public List<OtmIdCommandListPair> getGuaranteed() {
-        return guaranteed;
+    public OtmIdCommandListPair(int otmId, List<Command> commandList) {
+        this.otmId = otmId;
+        this.commandList = commandList;
     }
 
-    public List<Command> getUnreliables() {
-        return unreliables;
-    }
-    
-    public int getOrderNum() {
-        return orderNum;
+    public int getOtmId() {
+        return otmId;
     }
 
-    public void setOrderNum(int orderNum) {
-        this.orderNum = orderNum;
-    }
+    public List<Command> getCommandList() {
+        return commandList;
+    }        
 }

@@ -32,6 +32,7 @@ import arkhados.messages.usercommands.UcWalkDirection;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
+import arkhados.net.ServerSender;
 import java.util.logging.FileHandler;
 
 /**
@@ -88,7 +89,7 @@ public class ServerMain extends SimpleApplication {
         this.receiver = new Receiver();
         this.server.addMessageListener(this.receiver, OneTrueMessage.class);
         
-        this.sender = new Sender(this.server);
+        this.sender = new ServerSender(this.server);
         
         this.receiver.registerCommandHandler(sender);
         

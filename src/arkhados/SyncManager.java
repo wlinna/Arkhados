@@ -19,8 +19,6 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.Client;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.Message;
-import com.jme3.network.MessageListener;
 import com.jme3.network.Server;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
@@ -30,7 +28,6 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import arkhados.controls.SyncControl;
-import arkhados.messages.syncmessages.AbstractSyncMessage;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
@@ -38,7 +35,6 @@ import arkhados.net.CommandTypeIds;
 import arkhados.net.Sender;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.NetworkClient;
 import java.util.List;
 import java.util.Set;
@@ -54,8 +50,6 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     private Application app;
     HashMap<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
-    private Queue<AbstractMessage> syncQueue = new LinkedList<>();
-    // This queue is used only temporarily to make sure that atleast unreliables work well with new system
     private Queue<StateData> stateDataQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
 
@@ -150,8 +144,8 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     public void clear() {
-        this.syncObjects.clear();
-        this.syncQueue.clear();
+        syncObjects.clear();
+        stateDataQueue.clear();
     }
 
     public void stopListening() {

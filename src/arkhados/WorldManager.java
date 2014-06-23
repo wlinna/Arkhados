@@ -239,7 +239,8 @@ public class WorldManager extends AbstractAppState {
 
     public void temporarilyRemoveEntity(int id) {
         if (this.isServer()) {
-            this.app.getStateManager().getState(Sender.class).addCommand(new TemporarilyRemoveEntityCommand(id));
+            this.app.getStateManager().getState(Sender.class).addCommand(
+                    new TemporarilyRemoveEntityCommand(id));
         }
         Spatial spatial = this.getEntity(id);
         spatial.removeFromParent();
@@ -253,7 +254,8 @@ public class WorldManager extends AbstractAppState {
 
     public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
         if (this.isServer()) {
-            this.app.getStateManager().getState(Sender.class).addCommand(new RestoreTemporarilyRemovedEntityCommand(id, location, rotation));
+            this.app.getStateManager().getState(Sender.class).addCommand(
+                    new RestoreTemporarilyRemovedEntityCommand(id, location, rotation));
         }
         Spatial spatial = this.getEntity(id);
         this.worldRoot.attachChild(spatial);
@@ -292,7 +294,8 @@ public class WorldManager extends AbstractAppState {
 
     public void removeEntity(int id, int reason) {
         if (this.isServer()) {
-            this.app.getStateManager().getState(Sender.class).addCommand(new RemoveEntityCommand(id, reason));
+            this.app.getStateManager().getState(Sender.class).addCommand(
+                    new RemoveEntityCommand(id, reason));
         }
         this.syncManager.removeEntity(id);
         Spatial spatial = this.entities.remove(id);

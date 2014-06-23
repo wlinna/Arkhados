@@ -15,14 +15,10 @@
 package arkhados.net;
 
 import arkhados.spell.buffs.AbstractBuff;
-import arkhados.util.ValueWrapper;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.network.Filter;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.NetworkClient;
-import com.jme3.network.Server;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,29 +29,15 @@ import java.util.logging.Logger;
  *
  * @author william
  */
-public class Sender extends AbstractAppState implements CommandHandler {
+public abstract class Sender extends AbstractAppState implements CommandHandler {
 
-    private static final Logger logger = Logger.getLogger(Sender.class.getName());
+    protected static final Logger logger = Logger.getLogger(Sender.class.getName());
 
     static {
         logger.setLevel(Level.SEVERE);
     }
-    // These should always be added first
-    private List<List<Command>> unconfirmedGuaranteed = new ArrayList<>();
-    private List<Command> enqueuedGuaranteed = new ArrayList<>();
-    private List<Command> enqueuedUnreliables = new ArrayList<>();
-    private Server server;
-    private ValueWrapper<NetworkClient> client;
     private int otmIdCounter = 0;
-    private OneTrueMessage reUsedOtm = new OneTrueMessage(0);
-
-    public Sender(ValueWrapper<NetworkClient> client) {
-        this.client = client;
-    }
-
-    public Sender(Server server) {
-        this.server = server;
-    }
+    private boolean shouldSend;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -63,106 +45,54 @@ public class Sender extends AbstractAppState implements CommandHandler {
         AbstractBuff.setSender(this);
     }
 
-    private void broadcast() {
-        OneTrueMessage otm = this.createOneTrueMessage();
-        this.server.broadcast(otm);
-    }
-    
-    private void broadcast(Filter<HostedConnection> filter) {
-        OneTrueMessage otm = this.createOneTrueMessage();
-        this.server.broadcast(filter, otm);
-    }
+    protected OneTrueMessage createOneTrueMessage(HostedConnection connection) {
+        List<OtmIdCommandListPair> unconfirmedGuaranteed = getGuaranteedForSource(connection);
+        List<Command> enqueuedGuaranteed = getEnqueuedGuaranteedForSource(connection);
+        List<Command> enqueuedUnreliables = getEnqueuedUnreliablesForSource(connection);
 
-    private OneTrueMessage createOneTrueMessage() {
-        this.unconfirmedGuaranteed.add(new ArrayList<>(this.enqueuedGuaranteed));
+        OneTrueMessage otm = new OneTrueMessage(otmIdCounter);
 
-        OneTrueMessage otm = this.reUsedOtm;
-        otm.setOrderNum(otmIdCounter++);
+        if (!enqueuedGuaranteed.isEmpty()) {
+            unconfirmedGuaranteed.add(new OtmIdCommandListPair(otmIdCounter, new ArrayList<>(enqueuedGuaranteed)));
+        }
+
+        otm.setOrderNum(otmIdCounter);
         otm.getGuaranteed().clear();
         otm.getUnreliables().clear();
 
-        otm.getGuaranteed().addAll(this.unconfirmedGuaranteed);
-        otm.getUnreliables().addAll(this.enqueuedUnreliables);
+        if (!unconfirmedGuaranteed.isEmpty()) {
+            otm.getGuaranteed().addAll(unconfirmedGuaranteed);
+        }
+        if (!enqueuedUnreliables.isEmpty()) {
+            otm.getUnreliables().addAll(enqueuedUnreliables);
+        }
 
-        this.enqueuedGuaranteed.clear();
-        this.enqueuedUnreliables.clear();
+        enqueuedGuaranteed.clear();
+        enqueuedUnreliables.clear();
 
         return otm;
     }
 
-    private void clientSend() {
-        assert this.client != null && this.server == null;
-        OneTrueMessage otm = this.createOneTrueMessage();
-
-        this.client.get().send(otm);
-    }
-
-    public void forceSend() {
-        if (this.isClient() && this.client.get() != null &&
-                this.client.get().isConnected()) {
-            
-        } else if (this.isServer() && this.server.isRunning()){
-            this.broadcast();
-        }
-    }
-
-    private void confirmAllUntil(int until) {
+    private void confirmAllUntil(Object source, int until) {
         logger.log(Level.INFO, "Confirming all messages until {0}", until);
 
-        int listsToRemove = this.unconfirmedGuaranteed.size() - (this.otmIdCounter - 1 - until);
+        List<OtmIdCommandListPair> listToRemoveFrom = getGuaranteedForSource(source);
 
-        Iterator<List<Command>> iterator = this.unconfirmedGuaranteed.iterator();
-
-        for (; listsToRemove > 0; --listsToRemove) {
-            iterator.next();
-            iterator.remove();
-        }
-
-    }
-
-    public void addCommand(Command command, Filter<HostedConnection> filter) {
-        if (this.isClient()
-                && (this.client.get() == null || !this.client.get().isConnected())) {
-            return;
-        }
-        if (command.isGuaranteed()) {
-            this.enqueuedGuaranteed.add(command);
-            logger.log(Level.INFO, "Adding GUARANTEED command");
-
-        } else {
-            this.enqueuedUnreliables.add(command);
-            logger.info("Adding UNRELIABLE command");
+        for (Iterator<OtmIdCommandListPair> it = listToRemoveFrom.iterator(); it.hasNext();) {
+            OtmIdCommandListPair otmIdCommandListPair = it.next();
+            if (otmIdCommandListPair.getOtmId() <= until) {
+                it.remove();
+            } else if (otmIdCommandListPair.getOtmId() > until) {
+                break;
+            }
         }
     }
-    
-    public void addCommand(Command command) {
-        this.addCommand(command, null);
-    }
 
-    public void addCommands(List<? extends Command> commands, Filter<HostedConnection> filter) {
-        for (Command command : commands) {
-            this.addCommand(command, filter);
-        }
-    }
-    
-    public void addCommands(List<? extends Command> commands) {
-        this.addCommands(commands, null);
-    }
+    public abstract void addCommand(Command command);
 
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        boolean shouldSend = false;
-
-        if (!this.enqueuedGuaranteed.isEmpty()) {
-            logger.info("Guaranteed commands waiting");
-            shouldSend = true;
-        }
-
-        if (!this.enqueuedUnreliables.isEmpty()) {
-            logger.info("Unreliable commands waiting");
-            shouldSend = true;
-        }
 
         if (!shouldSend) {
             return;
@@ -170,12 +100,14 @@ public class Sender extends AbstractAppState implements CommandHandler {
 
         logger.info("Sending data");
 
-        if (this.server != null) {
-            this.broadcast();
-        } else if (this.client.get() != null) {
-            this.clientSend();
-        }
+        sendMessage();
+
+        ++otmIdCounter;
+
+        shouldSend = false;
     }
+
+    public abstract void sendMessage();
 
     @Override
     public void readGuaranteed(Object source, List<Command> guaranteed) {
@@ -186,17 +118,23 @@ public class Sender extends AbstractAppState implements CommandHandler {
         for (Command command : unreliables) {
             if (command.getTypeId() == CommandTypeIds.ACK) {
                 Ack ack = (Ack) command;
-                this.confirmAllUntil(ack.getConfirmedOtmId());
+                confirmAllUntil(source, ack.getConfirmedOtmId());
                 break;
             }
         }
     }
 
-    public boolean isServer() {
-        return this.server != null;
-    }
+    public abstract boolean isClient();
 
-    public boolean isClient() {
-        return this.client != null;
+    public abstract boolean isServer();
+
+    protected abstract List<OtmIdCommandListPair> getGuaranteedForSource(Object source);
+
+    protected abstract List<Command> getEnqueuedGuaranteedForSource(HostedConnection connection);
+
+    protected abstract List<Command> getEnqueuedUnreliablesForSource(HostedConnection connection);
+
+    public void setShouldSend(boolean shouldSend) {
+        this.shouldSend = shouldSend;
     }
 }

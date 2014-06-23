@@ -17,10 +17,13 @@ package arkhados.net;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,10 +41,11 @@ public class Receiver extends AbstractAppState implements MessageListener {
     private List<CommandHandler> handlers = new ArrayList<>();
     private Application app;
     private int lastReceivedOrderNum = -1;
-    private Ack reUsedAck = new Ack(-1);
+//    private Ack reUsedAck = new Ack(-1);
+    private Map<HostedConnection, Integer> lastReceivedOrderNumMap = new HashMap<>();
 
     public void registerCommandHandler(CommandHandler handler) {
-        this.handlers.add(handler);
+        handlers.add(handler);
     }
 
     @Override
@@ -50,44 +54,76 @@ public class Receiver extends AbstractAppState implements MessageListener {
         this.app = app;
     }
 
-    private void ack(int otmId) {
-        this.reUsedAck.setConfirmedOtmId(otmId);
-        this.app.getStateManager().getState(Sender.class).addCommand(this.reUsedAck);
+    private void ack(Object source, int otmId) {
+        Ack ack = new Ack(otmId);
+        logger.log(Level.INFO, "Acking otmId {0}", otmId);
+//        reUsedAck.setConfirmedOtmId(otmId);
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isClient()) {
+            sender.addCommand(ack);
+        } else {
+            ((ServerSender) sender).addCommandForSingle(ack, (HostedConnection) source);
+        }
     }
 
     @Override
     public void messageReceived(Object source, Message m) {
         OneTrueMessage otp = (OneTrueMessage) m;
 
-        if (otp.getOrderNum() < this.lastReceivedOrderNum) {
+        if (otp.getOrderNum() < getLastReceivedOrderNum(source)) {
             return;
         }
 
-        if (otp.getGuaranteed().size() != 1 || !otp.getGuaranteed().get(0).isEmpty()) {
-            this.handleGuaranteed(source, otp);
+        if (!otp.getGuaranteed().isEmpty()) {
+            handleGuaranteed(source, otp);
         }
-        this.handleUnreliable(source, otp);
+
+        setLastReceivedOrderNum(source, otp.getOrderNum());
+
+        handleUnreliable(source, otp);
+    }
+
+    private int getLastReceivedOrderNum(Object source) {
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isClient()) {
+            return lastReceivedOrderNum;
+        } else {
+            return lastReceivedOrderNumMap.get((HostedConnection) source);
+        }
+    }
+
+    private void setLastReceivedOrderNum(Object source, int num) {
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isClient()) {
+            lastReceivedOrderNum = num;
+        } else {
+            lastReceivedOrderNumMap.put((HostedConnection) source, num);
+        }
     }
 
     private void handleGuaranteed(Object source, OneTrueMessage otp) {
-        int versionDiff = otp.getOrderNum() - this.lastReceivedOrderNum;
-
-        int i = otp.getGuaranteed().size() - versionDiff;
-
-        this.lastReceivedOrderNum = otp.getOrderNum();
-
-        for (; i < otp.getGuaranteed().size(); ++i) {
+        int lastReceivedOrderNumber = getLastReceivedOrderNum(source);
+        
+        for (OtmIdCommandListPair otmIdCommandListPair : otp.getGuaranteed()) {
+            if (otmIdCommandListPair.getOtmId() <= lastReceivedOrderNumber) {
+                continue;
+            }
+                    
             for (CommandHandler commandHandler : handlers) {
-                commandHandler.readGuaranteed(source, otp.getGuaranteed().get(i));
+                commandHandler.readGuaranteed(source, otmIdCommandListPair.getCommandList());
             }
         }
 
-        this.ack(otp.getOrderNum());
+        ack(source, otp.getOrderNum());
     }
 
     private void handleUnreliable(Object source, OneTrueMessage otp) {
         for (CommandHandler commandHandler : handlers) {
             commandHandler.readUnreliable(source, otp.getUnreliables());
         }
+    }
+    
+    public void addConnection(HostedConnection connection) {
+        lastReceivedOrderNumMap.put(connection, -1);
     }
 }

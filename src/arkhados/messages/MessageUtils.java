@@ -41,6 +41,7 @@ import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
 import arkhados.net.Ack;
 import arkhados.net.OneTrueMessage;
+import arkhados.net.OtmIdCommandListPair;
 import arkhados.util.PlayerRoundStats;
 
 /**
@@ -56,6 +57,7 @@ public class MessageUtils {
 
     public static void registerMessages() {
         Serializer.registerClass(OneTrueMessage.class);
+        Serializer.registerClass(OtmIdCommandListPair.class);
         
         // <Commands>
         Serializer.registerClass(Ack.class);
