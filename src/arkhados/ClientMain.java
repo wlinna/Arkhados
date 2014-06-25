@@ -29,7 +29,6 @@ import arkhados.messages.UDPHandshakeAck;
 import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
-import arkhados.net.Sender;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;

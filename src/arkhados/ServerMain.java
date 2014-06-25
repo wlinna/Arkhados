@@ -33,6 +33,7 @@ import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
+import arkhados.spell.buffs.AbstractBuff;
 import java.util.logging.FileHandler;
 
 /**
@@ -73,50 +74,50 @@ public class ServerMain extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        Globals.assetManager = this.getAssetManager();
-        this.worldManager = new WorldManager();
-        this.gameManager = new ServerGameManager();
-        this.physicsState = new BulletAppState();
-        this.physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
-        this.flyCam.setEnabled(false);
+        Globals.assetManager = getAssetManager();
+        worldManager = new WorldManager();
+        gameManager = new ServerGameManager();
+        physicsState = new BulletAppState();
+        physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        flyCam.setEnabled(false);
 
         try {
-            this.server = Network.createServer(Globals.PORT, Globals.PORT);
-            this.server.start();
+            server = Network.createServer(Globals.PORT, Globals.PORT);
+            server.start();
         } catch (IOException ex) {
         }
         
-        this.receiver = new Receiver();
-        this.server.addMessageListener(this.receiver, OneTrueMessage.class);
+        receiver = new Receiver();
+        server.addMessageListener(receiver, OneTrueMessage.class);
         
-        this.sender = new ServerSender(this.server);
+        sender = new ServerSender(server);
+        AbstractBuff.setSender(sender);
         
-        this.receiver.registerCommandHandler(sender);
+        receiver.registerCommandHandler(sender);
         
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
-        this.listenerManager = new ServerNetListener(this, server);
-        this.syncManager = new SyncManager(this, this.server);
-        this.receiver.registerCommandHandler(this.syncManager);
+        listenerManager = new ServerNetListener(this, server);
+        syncManager = new SyncManager(this, server);
+        receiver.registerCommandHandler(syncManager);
 
-        this.stateManager.attach(this.sender);
-        this.stateManager.attach(this.receiver);
-        this.stateManager.attach(this.syncManager);
-        this.stateManager.attach(this.worldManager);
-        this.stateManager.attach(this.gameManager);
-        this.stateManager.attach(this.physicsState);
+        stateManager.attach(sender);
+        stateManager.attach(receiver);
+        stateManager.attach(syncManager);
+        stateManager.attach(worldManager);
+        stateManager.attach(gameManager);
+        stateManager.attach(physicsState);
         
-        this.physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
+        physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
     }
 
     public void startGame() {
-        this.flyCam.setEnabled(true);
-        this.flyCam.setMoveSpeed(25.0f);
-        this.inputManager.setCursorVisible(true);
-        this.enqueue(new Callable<Void>() {
+        flyCam.setEnabled(true);
+        flyCam.setMoveSpeed(25.0f);
+        inputManager.setCursorVisible(true);
+        enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-
-                ServerMain.this.gameManager.startGame();
+                gameManager.startGame();
                 return null;
             }
         });
@@ -132,7 +133,7 @@ public class ServerMain extends SimpleApplication {
 
     @Override
     public void destroy() {
-        this.server.close();
+        server.close();
         super.destroy();
     }
 }
