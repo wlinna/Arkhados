@@ -31,7 +31,6 @@ import arkhados.controls.SyncControl;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
-import arkhados.net.CommandTypeIds;
 import arkhados.net.Sender;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;

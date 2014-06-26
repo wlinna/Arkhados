@@ -16,7 +16,7 @@
 package arkhados.messages.syncmessages.statedata;
 
 import arkhados.net.Command;
-import arkhados.net.CommandTypeIds;
+import arkhados.CommandTypeIds;
 import com.jme3.network.serializing.Serializable;
 
 /**
