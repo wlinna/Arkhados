@@ -61,24 +61,23 @@ public class UserCommandManager extends AbstractAppState {
     private Vector3f mouseGroundPosition = new Vector3f();
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private Listener listener;
-    private UcMouseTargetCommand reUsedMouseTargetCommand = new UcMouseTargetCommand(mouseGroundPosition);
-    private UcWalkDirection reUsedWalkDirectionCommand = new UcWalkDirection(0, 0);
     
     public UserCommandManager(Sender sender, InputManager inputManager) {
         this.sender = sender;
         this.inputManager = inputManager;
-        this.clearMovementFlags();
+        clearMovementFlags();
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
-        this.worldManager = stateManager.getState(WorldManager.class);
-        this.listener = app.getListener();
-        this.cam = app.getCamera();
+        worldManager = stateManager.getState(WorldManager.class);
+        listener = app.getListener();
+        cam = app.getCamera();
     }
     private ActionListener actionCastSpell = new ActionListener() {
+        @Override
         public void onAction(String name, boolean isPressed, float tpf) {
             InfluenceInterfaceControl influenceInterface = getCharacterInterface();
             if (influenceInterface == null || influenceInterface.isDead()) {
@@ -110,13 +109,13 @@ public class UserCommandManager extends AbstractAppState {
             movementKeyFlags.put(name, isPressed);
 
             if ("move-right".equals(name)) {
-                UserCommandManager.this.right += isPressed ? 1 : -1;
+                right += isPressed ? 1 : -1;
             } else if ("move-left".equals(name)) {
-                UserCommandManager.this.right += isPressed ? -1 : 1;
+                right += isPressed ? -1 : 1;
             } else if ("move-up".equals(name)) {
-                UserCommandManager.this.down += isPressed ? -1 : 1;
+                down += isPressed ? -1 : 1;
             } else if ("move-down".equals(name)) {
-                UserCommandManager.this.down += isPressed ? 1 : -1;
+                down += isPressed ? 1 : -1;
             }
 
             sendWalkDirection();
@@ -124,111 +123,109 @@ public class UserCommandManager extends AbstractAppState {
     };
 
     private void disableInputListeners() {
-        if (this.inputListenersActive) {
-            this.inputManager.removeListener(this.actionMoveDirection);
-            this.inputManager.removeListener(this.actionCastSpell);
+        if (inputListenersActive) {
+            inputManager.removeListener(actionMoveDirection);
+            inputManager.removeListener(actionCastSpell);
         }
-        this.inputListenersActive = false;
+        inputListenersActive = false;
     }
 
     private void enableInputListeners() {
-        if (!this.inputListenersActive) {
-            this.inputManager.addListener(this.actionMoveDirection,
+        if (!inputListenersActive) {
+            inputManager.addListener(actionMoveDirection,
                     InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
                     InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
-            this.inputManager.addListener(this.actionCastSpell,
+            inputManager.addListener(actionCastSpell,
                     InputMappingStrings.M1, InputMappingStrings.M2,
                     InputMappingStrings.Q, InputMappingStrings.E,
                     InputMappingStrings.R, InputMappingStrings.SPACE);
         }
 
-        this.inputListenersActive = true;
+        inputListenersActive = true;
     }
 
     @Override
     public void update(float tpf) {
-        if (!this.inputListenersActive) {
+        if (!inputListenersActive) {
             return;
         }
-        Spatial character = this.getCharacter();
-        if (character == null) {
+        Spatial localCharacter = getCharacter();
+        if (localCharacter == null) {
             return;
         }
-        this.listener.setLocation(character.getWorldTranslation());
-        this.mouseTargetUpdateTimer -= tpf;
-        if (this.mouseTargetUpdateTimer <= 0f) {
-            this.calculateMouseGroundPosition();
-            this.reUsedMouseTargetCommand.setLocation(mouseGroundPosition);
-            this.sender.addCommand(this.reUsedMouseTargetCommand);
-            this.mouseTargetUpdateTimer = 0.075f;
+        listener.setLocation(localCharacter.getWorldTranslation());
+        mouseTargetUpdateTimer -= tpf;
+        if (mouseTargetUpdateTimer <= 0f) {
+            calculateMouseGroundPosition();
+            sender.addCommand(new UcMouseTargetCommand(mouseGroundPosition));
+            mouseTargetUpdateTimer = 0.075f;
         }
     }
 
     public void followPlayer() {
         Node camNode = new Node("cam-node");
-        this.worldManager.getWorldRoot().attachChild(camNode);
-//        camNode.addControl(new FollowCharacterControl(this.character, this.cam));
-        camNode.addControl(new FreeCameraControl(this.character, this.cam, this.inputManager));
+        worldManager.getWorldRoot().attachChild(camNode);
+//        camNode.addControl(new FollowCharacterControl(character, cam));
+        camNode.addControl(new FreeCameraControl(character, cam, inputManager));
         camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
 
     public void sendWalkDirection() {
-        this.reUsedWalkDirectionCommand.setDownRight(down, right);
-        this.sender.addCommand(this.reUsedWalkDirectionCommand);
+        sender.addCommand(new UcWalkDirection(down, right));
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        this.down = 0;
-        this.right = 0;
+        down = 0;
+        right = 0;
 
         if (enabled) {
-            this.enableInputListeners();
+            enableInputListeners();
         } else {
-            this.disableInputListeners();
-            this.clearMovementFlags();
+            disableInputListeners();
+            clearMovementFlags();
         }
     }
 
     private void clearMovementFlags() {
-        this.movementKeyFlags.put("move-up", false);
-        this.movementKeyFlags.put("move-down", false);
-        this.movementKeyFlags.put("move-left", false);
-        this.movementKeyFlags.put("move-right", false);
+        movementKeyFlags.put("move-up", false);
+        movementKeyFlags.put("move-down", false);
+        movementKeyFlags.put("move-left", false);
+        movementKeyFlags.put("move-right", false);
     }
 
     private void calculateMouseGroundPosition() {
-        final Vector2f mouse2dPosition = this.inputManager.getCursorPosition();
-        final Vector3f mouse3dPosition = this.cam
+        final Vector2f mouse2dPosition = inputManager.getCursorPosition();
+        final Vector3f mouse3dPosition = cam
                 .getWorldCoordinates(mouse2dPosition, 0.0f);
 
 
-        final Vector3f rayDirection = this.cam
+        final Vector3f rayDirection = cam
                 .getWorldCoordinates(mouse2dPosition, 1.0f)
                 .subtractLocal(mouse3dPosition).normalizeLocal();
 
         Ray ray = new Ray(mouse3dPosition, rayDirection);
-        boolean intersects = ray.intersectsWherePlane(this.floorPlane, this.mouseGroundPosition);
+        boolean intersects = ray.intersectsWherePlane(floorPlane, mouseGroundPosition);
     }
 
     public Spatial getCharacter() {
-        if (this.character == null) {
-            Spatial spatial = this.worldManager.getEntity(this.characterId);
+        if (character == null) {
+            Spatial spatial = worldManager.getEntity(characterId);
             if (spatial != null) {
-                this.trySetPlayersCharacter(spatial);
+                trySetPlayersCharacter(spatial);
             }
             return spatial;
         }
-        return this.character;
+        return character;
     }
 
     public void nullifyCharacter() {
-        this.character = null;
+        character = null;
     }
 
     private InfluenceInterfaceControl getCharacterInterface() {
-        Spatial spatial = this.getCharacter();
+        Spatial spatial = getCharacter();
         if (spatial == null) {
             return null;
         }
@@ -236,7 +233,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public int getPlayerId() {
-        return this.playerId;
+        return playerId;
     }
 
     public void setPlayerId(int playerId) {
@@ -249,11 +246,11 @@ public class UserCommandManager extends AbstractAppState {
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
         // FIXME: NullPointerException
-        if ((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID) == this.characterId) {
-            this.character = (Node) spatial;
-            ClientHudManager hudManager = this.app.getStateManager().getState(ClientHudManager.class);
-            this.character.getControl(CharacterHudControl.class).setHudManager(hudManager);
-            this.followPlayer();
+        if ((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID) == characterId) {
+            character = (Node) spatial;
+            ClientHudManager hudManager = app.getStateManager().getState(ClientHudManager.class);
+            character.getControl(CharacterHudControl.class).setHudManager(hudManager);
+            followPlayer();
 
             return true;
         }
@@ -261,11 +258,10 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void onLoseFocus() {
-        if (!super.isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
 
-        this.reUsedWalkDirectionCommand.setDownRight(0, 0);
-        this.sender.addCommand(this.reUsedWalkDirectionCommand);
+        sender.addCommand(new UcWalkDirection(down, right));
     }
 }
