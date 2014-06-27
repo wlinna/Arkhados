@@ -12,9 +12,10 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -22,20 +23,22 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class ClientSelectHeroMessage extends AbstractMessage {
-    private String heroName;
+public class ClientLoginCommand implements Command {
+    private String name;
 
-    public ClientSelectHeroMessage() {
+    public ClientLoginCommand() {
     }
 
-    public ClientSelectHeroMessage(String heroName) {
-        this.heroName = heroName;
+    public ClientLoginCommand(String nick) {
+        this.name = nick;
     }
 
-    public String getHeroName() {
-        return this.heroName;
+    public String getName() {
+        return this.name;
     }
 
-
-
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
 }

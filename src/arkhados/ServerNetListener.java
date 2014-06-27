@@ -14,60 +14,53 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.messages.BattleStatisticsRequest;
 import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.Message;
-import com.jme3.network.MessageListener;
 import com.jme3.network.Server;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientLoginMessage;
-import arkhados.messages.ClientSelectHeroMessage;
-import arkhados.messages.ClientSettingsMessage;
-import arkhados.messages.ConnectionEstablishedMessage;
+import arkhados.messages.ClientLoginCommand;
+import arkhados.messages.ClientSelectHeroCommand;
+import arkhados.messages.ClientSettingsCommand;
 import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.ServerLoginMessage;
-import arkhados.messages.StartGameMessage;
-import arkhados.messages.UDPHandshakeAck;
-import arkhados.messages.UDPHandshakeRequest;
+import arkhados.messages.ServerLoginCommand;
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.Command;
+import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
+import arkhados.net.Sender;
 import arkhados.net.ServerSender;
 import arkhados.util.PlayerDataStrings;
+import java.util.List;
 
 /**
  *
  * @author william
  */
-public class ServerNetListener implements MessageListener<HostedConnection>, ConnectionListener {
+public class ServerNetListener implements ConnectionListener, CommandHandler {
 
     private ServerMain app;
     private Server server;
 
     public ServerNetListener(ServerMain app, Server server) {
-
         this.app = app;
         this.server = server;
-        this.server.addConnectionListener(this);
-        this.server.addMessageListener(this,
-                UDPHandshakeRequest.class,
-                ClientLoginMessage.class, ChatMessage.class,
-                StartGameMessage.class, ClientSettingsMessage.class,
-                ClientSelectHeroMessage.class,
-                BattleStatisticsRequest.class);
+        server.addConnectionListener(this);
     }
 
     @Override
     public void connectionAdded(Server server, HostedConnection conn) {
         final int clientId = conn.getId();
         if (!ServerClientData.exists(clientId)) {
-            ServerClientData.add(clientId);            
-            app.getStateManager().getState(ServerSender.class).addConnection(conn);
+            ServerClientData.add(clientId);
+            ServerSender sender = app.getStateManager().getState(ServerSender.class);
+            sender.addConnection(conn);
             app.getStateManager().getState(Receiver.class).addConnection(conn);
-            final ConnectionEstablishedMessage connectionMessage = new ConnectionEstablishedMessage();
-            conn.send(connectionMessage);
+            TopicOnlyCommand connectionEstablishendCommand =
+                    new TopicOnlyCommand(TopicOnlyCommand.CONNECTION_ESTABLISHED);
+            sender.addCommand(connectionEstablishendCommand);
         } else {
             Logger.getLogger(ServerNetListener.class.getName()).log(Level.SEVERE, "Client ID exists!");
             conn.close("ID exists already");
@@ -79,51 +72,87 @@ public class ServerNetListener implements MessageListener<HostedConnection>, Con
     }
 
     @Override
-    public void messageReceived(HostedConnection source, Message m) {
-        if (m instanceof UDPHandshakeRequest) {
-            source.send(new UDPHandshakeAck());
-            
-        } else if (m instanceof ClientLoginMessage) {
-            final ClientLoginMessage message = (ClientLoginMessage) m;
-            final int clientId = source.getId();
-
-            if (!ServerClientData.exists(clientId)) {
-                Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING, "Receiving join message from unknown client (id: {0})", clientId);
-                return;
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
+        ServerSender sender = app.getStateManager().getState(ServerSender.class);
+        for (Command command : guaranteed) {
+            if (command instanceof TopicOnlyCommand) {
+                handleTopicOnlyCommand((HostedConnection) source,
+                        (TopicOnlyCommand) command);
+            } else if (command instanceof ChatMessage) {
+                sender.addCommand(command);
+            } else if (command instanceof ClientLoginCommand) {
+                handleClientLoginCommand((HostedConnection) source,
+                        (ClientLoginCommand) command);
+            } else if (command instanceof ClientSelectHeroCommand) {
+                handleClientSelectHeroCommand((HostedConnection) source,
+                        (ClientSelectHeroCommand) command);
+            } else if (command instanceof ClientSettingsCommand) {
+                handleClientSettingsCommand((HostedConnection) source,
+                        (ClientSettingsCommand) command);
             }
-            final int playerId = PlayerData.getNew(message.getName());
-            PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
-            PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
-            ServerClientData.setConnected(clientId, true);
-            ServerClientData.setPlayerId(clientId, playerId);
-            ServerLoginMessage serverLoginMessage = new ServerLoginMessage(message.getName(), playerId, true);
-            source.send(serverLoginMessage);
-            this.server.broadcast(PlayerDataTableMessage.makeFromPlayerDataList());
+        }
+    }
 
-        } else if (m instanceof ClientSettingsMessage) {
-            ClientSettingsMessage clientSettings = (ClientSettingsMessage) m;
-            int playerId = ServerClientData.getPlayerId(source.getId());            
-            PlayerData.setData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, clientSettings.commandMoveInterrupts());
-            
-        } else if (m instanceof ChatMessage) {
-            final ChatMessage message = (ChatMessage) m;
-            this.server.broadcast(message);
-            
-        } else if (m instanceof ClientSelectHeroMessage) {
-            final ClientSelectHeroMessage message = (ClientSelectHeroMessage) m;
-            final int playerId = ServerClientData.getPlayerId(source.getId());
+    private void handleTopicOnlyCommand(HostedConnection source, TopicOnlyCommand topicCommand) {
+        ServerSender sender = app.getStateManager().getState(ServerSender.class);
 
-            // TODO: Check hero name validity
-            PlayerData.setData(playerId, PlayerDataStrings.HERO, message.getHeroName());
+        switch (topicCommand.getTopicId()) {
+            case TopicOnlyCommand.BATTLE_STATISTICS_REQUEST:
+                final BattleStatisticsResponse response = BattleStatisticsResponse.buildBattleStatisticsResponse();
+                sender.addCommand(response);
+                break;
+            case TopicOnlyCommand.START_GAME:
+                sender.addCommand(topicCommand);
+                app.startGame();
+                break;
+            case TopicOnlyCommand.UDP_HANDSHAKE_REQUEST:
+                sender.addCommandForSingle(new TopicOnlyCommand(
+                        TopicOnlyCommand.UDP_HANDSHAKE_ACK, false), source);
+                break;
 
-        } else if (m instanceof StartGameMessage) {
-            final StartGameMessage message = (StartGameMessage) m;
-            this.server.broadcast(message);
-            this.app.startGame();
-            
-        } else if (m instanceof BattleStatisticsRequest) {
-            final BattleStatisticsResponse response = BattleStatisticsResponse.buildBattleStatisticsResponse();
-            source.send(response);
+        }
+    }
+
+    private void handleClientLoginCommand(HostedConnection source, ClientLoginCommand commmand) {
+        Sender sender = app.getStateManager().getState(Sender.class);
+        final int clientId = source.getId();
+
+        if (!ServerClientData.exists(clientId)) {
+            Logger.getLogger(ServerNetListener.class.getName()).log(Level.WARNING,
+                    "Receiving join message from unknown client (id: {0})", clientId);
+            return;
+        }
+
+        final int playerId = PlayerData.getNew(commmand.getName());
+        PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
+        PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
+        ServerClientData.setConnected(clientId, true);
+        ServerClientData.setPlayerId(clientId, playerId);
+        ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId, true);
+        sender.addCommand(serverLoginMessage);
+        sender.addCommand(PlayerDataTableMessage.makeFromPlayerDataList());
+    }
+
+    private void handleClientSelectHeroCommand(HostedConnection source, ClientSelectHeroCommand command) {
+        final int playerId = ServerClientData.getPlayerId(((HostedConnection) source).getId());
+
+        // TODO: Check hero name validity
+        PlayerData.setData(playerId, PlayerDataStrings.HERO, command.getHeroName());
+    }
+
+    private void handleClientSettingsCommand(HostedConnection source, ClientSettingsCommand clientSettings) {
+        int playerId = ServerClientData.getPlayerId(source.getId());
+        PlayerData.setData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
+                clientSettings.commandMoveInterrupts());
+    }
+
+    @Override
+    public void readUnreliable(Object source, List<Command> unreliables) {
+        for (Command command : unreliables) {
+            if (command instanceof TopicOnlyCommand) {
+                handleTopicOnlyCommand((HostedConnection) source,
+                        (TopicOnlyCommand) command);
+            }
         }
     }
 }

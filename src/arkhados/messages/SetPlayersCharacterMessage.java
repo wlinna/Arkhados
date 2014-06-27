@@ -15,7 +15,7 @@
 
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -23,12 +23,11 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class SetPlayersCharacterMessage extends AbstractMessage {
+public class SetPlayersCharacterMessage implements Command{
     private int entityId;
     private int playerId;
 
     public SetPlayersCharacterMessage() {
-
     }
 
     public SetPlayersCharacterMessage(int entityId, int playerId) {
@@ -44,7 +43,8 @@ public class SetPlayersCharacterMessage extends AbstractMessage {
         return this.playerId;
     }
 
-
-
-
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
 }

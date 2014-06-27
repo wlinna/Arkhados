@@ -12,29 +12,32 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
  *
  * @author william
  */
-
 @Serializable
-public class ClientSettingsMessage extends AbstractMessage {
-    private boolean commandMoveInterrupts;
+public class ClientSelectHeroCommand implements Command {
+    private String heroName;
 
-    public ClientSettingsMessage() {
+    public ClientSelectHeroCommand() {
     }
 
-    public ClientSettingsMessage(boolean commandMoveInterrupts) {
-        this.commandMoveInterrupts = commandMoveInterrupts;
+    public ClientSelectHeroCommand(String heroName) {
+        this.heroName = heroName;
     }
 
-    public boolean commandMoveInterrupts() {
-        return commandMoveInterrupts;
-    }        
+    public String getHeroName() {
+        return heroName;
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
 }

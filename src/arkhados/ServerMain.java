@@ -63,6 +63,7 @@ public class ServerMain extends SimpleApplication {
         app.start(JmeContext.Type.Headless);
 //        app.start();
     }
+    
     private Server server;
     private ServerNetListener listenerManager;
     private ServerGameManager gameManager;
@@ -100,6 +101,7 @@ public class ServerMain extends SimpleApplication {
         listenerManager = new ServerNetListener(this, server);
         syncManager = new SyncManager(this, server);
         receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(listenerManager);
 
         stateManager.attach(sender);
         stateManager.attach(receiver);

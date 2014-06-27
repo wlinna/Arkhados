@@ -15,16 +15,15 @@
 
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 @Serializable
-public class ChatMessage extends AbstractMessage {
+public class ChatMessage implements Command {
     private String name;
     private String message;
 
     public ChatMessage() {
-
     }
 
     public ChatMessage(String name, String message) {
@@ -40,5 +39,8 @@ public class ChatMessage extends AbstractMessage {
         return this.message;
     }
 
-
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
 }

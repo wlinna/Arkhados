@@ -24,7 +24,6 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import com.jme3.scene.Node;
-import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +35,7 @@ import arkhados.messages.roundprotocol.NewRoundMessage;
 import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
 import arkhados.messages.roundprotocol.RoundFinishedMessage;
 import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
+import arkhados.net.ServerSender;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
@@ -65,16 +65,16 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         logger.setLevel(Level.ALL);
         logger.log(Level.INFO, "Initializing RoundManager");
         super.initialize(stateManager, app);
-        this.worldManager = stateManager.getState(WorldManager.class);
-        this.syncManager = stateManager.getState(SyncManager.class);
+        worldManager = stateManager.getState(WorldManager.class);
+        syncManager = stateManager.getState(SyncManager.class);
         this.stateManager = stateManager;
-        this.syncManager.addObject(-1, this.worldManager);
+        syncManager.addObject(-1, worldManager);
         this.app = app;
 
-        if (this.worldManager.isClient()) {
-            this.clientMain = (ClientMain) app;
-        } else if (this.worldManager.isServer()) {
-            this.syncManager.getServer().addMessageListener(this,
+        if (worldManager.isClient()) {
+            clientMain = (ClientMain) app;
+        } else if (worldManager.isServer()) {
+            syncManager.getServer().addMessageListener(this,
                     ClientWorldCreatedMessage.class,
                     PlayerReadyForNewRoundMessage.class);
         }
@@ -82,7 +82,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     }
 
     public void configureForClient() {
-        this.syncManager.getClient().addMessageListener(this,
+        syncManager.getClient().addMessageListener(this,
                 CreateWorldMessage.class,
                 NewRoundMessage.class,
                 RoundFinishedMessage.class,
@@ -96,14 +96,14 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
 
         if (currentRound == 0) {
-            this.createWorld();
+            createWorld();
         }
     }
 
     private void createWorld() {
         logger.log(Level.INFO, "Creating world");
-        ++this.currentRound;
-        this.app.enqueue(new Callable<Void>() {
+        ++currentRound;
+        app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
                 if (currentRound > 1) {
                     cleanupPreviousRound();
@@ -134,10 +134,11 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
     private void createCharacters() {
         logger.log(Level.INFO, "Creating characters");
-        if (this.worldManager.isServer()) {
-            this.app.enqueue(new Callable<Void>() {
+        if (worldManager.isServer()) {
+            app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
 
+                    ServerSender sender = app.getStateManager().getState(ServerSender.class);
                     int i = 0;
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
@@ -154,7 +155,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
-                        syncManager.getServer().broadcast(new SetPlayersCharacterMessage(entityId, playerData.getId()));
+                        
+                        sender.addCommand(new SetPlayersCharacterMessage(entityId, playerData.getId()));
                     }
 
                     logger.log(Level.INFO, "Informing players of their characters");
@@ -163,90 +165,90 @@ public class RoundManager extends AbstractAppState implements MessageListener {
             });
         }
 
-        this.syncManager.getServer().broadcast(new RoundStartCountdownMessage(5));        
-        this.roundStartTimer.setTimeLeft(5f);
-        this.roundStartTimer.setActive(true);
+        syncManager.getServer().broadcast(new RoundStartCountdownMessage(5));        
+        roundStartTimer.setTimeLeft(5f);
+        roundStartTimer.setActive(true);
     }
 
     private void startNewRound() {
         logger.log(Level.INFO, "Starting new round");
-        if (this.worldManager.isServer()) {
-            this.syncManager.getServer().broadcast(new NewRoundMessage());
+        if (worldManager.isServer()) {
+            syncManager.getServer().broadcast(new NewRoundMessage());
             CharacterInteraction.startNewRound();
         }
-        this.roundRunning = true;
-        if (this.worldManager.isClient()) {
-            this.clientMain.getUserCommandManager().setEnabled(true);
-            this.stateManager.getState(ClientHudManager.class).startRound();
+        roundRunning = true;
+        if (worldManager.isClient()) {
+            clientMain.getUserCommandManager().setEnabled(true);
+            stateManager.getState(ClientHudManager.class).startRound();
         }
     }
 
     private void cleanupPreviousRound() {
         logger.log(Level.INFO, "Cleaning up previous round");
         worldManager.clear();
-        this.syncManager.addObject(-1, this.worldManager);
-        if (this.worldManager.isClient()) {
-            this.stateManager.getState(ClientHudManager.class).clear();
-            this.clientMain.getUserCommandManager().nullifyCharacter();
+        syncManager.addObject(-1, worldManager);
+        if (worldManager.isClient()) {
+            stateManager.getState(ClientHudManager.class).clear();
+            clientMain.getUserCommandManager().nullifyCharacter();
         }
     }
 
     private void endRound() {
         logger.log(Level.INFO, "Ending round");
-        if (this.worldManager.isServer()) {
-            this.syncManager.getServer().broadcast(new RoundFinishedMessage());
+        if (worldManager.isServer()) {
+            syncManager.getServer().broadcast(new RoundFinishedMessage());
             PlayerData.setDataForAll(PlayerDataStrings.WORLD_CREATED, false);
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
             logger.log(Level.INFO, "Disabling syncManager");
 
-            this.syncManager.stopListening();
+            syncManager.stopListening();
         }
-        this.roundRunning = false;
+        roundRunning = false;
         logger.log(Level.INFO, "Enabling worldManager");
 
-        this.worldManager.setEnabled(false);
+        worldManager.setEnabled(false);
 
-        if (this.worldManager.isClient()) {
-            this.clientMain.getUserCommandManager().setEnabled(false);
-            this.stateManager.getState(ClientHudManager.class).showRoundStatistics();
+        if (worldManager.isClient()) {
+            clientMain.getUserCommandManager().setEnabled(false);
+            stateManager.getState(ClientHudManager.class).showRoundStatistics();
         }
 
-        this.roundEndTimer.setTimeLeft(5f);
-        this.roundEndTimer.setActive(true);
+        roundEndTimer.setTimeLeft(5f);
+        roundEndTimer.setActive(true);
     }
 
     @Override
     public void update(float tpf) {
-        this.roundStartTimer.update(tpf);
-        if (this.roundStartTimer.timeJustEnded()) {
-            if (this.worldManager.isServer()) {
-                this.startNewRound();
+        roundStartTimer.update(tpf);
+        if (roundStartTimer.timeJustEnded()) {
+            if (worldManager.isServer()) {
+                startNewRound();
             }
-            this.roundStartTimer.setActive(false);
+            roundStartTimer.setActive(false);
         }
 
-        if (this.roundStartTimer.isActive() && this.worldManager.isClient()) {
-            this.stateManager.getState(ClientHudManager.class).setSecondsLeftToStart((int) this.roundStartTimer.getTimeLeft());
+        if (roundStartTimer.isActive() && worldManager.isClient()) {
+            stateManager.getState(ClientHudManager.class).setSecondsLeftToStart((int) roundStartTimer.getTimeLeft());
         }
         
-        this.roundEndTimer.update(tpf);
-        if (this.roundEndTimer.timeJustEnded() && this.worldManager.isServer()) {
-            if (this.currentRound < this.rounds) {
-                this.createWorld();
+        roundEndTimer.update(tpf);
+        if (roundEndTimer.timeJustEnded() && worldManager.isServer()) {
+            if (currentRound < rounds) {
+                createWorld();
             } else {
-                this.syncManager.getServer().broadcast(new GameEndedMessage());
+                syncManager.getServer().broadcast(new GameEndedMessage());
             }
         }
 
-        if (!this.roundRunning) {
+        if (!roundRunning) {
             return;
         }
 
-        if (this.worldManager.isServer()) {
+        if (worldManager.isServer()) {
             int aliveAmount = 0;
             for (PlayerData playerData : PlayerData.getPlayers()) {
                 int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
-                Node character = (Node) this.worldManager.getEntity(entityId);
+                Node character = (Node) worldManager.getEntity(entityId);
                 if ((Float) character.getUserData(UserDataStrings.HEALTH_CURRENT) > 0f) {
                     ++aliveAmount;
                     if (aliveAmount > 1) {
@@ -255,7 +257,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                 }
             }
             if (aliveAmount == 0) {
-                this.endRound();
+                endRound();
             }
         }
     }
@@ -279,27 +281,27 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
     @Override
     public void messageReceived(Object source, Message m) {
-        if (this.worldManager.isClient()) {
-            this.clientMessageReceived(source, m);
-        } else if (this.worldManager.isServer()) {
-            this.serverMessageReceived((HostedConnection) source, m);
+        if (worldManager.isClient()) {
+            clientMessageReceived(source, m);
+        } else if (worldManager.isServer()) {
+            serverMessageReceived((HostedConnection) source, m);
         }
     }
 
     private void clientMessageReceived(Object source, Message m) {
         if (m instanceof CreateWorldMessage) {
-            this.createWorld();
-            this.stateManager.getState(ClientHudManager.class).hideRoundStatistics();
+            createWorld();
+            stateManager.getState(ClientHudManager.class).hideRoundStatistics();
         } else if (m instanceof NewRoundMessage) {
-            this.startNewRound();
+            startNewRound();
         } else if (m instanceof RoundStartCountdownMessage) {
             RoundStartCountdownMessage message = (RoundStartCountdownMessage) m;
-            this.roundStartTimer.setTimeLeft(message.getTime());
-            this.roundStartTimer.setActive(true);
+            roundStartTimer.setTimeLeft(message.getTime());
+            roundStartTimer.setActive(true);
         } else if (m instanceof RoundFinishedMessage) {
-            this.endRound();
+            endRound();
         } else if (m instanceof GameEndedMessage) {
-            this.app.enqueue(new Callable<Void>() {
+            app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
                     syncManager.getClient().close();
@@ -322,8 +324,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         if (m instanceof ClientWorldCreatedMessage) {
             int playerId = ServerClientData.getPlayerId(client.getId());
             PlayerData.setData(playerId, PlayerDataStrings.WORLD_CREATED, true);
-            if (this.allClientsWorldReady()) {
-                this.createCharacters();
+            if (allClientsWorldReady()) {
+                createCharacters();
             }
         }
     }

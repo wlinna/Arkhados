@@ -15,6 +15,7 @@
 
 package arkhados.messages;
 
+import arkhados.net.Command;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 
@@ -23,16 +24,15 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class ServerLoginMessage extends AbstractMessage {
+public class ServerLoginCommand implements Command {
     private String name;
     private int playerId;
     private boolean accepted;
 
-    public ServerLoginMessage() {
-
+    public ServerLoginCommand() {
     }
 
-    public ServerLoginMessage(String nick, int playerId, boolean accepted) {
+    public ServerLoginCommand(String nick, int playerId, boolean accepted) {
         this.name = nick;
         this.playerId = playerId;
         this.accepted = accepted;
@@ -50,4 +50,8 @@ public class ServerLoginMessage extends AbstractMessage {
         return this.accepted;
     }
 
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
 }

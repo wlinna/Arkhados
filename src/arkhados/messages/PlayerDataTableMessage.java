@@ -15,16 +15,16 @@
 
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import java.util.List;
 import arkhados.PlayerData;
+import arkhados.net.Command;
 /**
  *
  * @author william
  */
 @Serializable
-public class PlayerDataTableMessage extends AbstractMessage {    
+public class PlayerDataTableMessage implements Command {    
     private List<PlayerData> playerDataList;
 
     public PlayerDataTableMessage() {
@@ -40,5 +40,10 @@ public class PlayerDataTableMessage extends AbstractMessage {
 
     public static PlayerDataTableMessage makeFromPlayerDataList() {        
         return new PlayerDataTableMessage(PlayerData.getPlayers());
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

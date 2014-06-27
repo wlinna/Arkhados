@@ -61,18 +61,15 @@ public class MessageUtils {
         
         // <Commands>
         Serializer.registerClass(Ack.class);
+        Serializer.registerClass(TopicOnlyCommand.class);        
         
         // <Lobby>
-        Serializer.registerClass(ConnectionEstablishedMessage.class);
-        Serializer.registerClass(UDPHandshakeRequest.class);
-        Serializer.registerClass(UDPHandshakeAck.class);
-        Serializer.registerClass(ServerLoginMessage.class);
-        Serializer.registerClass(ClientLoginMessage.class);
-        Serializer.registerClass(ClientSettingsMessage.class);
+        Serializer.registerClass(ServerLoginCommand.class);
+        Serializer.registerClass(ClientLoginCommand.class);
+        Serializer.registerClass(ClientSettingsCommand.class);
         Serializer.registerClass(PlayerDataTableMessage.class);
         Serializer.registerClass(ChatMessage.class);
-        Serializer.registerClass(StartGameMessage.class);
-        Serializer.registerClass(ClientSelectHeroMessage.class);
+        Serializer.registerClass(ClientSelectHeroCommand.class);
         // </Lobby>
 
         // <RoundProtocol>
@@ -100,7 +97,6 @@ public class MessageUtils {
         Serializer.registerClass(BuffCommand.class);
         // </Sync>
 
-        Serializer.registerClass(BattleStatisticsRequest.class);
         Serializer.registerClass(BattleStatisticsResponse.class);
 
         // <UserCommands>

@@ -14,18 +14,12 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.messages.BattleStatisticsResponse;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientSelectHeroMessage;
-import arkhados.messages.ConnectionEstablishedMessage;
+import arkhados.messages.ClientSelectHeroCommand;
 import arkhados.messages.MessageUtils;
-import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.ServerLoginMessage;
-import arkhados.messages.SetPlayersCharacterMessage;
-import arkhados.messages.StartGameMessage;
-import arkhados.messages.UDPHandshakeAck;
+import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
@@ -162,7 +156,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         syncManager = new SyncManager(this, clientWrapper);
         stateManager.attach(syncManager);
 
-        
         effectHandler = new EffectHandler(this);
         worldManager = new WorldManager(effectHandler);
         effectHandler.setWorldManager(worldManager);
@@ -177,23 +170,21 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         roundManager = new RoundManager();
         stateManager.attach(roundManager);
-
         
         sender = new ClientSender();
         receiver = new Receiver();
-        receiver.registerCommandHandler(effectHandler);
-        
+        receiver.registerCommandHandler(effectHandler);               
         
         userCommandManager = new UserCommandManager(sender, inputManager);
         
         stateManager.attach(userCommandManager);
-
       
         stateManager.attach(sender);
         stateManager.attach(receiver);
 
         receiver.registerCommandHandler(sender);
         receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(listenerManager);
     }
 
     @Override
@@ -233,7 +224,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void connect() {
         // FIXME: TextFieldControl is deprecated
-
         final String username = nifty.getScreen("join_server")
                 .findElementByName("username_text")
                 .getControl(TextFieldControl.class).getText();
@@ -248,11 +238,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         roundManager.configureForClient();
         listenerManager.reset();
         clientWrapper.get().addClientStateListener(listenerManager);
-        clientWrapper.get().addMessageListener(listenerManager,
-                ConnectionEstablishedMessage.class, UDPHandshakeAck.class,
-                ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class,
-                SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
         
         clientWrapper.get().addMessageListener(receiver, OneTrueMessage.class);
         sender.reset();
@@ -284,6 +269,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     public void refreshPlayerData(final List<PlayerData> playerDataList) {
         PlayerData.setPlayers(playerDataList);
         enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
                 if (screen == null) {
@@ -317,7 +303,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
                 TextField textField = screen.findNiftyControl("chat_text", TextField.class);
-                clientWrapper.get().send(new ChatMessage(
+                sender.addCommand(new ChatMessage(
                         listenerManager.getName(),
                         textField.getText()));
                 textField.setText("");
@@ -327,11 +313,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void selectHero(final String heroName) {
-        clientWrapper.get().send(new ClientSelectHeroMessage(heroName));
+        sender.addCommand(new ClientSelectHeroCommand(heroName));
     }
 
     public void sendStartGameRequest() {
-        clientWrapper.get().send(new StartGameMessage());
+        sender.addCommand(new TopicOnlyCommand(TopicOnlyCommand.START_GAME));
     }
 
     public void startGame() {

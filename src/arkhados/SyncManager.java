@@ -112,11 +112,10 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     private void doMessage(int syncId, List<Command> m) {
-
         Object object = this.syncObjects.get(syncId);
         if (object != null) {
             for (Command command : m) {
-                if (command.getTypeId() == CommandTypeIds.SYNC_DATA) {
+                if (command instanceof StateData) {
                     ((StateData) command).applyData(object);
                 }
             }
@@ -178,7 +177,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
             @Override
             public Void call() throws Exception {
                 for (Command command : stateDataList) {
-                    if (command.getTypeId() == CommandTypeIds.SYNC_DATA) {
+                    if (command instanceof StateData) {
                         stateDataQueue.add((StateData) command);
                     }
                 }
