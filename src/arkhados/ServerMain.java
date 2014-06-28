@@ -110,7 +110,7 @@ public class ServerMain extends SimpleApplication {
         stateManager.attach(gameManager);
         stateManager.attach(physicsState);
         
-        physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
+        physicsState.getPhysicsSpace().setAccuracy(1.0f / 45.0f);
     }
 
     public void startGame() {

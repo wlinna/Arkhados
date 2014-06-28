@@ -111,7 +111,7 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
             node.attachChild(fire);
         }
 
-        SphereCollisionShape collisionShape = new SphereCollisionShape(5.0f);
+        SphereCollisionShape collisionShape = new SphereCollisionShape(3);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);

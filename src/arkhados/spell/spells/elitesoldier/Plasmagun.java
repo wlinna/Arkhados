@@ -143,7 +143,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(7.0f);
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(5);
         final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them

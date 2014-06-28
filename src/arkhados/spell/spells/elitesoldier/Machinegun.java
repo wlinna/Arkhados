@@ -47,7 +47,7 @@ public class Machinegun extends Spell {
 
     public static Spell create() {
         final float cooldown = 2f;
-        final float range = 120f;
+        final float range = 105f;
         final float castTime = 0.3f;
 
         final Machinegun spell = new Machinegun("Machinegun", cooldown, range, castTime);

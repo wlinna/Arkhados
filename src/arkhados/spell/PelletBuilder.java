@@ -69,7 +69,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
             //            removalAction.setSmokeTrail(trail);
             //            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(3);
+        final SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
         final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
