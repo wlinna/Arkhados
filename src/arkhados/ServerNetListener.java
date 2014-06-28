@@ -24,7 +24,7 @@ import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginCommand;
 import arkhados.messages.ClientSelectHeroCommand;
 import arkhados.messages.ClientSettingsCommand;
-import arkhados.messages.PlayerDataTableMessage;
+import arkhados.messages.PlayerDataTableCommand;
 import arkhados.messages.ServerLoginCommand;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Command;
@@ -59,7 +59,7 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
             sender.addConnection(conn);
             app.getStateManager().getState(Receiver.class).addConnection(conn);
             TopicOnlyCommand connectionEstablishendCommand =
-                    new TopicOnlyCommand(TopicOnlyCommand.CONNECTION_ESTABLISHED);
+                    new TopicOnlyCommand(Topic.CONNECTION_ESTABLISHED);
             sender.addCommand(connectionEstablishendCommand);
         } else {
             Logger.getLogger(ServerNetListener.class.getName()).log(Level.SEVERE, "Client ID exists!");
@@ -97,17 +97,17 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
         ServerSender sender = app.getStateManager().getState(ServerSender.class);
 
         switch (topicCommand.getTopicId()) {
-            case TopicOnlyCommand.BATTLE_STATISTICS_REQUEST:
+            case Topic.BATTLE_STATISTICS_REQUEST:
                 final BattleStatisticsResponse response = BattleStatisticsResponse.buildBattleStatisticsResponse();
                 sender.addCommand(response);
                 break;
-            case TopicOnlyCommand.START_GAME:
+            case Topic.START_GAME:
                 sender.addCommand(topicCommand);
                 app.startGame();
                 break;
-            case TopicOnlyCommand.UDP_HANDSHAKE_REQUEST:
+            case Topic.UDP_HANDSHAKE_REQUEST:
                 sender.addCommandForSingle(new TopicOnlyCommand(
-                        TopicOnlyCommand.UDP_HANDSHAKE_ACK, false), source);
+                        Topic.UDP_HANDSHAKE_ACK, false), source);
                 break;
 
         }
@@ -130,7 +130,7 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
         ServerClientData.setPlayerId(clientId, playerId);
         ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId, true);
         sender.addCommand(serverLoginMessage);
-        sender.addCommand(PlayerDataTableMessage.makeFromPlayerDataList());
+        sender.addCommand(PlayerDataTableCommand.makeFromPlayerDataList());
     }
 
     private void handleClientSelectHeroCommand(HostedConnection source, ClientSelectHeroCommand command) {

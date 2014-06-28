@@ -15,6 +15,7 @@
 package arkhados.ui.hud;
 
 import arkhados.PlayerData;
+import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.SpellCastControl;
@@ -223,7 +224,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     public void showRoundStatistics() {
         initializePlayerStatisticsPanels();
         Sender sender = stateManager.getState(Sender.class);
-        sender.addCommand(new TopicOnlyCommand(TopicOnlyCommand.BATTLE_STATISTICS_REQUEST));
+        sender.addCommand(new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
         final Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.show();
     }

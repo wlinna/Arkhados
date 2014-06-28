@@ -15,6 +15,7 @@
 package arkhados;
 
 import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -26,7 +27,6 @@ import com.jme3.app.state.AppStateManager;
  */
 public class ServerGameManager extends AbstractAppState {
 
-    private SyncManager syncManager;
     private WorldManager worldManager;
     private RoundManager roundManager;
     private boolean running;
@@ -37,12 +37,11 @@ public class ServerGameManager extends AbstractAppState {
         System.out.println("Initializing ServerGameManager");
         super.initialize(stateManager, app);
         worldManager = app.getStateManager().getState(WorldManager.class);
-        syncManager = worldManager.getSyncManager();
         roundManager = new RoundManager();
-        roundManager.setEnabled(false);
+        roundManager.setEnabled(false);        
         stateManager.attach(roundManager);
+        stateManager.getState(Receiver.class).registerCommandHandler(roundManager);
         this.app = app;
-        System.out.println("Initialized ServerGameManager");
     }
 
     public synchronized boolean startGame() {
@@ -58,7 +57,7 @@ public class ServerGameManager extends AbstractAppState {
             "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
 
         running = true;
-        sender.addCommand(new TopicOnlyCommand(TopicOnlyCommand.START_GAME));
+        sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
 
         roundManager.serverStartGame();
 

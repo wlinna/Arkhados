@@ -13,18 +13,37 @@
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages.roundprotocol;
+package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
-
+import java.util.List;
+import arkhados.PlayerData;
+import arkhados.net.Command;
 /**
  *
  * @author william
  */
 @Serializable
-public class CreateWorldMessage extends AbstractMessage {
-    public CreateWorldMessage() {
+public class PlayerDataTableCommand implements Command {    
+    private List<PlayerData> playerDataList;
 
+    public PlayerDataTableCommand() {
+
+    }
+    private PlayerDataTableCommand(List<PlayerData> playerDataList) {
+        this.playerDataList = playerDataList;
+    }
+
+    public List<PlayerData> getPlayerData() {
+        return this.playerDataList;        
+    }
+
+    public static PlayerDataTableCommand makeFromPlayerDataList() {        
+        return new PlayerDataTableCommand(PlayerData.getPlayers());
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

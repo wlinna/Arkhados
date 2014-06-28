@@ -16,14 +16,8 @@ package arkhados.messages;
 
 import arkhados.PlayerData;
 import arkhados.characters.EliteSoldierSyncData;
-import arkhados.messages.roundprotocol.RoundFinishedMessage;
-import arkhados.messages.roundprotocol.NewRoundMessage;
 import com.jme3.network.serializing.Serializer;
-import arkhados.messages.roundprotocol.ClientWorldCreatedMessage;
-import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
-import arkhados.messages.roundprotocol.CreateWorldMessage;
-import arkhados.messages.roundprotocol.GameEndedMessage;
-import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
+import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
 import arkhados.messages.syncmessages.ActionCommand;
 import arkhados.messages.syncmessages.AddEntityCommand;
 import arkhados.messages.syncmessages.BuffCommand;
@@ -58,31 +52,24 @@ public class MessageUtils {
     public static void registerMessages() {
         Serializer.registerClass(OneTrueMessage.class);
         Serializer.registerClass(OtmIdCommandListPair.class);
-        
-        // <Commands>
+
         Serializer.registerClass(Ack.class);
-        Serializer.registerClass(TopicOnlyCommand.class);        
-        
+        Serializer.registerClass(TopicOnlyCommand.class);
+
         // <Lobby>
         Serializer.registerClass(ServerLoginCommand.class);
         Serializer.registerClass(ClientLoginCommand.class);
         Serializer.registerClass(ClientSettingsCommand.class);
-        Serializer.registerClass(PlayerDataTableMessage.class);
+        Serializer.registerClass(PlayerDataTableCommand.class);
         Serializer.registerClass(ChatMessage.class);
         Serializer.registerClass(ClientSelectHeroCommand.class);
         // </Lobby>
 
         // <RoundProtocol>
-        Serializer.registerClass(CreateWorldMessage.class);
-        Serializer.registerClass(ClientWorldCreatedMessage.class);
-        Serializer.registerClass(PlayerReadyForNewRoundMessage.class);
-        Serializer.registerClass(RoundStartCountdownMessage.class);
-        Serializer.registerClass(NewRoundMessage.class);
-        Serializer.registerClass(RoundFinishedMessage.class);
-        Serializer.registerClass(GameEndedMessage.class);
+        Serializer.registerClass(RoundStartCountdownCommand.class);
         // </RoundProtocol>
 
-        Serializer.registerClass(SetPlayersCharacterMessage.class);
+        Serializer.registerClass(SetPlayersCharacterCommand.class);
 
         // <Sync>
         Serializer.registerClass(AddEntityCommand.class);

@@ -20,9 +20,9 @@ import com.jme3.network.ClientStateListener;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.ClientLoginCommand;
 import arkhados.messages.ClientSettingsCommand;
-import arkhados.messages.PlayerDataTableMessage;
+import arkhados.messages.PlayerDataTableCommand;
 import arkhados.messages.ServerLoginCommand;
-import arkhados.messages.SetPlayersCharacterMessage;
+import arkhados.messages.SetPlayersCharacterCommand;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
@@ -72,7 +72,7 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
         udpHandshakeAckTimer.update(tpf);
         if (udpHandshakeAckTimer.timeJustEnded()) {
             Sender sender = app.getStateManager().getState(Sender.class);
-            sender.addCommand(new TopicOnlyCommand(TopicOnlyCommand.UDP_HANDSHAKE_REQUEST, false));
+            sender.addCommand(new TopicOnlyCommand(Topic.UDP_HANDSHAKE_REQUEST, false));
             udpHandshakeAckTimer.setTimeLeft(udpHandshakeAckTimer.getOriginal());
         }
     }
@@ -99,8 +99,8 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
         for (Command command : guaranteed) {
             if (command instanceof TopicOnlyCommand) {
                 handleTopicCommand((TopicOnlyCommand) command);
-            } else if (command instanceof PlayerDataTableMessage) {
-                PlayerDataTableMessage dataTable = (PlayerDataTableMessage) command;
+            } else if (command instanceof PlayerDataTableCommand) {
+                PlayerDataTableCommand dataTable = (PlayerDataTableCommand) command;
                 app.refreshPlayerData(dataTable.getPlayerData());
             } else if (command instanceof ChatMessage) {
                 ChatMessage chat = (ChatMessage) command;
@@ -110,8 +110,8 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
             } else if (command instanceof BattleStatisticsResponse) {
                 BattleStatisticsResponse response = (BattleStatisticsResponse) command;
                 app.getStateManager().getState(ClientHudManager.class).updateStatistics(response.getPlayerRoundStatsList());
-            } else if (command instanceof SetPlayersCharacterMessage) {
-                handleSetPlayersCharacter((SetPlayersCharacterMessage) command);
+            } else if (command instanceof SetPlayersCharacterCommand) {
+                handleSetPlayersCharacter((SetPlayersCharacterCommand) command);
             }
         }
     }
@@ -127,17 +127,17 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
 
     private void handleTopicCommand(TopicOnlyCommand topicOnlyCommand) {
         switch (topicOnlyCommand.getTopicId()) {
-            case TopicOnlyCommand.START_GAME:
+            case Topic.START_GAME:
                 app.startGame();
                 udpHandshakeAckTimer.setActive(false);
                 break;
-            case TopicOnlyCommand.UDP_HANDSHAKE_ACK:
+            case Topic.UDP_HANDSHAKE_ACK:
                 handleUdpHandshakeAck();
                 break;
-            case TopicOnlyCommand.CONNECTION_ESTABLISHED:
+            case Topic.CONNECTION_ESTABLISHED:
                 Sender sender = app.getStateManager().getState(Sender.class);
                 sender.addCommand(new TopicOnlyCommand(
-                        TopicOnlyCommand.UDP_HANDSHAKE_REQUEST, false));
+                        Topic.UDP_HANDSHAKE_REQUEST, false));
                 udpHandshakeAckTimer.setActive(true);
         }
     }
@@ -155,7 +155,7 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
         }
     }
 
-    private void handleSetPlayersCharacter(SetPlayersCharacterMessage message) {
+    private void handleSetPlayersCharacter(SetPlayersCharacterCommand message) {
         if (app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
             app.getUserCommandManager().setCharacterId(message.getEntityId());
             System.out.println(String.format("Your entityId: %d", message.getEntityId()));

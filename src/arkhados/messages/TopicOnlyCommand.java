@@ -24,11 +24,6 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class TopicOnlyCommand implements Command {    
-    public static final transient int START_GAME = 0;
-    public static final transient int BATTLE_STATISTICS_REQUEST = 1;
-    public static final transient int UDP_HANDSHAKE_ACK = 2;
-    public static final transient int CONNECTION_ESTABLISHED = 3;
-    public static final transient int UDP_HANDSHAKE_REQUEST = 4;
     
     private transient boolean isGuaranteed = true;
     private byte topicId;

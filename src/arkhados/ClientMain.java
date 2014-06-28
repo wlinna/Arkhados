@@ -185,6 +185,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.registerCommandHandler(sender);
         receiver.registerCommandHandler(syncManager);
         receiver.registerCommandHandler(listenerManager);
+        receiver.registerCommandHandler(roundManager);
     }
 
     @Override
@@ -234,8 +235,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 findElementByName("server_ip").getControl(TextFieldControl.class).getText();
 
 
-        clientWrapper.set(Network.createClient());
-        roundManager.configureForClient();
+        clientWrapper.set(Network.createClient());       
         listenerManager.reset();
         clientWrapper.get().addClientStateListener(listenerManager);
         
@@ -317,7 +317,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void sendStartGameRequest() {
-        sender.addCommand(new TopicOnlyCommand(TopicOnlyCommand.START_GAME));
+        sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
     }
 
     public void startGame() {

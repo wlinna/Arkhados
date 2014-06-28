@@ -21,32 +21,29 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.Message;
-import com.jme3.network.MessageListener;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import arkhados.messages.SetPlayersCharacterMessage;
-import arkhados.messages.roundprotocol.ClientWorldCreatedMessage;
-import arkhados.messages.roundprotocol.CreateWorldMessage;
-import arkhados.messages.roundprotocol.GameEndedMessage;
-import arkhados.messages.roundprotocol.NewRoundMessage;
-import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
-import arkhados.messages.roundprotocol.RoundFinishedMessage;
-import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
+import arkhados.messages.SetPlayersCharacterCommand;
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
+import arkhados.net.Command;
+import arkhados.net.CommandHandler;
+import arkhados.net.Sender;
 import arkhados.net.ServerSender;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
 import arkhados.util.UserDataStrings;
+import java.util.List;
 
 /**
  *
  * @author william TODO: I think that current Round-protocol is very confusing
  * and hard to understand. It might need rework
  */
-public class RoundManager extends AbstractAppState implements MessageListener {
+public class RoundManager extends AbstractAppState implements CommandHandler {
 
     private static final Logger logger = Logger.getLogger(RoundManager.class.getName());
     private WorldManager worldManager;
@@ -73,21 +70,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
         if (worldManager.isClient()) {
             clientMain = (ClientMain) app;
-        } else if (worldManager.isServer()) {
-            syncManager.getServer().addMessageListener(this,
-                    ClientWorldCreatedMessage.class,
-                    PlayerReadyForNewRoundMessage.class);
         }
         logger.log(Level.INFO, "Initialized RoundManager");
-    }
-
-    public void configureForClient() {
-        syncManager.getClient().addMessageListener(this,
-                CreateWorldMessage.class,
-                NewRoundMessage.class,
-                RoundFinishedMessage.class,
-                RoundStartCountdownMessage.class,
-                GameEndedMessage.class);
     }
 
     public void serverStartGame() {
@@ -116,13 +100,14 @@ public class RoundManager extends AbstractAppState implements MessageListener {
                 logger.log(Level.INFO, "Attaching level");
                 worldManager.attachLevel();
 
+                Sender sender = app.getStateManager().getState(Sender.class);
                 if (worldManager.isClient()) {
-                    syncManager.getClient().send(new ClientWorldCreatedMessage());
+                    sender.addCommand(new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
                 }
 
                 if (worldManager.isServer()) {
                     logger.log(Level.INFO, "Broadcasting CreateWorldMessage");
-                    syncManager.getServer().broadcast(new CreateWorldMessage());
+                    sender.addCommand(new TopicOnlyCommand(Topic.CREATE_WORLD));
                     logger.log(Level.INFO, "Enablind syncManager");
                     syncManager.setEnabled(true);
                     syncManager.startListening();
@@ -133,12 +118,13 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     }
 
     private void createCharacters() {
+        final ServerSender sender = app.getStateManager().getState(ServerSender.class);
         logger.log(Level.INFO, "Creating characters");
         if (worldManager.isServer()) {
             app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
 
-                    ServerSender sender = app.getStateManager().getState(ServerSender.class);
+
                     int i = 0;
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
@@ -155,8 +141,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
 
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
-                        
-                        sender.addCommand(new SetPlayersCharacterMessage(entityId, playerData.getId()));
+
+                        sender.addCommand(new SetPlayersCharacterCommand(entityId, playerData.getId()));
                     }
 
                     logger.log(Level.INFO, "Informing players of their characters");
@@ -165,7 +151,7 @@ public class RoundManager extends AbstractAppState implements MessageListener {
             });
         }
 
-        syncManager.getServer().broadcast(new RoundStartCountdownMessage(5));        
+        sender.addCommand(new RoundStartCountdownCommand(5));
         roundStartTimer.setTimeLeft(5f);
         roundStartTimer.setActive(true);
     }
@@ -173,7 +159,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private void startNewRound() {
         logger.log(Level.INFO, "Starting new round");
         if (worldManager.isServer()) {
-            syncManager.getServer().broadcast(new NewRoundMessage());
+            Sender sender = app.getStateManager().getState(Sender.class);
+            sender.addCommand(new TopicOnlyCommand(Topic.NEW_ROUND));
             CharacterInteraction.startNewRound();
         }
         roundRunning = true;
@@ -196,7 +183,8 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     private void endRound() {
         logger.log(Level.INFO, "Ending round");
         if (worldManager.isServer()) {
-            syncManager.getServer().broadcast(new RoundFinishedMessage());
+            Sender sender = app.getStateManager().getState(Sender.class);
+            sender.addCommand(new TopicOnlyCommand(Topic.ROUND_FINISHED));
             PlayerData.setDataForAll(PlayerDataStrings.WORLD_CREATED, false);
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
             logger.log(Level.INFO, "Disabling syncManager");
@@ -230,13 +218,14 @@ public class RoundManager extends AbstractAppState implements MessageListener {
         if (roundStartTimer.isActive() && worldManager.isClient()) {
             stateManager.getState(ClientHudManager.class).setSecondsLeftToStart((int) roundStartTimer.getTimeLeft());
         }
-        
+
         roundEndTimer.update(tpf);
         if (roundEndTimer.timeJustEnded() && worldManager.isServer()) {
             if (currentRound < rounds) {
                 createWorld();
             } else {
-                syncManager.getServer().broadcast(new GameEndedMessage());
+                Sender sender = stateManager.getState(Sender.class);
+                sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
             }
         }
 
@@ -275,58 +264,86 @@ public class RoundManager extends AbstractAppState implements MessageListener {
     }
 
     @Override
-    public void cleanup() {
-        super.cleanup();
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
+        if (worldManager.isServer()) {
+            serverReadGuaranteed((HostedConnection) source, guaranteed);
+        } else {
+            clientReadGuaranteed(guaranteed);
+        }
+
+    }
+
+    private void serverReadGuaranteed(HostedConnection source, List<Command> guaranteed) {
+        for (Command command : guaranteed) {
+            if (command instanceof TopicOnlyCommand) {
+                serverHandleTopicOnly(source, (TopicOnlyCommand) command);
+            }
+        }
+    }
+
+    private void clientReadGuaranteed(List<Command> guaranteed) {
+        for (Command command : guaranteed) {
+            if (command instanceof TopicOnlyCommand) {
+                clientHandleTopicOnly((TopicOnlyCommand) command);
+            } else if (command instanceof RoundStartCountdownCommand) {
+                RoundStartCountdownCommand countDownCommand = (RoundStartCountdownCommand) command;
+                roundStartTimer.setTimeLeft(countDownCommand.getTime());
+                roundStartTimer.setActive(true);
+            }
+        }
     }
 
     @Override
-    public void messageReceived(Object source, Message m) {
-        if (worldManager.isClient()) {
-            clientMessageReceived(source, m);
-        } else if (worldManager.isServer()) {
-            serverMessageReceived((HostedConnection) source, m);
+    public void readUnreliable(Object source, List<Command> unreliables) {
+    }
+
+    private void clientHandleTopicOnly(TopicOnlyCommand command) {
+        switch (command.getTopicId()) {
+            case Topic.CREATE_WORLD:
+                createWorld();
+                stateManager.getState(ClientHudManager.class).hideRoundStatistics();
+                break;
+            case Topic.NEW_ROUND:
+                startNewRound();
+                break;
+            case Topic.ROUND_FINISHED:
+                endRound();
+                break;
+            case Topic.GAME_ENDED:
+                clientHandleGameEnded();
+                break;
         }
     }
 
-    private void clientMessageReceived(Object source, Message m) {
-        if (m instanceof CreateWorldMessage) {
-            createWorld();
-            stateManager.getState(ClientHudManager.class).hideRoundStatistics();
-        } else if (m instanceof NewRoundMessage) {
-            startNewRound();
-        } else if (m instanceof RoundStartCountdownMessage) {
-            RoundStartCountdownMessage message = (RoundStartCountdownMessage) m;
-            roundStartTimer.setTimeLeft(message.getTime());
-            roundStartTimer.setActive(true);
-        } else if (m instanceof RoundFinishedMessage) {
-            endRound();
-        } else if (m instanceof GameEndedMessage) {
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    syncManager.getClient().close();
-                    worldManager.clear();
-                    syncManager.clear();
+    private void clientHandleGameEnded() {
+        app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                syncManager.getClient().close();
+                worldManager.clear();
+                syncManager.clear();
 
-                    PlayerData.destroyAllData();
-                    clientMain.getUserCommandManager().nullifyCharacter();
-                    stateManager.getState(ClientHudManager.class).endGame();
-                    return null;
-                }
-            });
-
-        }
-    }
-
-    private void serverMessageReceived(HostedConnection client, Message m) {
-        logger.log(Level.INFO, "Received {0} -message", new Object[]{m.getClass()});
-
-        if (m instanceof ClientWorldCreatedMessage) {
-            int playerId = ServerClientData.getPlayerId(client.getId());
-            PlayerData.setData(playerId, PlayerDataStrings.WORLD_CREATED, true);
-            if (allClientsWorldReady()) {
-                createCharacters();
+                PlayerData.destroyAllData();
+                clientMain.getUserCommandManager().nullifyCharacter();
+                stateManager.getState(ClientHudManager.class).endGame();
+                return null;
             }
+        });
+    }
+
+    private void serverHandleTopicOnly(HostedConnection source, TopicOnlyCommand topicOnlyCommand) {
+        switch (topicOnlyCommand.getTopicId()) {
+            case Topic.CLIENT_WORLD_CREATED:
+                serverHandleClientWorldCreated(source);
+                break;
+        }
+    }
+
+    private void serverHandleClientWorldCreated(HostedConnection source) {
+        int playerId = ServerClientData.getPlayerId(source.getId());
+        PlayerData.setData(playerId, PlayerDataStrings.WORLD_CREATED, true);
+        if (allClientsWorldReady()) {
+            createCharacters();
         }
     }
 }
