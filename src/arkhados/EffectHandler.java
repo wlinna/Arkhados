@@ -47,6 +47,9 @@ public class EffectHandler implements CommandHandler {
         final Spatial entity = this.worldManager.getEntity(actionCommand.getSyncId());
         int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
         final EffectBox box = this.actionEffects.get(nodeBuilderId);
+        if (box == null) {
+            return;
+        }
 
         this.app.enqueue(new Callable<Void>() {
             @Override

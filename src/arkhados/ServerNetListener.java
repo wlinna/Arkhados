@@ -114,7 +114,7 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
     }
 
     private void handleClientLoginCommand(HostedConnection source, ClientLoginCommand commmand) {
-        Sender sender = app.getStateManager().getState(Sender.class);
+        ServerSender sender = app.getStateManager().getState(ServerSender.class);
         final int clientId = source.getId();
 
         if (!ServerClientData.exists(clientId)) {
@@ -129,7 +129,7 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
         ServerClientData.setConnected(clientId, true);
         ServerClientData.setPlayerId(clientId, playerId);
         ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId, true);
-        sender.addCommand(serverLoginMessage);
+        sender.addCommandForSingle(serverLoginMessage, source);
         sender.addCommand(PlayerDataTableCommand.makeFromPlayerDataList());
     }
 
