@@ -73,6 +73,11 @@ You can find good music with good licenses from opengameart.org and
 jamendo.com . And remember to convert music to ogg-format because mp3
 is patent encumbered.
 
+**Create nice portraits for heroes** It would be nice to select hero
+by clicking on nice portait instead of button with text like
+"Embermage" or "Venator". Portraits could be used on user guides too.
+
+
 ### Code ###
 
 **Make map that has walls and handle collisions with them** This is my
@@ -116,6 +121,10 @@ nicer if I had simpler test server where player can join while game is
 running. There would be no roundmanager, lobby or anything that makes
 testing slower.
 
+**Contribute on [ArkhadosNet](github.com/dnyarri/ArkhadosNet)**
+Arkhados uses ArkhadosNet for networking. I'm sure it could be
+improved and having some kind of tests for it would be very good.
+
 **Redesign and reprogram lobby**
 NOTE: currently lobby means the screen where players go when they join
 the game. Later it will the screen where player can chat with all
@@ -136,33 +145,6 @@ Here are some requirements for new lobby
 - Possibility to select game mode like deathmatch and team deathmatch.
 - Changing map should be easy. There should be visible preview image
   for every map.
-
-
-#### Implement some Quake 3 networking ideas ####
-
-Arkhados is very fast paced and needs fast syncing. That's why we need
-UDP. We also need to implement NAT hole punching because we can't
-afford to host all games on central servers and forwarding ports is
-hard and not always possible. That is one reason to support only ONE
-protocol. Since we must have UDP, we have to drop TCP.
-
-I've recently read articles explaining Quake 3 networking model and I
-believe it fits Arkhados' need quite nicely. I think the most
-important Quake 3 idea to implement is this:
-
- No true reliability. Instead, "reliable" messages like
- Chat-messages are sent repeatedly until they are confirmed. This
- saves time if message is somehow lost because we are  not waiting
- for confirmation.
-
-Good links to understand Quake 3 networking better:
-
-- http://trac.bookofhook.com/bookofhook/trac.cgi/wiki/Quake3Networking
-- http://fabiensanglard.net/quake3/network.php
-- http://www.ra.is/unlagged/network.html
-
-This is something that I will do anyway, maybe this summer but it's
-not the next thing I'm going to do.
 
 #### Big project: Implement matchmaking server ####
 
