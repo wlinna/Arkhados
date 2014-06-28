@@ -12,39 +12,41 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+
 package arkhados.messages.syncmessages;
 
-import arkhados.controls.SpellCastControl;
 import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Spatial;
+import arkhados.WorldManager;
+import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
  *
  * @author william
  */
 @Serializable
-public class SetCooldownMessage extends AbstractSyncMessage {
-    private short spellId;
-    private float cooldown;
-    private boolean globalCooldown;
+public class RemoveEntityCommand extends StateData {
 
-    public SetCooldownMessage() {
+    private int entityId;
+    private byte reason;
+
+    public RemoveEntityCommand() {
     }
 
-    public SetCooldownMessage(int id, int spellId, float cooldown, boolean globalCooldown) {
-        super(id);
-        this.spellId = (short) spellId;
-        this.cooldown = cooldown;
-        this.globalCooldown = globalCooldown;
+    public RemoveEntityCommand(int entityId) {
+        super(-1);
+        this.entityId = entityId;
+     }
+
+    public RemoveEntityCommand(int entityId, int reason) {
+        super(-1);
+        this.entityId = entityId;
+        this.reason = (byte) reason;
+        
     }
 
     @Override
     public void applyData(Object target) {
-        final Spatial character = (Spatial) target;
-        final SpellCastControl castControl = character.getControl(SpellCastControl.class);
-        castControl.setCooldown(this.spellId, this.cooldown);
-        if (this.globalCooldown) {
-            castControl.globalCooldown();
-        }
+        WorldManager worldManager = (WorldManager) target;
+        worldManager.removeEntity(entityId, reason);
     }
 }

@@ -15,21 +15,22 @@
 package arkhados;
 
 import arkhados.effects.EffectBox;
-import arkhados.messages.syncmessages.ActionMessage;
+import arkhados.messages.syncmessages.ActionCommand;
+import arkhados.net.Command;
+import arkhados.net.CommandHandler;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
-import com.jme3.network.Client;
-import com.jme3.network.Message;
-import com.jme3.network.MessageListener;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
  *
  * @author william
  */
-public class EffectHandler implements MessageListener {
+public class EffectHandler implements CommandHandler {
+
     private Application app;
     private WorldManager worldManager;
     private HashMap<Integer, EffectBox> actionEffects = new HashMap<>();
@@ -42,30 +43,35 @@ public class EffectHandler implements MessageListener {
         this.actionEffects.put(id, effectBox);
     }
 
-    @Override
-    public void messageReceived(Object source, Message m) {
-        if (m instanceof ActionMessage) {
-            final ActionMessage message = (ActionMessage) m;
-            final Spatial entity = this.worldManager.getEntity(message.getSyncId());
-            int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
-            final EffectBox box = this.actionEffects.get(nodeBuilderId);
+    private void handleAction(final ActionCommand actionCommand) {
+        final Spatial entity = this.worldManager.getEntity(actionCommand.getSyncId());
+        int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
+        final EffectBox box = this.actionEffects.get(nodeBuilderId);
 
-            this.app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    box.executeActionEffect(message.getActionId(), worldManager.getWorldRoot(),
-                            entity.getLocalTranslation());
-                    return null;
-                }
-            });
-        }
-    }
-
-    public void setMessagesToListen(Client client) {
-        client.addMessageListener(this, ActionMessage.class);
+        this.app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                box.executeActionEffect(actionCommand.getActionId(), worldManager.getWorldRoot(),
+                        entity.getLocalTranslation());
+                return null;
+            }
+        });
     }
 
     public void setWorldManager(WorldManager worldManager) {
         this.worldManager = worldManager;
+    }
+
+    @Override
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
+        for (Command command : guaranteed) {
+            if (command instanceof ActionCommand) {
+                this.handleAction((ActionCommand) command);
+            }
+        }
+    }
+
+    @Override
+    public void readUnreliable(Object source, List<Command> unreliables) {
     }
 }

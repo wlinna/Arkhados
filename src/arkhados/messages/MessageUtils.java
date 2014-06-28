@@ -16,30 +16,26 @@ package arkhados.messages;
 
 import arkhados.PlayerData;
 import arkhados.characters.EliteSoldierSyncData;
-import arkhados.messages.roundprotocol.RoundFinishedMessage;
-import arkhados.messages.roundprotocol.NewRoundMessage;
 import com.jme3.network.serializing.Serializer;
-import arkhados.messages.roundprotocol.ClientWorldCreatedMessage;
-import arkhados.messages.roundprotocol.PlayerReadyForNewRoundMessage;
-import arkhados.messages.roundprotocol.CreateWorldMessage;
-import arkhados.messages.roundprotocol.GameEndedMessage;
-import arkhados.messages.roundprotocol.RoundStartCountdownMessage;
-import arkhados.messages.syncmessages.ActionMessage;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.BuffMessage;
-import arkhados.messages.syncmessages.MassSyncMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.SetCooldownMessage;
-import arkhados.messages.syncmessages.StartCastingSpellMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
+import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
+import arkhados.messages.syncmessages.ActionCommand;
+import arkhados.messages.syncmessages.AddEntityCommand;
+import arkhados.messages.syncmessages.BuffCommand;
+import arkhados.messages.syncmessages.RemoveEntityCommand;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityCommand;
+import arkhados.messages.syncmessages.SetCooldownCommand;
+import arkhados.messages.syncmessages.StartCastingSpellCommand;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityCommand;
 import arkhados.messages.syncmessages.statedata.CharacterSyncData;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.messages.usercommands.UcCastSpellMessage;
-import arkhados.messages.usercommands.UcMouseTargetMessage;
+import arkhados.messages.usercommands.UcCastSpellCommand;
+import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.net.Ack;
+import arkhados.net.OneTrueMessage;
+import arkhados.net.OtmIdCommandListPair;
 import arkhados.util.PlayerRoundStats;
 
 /**
@@ -54,52 +50,46 @@ public class MessageUtils {
     }
 
     public static void registerMessages() {
+        Serializer.registerClass(OneTrueMessage.class);
+        Serializer.registerClass(OtmIdCommandListPair.class);
+
+        Serializer.registerClass(Ack.class);
+        Serializer.registerClass(TopicOnlyCommand.class);
+
         // <Lobby>
-        Serializer.registerClass(ConnectionEstablishedMessage.class);
-        Serializer.registerClass(UDPHandshakeRequest.class);
-        Serializer.registerClass(UDPHandshakeAck.class);
-        Serializer.registerClass(ServerLoginMessage.class);
-        Serializer.registerClass(ClientLoginMessage.class);
-        Serializer.registerClass(ClientSettingsMessage.class);
-        Serializer.registerClass(PlayerDataTableMessage.class);
+        Serializer.registerClass(ServerLoginCommand.class);
+        Serializer.registerClass(ClientLoginCommand.class);
+        Serializer.registerClass(ClientSettingsCommand.class);
+        Serializer.registerClass(PlayerDataTableCommand.class);
         Serializer.registerClass(ChatMessage.class);
-        Serializer.registerClass(StartGameMessage.class);
-        Serializer.registerClass(ClientSelectHeroMessage.class);
+        Serializer.registerClass(ClientSelectHeroCommand.class);
         // </Lobby>
 
         // <RoundProtocol>
-        Serializer.registerClass(CreateWorldMessage.class);
-        Serializer.registerClass(ClientWorldCreatedMessage.class);
-        Serializer.registerClass(PlayerReadyForNewRoundMessage.class);
-        Serializer.registerClass(RoundStartCountdownMessage.class);
-        Serializer.registerClass(NewRoundMessage.class);
-        Serializer.registerClass(RoundFinishedMessage.class);
-        Serializer.registerClass(GameEndedMessage.class);
+        Serializer.registerClass(RoundStartCountdownCommand.class);
         // </RoundProtocol>
 
-        Serializer.registerClass(SetPlayersCharacterMessage.class);
+        Serializer.registerClass(SetPlayersCharacterCommand.class);
 
         // <Sync>
-        Serializer.registerClass(AddEntityMessage.class);
-        Serializer.registerClass(RestoreTemporarilyRemovedEntityMessage.class);
-        Serializer.registerClass(RemoveEntityMessage.class);
-        Serializer.registerClass(TemporarilyRemoveEntityMessage.class);
-        Serializer.registerClass(MassSyncMessage.class);
+        Serializer.registerClass(AddEntityCommand.class);
+        Serializer.registerClass(RestoreTemporarilyRemovedEntityCommand.class);
+        Serializer.registerClass(RemoveEntityCommand.class);
+        Serializer.registerClass(TemporarilyRemoveEntityCommand.class);
         Serializer.registerClasses(StateData.class, CharacterSyncData.class, GenericSyncData.class, ProjectileSyncData.class);
         Serializer.registerClass(EliteSoldierSyncData.class);
-        Serializer.registerClass(StartCastingSpellMessage.class);
-        Serializer.registerClass(SetCooldownMessage.class);
-        Serializer.registerClass(ActionMessage.class);
-        Serializer.registerClass(BuffMessage.class);
+        Serializer.registerClass(StartCastingSpellCommand.class);
+        Serializer.registerClass(SetCooldownCommand.class);
+        Serializer.registerClass(ActionCommand.class);
+        Serializer.registerClass(BuffCommand.class);
         // </Sync>
 
-        Serializer.registerClass(BattleStatisticsRequest.class);
         Serializer.registerClass(BattleStatisticsResponse.class);
 
         // <UserCommands>
-        Serializer.registerClass(UcCastSpellMessage.class);
+        Serializer.registerClass(UcCastSpellCommand.class);
         Serializer.registerClass(UcWalkDirection.class);
-        Serializer.registerClass(UcMouseTargetMessage.class);
+        Serializer.registerClass(UcMouseTargetCommand.class);
         // </UserCommands>        
     }
 }

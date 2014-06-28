@@ -15,8 +15,8 @@
 package arkhados.messages;
 
 import arkhados.CharacterInteraction;
+import arkhados.net.Command;
 import arkhados.util.PlayerRoundStats;
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 
 @Serializable
-public class BattleStatisticsResponse extends AbstractMessage {
+public class BattleStatisticsResponse implements Command {
     private ArrayList<PlayerRoundStats> playerRoundStatsList;
 
     public BattleStatisticsResponse() {
@@ -40,5 +40,10 @@ public class BattleStatisticsResponse extends AbstractMessage {
         final BattleStatisticsResponse message = new BattleStatisticsResponse();
          message.playerRoundStatsList = CharacterInteraction.getCurrentRoundStats().buildCurrentPlayerRoundStatsList();
          return message;
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

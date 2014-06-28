@@ -14,7 +14,8 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages;
 
-import arkhados.controls.CharacterAnimationControl;
+import arkhados.controls.SpellCastControl;
+import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
@@ -22,26 +23,29 @@ import com.jme3.scene.Spatial;
  *
  * @author william
  */
-
 @Serializable
-public class ActionMessage extends AbstractSyncMessage{
-    private byte actionId;
+public class SetCooldownCommand extends StateData {
+    private short spellId;
+    private float cooldown;
+    private boolean globalCooldown;
 
-    public ActionMessage() {
+    public SetCooldownCommand() {
     }
 
-    public ActionMessage(int id, int actionId) {
+    public SetCooldownCommand(int id, int spellId, float cooldown, boolean globalCooldown) {
         super(id);
-        this.actionId = (byte) actionId;
+        this.spellId = (short) spellId;
+        this.cooldown = cooldown;
+        this.globalCooldown = globalCooldown;
     }
 
     @Override
     public void applyData(Object target) {
-        Spatial character = (Spatial) target;
-        character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
-    }
-
-    public int getActionId() {
-        return actionId;
+        final Spatial character = (Spatial) target;
+        final SpellCastControl castControl = character.getControl(SpellCastControl.class);
+        castControl.setCooldown(this.spellId, this.cooldown);
+        if (this.globalCooldown) {
+            castControl.globalCooldown();
+        }
     }
 }

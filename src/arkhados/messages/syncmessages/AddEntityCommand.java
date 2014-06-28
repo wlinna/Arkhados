@@ -15,37 +15,40 @@
 
 package arkhados.messages.syncmessages;
 
-import com.jme3.network.AbstractMessage;
-import com.jme3.network.serializing.Serializable;
 import arkhados.WorldManager;
+import arkhados.messages.syncmessages.statedata.StateData;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.network.serializing.Serializable;
 
 /**
  *
  * @author william
  */
 @Serializable
-public class RemoveEntityMessage extends AbstractSyncMessage {
-
+public class AddEntityCommand extends StateData {
     private int entityId;
-    private byte reason;
+    private short nodeBuilderId;
+    private Vector3f location;
+    private Quaternion rotation;
+    private byte playerId;
 
-    public RemoveEntityMessage() {
+    public AddEntityCommand() {
     }
 
-    public RemoveEntityMessage(int entityId) {
+    public AddEntityCommand(int entityId, int nodeBuilderId, Vector3f location,
+            Quaternion rotation, int playerId) {
         this.entityId = entityId;
-        super.setSyncId(-1);
-    }
-
-    public RemoveEntityMessage(int entityId, int reason) {
-        this.entityId = entityId;
-        this.reason = (byte) reason;
-        super.setSyncId(-1);
+        this.nodeBuilderId = (short) nodeBuilderId;
+        this.location = location;
+        this.rotation = rotation;
+        this.playerId = (byte) playerId;
     }
 
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
-        worldManager.removeEntity(entityId, reason);
+        worldManager.addEntity(this.entityId, this.nodeBuilderId, this.location,
+                this.rotation, playerId);
     }
 }

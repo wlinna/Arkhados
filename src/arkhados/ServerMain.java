@@ -26,9 +26,14 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import arkhados.messages.usercommands.UcCastSpellMessage;
-import arkhados.messages.usercommands.UcMouseTargetMessage;
+import arkhados.messages.usercommands.UcCastSpellCommand;
+import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.net.OneTrueMessage;
+import arkhados.net.Receiver;
+import arkhados.net.Sender;
+import arkhados.net.ServerSender;
+import arkhados.spell.buffs.AbstractBuff;
 import java.util.logging.FileHandler;
 
 /**
@@ -58,50 +63,63 @@ public class ServerMain extends SimpleApplication {
         app.start(JmeContext.Type.Headless);
 //        app.start();
     }
+    
     private Server server;
     private ServerNetListener listenerManager;
     private ServerGameManager gameManager;
     private WorldManager worldManager;
     private BulletAppState physicsState;
-    private SyncManager syncManager;   
+    private SyncManager syncManager;
+    private Sender sender;
+    private Receiver receiver;
 
     @Override
     public void simpleInitApp() {
-        Globals.assetManager = this.getAssetManager();
-        this.worldManager = new WorldManager();
-        this.gameManager = new ServerGameManager();
-        this.physicsState = new BulletAppState();
-        this.physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
-        this.flyCam.setEnabled(false);
+        Globals.assetManager = getAssetManager();
+        worldManager = new WorldManager();
+        gameManager = new ServerGameManager();
+        physicsState = new BulletAppState();
+        physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        flyCam.setEnabled(false);
 
         try {
-            this.server = Network.createServer(Globals.PORT, Globals.PORT);
-            this.server.start();
+            server = Network.createServer(Globals.PORT, Globals.PORT);
+            server.start();
         } catch (IOException ex) {
         }
+        
+        receiver = new Receiver();
+        server.addMessageListener(receiver, OneTrueMessage.class);
+        
+        sender = new ServerSender(server);
+        AbstractBuff.setSender(sender);
+        
+        receiver.registerCommandHandler(sender);
+        
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
-        this.listenerManager = new ServerNetListener(this, server);
-        this.syncManager = new SyncManager(this, this.server);
-        this.syncManager.setMessagesToListen(
-                UcCastSpellMessage.class,
-                UcWalkDirection.class, UcMouseTargetMessage.class);
+        listenerManager = new ServerNetListener(this, server);
+        syncManager = new SyncManager(this);
+        receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(listenerManager);
 
-        this.stateManager.attach(ServerMain.this.syncManager);
-        this.stateManager.attach(ServerMain.this.worldManager);
-        this.stateManager.attach(ServerMain.this.gameManager);
-        this.stateManager.attach(ServerMain.this.physicsState);
-        this.physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);        
+        stateManager.attach(sender);
+        stateManager.attach(receiver);
+        stateManager.attach(syncManager);
+        stateManager.attach(worldManager);
+        stateManager.attach(gameManager);
+        stateManager.attach(physicsState);
+        
+        physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
     }
 
     public void startGame() {
-        this.flyCam.setEnabled(true);
-        this.flyCam.setMoveSpeed(25.0f);
-        this.inputManager.setCursorVisible(true);
-        this.enqueue(new Callable<Void>() {
+        flyCam.setEnabled(true);
+        flyCam.setMoveSpeed(25.0f);
+        inputManager.setCursorVisible(true);
+        enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-
-                ServerMain.this.gameManager.startGame();
+                gameManager.startGame();
                 return null;
             }
         });
@@ -117,7 +135,7 @@ public class ServerMain extends SimpleApplication {
 
     @Override
     public void destroy() {
-        this.server.close();
+        server.close();
         super.destroy();
     }
 }

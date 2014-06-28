@@ -50,4 +50,9 @@ public class GenericSyncData extends StateData {
         }
         spatial.setLocalRotation(this.rotation);
     }
+
+    @Override
+    public boolean isGuaranteed() {
+        return false;
+    }
 }

@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -23,7 +23,29 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public class ConnectionEstablishedMessage extends AbstractMessage{
-    public ConnectionEstablishedMessage() {        
+public class TopicOnlyCommand implements Command {    
+    
+    private transient boolean isGuaranteed = true;
+    private byte topicId;
+   
+    public TopicOnlyCommand() {
     }
+    
+    public TopicOnlyCommand(int topicId) {
+        this.topicId = (byte) topicId;
+    }
+
+    public TopicOnlyCommand(int topicId, boolean isGuaranteed) {
+        this.topicId = (byte) topicId;
+        this.isGuaranteed = isGuaranteed;        
+    }     
+
+    @Override
+    public boolean isGuaranteed() {
+        return isGuaranteed;
+    }
+
+    public int getTopicId() {
+        return topicId;
+    }   
 }

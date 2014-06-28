@@ -14,9 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-import arkhados.SyncManager;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.syncmessages.BuffMessage;
+import arkhados.messages.syncmessages.BuffCommand;
+import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -28,7 +28,7 @@ public abstract class AbstractBuff {
     private static int currentBuffId = 0;
 
     // TODO: Consider removing this. If there's going to be way to
-    private static SyncManager syncManager;
+    private static Sender sender;
     protected String name = null;
     private int typeId = -1;
 
@@ -51,9 +51,9 @@ public abstract class AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
-        if (this.typeId != -1) {
-            final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.typeId, this.buffId, this.duration, true));            
+        if (typeId != -1) {
+            final Integer entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            getSender().addCommand(new BuffCommand(entityId, typeId, buffId, duration, true));            
         }
     }
 
@@ -62,11 +62,11 @@ public abstract class AbstractBuff {
      * @return Id of buff group that buff belongs to.
      */
     public int getBuffGroupId() {
-        return this.buffGroupId;
+        return buffGroupId;
     }
 
     public void update(float time) {
-        this.duration -= time;
+        duration -= time;
     }
 
     /**
@@ -76,16 +76,16 @@ public abstract class AbstractBuff {
      * @return true if buff should continue. false, if it should be removed
      */
     public boolean shouldContinue() {
-        if (this.duration <= 0f) {
+        if (duration <= 0f) {
             return false;
         }
         return true;
     }
 
     public void destroy() {
-        if (this.typeId != -1) {
-            final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSyncManager().broadcast(new BuffMessage(entityId, this.typeId, this.buffId, this.duration, false));
+        if (typeId != -1) {
+            final Integer entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            getSender().addCommand(new BuffCommand(entityId, typeId, buffId, duration, false));
         }
     }
 
@@ -98,23 +98,23 @@ public abstract class AbstractBuff {
     }
 
     public boolean isFriendly() {
-        return this.friendly;
+        return friendly;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    protected static SyncManager getSyncManager() {
-        return syncManager;
+    protected static Sender getSender() {
+        return sender;
     }
 
-    public static void setSyncManager(SyncManager aSyncManager) {
-        syncManager = aSyncManager;
+    public static void setSender(Sender aSender) {
+        sender = aSender;
     }
 
     protected int getBuffId() {
-        return this.buffId;
+        return buffId;
     }
 
     public int getTypeId() {

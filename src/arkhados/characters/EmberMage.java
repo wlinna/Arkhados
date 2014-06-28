@@ -73,7 +73,7 @@ public class EmberMage extends AbstractNodeBuilder {
          * To add spells to entity, create SpellCastControl and call its
          * putSpell-method with name of the spell as argument.
          */
-        SpellCastControl spellCastControl = new SpellCastControl(this.worldManager);
+        SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
         spellCastControl.putSpell(Spell.getSpell("Fireball"), InputMappingStrings.getId(InputMappingStrings.M1));
         spellCastControl.putSpell(Spell.getSpell("Magma Bash"), InputMappingStrings.getId(InputMappingStrings.M2));

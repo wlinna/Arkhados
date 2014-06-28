@@ -13,11 +13,9 @@
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages.syncmessages;
+package arkhados.messages;
 
-import arkhados.WorldManager;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -25,29 +23,28 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class AddEntityMessage extends AbstractSyncMessage {
+public class SetPlayersCharacterCommand implements Command{
     private int entityId;
-    private short nodeBuilderId;
-    private Vector3f location;
-    private Quaternion rotation;
-    private byte playerId;
+    private int playerId;
 
-    public AddEntityMessage() {
+    public SetPlayersCharacterCommand() {
     }
 
-    public AddEntityMessage(int entityId, int nodeBuilderId, Vector3f location,
-            Quaternion rotation, int playerId) {
+    public SetPlayersCharacterCommand(int entityId, int playerId) {
         this.entityId = entityId;
-        this.nodeBuilderId = (short) nodeBuilderId;
-        this.location = location;
-        this.rotation = rotation;
-        this.playerId = (byte) playerId;
+        this.playerId = playerId;
+    }
+
+    public int getEntityId() {
+        return this.entityId;
+    }
+
+    public int getPlayerId() {
+        return this.playerId;
     }
 
     @Override
-    public void applyData(Object target) {
-        WorldManager worldManager = (WorldManager) target;
-        worldManager.addEntity(this.entityId, this.nodeBuilderId, this.location,
-                this.rotation, playerId);
+    public boolean isGuaranteed() {
+        return true;
     }
 }

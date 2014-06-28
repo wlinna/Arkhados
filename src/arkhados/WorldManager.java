@@ -41,21 +41,20 @@ import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.controls.UserInputControl;
 import arkhados.effects.BuffEffect;
-import arkhados.messages.syncmessages.AddEntityMessage;
-import arkhados.messages.syncmessages.RemoveEntityMessage;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityMessage;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityMessage;
+import arkhados.messages.syncmessages.AddEntityCommand;
+import arkhados.messages.syncmessages.RemoveEntityCommand;
+import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityCommand;
+import arkhados.messages.syncmessages.TemporarilyRemoveEntityCommand;
+import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
-import arkhados.util.ValueWrapper;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
-import com.jme3.network.NetworkClient;
 import com.jme3.scene.control.LightControl;
 import com.jme3.scene.control.LodControl;
 import java.util.LinkedList;
@@ -80,7 +79,6 @@ public class WorldManager extends AbstractAppState {
     private HashMap<Integer, Spatial> entities = new HashMap<>();
     private SyncManager syncManager;
     private int idCounter = 0;
-    private Server server;
     private boolean isClient = false;
     private EffectHandler effectHandler = null;
 
@@ -89,9 +87,8 @@ public class WorldManager extends AbstractAppState {
 
     public WorldManager(EffectHandler effectHandler) {
         this.effectHandler = effectHandler;
-        this.isClient = true;
+        isClient = true;
     }
-    
     private SimpleApplication app;
     private AssetManager assetManager;
     private PhysicsSpace space;
@@ -107,26 +104,27 @@ public class WorldManager extends AbstractAppState {
         TimedExistenceControl.setWorldManager(this);
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
-        this.rootNode = this.app.getRootNode();
-        this.assetManager = this.app.getAssetManager();
-        this.viewPort = this.app.getViewPort();
-        this.space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
+        rootNode = this.app.getRootNode();
+        assetManager = app.getAssetManager();
+        viewPort = app.getViewPort();
+        space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
 
-        this.cam = this.app.getCamera();
+        cam = app.getCamera();
 
-        this.syncManager = this.app.getStateManager().getState(SyncManager.class);
+        syncManager = app.getStateManager().getState(SyncManager.class);
 
-        this.server = this.syncManager.getServer();
 
-        if (this.isServer()) {
-            this.serverCollisionListener = new ServerWorldCollisionListener(this, this.syncManager);
-            this.space.addCollisionListener(this.serverCollisionListener);
-            this.entityFactory = new EntityFactory(assetManager, this);
-        } else if (this.isClient()) {
-            this.clientMain = (ClientMain) app;
-            this.entityFactory = new EntityFactory(this.assetManager, this,
+        Sender sender = stateManager.getState(Sender.class);
+
+        if (sender.isServer()) {
+            serverCollisionListener = new ServerWorldCollisionListener(this, syncManager);
+            space.addCollisionListener(serverCollisionListener);
+            entityFactory = new EntityFactory(assetManager, this);
+        } else if (isClient()) {
+            clientMain = (ClientMain) app;
+            entityFactory = new EntityFactory(assetManager, this,
                     app.getStateManager().getState(ClientHudManager.class),
-                    this.effectHandler);
+                    effectHandler);
 
             // FIXME: Sometimes shader linking error happens here
 //            try {
@@ -148,45 +146,45 @@ public class WorldManager extends AbstractAppState {
 
     public void preloadModels(String[] modelNames) {
         for (String path : modelNames) {
-            this.assetManager.loadModel(path);
+            assetManager.loadModel(path);
         }
     }
 
     public void loadLevel() {
-        this.worldRoot = (Node) this.assetManager.loadModel("Scenes/LavaArenaWithWalls.j3o");
+        worldRoot = (Node) assetManager.loadModel("Scenes/LavaArenaWithWalls.j3o");
 
         RigidBodyControl physics = new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
         physics.setFriction(1f);
         physics.setRestitution(0f);
         physics.setCollideWithGroups(CollisionGroups.NONE);
 
-        this.worldRoot.getChild("Ground").addControl(physics);
+        worldRoot.getChild("Ground").addControl(physics);
 
-        Spatial groundGeom = this.worldRoot.getChild("GroundGeom");
+        Spatial groundGeom = worldRoot.getChild("GroundGeom");
         LodControl lod = groundGeom.getControl(LodControl.class);
 
         if (lod == null) {
-            lod = new LodControl();            
+            lod = new LodControl();
             groundGeom.addControl(lod);
             lod.setTrisPerPixel(0);
         }
 
-        this.worldRoot.setName("world-root");
+        worldRoot.setName("world-root");
 
-        this.arena.readWorld(this, this.assetManager);
+        arena.readWorld(this, assetManager);
     }
 
     public void attachLevel() {
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(-0.39f, -0.32f, -0.74f));
-        this.worldRoot.addLight(sun);
+        worldRoot.addLight(sun);
 
-        this.space.addAll(this.worldRoot);
-        this.space.setGravity(new Vector3f(0f, -98.1f, 0));
-        this.rootNode.attachChild(this.worldRoot);
+        space.addAll(worldRoot);
+        space.setGravity(new Vector3f(0f, -98.1f, 0));
+        rootNode.attachChild(worldRoot);
 
-        this.cam.setLocation(new Vector3f(0.0f, 160.0f, 20.0f));
-        this.cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+        cam.setLocation(new Vector3f(0.0f, 160.0f, 20.0f));
+        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     }
 
     /**
@@ -199,50 +197,52 @@ public class WorldManager extends AbstractAppState {
      * @return entity id
      */
     public int addNewEntity(int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
-        ++this.idCounter;
-        this.addEntity(this.idCounter, nodeBuilderId, location, rotation, playerId);
-        return this.idCounter;
+        ++idCounter;
+        addEntity(idCounter, nodeBuilderId, location, rotation, playerId);
+        return idCounter;
     }
 
     public void addEntity(int id, int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
-        if (this.isServer()) {
-            this.syncManager.broadcast(new AddEntityMessage(id, nodeBuilderId, location, rotation, playerId));
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
+            sender.addCommand(new AddEntityCommand(id, nodeBuilderId, location, rotation, playerId));
         }
 
-        Spatial entitySpatial = this.entityFactory.createEntityById(nodeBuilderId);
-        this.setEntityTranslation(entitySpatial, location, rotation);
+        Spatial entitySpatial = entityFactory.createEntityById(nodeBuilderId);
+        setEntityTranslation(entitySpatial, location, rotation);
         entitySpatial.setUserData(UserDataStrings.PLAYER_ID, playerId);
         entitySpatial.setUserData(UserDataStrings.ENTITY_ID, id);
-        this.entities.put(id, entitySpatial);
-        this.syncManager.addObject(id, entitySpatial);
-        this.space.addAll(entitySpatial);
+        entities.put(id, entitySpatial);
+        syncManager.addObject(id, entitySpatial);
+        space.addAll(entitySpatial);
 
         // We need to add GhostControl separately
         final GhostControl ghostControl = entitySpatial.getControl(GhostControl.class);
         if (ghostControl != null) {
-            this.space.add(ghostControl);
+            space.add(ghostControl);
         }
 
-        this.worldRoot.attachChild(entitySpatial);
-        EntityVariableControl variableControl = new EntityVariableControl(this);
+        worldRoot.attachChild(entitySpatial);
+        EntityVariableControl variableControl = new EntityVariableControl(this, sender);
         entitySpatial.addControl(variableControl);
 
         if (entitySpatial.getControl(CharacterPhysicsControl.class) != null && PlayerData.isHuman(playerId)) {
             entitySpatial.addControl(new UserInputControl());
         }
 
-        if (this.isClient()) {
-            this.clientMain.getUserCommandManager().trySetPlayersCharacter(entitySpatial);
+        if (isClient()) {
+            clientMain.getUserCommandManager().trySetPlayersCharacter(entitySpatial);
         }
     }
 
     public void temporarilyRemoveEntity(int id) {
-        if (this.isServer()) {
-            this.server.broadcast(new TemporarilyRemoveEntityMessage(id));
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
+            sender.addCommand(new TemporarilyRemoveEntityCommand(id));
         }
-        Spatial spatial = this.getEntity(id);
+        Spatial spatial = getEntity(id);
         spatial.removeFromParent();
-        this.syncManager.removeEntity(id);
+        syncManager.removeEntity(id);
 
         CharacterPhysicsControl characterPhysics = spatial.getControl(CharacterPhysicsControl.class);
         if (characterPhysics != null) {
@@ -251,12 +251,14 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
-        if (this.isServer()) {
-            this.server.broadcast(new RestoreTemporarilyRemovedEntityMessage(id, location, rotation));
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
+            sender.addCommand(new RestoreTemporarilyRemovedEntityCommand(id,
+                    location, rotation));
         }
-        Spatial spatial = this.getEntity(id);
-        this.worldRoot.attachChild(spatial);
-        this.syncManager.addObject(id, spatial);
+        Spatial spatial = getEntity(id);
+        worldRoot.attachChild(spatial);
+        syncManager.addObject(id, spatial);
 
         CharacterPhysicsControl characterPhysics = spatial.getControl(CharacterPhysicsControl.class);
         if (characterPhysics != null) {
@@ -268,10 +270,10 @@ public class WorldManager extends AbstractAppState {
             interpolationControl.ignoreNext();
         }
 
-        this.setEntityTranslation(spatial, location, rotation);
+        setEntityTranslation(spatial, location, rotation);
 
-        if (this.isClient()) {
-            this.app.getStateManager().getState(UserCommandManager.class).sendWalkDirection();
+        if (isClient()) {
+            app.getStateManager().getState(UserCommandManager.class).sendWalkDirection();
         }
     }
 
@@ -290,16 +292,18 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void removeEntity(int id, int reason) {
-        if (this.isServer()) {
-            this.syncManager.broadcast(new RemoveEntityMessage(id, reason));
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
+            app.getStateManager().getState(Sender.class).addCommand(
+                    new RemoveEntityCommand(id, reason));
         }
-        this.syncManager.removeEntity(id);
-        Spatial spatial = this.entities.remove(id);
+        syncManager.removeEntity(id);
+        Spatial spatial = entities.remove(id);
         if (spatial == null) {
             return;
         }
 
-        if (this.isClient()) {
+        if (isClient()) {
             if (!"".equals(reason)) {
                 EntityEventControl eventControl = spatial.getControl(EntityEventControl.class);
                 if (eventControl != null) {
@@ -312,13 +316,13 @@ public class WorldManager extends AbstractAppState {
         if (lightControl != null) {
             Light light = lightControl.getLight();
             if (light != null) {
-                this.getWorldRoot().removeLight(light);
+                getWorldRoot().removeLight(light);
             }
         }
-        this.space.removeAll(spatial);
+        space.removeAll(spatial);
         final GhostControl ghostControl = spatial.getControl(GhostControl.class);
         if (ghostControl != null) {
-            this.space.remove(ghostControl);
+            space.remove(ghostControl);
         }
     }
 
@@ -352,51 +356,52 @@ public class WorldManager extends AbstractAppState {
     }
 
     public SyncManager getSyncManager() {
-        return this.syncManager;
+        return syncManager;
     }
 
     public boolean isServer() {
-        return this.server != null;
+        Sender sender = app.getStateManager().getState(Sender.class);
+        return sender.isServer();
     }
 
     public boolean isClient() {
-        return this.isClient;
+        return isClient;
     }
 
     public void clear() {
         for (PlayerData playerData : PlayerData.getPlayers()) {
             playerData.setData(PlayerDataStrings.ENTITY_ID, -1l);
         }
-        if (this.worldRoot != null) {
-            this.space.removeAll(this.worldRoot);
-            this.rootNode.detachChild(this.worldRoot);
+        if (worldRoot != null) {
+            space.removeAll(worldRoot);
+            rootNode.detachChild(worldRoot);
         }
-        this.entities.clear();
-        this.syncManager.clear();
+        entities.clear();
+        syncManager.clear();
 
-        this.idCounter = 0;
+        idCounter = 0;
 
-        this.worldRoot = null;
+        worldRoot = null;
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
-        if (this.worldRoot != null) {
-            this.rootNode.detachChild(this.worldRoot);
+        if (worldRoot != null) {
+            rootNode.detachChild(worldRoot);
         }
     }
 
     public Node getWorldRoot() {
-        return this.worldRoot;
+        return worldRoot;
     }
 
     public Spatial getEntity(int id) {
-        return this.entities.get(id);
+        return entities.get(id);
     }
 
     public boolean validateLocation(Vector3f location) {
-        return this.arena.validateLocation(location);
+        return arena.validateLocation(location);
     }
 
     public ClientMain getClientMain() {
@@ -405,7 +410,7 @@ public class WorldManager extends AbstractAppState {
 
     void preloadSoundEffects(String[] string) {
         for (String audioPath : string) {
-            this.assetManager.loadAudio("Effects/Sound/" + audioPath);
+            assetManager.loadAudio("Effects/Sound/" + audioPath);
         }
     }
 

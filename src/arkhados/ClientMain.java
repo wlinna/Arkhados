@@ -14,18 +14,15 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.messages.BattleStatisticsResponse;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientSelectHeroMessage;
-import arkhados.messages.ConnectionEstablishedMessage;
+import arkhados.messages.ClientSelectHeroCommand;
 import arkhados.messages.MessageUtils;
-import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.ServerLoginMessage;
-import arkhados.messages.SetPlayersCharacterMessage;
-import arkhados.messages.StartGameMessage;
-import arkhados.messages.UDPHandshakeAck;
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.ClientSender;
+import arkhados.net.OneTrueMessage;
+import arkhados.net.Receiver;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
@@ -75,9 +72,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
             settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, false);
         }
-    }
-
-    public static void putToSettingsIfNotExists() {
     }
 
     public static void setKey(AppSettings settings, final String inputMapping, boolean isKeyboard, int code) {
@@ -135,51 +129,63 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ClientHudManager clientHudManager;
     private RoundManager roundManager;
     private EffectHandler effectHandler;
+    
+    private ClientSender sender;
+    private Receiver receiver;
 
     @Override
     public void simpleInitApp() {
-        Globals.assetManager = this.getAssetManager();
-        this.setDisplayStatView(false);
+        Globals.assetManager = getAssetManager();
+        setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
-        this.bulletState = new BulletAppState();
-        this.bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        bulletState = new BulletAppState();
+        bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
 
-        this.inputManager.setCursorVisible(true);
+        inputManager.setCursorVisible(true);
 
-        this.clientHudManager = new ClientHudManager(this.cam, this.guiNode, this.guiFont);
+        clientHudManager = new ClientHudManager(cam, guiNode, guiFont);
 
-        this.stateManager.attach(this.clientHudManager);
-        this.stateManager.attach(this.bulletState);
-        this.bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
-        this.flyCam.setEnabled(false);
-        this.flyCam.setMoveSpeed(25.0f);
-        this.startNifty();
+        stateManager.attach(clientHudManager);
+        stateManager.attach(bulletState);
+        bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
+        flyCam.setEnabled(false);
+        flyCam.setMoveSpeed(25.0f);
+        startNifty();
 
-        this.syncManager = new SyncManager(this, this.clientWrapper);
-        this.stateManager.attach(this.syncManager);
+        syncManager = new SyncManager(this);
+        stateManager.attach(syncManager);
 
-        
-        this.effectHandler = new EffectHandler(this);
-        this.worldManager = new WorldManager(this.effectHandler);
-        this.effectHandler.setWorldManager(worldManager);
-
-        this.userCommandManager = new UserCommandManager(this.clientWrapper, this.inputManager);
+        effectHandler = new EffectHandler(this);
+        worldManager = new WorldManager(effectHandler);
+        effectHandler.setWorldManager(worldManager);
 
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
-        this.listenerManager = new ClientNetListener(clientWrapper);
-        this.stateManager.attach(this.listenerManager);
+        listenerManager = new ClientNetListener(clientWrapper);
+        stateManager.attach(listenerManager);
 
-        this.stateManager.attach(this.worldManager);
+        stateManager.attach(worldManager);
 
-        this.roundManager = new RoundManager();
-        this.stateManager.attach(this.roundManager);
+        roundManager = new RoundManager();
+        stateManager.attach(roundManager);
+        
+        sender = new ClientSender();
+        receiver = new Receiver();
+        receiver.registerCommandHandler(effectHandler);               
+        
+        userCommandManager = new UserCommandManager(sender, inputManager);
+        
+        stateManager.attach(userCommandManager);
+      
+        stateManager.attach(sender);
+        stateManager.attach(receiver);
 
-        ClientMain.this.stateManager
-                .attach(ClientMain.this.userCommandManager);
-
+        receiver.registerCommandHandler(sender);
+        receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(listenerManager);
+        receiver.registerCommandHandler(roundManager);
     }
 
     @Override
@@ -191,25 +197,27 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     private void startNifty() {
-        this.guiNode.detachAllChildren();
-        this.niftyDisplay = new NiftyJmeDisplay(this.assetManager,
-                this.inputManager, this.audioRenderer, this.guiViewPort);
+        guiNode.detachAllChildren();
+        niftyDisplay = new NiftyJmeDisplay(assetManager,
+                inputManager, audioRenderer, guiViewPort);
 
-        this.nifty = this.niftyDisplay.getNifty();
-        this.nifty.fromXml("Interface/ClientUI.xml", "main_menu", this, new KeySetter(this, this.inputManager), this.clientHudManager, ClientSettings.getClientSettings());
-        this.guiViewPort.addProcessor(this.niftyDisplay);
+        nifty = niftyDisplay.getNifty();
+        nifty.fromXml("Interface/ClientUI.xml", "main_menu", this,
+                new KeySetter(this, inputManager), clientHudManager,
+                ClientSettings.getClientSettings());
+        guiViewPort.addProcessor(niftyDisplay);
 
-        this.clientHudManager.setNifty(nifty);
+        clientHudManager.setNifty(nifty);
 
-        this.statusText = this.nifty.getScreen("join_server")
+        statusText = nifty.getScreen("join_server")
                 .findElementByName("status_text")
                 .getRenderer(TextRenderer.class);
     }
 
     public void setStatusText(final String text) {
-        this.enqueue(new Callable<Void>() {
+        enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                ClientMain.this.statusText.setText(text);
+                statusText.setText(text);
                 return null;
             }
         });
@@ -217,7 +225,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void connect() {
         // FIXME: TextFieldControl is deprecated
-
         final String username = nifty.getScreen("join_server")
                 .findElementByName("username_text")
                 .getControl(TextFieldControl.class).getText();
@@ -228,44 +235,43 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 findElementByName("server_ip").getControl(TextFieldControl.class).getText();
 
 
-        this.clientWrapper.set(Network.createClient());
-        this.roundManager.configureForClient();
-        this.listenerManager.reset();
-        this.clientWrapper.get().addClientStateListener(this.listenerManager);
-        this.clientWrapper.get().addMessageListener(this.listenerManager,
-                ConnectionEstablishedMessage.class, UDPHandshakeAck.class, ServerLoginMessage.class, PlayerDataTableMessage.class,
-                ChatMessage.class, StartGameMessage.class, SetPlayersCharacterMessage.class, BattleStatisticsResponse.class);
-
-        this.effectHandler.setMessagesToListen(this.clientWrapper.get());
+        clientWrapper.set(Network.createClient());       
+        listenerManager.reset();
+        clientWrapper.get().addClientStateListener(listenerManager);
+        
+        clientWrapper.get().addMessageListener(receiver, OneTrueMessage.class);
+        sender.reset();
+        receiver.reset();
+        sender.setClient(clientWrapper.get());
 
         if (username.trim().length() == 0) {
-            this.setStatusText("Username is invalid");
+            setStatusText("Username is invalid");
             return;
         }
-        this.listenerManager.setName(username);
+        listenerManager.setName(username);
 
-        this.syncManager.configureForClient();
-        this.setStatusText("Connecting... " + username);
+        setStatusText("Connecting... " + username);
         try {
-            this.clientWrapper.get().connectToServer(ip, port, port);
-            this.clientWrapper.get().start();
+            clientWrapper.get().connectToServer(ip, port, port);
+            clientWrapper.get().start();
         } catch (IOException ex) {
-            this.setStatusText(ex.getMessage());
+            setStatusText(ex.getMessage());
             Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void toLobby() {
-        this.inputManager.setCursorVisible(true);
-        this.nifty.gotoScreen("lobby");
+        inputManager.setCursorVisible(true);
+        nifty.gotoScreen("lobby");
     }
 
     // TODO: Change playerDatas type to something that holds all necessary data
     public void refreshPlayerData(final List<PlayerData> playerDataList) {
         PlayerData.setPlayers(playerDataList);
-        this.enqueue(new Callable<Void>() {
+        enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
-                Screen screen = ClientMain.this.nifty.getScreen("lobby");
+                Screen screen = nifty.getScreen("lobby");
                 if (screen == null) {
                     System.out.println("Screen is null");
                 }
@@ -282,9 +288,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void addChat(final String name, final String message) {
-        this.enqueue(new Callable<Void>() {
+        enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                Screen screen = ClientMain.this.nifty.getScreen("lobby");
+                Screen screen = nifty.getScreen("lobby");
                 ListBox listBox = screen.findNiftyControl("chat_list", ListBox.class);
                 listBox.addItem(String.format("<%s> %s", name, message));
                 return null;
@@ -293,12 +299,12 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void sendChat() {
-        this.enqueue(new Callable<Void>() {
+        enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                Screen screen = ClientMain.this.nifty.getScreen("lobby");
+                Screen screen = nifty.getScreen("lobby");
                 TextField textField = screen.findNiftyControl("chat_text", TextField.class);
-                ClientMain.this.clientWrapper.get().send(new ChatMessage(
-                        ClientMain.this.listenerManager.getName(),
+                sender.addCommand(new ChatMessage(
+                        listenerManager.getName(),
                         textField.getText()));
                 textField.setText("");
                 return null;
@@ -307,24 +313,28 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void selectHero(final String heroName) {
-        this.clientWrapper.get().send(new ClientSelectHeroMessage(heroName));
+        sender.addCommand(new ClientSelectHeroCommand(heroName));
     }
 
     public void sendStartGameRequest() {
-        this.clientWrapper.get().send(new StartGameMessage());
+        sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
     }
 
     public void startGame() {
-        this.flyCam.setEnabled(false);
+        flyCam.setEnabled(false);
 
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    ClientMain.this.enqueue(new Callable<Void>() {
+                    enqueue(new Callable<Void>() {
                         public Void call() throws Exception {
-                            worldManager.preloadModels(new String[]{"Models/Archer.j3o", "Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o", "Scenes/LavaArenaWithWalls.j3o"});
-                            worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav", "MeteorBoom.wav", "Shotgun.wav"});
-                            ClientMain.this.nifty.gotoScreen("default_hud");
+                            worldManager.preloadModels(new String[]{"Models/Archer.j3o",
+                                "Models/Mage.j3o", "Models/Warwolf.j3o",
+                                "Models/Circle.j3o", "Models/DamagingDagger.j3o",
+                                "Scenes/LavaArenaWithWalls.j3o"});
+                            worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav",
+                                "MeteorBoom.wav", "Shotgun.wav"});
+                            nifty.gotoScreen("default_hud");
                             return null;
                         }
                     }).get();
@@ -338,13 +348,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public UserCommandManager getUserCommandManager() {
-        return this.userCommandManager;
+        return userCommandManager;
     }
 
     public void gotoMenu(final String menu) {
-        this.enqueue(new Callable<Void>() {
+        enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                ClientMain.this.nifty.gotoScreen(menu);
+                nifty.gotoScreen(menu);
                 return null;
             }
         });
@@ -363,25 +373,25 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void closeApplication() {
-        this.stop();
+        stop();
     }
 
     @Override
     public void destroy() {
-        final NetworkClient client = this.clientWrapper.get();
+        final NetworkClient client = clientWrapper.get();
         if (client != null && client.isConnected()) {
-            this.clientWrapper.get().close();
+            clientWrapper.get().close();
         }
         super.destroy();
     }
 
     public RoundManager getRoundManager() {
-        return this.roundManager;
+        return roundManager;
     }
 
     @Override
     public void loseFocus() {
         super.loseFocus();
-        this.userCommandManager.onLoseFocus();
+        userCommandManager.onLoseFocus();
     }
 }

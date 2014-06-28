@@ -12,41 +12,38 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
 
-import arkhados.messages.syncmessages.statedata.StateData;
-import com.jme3.network.AbstractMessage;
+package arkhados.messages;
+
 import com.jme3.network.serializing.Serializable;
 import java.util.List;
-
+import arkhados.PlayerData;
+import arkhados.net.Command;
 /**
  *
  * @author william
  */
 @Serializable
-public class MassSyncMessage extends AbstractMessage {
+public class PlayerDataTableCommand implements Command {    
+    private List<PlayerData> playerDataList;
 
-    private transient static int globalStateSyncMessageCounter = 0;
-    private int orderNum = globalStateSyncMessageCounter++;
-    private List<StateData> stateData;
+    public PlayerDataTableCommand() {
 
-    public MassSyncMessage() {
-        super(false);
+    }
+    private PlayerDataTableCommand(List<PlayerData> playerDataList) {
+        this.playerDataList = playerDataList;
     }
 
-    public List<StateData> getStateData() {
-        return stateData;
+    public List<PlayerData> getPlayerData() {
+        return this.playerDataList;        
     }
 
-    public void setStateData(List<StateData> stateData) {
-        this.stateData = stateData;
+    public static PlayerDataTableCommand makeFromPlayerDataList() {        
+        return new PlayerDataTableCommand(PlayerData.getPlayers());
     }
 
-    public void resetGlobalStateSyncMessageCounter() {
-        globalStateSyncMessageCounter = 0;
-    }
-
-    public int getOrderNum() {
-        return this.orderNum;
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

@@ -12,39 +12,37 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.messages.syncmessages;
 
-package arkhados.messages;
-
-import com.jme3.network.AbstractMessage;
+import arkhados.controls.CharacterAnimationControl;
+import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Spatial;
 
 /**
  *
  * @author william
  */
+
 @Serializable
-public class SetPlayersCharacterMessage extends AbstractMessage {
-    private int entityId;
-    private int playerId;
+public class ActionCommand extends StateData {
+    private byte actionId;
 
-    public SetPlayersCharacterMessage() {
-
+    public ActionCommand() {
     }
 
-    public SetPlayersCharacterMessage(int entityId, int playerId) {
-        this.entityId = entityId;
-        this.playerId = playerId;
+    public ActionCommand(int id, int actionId) {
+        super(id);
+        this.actionId = (byte) actionId;
     }
 
-    public int getEntityId() {
-        return this.entityId;
+    @Override
+    public void applyData(Object target) {
+        Spatial character = (Spatial) target;
+        character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
     }
 
-    public int getPlayerId() {
-        return this.playerId;
+    public int getActionId() {
+        return actionId;
     }
-
-
-
-
 }

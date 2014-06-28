@@ -32,8 +32,9 @@ import arkhados.WorldManager;
 import arkhados.actions.CastingSpellAction;
 import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.SetCooldownMessage;
-import arkhados.messages.syncmessages.StartCastingSpellMessage;
+import arkhados.messages.syncmessages.SetCooldownCommand;
+import arkhados.messages.syncmessages.StartCastingSpellCommand;
+import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
@@ -48,7 +49,6 @@ import java.util.List;
  */
 public class SpellCastControl extends AbstractControl {
 
-    private WorldManager worldManager;
     private HashMap<Integer, Spell> spells = new HashMap<>();
     private HashMap<Integer, Float> cooldowns = new HashMap<>();
     private HashMap<Integer, Spell> keySpellMappings = new HashMap<>();
@@ -56,11 +56,6 @@ public class SpellCastControl extends AbstractControl {
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
     private final List<SpellCastListener> castListeners = new ArrayList<>();
-
-//    private float activeCastTimeLeft = 0f;
-    public SpellCastControl(WorldManager worldManager) {
-        this.worldManager = worldManager;
-    }
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -156,7 +151,7 @@ public class SpellCastControl extends AbstractControl {
             return false;
         }
 
-        if (this.worldManager.isServer()) {
+        if (getSpatial().getControl(EntityVariableControl.class).getSender().isServer()) {
             if (!super.spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
                 return false;
             }
@@ -178,8 +173,8 @@ public class SpellCastControl extends AbstractControl {
 
     public void cast(int input, Vector3f targetLocation) {
         final Spell spell = this.keySpellMappings.get(input);
-
-        if (this.worldManager.isServer()) {
+        Sender sender = getSpatial().getControl(EntityVariableControl.class).getSender();
+        if (sender.isServer()) {
 
             final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
             physics.setViewDirection(physics.calculateTargetDirection());
@@ -189,8 +184,8 @@ public class SpellCastControl extends AbstractControl {
             final EntityAction castingAction = spell.buildCastAction((Node) super.spatial, targetLocation);
             super.spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(super.spatial.getLocalTranslation());
-            this.worldManager.getSyncManager().getServer().broadcast(
-                    new StartCastingSpellMessage((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID),
+            sender.addCommand(
+                    new StartCastingSpellCommand((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID),
                     spell.getId(), direction));
         }
         this.globalCooldown();
@@ -208,20 +203,21 @@ public class SpellCastControl extends AbstractControl {
 
     public void setCooldown(int spellId, float cooldown) {
         this.cooldowns.put(spellId, cooldown);
-        if (this.worldManager.isServer()) {
+        Sender sender = getSpatial().getControl(EntityVariableControl.class).getSender();
+        if (sender.isServer()) {
             final Integer entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spellId, 0f, true));
+            sender.addCommand(new SetCooldownCommand(entityId, spellId, 0f, true));
         }
     }
 
     public void putOnCooldown(Spell spell) {
         this.cooldowns.put(spell.getId(), spell.getCooldown());
-
-        if (this.worldManager.isServer()) {
+        Sender sender = getSpatial().getControl(EntityVariableControl.class).getSender();
+        if (sender.isServer()) {
             final Integer entityId = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            this.worldManager.getSyncManager().broadcast(new SetCooldownMessage(entityId, spell.getId(), spell.getCooldown(), true));
+            sender.addCommand(new SetCooldownCommand(entityId, spell.getId(), spell.getCooldown(), true));
         }
     }
 
@@ -262,24 +258,6 @@ public class SpellCastControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    @Override
-    public Control cloneForSpatial(Spatial spatial) {
-        SpellCastControl control = new SpellCastControl(this.worldManager);
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public void globalCooldown() {

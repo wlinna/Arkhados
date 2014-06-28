@@ -15,11 +15,12 @@
 package arkhados.ui.hud;
 
 import arkhados.PlayerData;
+import arkhados.Topic;
 import arkhados.UserCommandManager;
-import arkhados.WorldManager;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.messages.BattleStatisticsRequest;
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerRoundStats;
@@ -32,7 +33,6 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.network.Client;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
@@ -74,121 +74,121 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         this.cam = cam;
         this.guiNode = guiNode;
         this.guiFont = guiFont;
-        this.guiNode.addControl(new ActionQueueControl());
+        guiNode.addControl(new ActionQueueControl());
     }
 
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
-        this.screen = this.nifty.getScreen("default_hud");
+        screen = nifty.getScreen("default_hud");
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        this.cam = app.getCamera();
+        cam = app.getCamera();
         this.stateManager = stateManager;
     }
 
     @Override
     public void update(float tpf) {
         if (playerCharacter == null) {
-            UserCommandManager userCommandManager = this.stateManager.getState(UserCommandManager.class);
-            this.playerCharacter = userCommandManager.getCharacter();
-            if (this.playerCharacter != null) {
-                this.loadSpellIcons();
+            UserCommandManager userCommandManager = stateManager.getState(UserCommandManager.class);
+            playerCharacter = userCommandManager.getCharacter();
+            if (playerCharacter != null) {
+                loadSpellIcons();
             }
         } else {
-            this.updateSpellIcons();
+            updateSpellIcons();
         }
 
-        for (int i = 0; i < this.characters.size(); ++i) {
-            this.updateHpBar(i);
+        for (int i = 0; i < characters.size(); ++i) {
+            updateHpBar(i);
         }
     }
 
     public void addCharacter(Spatial character) {
         // TODO: Add some checks
-        this.characters.add((Node) character);
-        this.createHpBar();
+        characters.add((Node) character);
+        createHpBar();
     }
 
     public void startRound() {
-        Element layerCountdown = this.screen.findElementByName("layer_countdown");
+        Element layerCountdown = screen.findElementByName("layer_countdown");
         layerCountdown.disable();
         layerCountdown.hide();
 
         // TODO: Create statistics panel creation to more appropriate place
         // HACK: This is only meant for initial implementation testing. Remove this "if" when all round statistics are accessible via GUI
-        if (!this.roundTableCreated) {
-            this.roundTableCreated = true;
+        if (!roundTableCreated) {
+            roundTableCreated = true;
         }
     }
 
     public void setSecondsLeftToStart(int seconds) {
-        if (this.currentSeconds == -1) {
-            Element layerCountdown = this.screen.findElementByName("layer_countdown");
+        if (currentSeconds == -1) {
+            Element layerCountdown = screen.findElementByName("layer_countdown");
 
             layerCountdown.enable();
             layerCountdown.show();
         }
         if (seconds != currentSeconds) {
-            this.currentSeconds = seconds;
-            Element textElement = this.screen.findElementByName("text_countdown");
+            currentSeconds = seconds;
+            Element textElement = screen.findElementByName("text_countdown");
             textElement.getRenderer(TextRenderer.class).setText(Integer.toString(seconds));
         }
     }
 
     public void clear() {
-        this.characters.clear();
-        for (BitmapText hpBar : this.hpBars) {
+        characters.clear();
+        for (BitmapText hpBar : hpBars) {
             hpBar.removeFromParent();
         }
-        this.hpBars.clear();
-        this.currentSeconds = -1;
-        this.playerCharacter = null;
+        hpBars.clear();
+        currentSeconds = -1;
+        playerCharacter = null;
 
-        for (Iterator<Element> it = this.screen.findElementByName("panel_bottom")
+        for (Iterator<Element> it = screen.findElementByName("panel_bottom")
                 .getElements().iterator(); it.hasNext();) {
 
             Element element = it.next();
-            this.nifty.removeElement(this.screen, element);
+            nifty.removeElement(screen, element);
         }
 
-        for (Iterator<Element> it = this.statisticsPanels.iterator(); it.hasNext();) {
+        for (Iterator<Element> it = statisticsPanels.iterator(); it.hasNext();) {
             Element element = it.next();
-            this.nifty.removeElement(this.screen, element);
+            nifty.removeElement(screen, element);
         }
 
         statisticsPanels.clear();
 
-        this.hideRoundStatistics();
+        hideRoundStatistics();
 
-        this.spellIcons.clear();
+        spellIcons.clear();
     }
 
     private void createHpBar() {
-        BitmapText hpBar = new BitmapText(this.guiFont);
+        BitmapText hpBar = new BitmapText(guiFont);
 
-        hpBar.setSize(this.guiFont.getCharSet().getRenderedSize());
+        hpBar.setSize(guiFont.getCharSet().getRenderedSize());
         hpBar.setBox(new Rectangle(0f, 0f, 40f, 10f));
         hpBar.setColor(ColorRGBA.Red);
         hpBar.setAlignment(BitmapFont.Align.Center);
         hpBar.center();
-        this.guiNode.attachChild(hpBar);
+        guiNode.attachChild(hpBar);
         hpBar.setQueueBucket(RenderQueue.Bucket.Gui);
-        this.hpBars.add(hpBar);
+        hpBars.add(hpBar);
     }
 
     private void updateHpBar(int index) {
-        Node character = this.characters.get(index);
-        BitmapText hpBar = this.hpBars.get(index);
+        Node character = characters.get(index);
+        BitmapText hpBar = hpBars.get(index);
         float health = (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT);
         if (health == 0.0f) {
             hpBar.setText("");
             return;
         }
         // TODO: Implement better method to get character's head's location
-        Vector3f hpBarLocation = this.cam.getScreenCoordinates(
+        Vector3f hpBarLocation = cam.getScreenCoordinates(
                 character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
@@ -212,30 +212,30 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void initializePlayerStatisticsPanels() {
-        final Element statisticsPanel = this.screen.findElementByName("panel_statistics");
+        final Element statisticsPanel = screen.findElementByName("panel_statistics");
         assert statisticsPanel != null;
         final List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
-            this.statisticsPanels.add(new PlayerStatisticsPanelBuilder(
+            statisticsPanels.add(new PlayerStatisticsPanelBuilder(
                     playerData.getId()).build(nifty, screen, statisticsPanel));
         }
     }
 
     public void showRoundStatistics() {
-        this.initializePlayerStatisticsPanels();
-        final Client client = this.stateManager.getState(WorldManager.class).getSyncManager().getClient();
-        client.send(new BattleStatisticsRequest());
-        final Element statisticsLayer = this.screen.findElementByName("layer_statistics");
+        initializePlayerStatisticsPanels();
+        Sender sender = stateManager.getState(Sender.class);
+        sender.addCommand(new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
+        final Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.show();
     }
 
     public void hideRoundStatistics() {
-        final Element statisticsLayer = this.screen.findElementByName("layer_statistics");
+        final Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.hideWithoutEffect();
     }
 
     public void updateStatistics(final List<PlayerRoundStats> playerRoundStatsList) {
-        final Element statisticsPanel = this.screen.findElementByName("panel_statistics");
+        final Element statisticsPanel = screen.findElementByName("panel_statistics");
         for (PlayerRoundStats playerRoundStats : playerRoundStatsList) {
 
             final Element damagePanel = statisticsPanel.findElementByName(
@@ -255,25 +255,25 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     public void endGame() {
-        this.clear();
-        this.nifty.gotoScreen("main_menu");
+        clear();
+        nifty.gotoScreen("main_menu");
 
-        this.clear();
-        this.roundTableCreated = false;
+        clear();
+        roundTableCreated = false;
     }
 
     private void loadSpellIcons() {
-        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M1));
-        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M2));
-        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.Q));
-        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.E));
-        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.R));
-        this.addSpellIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
+        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M1));
+        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M2));
+        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.Q));
+        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.E));
+        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.R));
+        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
     }
 
     private void addSpellIcon(int key) {
-        final Element bottomPanel = this.screen.findElementByName("panel_bottom");
-        final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
+        final Element bottomPanel = screen.findElementByName("panel_bottom");
+        final SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
         final Spell spell = castControl.getKeySpellNameMapping(key);
         String iconPath;
         if (spell.getIconName() != null) {
@@ -281,17 +281,17 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         } else {
             iconPath = "Interface/Images/SpellIcons/placeholder.png";
         }
-        this.spellIcons.put(spell.getName(), new SpellIconBuilder(spell.getName(),
+        spellIcons.put(spell.getName(), new SpellIconBuilder(spell.getName(),
                 iconPath).build(nifty, screen, bottomPanel));
     }
 
     private void updateSpellIcons() {
-        if (this.playerCharacter == null) {
+        if (playerCharacter == null) {
             return;
         }
-        final SpellCastControl castControl = this.playerCharacter.getControl(SpellCastControl.class);
+        final SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
 
-        for (Map.Entry<String, Element> entry : this.spellIcons.entrySet()) {
+        for (Map.Entry<String, Element> entry : spellIcons.entrySet()) {
             float cooldown = castControl.getCooldown(Spell.getSpell(entry.getKey()).getId());
             Element overlay = entry.getValue().findElementByName(entry.getKey() + "-overlay");
             if (cooldown <= 0) {

@@ -27,7 +27,6 @@ public abstract class AbstractNodeBuilder implements NodeBuilder {
 
     protected static WorldManager worldManager;
     protected static AssetManager assetManager;
-    
     private EffectBox effectBox = null;
 
     @Override

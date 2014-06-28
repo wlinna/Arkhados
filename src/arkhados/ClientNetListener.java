@@ -17,18 +17,16 @@ package arkhados;
 import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
-import com.jme3.network.Message;
-import com.jme3.network.MessageListener;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientLoginMessage;
-import arkhados.messages.ClientSettingsMessage;
-import arkhados.messages.ConnectionEstablishedMessage;
-import arkhados.messages.PlayerDataTableMessage;
-import arkhados.messages.ServerLoginMessage;
-import arkhados.messages.SetPlayersCharacterMessage;
-import arkhados.messages.StartGameMessage;
-import arkhados.messages.UDPHandshakeAck;
-import arkhados.messages.UDPHandshakeRequest;
+import arkhados.messages.ClientLoginCommand;
+import arkhados.messages.ClientSettingsCommand;
+import arkhados.messages.PlayerDataTableCommand;
+import arkhados.messages.ServerLoginCommand;
+import arkhados.messages.SetPlayersCharacterCommand;
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.Command;
+import arkhados.net.CommandHandler;
+import arkhados.net.Sender;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
@@ -38,12 +36,13 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.NetworkClient;
 import com.jme3.system.AppSettings;
+import java.util.List;
 
 /**
  *
  * @author william
  */
-public class ClientNetListener extends AbstractAppState implements MessageListener, ClientStateListener {
+public class ClientNetListener extends AbstractAppState implements ClientStateListener, CommandHandler {
 
     private ClientMain app;
     private ValueWrapper<NetworkClient> client;
@@ -60,73 +59,21 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
         super.initialize(stateManager, app);
         this.app = (ClientMain) app;
     }
-    
+
     public void reset() {
-        this.udpHandshakeAckTimer.setTimeLeft(1f);
-        this.udpHandshakeAckTimer.setActive(false);
-        this.handshakeComplete = false;
-        
+        udpHandshakeAckTimer.setTimeLeft(1f);
+        udpHandshakeAckTimer.setActive(false);
+        handshakeComplete = false;
     }
 
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        this.udpHandshakeAckTimer.update(tpf);
+        udpHandshakeAckTimer.update(tpf);
         if (udpHandshakeAckTimer.timeJustEnded()) {
-            this.client.get().send(new UDPHandshakeRequest());
-            this.udpHandshakeAckTimer.setTimeLeft(this.udpHandshakeAckTimer.getOriginal());
-        }
-    }
-
-    @Override
-    public void messageReceived(Object source, Message m) {
-        if (m instanceof ConnectionEstablishedMessage) {
-            this.client.get().send(new UDPHandshakeRequest());
-            this.udpHandshakeAckTimer.setActive(true);
-            
-        } else if (m instanceof UDPHandshakeAck) {
-            if (!this.handshakeComplete) {
-                ClientLoginMessage message = new ClientLoginMessage(this.name);
-                this.client.get().send(message);
-                this.handshakeComplete = true;
-                this.app.toLobby();
-                this.app.setStatusText("");
-            }
-            
-        } else if (m instanceof ServerLoginMessage) {
-            ServerLoginMessage message = (ServerLoginMessage) m;
-            if (message.isAccepted()) {
-                this.app.getUserCommandManager().setPlayerId(message.getPlayerId());
-                AppSettings settings = this.app.getContext().getSettings();
-                
-                boolean movingInterrupts = settings.getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
-                
-                ClientSettingsMessage clientSettingsMessage = new ClientSettingsMessage(movingInterrupts);
-                this.client.get().send(clientSettingsMessage);
-            }
-            
-        } else if (m instanceof PlayerDataTableMessage) {
-            PlayerDataTableMessage message = (PlayerDataTableMessage) m;
-            this.app.refreshPlayerData(message.getPlayerData());
-            
-        } else if (m instanceof ChatMessage) {
-            ChatMessage message = (ChatMessage) m;
-            this.app.addChat(message.getName(), message.getMessage());
-            
-        } else if (m instanceof StartGameMessage) {
-            this.app.startGame();
-            this.udpHandshakeAckTimer.setActive(false);
-            
-        } else if (m instanceof SetPlayersCharacterMessage) {
-            SetPlayersCharacterMessage message = (SetPlayersCharacterMessage) m;
-            if (this.app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
-                this.app.getUserCommandManager().setCharacterId(message.getEntityId());
-                System.out.println(String.format("Your entityId: %d", message.getEntityId()));
-            }
-            
-        } else if (m instanceof BattleStatisticsResponse) {
-            final BattleStatisticsResponse message = (BattleStatisticsResponse) m;
-            this.app.getStateManager().getState(ClientHudManager.class).updateStatistics(message.getPlayerRoundStatsList());
+            Sender sender = app.getStateManager().getState(Sender.class);
+            sender.addCommand(new TopicOnlyCommand(Topic.UDP_HANDSHAKE_REQUEST, false));
+            udpHandshakeAckTimer.setTimeLeft(udpHandshakeAckTimer.getOriginal());
         }
     }
 
@@ -140,10 +87,89 @@ public class ClientNetListener extends AbstractAppState implements MessageListen
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public void readGuaranteed(Object source, List<Command> guaranteed) {
+        for (Command command : guaranteed) {
+            if (command instanceof TopicOnlyCommand) {
+                handleTopicCommand((TopicOnlyCommand) command);
+            } else if (command instanceof PlayerDataTableCommand) {
+                PlayerDataTableCommand dataTable = (PlayerDataTableCommand) command;
+                app.refreshPlayerData(dataTable.getPlayerData());
+            } else if (command instanceof ChatMessage) {
+                ChatMessage chat = (ChatMessage) command;
+                app.addChat(chat.getName(), chat.getMessage());
+            } else if (command instanceof ServerLoginCommand) {
+                handleLoginCommand((ServerLoginCommand) command);
+            } else if (command instanceof BattleStatisticsResponse) {
+                BattleStatisticsResponse response = (BattleStatisticsResponse) command;
+                app.getStateManager().getState(ClientHudManager.class).updateStatistics(response.getPlayerRoundStatsList());
+            } else if (command instanceof SetPlayersCharacterCommand) {
+                handleSetPlayersCharacter((SetPlayersCharacterCommand) command);
+            }
+        }
+    }
+
+    @Override
+    public void readUnreliable(Object source, List<Command> unreliables) {
+        for (Command command : unreliables) {
+            if (command instanceof TopicOnlyCommand) {
+                handleTopicCommand((TopicOnlyCommand) command);
+            }
+        }
+    }
+
+    private void handleTopicCommand(TopicOnlyCommand topicOnlyCommand) {
+        switch (topicOnlyCommand.getTopicId()) {
+            case Topic.START_GAME:
+                app.startGame();
+                udpHandshakeAckTimer.setActive(false);
+                break;
+            case Topic.UDP_HANDSHAKE_ACK:
+                handleUdpHandshakeAck();
+                break;
+            case Topic.CONNECTION_ESTABLISHED:
+                Sender sender = app.getStateManager().getState(Sender.class);
+                sender.addCommand(new TopicOnlyCommand(
+                        Topic.UDP_HANDSHAKE_REQUEST, false));
+                udpHandshakeAckTimer.setActive(true);
+        }
+    }
+
+    private void handleLoginCommand(ServerLoginCommand loginCommand) {
+        if (loginCommand.isAccepted()) {
+            app.getUserCommandManager().setPlayerId(loginCommand.getPlayerId());
+            AppSettings settings = app.getContext().getSettings();
+
+            boolean movingInterrupts = settings.getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+
+            ClientSettingsCommand clientSettingsCommand = new ClientSettingsCommand(movingInterrupts);
+            Sender sender = app.getStateManager().getState(Sender.class);
+            sender.addCommand(clientSettingsCommand);
+        }
+    }
+
+    private void handleSetPlayersCharacter(SetPlayersCharacterCommand message) {
+        if (app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
+            app.getUserCommandManager().setCharacterId(message.getEntityId());
+            System.out.println(String.format("Your entityId: %d", message.getEntityId()));
+        }
+    }
+
+    private void handleUdpHandshakeAck() {
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (!handshakeComplete) {
+            ClientLoginCommand command = new ClientLoginCommand(name);
+            sender.addCommand(command);
+            handshakeComplete = true;
+            app.toLobby();
+            app.setStatusText("");
+        }
     }
 }

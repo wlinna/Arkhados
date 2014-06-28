@@ -21,7 +21,8 @@ import com.jme3.scene.control.AbstractControl;
 import java.util.LinkedList;
 import java.util.Queue;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.ActionMessage;
+import arkhados.messages.syncmessages.ActionCommand;
+import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -95,10 +96,10 @@ public class ActionQueueControl extends AbstractControl {
             animationControl.animateAction(action.getTypeId());
         }
 
-        final WorldManager world = super.spatial.getControl(EntityVariableControl.class).getWorldManager();
-        if (world.isServer()) {
+        final Sender sender = super.spatial.getControl(EntityVariableControl.class).getSender();
+        if (sender.isServer()) {
             final Integer id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
-            world.getSyncManager().broadcast(new ActionMessage(id, action.getTypeId()));
+            sender.addCommand(new ActionCommand(id, action.getTypeId()));
         }
     }
 }

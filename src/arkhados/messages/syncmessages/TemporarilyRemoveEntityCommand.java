@@ -12,10 +12,10 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.messages.syncmessages;
 
-package arkhados.messages;
-
-import com.jme3.network.AbstractMessage;
+import arkhados.WorldManager;
+import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -24,8 +24,19 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public class UDPHandshakeAck extends AbstractMessage {
-    public UDPHandshakeAck() {
-        super(false);
-    }        
+public class TemporarilyRemoveEntityCommand extends StateData {
+    private int entityId;
+
+    public TemporarilyRemoveEntityCommand() {
+    }
+
+    public TemporarilyRemoveEntityCommand(int entityId) {
+        this.entityId = entityId;
+    }
+
+    @Override
+    public void applyData(Object target) {
+        WorldManager worldManager = (WorldManager) target;
+        worldManager.temporarilyRemoveEntity(entityId);
+    }
 }

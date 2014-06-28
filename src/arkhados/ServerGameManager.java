@@ -14,10 +14,12 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.Receiver;
+import arkhados.net.Sender;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import arkhados.messages.StartGameMessage;
 
 /**
  *
@@ -25,35 +27,39 @@ import arkhados.messages.StartGameMessage;
  */
 public class ServerGameManager extends AbstractAppState {
 
-    private SyncManager syncManager;
     private WorldManager worldManager;
     private RoundManager roundManager;
     private boolean running;
+    private Application app;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         System.out.println("Initializing ServerGameManager");
         super.initialize(stateManager, app);
-        this.worldManager = app.getStateManager().getState(WorldManager.class);
-        this.syncManager = this.worldManager.getSyncManager();
-        this.roundManager = new RoundManager();
-        this.roundManager.setEnabled(false);
-        stateManager.attach(this.roundManager);
-        System.out.println("Initialized ServerGameManager");
+        worldManager = app.getStateManager().getState(WorldManager.class);
+        roundManager = new RoundManager();
+        roundManager.setEnabled(false);        
+        stateManager.attach(roundManager);
+        stateManager.getState(Receiver.class).registerCommandHandler(roundManager);
+        this.app = app;
     }
 
     public synchronized boolean startGame() {
-        if (this.running) {
+        if (running) {
             return false;
         }
-        this.roundManager.setEnabled(true);
+        
+        Sender sender = app.getStateManager().getState(Sender.class);
+        
+        roundManager.setEnabled(true);
 
-        this.worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+        worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o",
+            "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
 
-        this.running = true;
-        this.syncManager.getServer().broadcast(new StartGameMessage());
+        running = true;
+        sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
 
-        this.roundManager.serverStartGame();
+        roundManager.serverStartGame();
 
         return true;
     }

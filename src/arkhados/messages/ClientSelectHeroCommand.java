@@ -14,7 +14,7 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -22,20 +22,22 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class ClientSelectHeroMessage extends AbstractMessage {
+public class ClientSelectHeroCommand implements Command {
     private String heroName;
 
-    public ClientSelectHeroMessage() {
+    public ClientSelectHeroCommand() {
     }
 
-    public ClientSelectHeroMessage(String heroName) {
+    public ClientSelectHeroCommand(String heroName) {
         this.heroName = heroName;
     }
 
     public String getHeroName() {
-        return this.heroName;
+        return heroName;
     }
 
-
-
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
 }

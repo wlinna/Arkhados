@@ -12,31 +12,43 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
+package arkhados.messages.usercommands;
 
-import arkhados.WorldManager;
+import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Spatial;
+import arkhados.controls.SpellCastControl;
+import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
  *
  * @author william
  */
-
 @Serializable
-public class TemporarilyRemoveEntityMessage extends AbstractSyncMessage {
-    private int entityId;
+public class UcCastSpellCommand extends StateData {
 
-    public TemporarilyRemoveEntityMessage() {
+    private byte input;
+    private Vector3f direction;
+
+    public UcCastSpellCommand() {
     }
 
-    public TemporarilyRemoveEntityMessage(int entityId) {
-        this.entityId = entityId;
-        super.setSyncId(-1);
+    public UcCastSpellCommand(int input, Vector3f location) {
+        this.input = (byte) input;
+        this.direction = location;
     }
 
     @Override
     public void applyData(Object target) {
-        WorldManager worldManager = (WorldManager) target;
-        worldManager.temporarilyRemoveEntity(entityId);
+        Spatial character = (Spatial) target;
+        character.getControl(SpellCastControl.class).castIfDifferentSpell(this.input, this.direction);
+    }
+
+    public int getInput() {
+        return input;
+    }
+
+    public Vector3f getLocation() {
+        return direction;
     }
 }

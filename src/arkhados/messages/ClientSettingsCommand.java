@@ -15,7 +15,7 @@
 
 package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -24,7 +24,22 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public class StartGameMessage extends AbstractMessage {
-    public StartGameMessage() {
+public class ClientSettingsCommand implements Command {
+    private boolean commandMoveInterrupts;
+
+    public ClientSettingsCommand() {
+    }
+
+    public ClientSettingsCommand(boolean commandMoveInterrupts) {
+        this.commandMoveInterrupts = commandMoveInterrupts;
+    }
+
+    public boolean commandMoveInterrupts() {
+        return commandMoveInterrupts;
+    }        
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

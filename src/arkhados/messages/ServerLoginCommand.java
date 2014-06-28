@@ -13,9 +13,9 @@
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages.roundprotocol;
+package arkhados.messages;
 
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -23,8 +23,34 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class PlayerReadyForNewRoundMessage extends AbstractMessage {
-    public PlayerReadyForNewRoundMessage() {
+public class ServerLoginCommand implements Command {
+    private String name;
+    private int playerId;
+    private boolean accepted;
 
+    public ServerLoginCommand() {
+    }
+
+    public ServerLoginCommand(String nick, int playerId, boolean accepted) {
+        this.name = nick;
+        this.playerId = playerId;
+        this.accepted = accepted;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

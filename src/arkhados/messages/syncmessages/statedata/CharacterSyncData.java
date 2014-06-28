@@ -59,4 +59,9 @@ public class CharacterSyncData extends StateData {
         character.getControl(CharacterPhysicsControl.class).enqueueSetLinearVelocity(velocity);
         character.getControl(CharacterPhysicsControl.class).setWalkDirection(this.walkDirection);
     }
+
+    @Override
+    public boolean isGuaranteed() {
+        return false;
+    }   
 }

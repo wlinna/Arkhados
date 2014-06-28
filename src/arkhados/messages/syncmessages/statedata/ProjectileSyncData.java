@@ -49,4 +49,9 @@ public class ProjectileSyncData extends StateData {
         spatial.getControl(RigidBodyControl.class).setLinearVelocity(this.velocity);
         spatial.getControl(RigidBodyControl.class).setPhysicsRotation(this.rotation);
     }
+
+    @Override
+    public boolean isGuaranteed() {
+        return false;
+    }
 }

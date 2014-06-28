@@ -12,33 +12,33 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.messages.roundprotocol;
 
-package arkhados.messages;
-
-import com.jme3.network.AbstractMessage;
+import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
-import java.util.List;
-import arkhados.PlayerData;
+
 /**
  *
  * @author william
  */
+
 @Serializable
-public class PlayerDataTableMessage extends AbstractMessage {    
-    private List<PlayerData> playerDataList;
+public class RoundStartCountdownCommand implements Command{
+    private int time;
 
-    public PlayerDataTableMessage() {
-
-    }
-    private PlayerDataTableMessage(List<PlayerData> playerDataList) {
-        this.playerDataList = playerDataList;
+    public RoundStartCountdownCommand() {
     }
 
-    public List<PlayerData> getPlayerData() {
-        return this.playerDataList;        
+    public RoundStartCountdownCommand(int time) {
+        this.time = time;
     }
 
-    public static PlayerDataTableMessage makeFromPlayerDataList() {        
-        return new PlayerDataTableMessage(PlayerData.getPlayers());
+    public int getTime() {
+        return this.time;
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

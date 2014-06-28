@@ -15,10 +15,8 @@
 package arkhados.messages.usercommands;
 
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.messages.syncmessages.AbstractSyncMessage;
+import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.math.Vector3f;
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
@@ -27,16 +25,18 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 @Serializable
-public class UcMouseTargetMessage extends AbstractSyncMessage {
+public class UcMouseTargetCommand extends StateData {
 
     private Vector3f location;
 
-    public UcMouseTargetMessage() {
+    public UcMouseTargetCommand() {
     }
 
-    public UcMouseTargetMessage(Vector3f location) {
+    public UcMouseTargetCommand(Vector3f location) {  
         this.location = location;
     }
+    
+    
 
     @Override
     public void applyData(Object target) {
@@ -48,5 +48,14 @@ public class UcMouseTargetMessage extends AbstractSyncMessage {
                 && physicsControl.getWalkDirection().equals(Vector3f.ZERO)) {
             physicsControl.lookAt(this.location);
         }
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return false;
+    }
+
+    public void setLocation(Vector3f location) {
+        this.location = location;
     }
 }
