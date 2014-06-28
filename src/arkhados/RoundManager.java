@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import arkhados.messages.SetPlayersCharacterCommand;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
+import arkhados.net.ClientSender;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
@@ -105,7 +106,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                     sender.addCommand(new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
                 }
 
-                if (worldManager.isServer()) {
+                if (sender.isServer()) {
                     logger.log(Level.INFO, "Broadcasting CreateWorldMessage");
                     sender.addCommand(new TopicOnlyCommand(Topic.CREATE_WORLD));
                     logger.log(Level.INFO, "Enablind syncManager");
@@ -120,7 +121,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     private void createCharacters() {
         final ServerSender sender = app.getStateManager().getState(ServerSender.class);
         logger.log(Level.INFO, "Creating characters");
-        if (worldManager.isServer()) {
+        if (sender.isServer()) {
             app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
 
@@ -157,14 +158,14 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     }
 
     private void startNewRound() {
+        Sender sender = app.getStateManager().getState(Sender.class);
         logger.log(Level.INFO, "Starting new round");
-        if (worldManager.isServer()) {
-            Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
             sender.addCommand(new TopicOnlyCommand(Topic.NEW_ROUND));
             CharacterInteraction.startNewRound();
         }
         roundRunning = true;
-        if (worldManager.isClient()) {
+        if (sender.isClient()) {
             clientMain.getUserCommandManager().setEnabled(true);
             stateManager.getState(ClientHudManager.class).startRound();
         }
@@ -181,9 +182,9 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     }
 
     private void endRound() {
+        Sender sender = app.getStateManager().getState(Sender.class);
         logger.log(Level.INFO, "Ending round");
-        if (worldManager.isServer()) {
-            Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {            
             sender.addCommand(new TopicOnlyCommand(Topic.ROUND_FINISHED));
             PlayerData.setDataForAll(PlayerDataStrings.WORLD_CREATED, false);
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
@@ -207,9 +208,10 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
 
     @Override
     public void update(float tpf) {
+        Sender sender = app.getStateManager().getState(Sender.class);
         roundStartTimer.update(tpf);
         if (roundStartTimer.timeJustEnded()) {
-            if (worldManager.isServer()) {
+            if (sender.isServer()) {
                 startNewRound();
             }
             roundStartTimer.setActive(false);
@@ -220,11 +222,10 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         }
 
         roundEndTimer.update(tpf);
-        if (roundEndTimer.timeJustEnded() && worldManager.isServer()) {
+        if (roundEndTimer.timeJustEnded() && sender.isServer()) {
             if (currentRound < rounds) {
                 createWorld();
             } else {
-                Sender sender = stateManager.getState(Sender.class);
                 sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
             }
         }
@@ -233,7 +234,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
             return;
         }
 
-        if (worldManager.isServer()) {
+        if (sender.isServer()) {
             int aliveAmount = 0;
             for (PlayerData playerData : PlayerData.getPlayers()) {
                 int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
@@ -265,7 +266,8 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
 
     @Override
     public void readGuaranteed(Object source, List<Command> guaranteed) {
-        if (worldManager.isServer()) {
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
             serverReadGuaranteed((HostedConnection) source, guaranteed);
         } else {
             clientReadGuaranteed(guaranteed);
@@ -319,7 +321,8 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                syncManager.getClient().close();
+                ClientSender sender = app.getStateManager().getState(ClientSender.class);
+                sender.getClient().close();
                 worldManager.clear();
                 syncManager.clear();
 

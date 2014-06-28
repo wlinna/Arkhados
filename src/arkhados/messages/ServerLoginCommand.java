@@ -16,7 +16,6 @@
 package arkhados.messages;
 
 import arkhados.net.Command;
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 
 /**
@@ -39,15 +38,15 @@ public class ServerLoginCommand implements Command {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public int getPlayerId() {
-        return this.playerId;
+        return playerId;
     }
 
     public boolean isAccepted() {
-        return this.accepted;
+        return accepted;
     }
 
     @Override

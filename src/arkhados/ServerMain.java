@@ -99,7 +99,7 @@ public class ServerMain extends SimpleApplication {
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
         listenerManager = new ServerNetListener(this, server);
-        syncManager = new SyncManager(this, server);
+        syncManager = new SyncManager(this);
         receiver.registerCommandHandler(syncManager);
         receiver.registerCommandHandler(listenerManager);
 

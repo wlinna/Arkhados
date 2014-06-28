@@ -17,9 +17,7 @@ package arkhados;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.network.Client;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.Server;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,8 +31,6 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.util.PlayerDataStrings;
-import arkhados.util.ValueWrapper;
-import com.jme3.network.NetworkClient;
 import java.util.List;
 import java.util.Set;
 
@@ -44,22 +40,14 @@ import java.util.Set;
  */
 public class SyncManager extends AbstractAppState implements CommandHandler {
 
-    private Server server = null;
-    private ValueWrapper<NetworkClient> client;
     private Application app;
     HashMap<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
     private Queue<StateData> stateDataQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
 
-    public SyncManager(Application app, Server server) {
+    public SyncManager(Application app) {
         this.app = app;
-        this.server = server;
-    }
-
-    public SyncManager(Application app, ValueWrapper<NetworkClient> client) {
-        this.app = app;
-        this.client = client;
     }
 
     @Override
@@ -69,29 +57,30 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
 
     @Override
     public void update(float tpf) {
-        if (this.getClient() != null) {
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isClient()) {
 
             for (Iterator<StateData> it = stateDataQueue.iterator(); it.hasNext();) {
                 StateData stateData = it.next();
-                Object object = this.syncObjects.get(stateData.getSyncId());
+                Object object = syncObjects.get(stateData.getSyncId());
                 if (object != null) {
                     stateData.applyData(object);
                 }
 
                 it.remove();
             }
-        } else if (this.server != null) {
-            this.syncTimer += tpf;
-            if (this.syncTimer >= Globals.DEFAULT_SYNC_FREQUENCY) {
-                this.sendSyncData();
-                this.syncTimer = 0.0f;
+        } else {
+            syncTimer += tpf;
+            if (syncTimer >= Globals.DEFAULT_SYNC_FREQUENCY) {
+                sendSyncData();
+                syncTimer = 0.0f;
             }
         }
     }
 
     private void sendSyncData() {
         Sender sender = app.getStateManager().getState(Sender.class);
-        Set<Entry<Integer, Object>> entrySet = this.syncObjects.entrySet();
+        Set<Entry<Integer, Object>> entrySet = syncObjects.entrySet();
 
         for (Iterator<Entry<Integer, Object>> it = entrySet.iterator(); it.hasNext();) {
             Entry<Integer, Object> entry = it.next();
@@ -112,7 +101,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     private void doMessage(int syncId, List<Command> m) {
-        Object object = this.syncObjects.get(syncId);
+        Object object = syncObjects.get(syncId);
         if (object != null) {
             for (Command command : m) {
                 if (command instanceof StateData) {
@@ -122,23 +111,12 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
         }
     }
 
-    public Server getServer() {
-        return this.server;
-    }
-
     void addObject(int id, Object object) {
-        this.syncObjects.put(id, object);
-    }
-
-    public Client getClient() {
-        if (this.client == null) {
-            return null;
-        }
-        return this.client.get();
+        syncObjects.put(id, object);
     }
 
     public void removeEntity(int id) {
-        this.syncObjects.remove(id);
+        syncObjects.remove(id);
     }
 
     public void clear() {
@@ -147,33 +125,35 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     public void stopListening() {
-        this.listening = false;
+        listening = false;
     }
 
     public void startListening() {
-        this.listening = true;
+        listening = true;
     }
 
     @Override
     public void readGuaranteed(Object source, List<Command> guaranteed) {
-        if (this.client != null && this.client.get() != null) {
-            this.clientHandleCommands(guaranteed);
-        } else if (this.server != null) {
-            this.serverHandleCommands((HostedConnection) source, guaranteed);
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isClient()) {
+            clientHandleCommands(guaranteed);
+        } else {
+            serverHandleCommands((HostedConnection) source, guaranteed);
         }
     }
 
     @Override
     public void readUnreliable(Object source, List<Command> unreliables) {
-        if (this.client != null && this.client.get() != null) {
-            this.clientHandleCommands(unreliables);
-        } else if (this.server != null) {
-            this.serverHandleCommands((HostedConnection) source, unreliables);
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isClient()) {
+            clientHandleCommands(unreliables);
+        } else {
+            serverHandleCommands((HostedConnection) source, unreliables);
         }
     }
 
     private void clientHandleCommands(final List<Command> stateDataList) {
-        this.app.enqueue(new Callable<Void>() {
+        app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 for (Command command : stateDataList) {
@@ -187,10 +167,14 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     private void serverHandleCommands(HostedConnection source, final List<Command> commands) {
+        if (!listening) {
+            return;
+        }
+
         final int playerId = ServerClientData.getPlayerId(source.getId());
         final int syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
         if (syncId != -1) {
-            this.app.enqueue(new Callable<Void>() {
+            app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
                     doMessage(syncId, commands);
                     return null;

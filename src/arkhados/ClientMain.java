@@ -153,7 +153,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         flyCam.setMoveSpeed(25.0f);
         startNifty();
 
-        syncManager = new SyncManager(this, clientWrapper);
+        syncManager = new SyncManager(this);
         stateManager.attach(syncManager);
 
         effectHandler = new EffectHandler(this);
