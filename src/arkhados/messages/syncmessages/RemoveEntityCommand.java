@@ -32,16 +32,10 @@ public class RemoveEntityCommand extends StateData {
     public RemoveEntityCommand() {
     }
 
-    public RemoveEntityCommand(int entityId) {
-        super(-1);
-        this.entityId = entityId;
-     }
-
     public RemoveEntityCommand(int entityId, int reason) {
         super(-1);
         this.entityId = entityId;
         this.reason = (byte) reason;
-        
     }
 
     @Override

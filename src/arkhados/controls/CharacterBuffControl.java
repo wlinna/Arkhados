@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.RoundManager;
 import arkhados.effects.BuffEffect;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.ui.hud.BuffIconBuilder;
@@ -25,6 +26,8 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -32,6 +35,7 @@ import java.util.Map;
  */
 public class CharacterBuffControl extends AbstractControl {
 
+    private static final Logger logger = Logger.getLogger(CharacterBuffControl.class.getName());
     private HashMap<Integer, BuffEffect> buffs = new HashMap<>();
     private HashMap<Integer, Element> buffIcons = new HashMap<>();
     private ClientHudManager hudManager = null;
@@ -40,16 +44,16 @@ public class CharacterBuffControl extends AbstractControl {
     public void addBuff(int buffId, int buffTypeId, float duration) {
         final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
-            System.out.println("No buffInfo for " + buffTypeId + " id: " + buffId);
+            logger.log(Level.WARNING, "No buffinfo for type {0} . BuffId is {1}", new Object[]{buffTypeId, buffId});
             return;
         }
         final BuffEffect buff = buffInfo.createBuffEffect(this, duration);
 
         if (buff != null) {
-            this.buffs.put(buffId, buff);
+            buffs.put(buffId, buff);
         }
 
-        if (this.hudManager == null) {
+        if (hudManager == null) {
             return;
         }
 
@@ -59,46 +63,53 @@ public class CharacterBuffControl extends AbstractControl {
         }
 
         final Element icon = new BuffIconBuilder("buff-" + buffId, iconPath)
-                .build(hudManager.getNifty(), hudManager.getScreen(), this.buffPanel);
+                .build(hudManager.getNifty(), hudManager.getScreen(), buffPanel);
 
-        this.buffIcons.put(buffId, icon);
+        buffIcons.put(buffId, icon);
     }
 
     public void removeBuff(int buffId) {
-        final BuffEffect buffEffect = this.buffs.remove(buffId);
-        // TODO: Investigate why buffEffect is sometimes null
-        // NOTE: It seems that this happens mostly (or only) with Ignite
+        final BuffEffect buffEffect = buffs.remove(buffId);
+        // FIXME: Investigate why buffEffect is sometimes null
+        // NOTE: It seems that this happens only with Ignite
         if (buffEffect != null) {
             buffEffect.destroy();
         } else {
-            System.out.println("buffEffect not in buffs!");
+            logger.log(Level.WARNING, "buffEffect with id {0} in buffs!", buffId);
         }
 
-        if (this.hudManager == null) {
+        if (hudManager == null) {
             return;
         }
 
-        this.hudManager.getNifty().removeElement(this.hudManager.getScreen(), this.buffIcons.get(buffId));
-        this.buffIcons.remove(buffId);
+        Element buffIcon = buffIcons.get(buffId);
+        // FIXME: NullPointerException here. This is only workaround.
+        if (buffIcon != null) {
+            hudManager.getNifty().removeElement(hudManager.getScreen(), buffIcon);
+        }
+
+        buffIcons.remove(buffId);
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (this.hudManager == null) {
+        if (hudManager == null) {
             return;
         }
-        
+
         for (Map.Entry<Integer, BuffEffect> entry : buffs.entrySet()) {
             BuffEffect buffEffect = entry.getValue();
             buffEffect.update(tpf);
 
             float cooldown = buffEffect.getTimeLeft();
-            Element cooldownText = this.buffIcons.get(entry.getKey()).getElements().get(0);
+            Element cooldownText = buffIcons.get(entry.getKey()).getElements().get(0);
             if (cooldown > 99) {
             } else if (cooldown > 3) {
-                cooldownText.getRenderer(TextRenderer.class).setText(String.format("%d", (int) cooldown));
+                cooldownText.getRenderer(TextRenderer.class)
+                        .setText(String.format("%d", (int) cooldown));
             } else if (cooldown > 0) {
-                cooldownText.getRenderer(TextRenderer.class).setText(String.format("%.1f", cooldown));
+                cooldownText.getRenderer(TextRenderer.class)
+                        .setText(String.format("%.1f", cooldown));
             } else if (cooldown < 0) {
                 cooldownText.getRenderer(TextRenderer.class).setText("");
             }
@@ -111,6 +122,6 @@ public class CharacterBuffControl extends AbstractControl {
 
     void setHudManager(ClientHudManager hudManager) {
         this.hudManager = hudManager;
-        this.buffPanel = this.hudManager.getScreen().findElementByName("panel_right");
+        buffPanel = hudManager.getScreen().findElementByName("panel_right");
     }
 }
