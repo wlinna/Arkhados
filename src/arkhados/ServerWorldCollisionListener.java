@@ -19,7 +19,6 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
@@ -79,9 +78,9 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             }
 
             if (characterB != null) {
-                this.projectileCharacterCollision(projectileA, characterB);
+                projectileCharacterCollision(projectileA, characterB);
             } else if (wallB != null) {
-                this.projectileWallCollision(projectileA, wallB);
+                projectileWallCollision(projectileA, wallB);
             }
         }
         if (projectileB != null) {
@@ -90,20 +89,25 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             }
 
             if (characterA != null) {
-                this.projectileCharacterCollision(projectileB, characterA);
+                projectileCharacterCollision(projectileB, characterA);
             } else if (wallA != null) {
-                this.projectileWallCollision(projectileB, wallA);
+                projectileWallCollision(projectileB, wallA);
             }
         }
 
     }
 
-    private void projectileCharacterCollision(ProjectileControl projectile, InfluenceInterfaceControl target) {
+    private void projectileCharacterCollision(ProjectileControl projectile,
+            InfluenceInterfaceControl target) {
 
-        final int projectilePlayerId = projectile.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final int projectileTeamId = PlayerData.getIntData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
-        final int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+        final int projectilePlayerId = projectile.getSpatial()
+                .getUserData(UserDataStrings.PLAYER_ID);
+        final int projectileTeamId = PlayerData
+                .getIntData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
+        final int targetPlayerId =
+                target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final int targetTeamId =
+                PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
 
         if (targetTeamId == projectileTeamId) {
             return;
@@ -114,21 +118,33 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             removalReason = RemovalReasons.ABSORBED;
         } else {
             final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
-            final SpellBuffControl buffControl = projectile.getSpatial().getControl(SpellBuffControl.class);
+            final SpellBuffControl buffControl = projectile.getSpatial()
+                    .getControl(SpellBuffControl.class);
+            
             final boolean canBreakCC = damage > 0f ? true : false;
-            CharacterInteraction.harm(projectile.getOwnerInterface(), target, damage, buffControl.getBuffs(), canBreakCC);
+            
+            CharacterInteraction.harm(projectile.getOwnerInterface(), target,
+                    damage, buffControl.getBuffs(), canBreakCC);
 
-            Float impulseFactor = projectile.getSpatial().getUserData(UserDataStrings.IMPULSE_FACTOR);
+            Float impulseFactor = projectile.getSpatial()
+                    .getUserData(UserDataStrings.IMPULSE_FACTOR);
+            
             Vector3f impulse = target.getSpatial().getLocalTranslation()
-                    .subtract(projectile.getRigidBodyControl().getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
-            target.getSpatial().getControl(CharacterPhysicsControl.class).applyImpulse(impulse);
-
+                    .subtract(projectile.getRigidBodyControl()
+                    .getPhysicsLocation().setY(0)).normalizeLocal()
+                    .multLocal(impulseFactor);
+            
+            target.getSpatial().getControl(CharacterPhysicsControl.class)
+                    .applyImpulse(impulse);
+                        
             if (projectile.getSplashAction() != null) {
+                projectile.getSplashAction().excludeSpatial(target.getSpatial());                
                 projectile.getSplashAction().update(0);
             }
         }
 
-        this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), removalReason);
+        worldManager.removeEntity((Integer) projectile.getSpatial()
+                .getUserData(UserDataStrings.ENTITY_ID), removalReason);
     }
 
     private void projectileWallCollision(ProjectileControl projectile, Spatial wall) {
@@ -136,6 +152,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             projectile.getSplashAction().update(0);
         }
 
-        this.worldManager.removeEntity((Integer) projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.COLLISION);
+        worldManager.removeEntity((Integer) projectile.getSpatial()
+                .getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.COLLISION);
     }
 }

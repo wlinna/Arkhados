@@ -23,7 +23,10 @@ import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +41,7 @@ public class SplashAction extends EntityAction {
     private DistanceScaling damageDistance;
     private List<AbstractBuff> splashBuffs;
     private boolean splashBuffsOnly = false;
+    private List<Spatial> excluded = new ArrayList<>();
 
     public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling, List<AbstractBuff> buffsToApply) {
         this.radius = radius;
@@ -58,7 +62,7 @@ public class SplashAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(super.spatial, this.radius);
+        final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(super.spatial, radius);
         if (spatialsOnDistance == null) {
             return false;
         }
@@ -71,26 +75,30 @@ public class SplashAction extends EntityAction {
                 continue;
             }
 
+            if (excluded.contains(pair.spatial)) {
+                continue;
+            }
+
             // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
 
-            float distanceFactor = 1f - (pair.distance / this.radius);
+            float distanceFactor = 1f - (pair.distance / radius);
             float damageDistanceFactor = 1f;
 
-            if (this.damageDistance == DistanceScaling.LINEAR) {
+            if (damageDistance == DistanceScaling.LINEAR) {
                 damageDistanceFactor = distanceFactor;
             }
             final float damage = baseDamage * damageDistanceFactor;
 
 
             List<AbstractBuff> buffsToApply = null;
-            if (this.splashBuffsOnly) {
-                buffsToApply = this.splashBuffs;
+            if (splashBuffsOnly) {
+                buffsToApply = splashBuffs;
             } else {
                 final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);
                 if (buffControl != null) {
                     buffsToApply = buffControl.getBuffs();
-                    if (this.splashBuffs != null) {
-                        buffControl.getBuffs().addAll(this.splashBuffs);
+                    if (splashBuffs != null) {
+                        buffControl.getBuffs().addAll(splashBuffs);
                     }
                 }
             }
@@ -99,17 +107,30 @@ public class SplashAction extends EntityAction {
 
             final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
             Float impulseFactor;
-            if (this.customImpulse == null) {
+            if (customImpulse == null) {
                 impulseFactor = super.spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
             } else {
-                impulseFactor = this.customImpulse;
+                impulseFactor = customImpulse;
             }
-            final Vector3f impulse = pair.spatial.getLocalTranslation().subtract(super.spatial.getLocalTranslation())
-                    .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
+            Vector3f impulse;
+
+            RigidBodyControl colliderPhysics = super.spatial.getControl(RigidBodyControl.class);
+
+            if (colliderPhysics != null) {
+                impulse = pair.spatial.getLocalTranslation()
+                        .subtract(colliderPhysics.getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
+            } else {
+                impulse = pair.spatial.getLocalTranslation().subtract(super.spatial.getLocalTranslation())
+                        .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
+            }
 
             physics.applyImpulse(impulse);
         }
 
         return false;
+    }
+
+    public void excludeSpatial(Spatial oneSpatial) {
+        excluded.add(oneSpatial);
     }
 }

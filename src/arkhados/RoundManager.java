@@ -249,7 +249,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                     logger.log(Level.WARNING, "Character of id {0} is null!", entityId);
                 }
             }
-            if (aliveAmount == 1) {
+            if (aliveAmount == 0) {
                 endRound();
             }
         }
