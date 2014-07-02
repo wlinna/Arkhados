@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.RoundManager;
 import arkhados.effects.BuffEffect;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.ui.hud.BuffIconBuilder;

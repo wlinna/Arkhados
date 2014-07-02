@@ -39,9 +39,9 @@ public class Rend extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 0.3f;
+        final float cooldown = 0.5f;
         final float range = 15f;
-        final float castTime = 0.15f;
+        final float castTime = 0.17f;
 
         final Rend spell = new Rend("Rend", cooldown, range, castTime);
         spell.setCanMoveWhileCasting(true);
@@ -73,18 +73,12 @@ class TripleMeleeAttackAction extends EntityAction {
         final MeleeAttackAction action1 = new MeleeAttackAction(50f, range);
         final CastingSpellAction action2Anim = new CastingSpellAction(this.spell, true);
         final MeleeAttackAction action2 = new MeleeAttackAction(60f, range);
-        final CastingSpellAction action3Anim = new CastingSpellAction(this.spell, false);
-        final MeleeAttackAction action3 = new MeleeAttackAction(70f, range);
-
+        
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);
-        action3Anim.setTypeId(Venator.ANIM_SWIPE_LEFT);
-
         queue.enqueueAction(action1);
         queue.enqueueAction(action2Anim);
         queue.enqueueAction(action2);
-        queue.enqueueAction(action3Anim);
-        queue.enqueueAction(action3);
 
         return false;
     }
