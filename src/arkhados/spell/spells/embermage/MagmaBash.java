@@ -44,7 +44,7 @@ import java.util.Iterator;
  */
 public class MagmaBash extends Spell {
     {
-        super.iconName = "magma_bash.png";
+        iconName = "magma_bash.png";
     }
 
     public MagmaBash(String name, float cooldown, float range, float castTime) {
@@ -59,6 +59,7 @@ public class MagmaBash extends Spell {
         final MagmaBash spell = new MagmaBash("Magma Bash", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 final CastProjectileAction action = new CastProjectileAction(spell, worldManager);
                 return action;
@@ -146,7 +147,7 @@ class BrimstoneIncapacitate extends IncapacitateCC {
             }
         }
         if (brimstone != null) {
-            super.duration += brimstone.getStacks() * 0.3f;
+            duration += brimstone.getStacks() * 0.3f;
         }
 
         super.attachToCharacter(influenceInterface);

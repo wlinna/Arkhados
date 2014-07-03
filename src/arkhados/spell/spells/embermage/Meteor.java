@@ -28,6 +28,7 @@ import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.RemovalReasons;
@@ -60,7 +61,7 @@ import java.util.List;
 public class Meteor extends Spell {
 
     {
-        super.iconName = "meteor.png";
+        iconName = "meteor.png";
     }
 
     public Meteor(String name, float cooldown, float range, float castTime) {
@@ -75,9 +76,13 @@ public class Meteor extends Spell {
         final Meteor spell = new Meteor("Meteor", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 final CastMeteorAction action = new CastMeteorAction(worldManager, spell);
-                action.addAdditionalBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                if (ignite != null) {
+                    action.addAdditionalBuff(ignite);
+                }
                 return action;
             }
         };
@@ -100,33 +105,34 @@ class CastMeteorAction extends EntityAction {
 
     public void addAdditionalBuff(AbstractBuff buff) {
         if (buff != null) {
-            this.additionalBuffs.add(buff);
+            additionalBuffs.add(buff);
         }
     }
 
     @Override
     public boolean update(float tpf) {
-        final Vector3f startingPoint = super.spatial.getLocalTranslation().add(0f, 60f, 0f);
+        final Vector3f startingPoint = spatial.getLocalTranslation().add(0f, 60f, 0f);
 
-        final Vector3f target = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
-        this.raySelectPoint(startingPoint, target);
+        final Vector3f target = spatial.getControl(SpellCastControl.class).getClosestPointToTarget(spell);
+        raySelectPoint(startingPoint, target);
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
-        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int entityId = this.worldManager.addNewEntity(this.spell.getId(),
+        final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final int entityId = worldManager.addNewEntity(spell.getId(),
                 startingPoint, Quaternion.IDENTITY, playerId);
-        final Spatial meteor = this.worldManager.getEntity(entityId);
+        final Spatial meteor = worldManager.getEntity(entityId);
 
         final MotionEvent motionControl = new MotionEvent(meteor, path);
         motionControl.setInitialDuration(1f);
         motionControl.setSpeed(1f);
 
-        final InfluenceInterfaceControl casterInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        final InfluenceInterfaceControl casterInterface = spatial.getControl(InfluenceInterfaceControl.class);
         meteor.getControl(SpellBuffControl.class).setOwnerInterface(casterInterface);
 
         path.addListener(new MotionPathListener() {
+            @Override
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
                     final Float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
@@ -136,7 +142,7 @@ class CastMeteorAction extends EntityAction {
                     final SplashAction splash = new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
                     splash.setSpatial(meteor);
                     splash.update(0f);
-                    this.destroy();
+                    destroy();
                 }
             }
 
@@ -210,7 +216,7 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
         if (AbstractNodeBuilder.worldManager.isClient()) {
             node.addControl(new SyncInterpolationControl());
             node.addControl(new EntityEventControl());
-            final ParticleEmitter fire = this.createFireEmitter();
+            final ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
             final MeteorRemovalAction removalAction = new MeteorRemovalAction(assetManager);
@@ -229,10 +235,10 @@ class MeteorRemovalAction implements RemovalEventAction {
     private AudioNode sound;
 
     MeteorRemovalAction(AssetManager assetManager) {
-        this.sound = new AudioNode(assetManager, "Effects/Sound/MeteorBoom.wav");
-        this.sound.setPositional(true);
-        this.sound.setReverbEnabled(false);
-        this.sound.setVolume(5f);
+        sound = new AudioNode(assetManager, "Effects/Sound/MeteorBoom.wav");
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(5f);
     }
 
     @Override
@@ -241,9 +247,9 @@ class MeteorRemovalAction implements RemovalEventAction {
             return;
         }
         Vector3f worldTranslation = emitter.getParent().getLocalTranslation();
-        worldManager.getWorldRoot().attachChild(this.sound);
-        this.sound.setLocalTranslation(worldTranslation);
-        this.sound.play();
+        worldManager.getWorldRoot().attachChild(sound);
+        sound.setLocalTranslation(worldTranslation);
+        sound.play();
 
         emitter.removeFromParent();
         worldManager.getWorldRoot().attachChild(emitter);

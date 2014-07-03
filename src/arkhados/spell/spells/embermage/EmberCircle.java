@@ -24,6 +24,7 @@ import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamagOverTimeInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
@@ -45,7 +46,7 @@ import com.jme3.scene.Node;
 public class EmberCircle extends Spell {
 
     {
-        super.iconName = "ember_circle.png";
+        iconName = "ember_circle.png";
     }
 
     public EmberCircle(String name, float cooldown, float range, float castTime) {
@@ -60,9 +61,13 @@ public class EmberCircle extends Spell {
         final EmberCircle spell = new EmberCircle("Ember Circle", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 final CastOnGroundAction castOnGround = new CastOnGroundAction(worldManager, spell);
-                castOnGround.addEnterBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                if (ignite != null) {
+                    castOnGround.addEnterBuff(ignite);
+                }
                 return castOnGround;
             }
         };
@@ -96,7 +101,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         actionQueue.enqueueAction(new DelayAction(0.8f));
 
         if (worldManager.isServer()) {
-            GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 0.05f, radius), 1));            
+            GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 0.05f, radius), 1));
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
             node.addControl(ghost);
 
@@ -106,7 +111,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {
-                    Float dps = (Float) super.spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
+                    Float dps = (Float) spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
                     areaEffectControl.addInfluence(new DamagOverTimeInfluence(dps));
 
                     node.addControl(new TimedExistenceControl(5f, true));
@@ -138,7 +143,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     fire.setParticlesPerSec((int) (0.5 * radius * radius));
                     fire.getParticleInfluencer().setVelocityVariation(0.2f);
                     fire.setRandomAngle(true);
-                    ((Node) super.spatial).attachChild(fire);
+                    ((Node) spatial).attachChild(fire);
                     fire.setLocalTranslation(Vector3f.ZERO);
                     EmitterCircleShape emitterShape = new EmitterCircleShape(Vector3f.ZERO, 1f);
                     fire.setShape(emitterShape);

@@ -26,6 +26,7 @@ import arkhados.controls.SyncInterpolationControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
@@ -37,7 +38,6 @@ import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -49,7 +49,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,8 +60,9 @@ import java.util.Set;
  * @author william
  */
 public class Firewalk extends Spell {
+
     {
-        super.iconName = "flame_walk.png";
+        iconName = "flame_walk.png";
     }
 
     public Firewalk(String name, float cooldown, float range, float castTime) {
@@ -76,9 +76,13 @@ public class Firewalk extends Spell {
         final Firewalk spell = new Firewalk("Firewalk", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 final CastFirewalkAction castAction = new CastFirewalkAction(spell, Spell.worldManager);
-                castAction.additionalBuffs.add(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                if (ignite != null) {
+                    castAction.additionalBuffs.add(ignite);
+                }
                 return castAction;
             }
         };
@@ -91,33 +95,36 @@ public class Firewalk extends Spell {
 
         private final Spell spell;
         private final WorldManager world;
-        private final List<AbstractBuff> additionalBuffs = new ArrayList<AbstractBuff>();
+        private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
 
         public CastFirewalkAction(Spell spell, WorldManager world) {
             this.spell = spell;
             this.world = world;
         }
 
-        public void addAdditionalBuff(final AbstractBuff buff) {
-            this.additionalBuffs.add(buff);
+        public void addAdditionalBuff(AbstractBuff buff) {
+            if (buff == null) {
+                throw new IllegalArgumentException("Nulls are not allowed for buff collection");
+            }
+            additionalBuffs.add(buff);
         }
 
         private void motion() {
-            final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
-            final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-            final int firewalkId = this.world.addNewEntity(spell.getId(),
+            final Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
+            final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+            final int firewalkId = world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
-            final Node firewalkNode = (Node) this.world.getEntity(firewalkId);
+            final Node firewalkNode = (Node) world.getEntity(firewalkId);
 
             final SpellBuffControl buffControl = firewalkNode.getControl(SpellBuffControl.class);
-            buffControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
-            buffControl.getBuffs().addAll(this.additionalBuffs);
+            buffControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+            buffControl.getBuffs().addAll(additionalBuffs);
 
             final MotionPath path = new MotionPath();
             path.setPathSplineType(Spline.SplineType.Linear);
 
-            final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
-            final Vector3f finalLocation = castControl.getClosestPointToTarget(this.spell).setY(1f);
+            final SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
+            final Vector3f finalLocation = castControl.getClosestPointToTarget(spell).setY(1f);
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
 
@@ -125,9 +132,10 @@ public class Firewalk extends Spell {
             motionControl.setSpeed(1f);
             motionControl.setInitialDuration(finalLocation.distance(startLocation) / 105f);
 
-            final int id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            final int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
             world.temporarilyRemoveEntity(id);
             path.addListener(new MotionPathListener() {
+                @Override
                 public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                     if (path.getNbWayPoints() == wayPointIndex + 1) {
                         world.restoreTemporarilyRemovedEntity(id, finalLocation, spatial.getLocalRotation());
@@ -141,7 +149,7 @@ public class Firewalk extends Spell {
 
         @Override
         public boolean update(float tpf) {
-            this.motion();
+            motion();
             return false;
         }
     }
@@ -205,8 +213,8 @@ public class Firewalk extends Spell {
                 node.addControl(new FirewalkCollisionHandler());
             }
             if (AbstractNodeBuilder.worldManager.isClient()) {
-                final ParticleEmitter fire = this.createFireEmitter();
-                node.attachChild(fire);                
+                final ParticleEmitter fire = createFireEmitter();
+                node.attachChild(fire);
             }
             return node;
         }
@@ -221,12 +229,12 @@ class FirewalkCollisionHandler extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        this.ghost = spatial.getControl(GhostControl.class);
+        ghost = spatial.getControl(GhostControl.class);
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects = this.ghost.getOverlappingObjects();
+        List<PhysicsCollisionObject> collisionObjects = ghost.getOverlappingObjects();
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
@@ -235,8 +243,8 @@ class FirewalkCollisionHandler extends AbstractControl {
                     continue;
                 }
 
-                this.collidedWith.add(entityId);
-                this.collisionEffect(spatial);
+                collidedWith.add(entityId);
+                collisionEffect(spatial);
             }
         }
     }
@@ -247,7 +255,7 @@ class FirewalkCollisionHandler extends AbstractControl {
             return;
         }
 
-        final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);
+        final SpellBuffControl buffControl = spatial.getControl(SpellBuffControl.class);
         CharacterInteraction.harm(buffControl.getOwnerInterface(), targetInterface, 80f, buffControl.getBuffs(), true);
     }
 

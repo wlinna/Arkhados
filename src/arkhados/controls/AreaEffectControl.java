@@ -23,21 +23,13 @@ import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -46,10 +38,10 @@ import java.util.Set;
 public class AreaEffectControl extends AbstractControl {
 
     private GhostControl ghostControl;
-    private final List<Influence> influences = new ArrayList<Influence>();
-    private final List<AbstractBuff> exitBuffs = new ArrayList<AbstractBuff>();
-    private final List<AbstractBuff> enterBuffs = new ArrayList<AbstractBuff>();
-    private final HashMap<InfluenceInterfaceControl, Boolean> enteredPlayers = new HashMap<InfluenceInterfaceControl, Boolean>();
+    private final List<Influence> influences = new ArrayList<>();
+    private final List<AbstractBuff> exitBuffs = new ArrayList<>();
+    private final List<AbstractBuff> enterBuffs = new ArrayList<>();
+    private final HashMap<InfluenceInterfaceControl, Boolean> enteredPlayers = new HashMap<>();
     private InfluenceInterfaceControl ownerInterface = null;
 
     public AreaEffectControl() {
@@ -62,11 +54,11 @@ public class AreaEffectControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         // HACK
-        ActionQueueControl actionQueue = super.getSpatial().getControl(ActionQueueControl.class);
+        ActionQueueControl actionQueue = getSpatial().getControl(ActionQueueControl.class);
         if (actionQueue != null &&  actionQueue.getCurrent() instanceof DelayAction) {
             return;
         }
-        final Integer myPlayerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Integer myPlayerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
         final int myTeamId = PlayerData.getIntData(myPlayerId, PlayerDataStrings.TEAM_ID);
         List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
 
@@ -82,7 +74,7 @@ public class AreaEffectControl extends AbstractControl {
             final Integer othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
             final Integer othersTeamId = PlayerData.getIntData(othersPlayerId, PlayerDataStrings.TEAM_ID);
             final boolean sameTeam = myTeamId == othersTeamId;
-            for (Influence influence : this.influences) {
+            for (Influence influence : influences) {
                 if (sameTeam && influence.isFriendly()) {
                     influence.affect(targetInterface, tpf);
                 } else if (!sameTeam && !influence.isFriendly()) {
@@ -90,10 +82,10 @@ public class AreaEffectControl extends AbstractControl {
                 }
             }
 
-            if (!this.enteredPlayers.containsKey(targetInterface)) {
-                this.enteredPlayers.put(targetInterface, false);
+            if (!enteredPlayers.containsKey(targetInterface)) {
+                enteredPlayers.put(targetInterface, false);
                 if (!sameTeam) {
-                    CharacterInteraction.harm(this.ownerInterface, targetInterface, 0f, this.enterBuffs, false);
+                    CharacterInteraction.harm(ownerInterface, targetInterface, 0f, enterBuffs, false);
                 }
             }
         }
@@ -101,16 +93,25 @@ public class AreaEffectControl extends AbstractControl {
         // TODO: Add way to inflict exitBuffs
     }
 
-    public void addInfluence(final Influence influence) {
-        this.influences.add(influence);
+    public void addInfluence(Influence influence) {
+        if (influence == null) {
+            throw new IllegalArgumentException("Nulls not allowed in containers");
+        }
+        influences.add(influence);
     }
 
-    public void addEnterBuff(final AbstractBuff buff) {
-        this.enterBuffs.add(buff);
+    public void addEnterBuff(AbstractBuff buff) {
+        if (buff == null) {
+            throw new IllegalArgumentException("Nulls not allowed in containers");
+        }
+        enterBuffs.add(buff);
     }
 
-    public void addExitBuff(final AbstractBuff buff) {
-        this.exitBuffs.add(buff);
+    public void addExitBuff(AbstractBuff buff) {
+        if (buff == null) {
+            throw new IllegalArgumentException("Nulls not allowed in containers");
+        }
+        exitBuffs.add(buff);
     }
 
     @Override
@@ -118,6 +119,9 @@ public class AreaEffectControl extends AbstractControl {
     }
 
     public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
-        this.ownerInterface = ownerInterface;
+        if (ownerInterface == null) {
+            throw new IllegalArgumentException("Null cannot be ownerInterface");
+        }
+        ownerInterface = ownerInterface;
     }
 }

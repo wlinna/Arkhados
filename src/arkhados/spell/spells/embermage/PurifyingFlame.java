@@ -24,6 +24,7 @@ import arkhados.controls.TimedExistenceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamagOverTimeInfluence;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
@@ -37,8 +38,9 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class PurifyingFlame extends Spell {
+
     {
-        super.iconName = "purifying_flame.png";
+        iconName = "purifying_flame.png";
     }
 
     public PurifyingFlame(String name, float cooldown, float range, float castTime) {
@@ -53,6 +55,7 @@ public class PurifyingFlame extends Spell {
         final PurifyingFlame spell = new PurifyingFlame("Purifying Flame", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
 
                 // TODO: Get this from BuffInformation
@@ -70,7 +73,10 @@ public class PurifyingFlame extends Spell {
 
                     final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
                     areaEffectControl.setOwnerInterface(caster.getControl(InfluenceInterfaceControl.class));
-                    areaEffectControl.addEnterBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                    DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                    if (ignite != null) {
+                        areaEffectControl.addEnterBuff(ignite);
+                    }
 
                     float baseDps = 100f;
                     final Float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
@@ -82,6 +88,7 @@ public class PurifyingFlame extends Spell {
 
                     action.addBuff(new AbsorbingShieldBuff(-1, duration));
                 }
+
                 aoeContainer.setLocalTranslation(0f, 0f, 0f);
                 TimedExistenceControl timedExistence = new TimedExistenceControl(duration);
                 aoeContainer.addControl(timedExistence);
@@ -94,15 +101,17 @@ public class PurifyingFlame extends Spell {
         };
 
         return spell;
-    }}
+    }
+}
 
 class AbsorbingShieldBuff extends AbstractBuff {
 
     {
-        super.friendly = true;
-        super.name = "Purifying Flame";
-        super.setTypeId(BuffTypeIds.PURIFYING_FLAME);
+        friendly = true;
+        name = "Purifying Flame";
+        setTypeId(BuffTypeIds.PURIFYING_FLAME);
     }
+
     public AbsorbingShieldBuff(int buffGroupId, float duration) {
         super(buffGroupId, duration);
     }
@@ -110,6 +119,6 @@ class AbsorbingShieldBuff extends AbstractBuff {
     @Override
     public void update(float time) {
         super.update(time);
-        super.targetInterface.setImmuneToProjectiles(true);
+        targetInterface.setImmuneToProjectiles(true);
     }
 }

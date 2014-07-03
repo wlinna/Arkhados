@@ -27,6 +27,7 @@ import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
@@ -52,7 +53,7 @@ import com.jme3.scene.shape.Sphere;
 public class Fireball extends Spell {
 
     {
-        this.iconName = "fireball.png";
+        iconName = "fireball.png";
     }
 
     public Fireball(String name, float cooldown, float range, float castTime) {
@@ -67,9 +68,13 @@ public class Fireball extends Spell {
         final Fireball spell = new Fireball("Fireball", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 final CastProjectileAction castProjectile = new CastProjectileAction(spell, Spell.worldManager);
-                castProjectile.addBuff(Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster));
+                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                if (ignite != null) {
+                    castProjectile.addBuff(ignite);
+                }
                 return castProjectile;
             }
         };
@@ -150,10 +155,10 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
         if (AbstractNodeBuilder.worldManager.isClient()) {
-            final ParticleEmitter fire = this.createFireEmitter();
+            final ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            final ParticleEmitter smoke = this.createSmokeEmitter();
+            final ParticleEmitter smoke = createSmokeEmitter();
             node.attachChild(smoke);
 
             node.addControl(new EntityEventControl());
@@ -182,7 +187,6 @@ class FireballBuilder extends AbstractNodeBuilder {
         /**
          * Add collision group of characters
          */
-        
         final GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
@@ -208,10 +212,10 @@ class FireballRemovalAction implements RemovalEventAction {
 
     public FireballRemovalAction(AssetManager assetManager) {
         this.assetManager = assetManager;
-        this.sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
-        this.sound.setPositional(true);
-        this.sound.setReverbEnabled(false);
-        this.sound.setVolume(1f);
+        sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
     }
 
     public void setFireEmitter(ParticleEmitter fire) {
@@ -219,16 +223,16 @@ class FireballRemovalAction implements RemovalEventAction {
     }
 
     private void leaveSmokeTrail(final Node worldRoot, Vector3f worldTranslation) {
-        this.smokeTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(this.smokeTrail);
-        this.smokeTrail.setLocalTranslation(worldTranslation);
-        this.smokeTrail.addControl(new TimedExistenceControl(5f));
+        smokeTrail.setParticlesPerSec(0);
+        worldRoot.attachChild(smokeTrail);
+        smokeTrail.setLocalTranslation(worldTranslation);
+        smokeTrail.addControl(new TimedExistenceControl(5f));
     }
 
     private void createSmokePuff(final Node worldRoot, Vector3f worldTranslation) {
         final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(this.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", this.assetManager.loadTexture("Effects/flame.png"));
+        Material materialGray = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
         smokePuff.setMaterial(materialGray);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
@@ -254,10 +258,11 @@ class FireballRemovalAction implements RemovalEventAction {
         smokePuff.emitAllParticles();
     }
 
+    @Override
     public void exec(WorldManager worldManager, int reason) {
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
-        this.leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-        this.createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
+        leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
+        createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
 
         fire.removeFromParent();
         worldManager.getWorldRoot().attachChild(fire);
@@ -278,12 +283,12 @@ class FireballRemovalAction implements RemovalEventAction {
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
-        this.sound.setLocalTranslation(worldTranslation);
-        this.sound.play();
+        sound.setLocalTranslation(worldTranslation);
+        sound.play();
     }
 
     public void setSmokeTrail(ParticleEmitter smoke) {
-        this.smokeTrail = smoke;
+        smokeTrail = smoke;
     }
 }
 
