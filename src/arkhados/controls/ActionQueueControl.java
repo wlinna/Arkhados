@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.WorldManager;
+import arkhados.ServerFogManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.ActionCommand;
-import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -36,47 +35,47 @@ public class ActionQueueControl extends AbstractControl {
     private boolean shouldSimulate = false;
 
     public void enqueueAction(EntityAction action) {
-        if (!this.enabled) {
+        if (!enabled) {
             return;
         }
-        action.setSpatial(super.getSpatial());
-        if (this.current == null) {
-            this.current = action;
-            this.shouldSimulate = true;
+        action.setSpatial(getSpatial());
+        if (current == null) {
+            current = action;
+            shouldSimulate = true;
         } else {
-            this.actions.add(action);
+            actions.add(action);
         }
     }
 
     public void clear() {
-        if (this.current != null) {
-            this.current.end();
+        if (current != null) {
+            current.end();
         }
-        this.current = null;
-        this.actions.clear();
+        current = null;
+        actions.clear();
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (this.current == null) {
+        if (current == null) {
             return;
         }
-        boolean active = this.current.update(tpf);
-        if (this.shouldSimulate) {
-            this.simulateAction(this.current);
-            this.shouldSimulate = false;
+        boolean active = current.update(tpf);
+        if (shouldSimulate) {
+            simulateAction(current);
+            shouldSimulate = false;
         }
         if (!active) {
-            this.current.end();
-            this.current = this.actions.poll();
-            this.shouldSimulate = true;
+            current.end();
+            current = actions.poll();
+            shouldSimulate = true;
         }
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        this.clear();
+        clear();
     }
 
     @Override
@@ -84,22 +83,21 @@ public class ActionQueueControl extends AbstractControl {
     }
 
     public EntityAction getCurrent() {
-        return this.current;
+        return current;
     }
 
-    private void simulateAction(final EntityAction action) {
+    private void simulateAction(EntityAction action) {
         if (action.getTypeId() == -1) {
             return;
         }
-        CharacterAnimationControl animationControl = super.spatial.getControl(CharacterAnimationControl.class);
+        CharacterAnimationControl animationControl = spatial.getControl(CharacterAnimationControl.class);
         if (animationControl != null) {
             animationControl.animateAction(action.getTypeId());
         }
-
-        final Sender sender = super.spatial.getControl(EntityVariableControl.class).getSender();
-        if (sender.isServer()) {
-            final Integer id = super.spatial.getUserData(UserDataStrings.ENTITY_ID);
-            sender.addCommand(new ActionCommand(id, action.getTypeId()));
+        ServerEntityAwarenessControl awareness = spatial.getControl(ServerEntityAwarenessControl.class);
+        if (awareness != null) {
+            final Integer id = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            awareness.getFogManager().addCommand(new ActionCommand(id, action.getTypeId()));
         }
     }
 }

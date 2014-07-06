@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.ServerFogManager;
 import com.jme3.export.InputCapsule;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
@@ -56,11 +57,6 @@ public class SpellCastControl extends AbstractControl {
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
     private final List<SpellCastListener> castListeners = new ArrayList<>();
-
-    @Override
-    public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial);
-    }
 
     public void putSpell(Spell spell, Integer key) {
         spells.put(spell.getId(), spell);
@@ -175,9 +171,10 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public void cast(int input, Vector3f targetLocation) {
-        final Spell spell = keySpellMappings.get(input);
-        Sender sender = getSpatial().getControl(EntityVariableControl.class).getSender();
-        if (sender.isServer()) {
+        Spell spell = keySpellMappings.get(input);
+
+        ServerEntityAwarenessControl awareness = getSpatial().getControl(ServerEntityAwarenessControl.class);
+        if (awareness != null) {
 
             final CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
             physics.setViewDirection(physics.calculateTargetDirection());
@@ -187,7 +184,7 @@ public class SpellCastControl extends AbstractControl {
             final EntityAction castingAction = spell.buildCastAction((Node) spatial, targetLocation);
             spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(spatial.getLocalTranslation());
-            sender.addCommand(
+            awareness.getFogManager().addCommand(
                     new StartCastingSpellCommand((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID),
                     spell.getId(), direction));
         }
@@ -206,21 +203,26 @@ public class SpellCastControl extends AbstractControl {
 
     public void setCooldown(int spellId, float cooldown) {
         cooldowns.put(spellId, cooldown);
-        Sender sender = getSpatial().getControl(EntityVariableControl.class).getSender();
-        if (sender.isServer()) {
+        ServerEntityAwarenessControl awareness =
+                getSpatial().getControl(ServerEntityAwarenessControl.class);
+
+        if (awareness != null) {
             final Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            sender.addCommand(new SetCooldownCommand(entityId, spellId, cooldown, true));
+            awareness.getFogManager().addCommand(new SetCooldownCommand(entityId, spellId, cooldown, true));
         }
     }
 
     public void putOnCooldown(Spell spell) {
         cooldowns.put(spell.getId(), spell.getCooldown());
-        Sender sender = getSpatial().getControl(EntityVariableControl.class).getSender();
-        if (sender.isServer()) {
-            final Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            // TODO: Consider NOT sending this message to all players
-            sender.addCommand(new SetCooldownCommand(entityId, spell.getId(), spell.getCooldown(), true));
+
+        ServerEntityAwarenessControl awareness =
+                getSpatial().getControl(ServerEntityAwarenessControl.class);
+
+        if (awareness != null) {
+            Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            awareness.getFogManager().addCommand(new SetCooldownCommand(entityId,
+                    spell.getId(), spell.getCooldown(), true));
         }
     }
 

@@ -39,9 +39,9 @@ public class EntityVariableControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         // TODO: Move this feature to other control (or rename this)
-        boolean validLoc = this.worldManager.validateLocation(super.spatial.getLocalTranslation());
+        boolean validLoc = worldManager.validateLocation(super.spatial.getLocalTranslation());
         if (!validLoc) {
-            final InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+            InfluenceInterfaceControl influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);
             if (influenceInterface != null) {
                 CharacterInteraction.harm(null, influenceInterface, 200f * tpf, null, true);
             }

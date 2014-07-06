@@ -28,15 +28,14 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.network.Server;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.EntityVariableControl;
+import arkhados.controls.ServerEntityAwarenessControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.controls.UserInputControl;
@@ -92,7 +91,6 @@ public class WorldManager extends AbstractAppState {
     private SimpleApplication app;
     private AssetManager assetManager;
     private PhysicsSpace space;
-    private ViewPort viewPort;
     private Node rootNode;
     private Camera cam;
     private EntityFactory entityFactory;
@@ -106,7 +104,6 @@ public class WorldManager extends AbstractAppState {
         this.app = (SimpleApplication) app;
         rootNode = this.app.getRootNode();
         assetManager = app.getAssetManager();
-        viewPort = app.getViewPort();
         space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
 
         cam = app.getCamera();
@@ -153,7 +150,8 @@ public class WorldManager extends AbstractAppState {
     public void loadLevel() {
         worldRoot = (Node) assetManager.loadModel("Scenes/LavaArenaWithWalls.j3o");
 
-        RigidBodyControl physics = new RigidBodyControl(new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
+        RigidBodyControl physics = new RigidBodyControl(
+                new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
         physics.setFriction(1f);
         physics.setRestitution(0f);
         physics.setCollideWithGroups(CollisionGroups.NONE);
@@ -204,34 +202,45 @@ public class WorldManager extends AbstractAppState {
 
     public void addEntity(int id, int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
         Sender sender = app.getStateManager().getState(Sender.class);
-        if (sender.isServer()) {
-            sender.addCommand(new AddEntityCommand(id, nodeBuilderId, location, rotation, playerId));
-        }
 
-        Spatial entitySpatial = entityFactory.createEntityById(nodeBuilderId);
-        setEntityTranslation(entitySpatial, location, rotation);
-        entitySpatial.setUserData(UserDataStrings.PLAYER_ID, playerId);
-        entitySpatial.setUserData(UserDataStrings.ENTITY_ID, id);
-        entities.put(id, entitySpatial);
-        syncManager.addObject(id, entitySpatial);
-        space.addAll(entitySpatial);
+        Spatial entity = entityFactory.createEntityById(nodeBuilderId);
+        setEntityTranslation(entity, location, rotation);
+        entity.setUserData(UserDataStrings.PLAYER_ID, playerId);
+        entity.setUserData(UserDataStrings.ENTITY_ID, id);
+        entities.put(id, entity);
+        syncManager.addObject(id, entity);
+        space.addAll(entity);
 
         // We need to add GhostControl separately
-        final GhostControl ghostControl = entitySpatial.getControl(GhostControl.class);
+        final GhostControl ghostControl = entity.getControl(GhostControl.class);
         if (ghostControl != null) {
             space.add(ghostControl);
         }
 
-        worldRoot.attachChild(entitySpatial);
+        worldRoot.attachChild(entity);
         EntityVariableControl variableControl = new EntityVariableControl(this, sender);
-        entitySpatial.addControl(variableControl);
+        entity.addControl(variableControl);
 
-        if (entitySpatial.getControl(CharacterPhysicsControl.class) != null && PlayerData.isHuman(playerId)) {
-            entitySpatial.addControl(new UserInputControl());
+        boolean isCharacter = entity.getControl(CharacterPhysicsControl.class) != null;
+        
+        if (isCharacter && PlayerData.isHuman(playerId)) {
+            entity.addControl(new UserInputControl());
+        }
+        
+        
+        ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
+        if (serverFogManager != null) {            
+            if (isCharacter) {
+                entity.addControl(new ServerEntityAwarenessControl((Node)
+                        worldRoot.getChild("Walls"), serverFogManager));
+            }
+            
+            serverFogManager.addCommand(new AddEntityCommand(
+                    id, nodeBuilderId, location, rotation, playerId));
         }
 
         if (isClient()) {
-            clientMain.getUserCommandManager().trySetPlayersCharacter(entitySpatial);
+            clientMain.getUserCommandManager().trySetPlayersCharacter(entity);
         }
     }
 
@@ -284,7 +293,8 @@ public class WorldManager extends AbstractAppState {
         } else if (entityModel.getControl(CharacterPhysicsControl.class) != null) {
             entityModel.getControl(CharacterPhysicsControl.class).warp(location);
             entityModel.setLocalTranslation(location);
-            entityModel.getControl(CharacterPhysicsControl.class).setViewDirection(rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
+            entityModel.getControl(CharacterPhysicsControl.class)
+                    .setViewDirection(rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
         } else {
             entityModel.setLocalTranslation(location);
             entityModel.setLocalRotation(rotation);
@@ -336,7 +346,7 @@ public class WorldManager extends AbstractAppState {
             }
         }
 
-        List<SpatialDistancePair> spatialDistancePairs = new LinkedList<SpatialDistancePair>();
+        List<SpatialDistancePair> spatialDistancePairs = new LinkedList<>();
         for (Spatial child : worldRoot.getChildren()) {
             float distanceBetween = child.getWorldTranslation().distance(spatial.getWorldTranslation());
             if (distanceBetween > distance) {

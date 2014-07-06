@@ -12,15 +12,14 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.util;
+package arkhados.ui.hud;
 
 /**
  *
  * @author william
  */
-public class RemovalReasons {    
-    public static final int COLLISION = 0;
-    public static final int EXPIRED = 1;
-    public static final int ABSORBED = 2;
-    public static final int DISAPPEARED = 3;
+
+
+public interface ServerClientDataStrings {
+    public static final String PLAYER_ID = "player-id";
 }

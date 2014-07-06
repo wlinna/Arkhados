@@ -79,7 +79,8 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     private void sendSyncData() {
-        Sender sender = app.getStateManager().getState(Sender.class);
+        ServerFogManager fogManager = app.getStateManager().getState(ServerFogManager.class);
+
         Set<Entry<Integer, Object>> entrySet = syncObjects.entrySet();
 
         for (Iterator<Entry<Integer, Object>> it = entrySet.iterator(); it.hasNext();) {
@@ -94,7 +95,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
             if (syncControl != null) {
                 StateData data = syncControl.getSyncableData(null);
                 if (data != null) {
-                    sender.addCommand(data);
+                    fogManager.addCommand(data);
                 }
             }
         }

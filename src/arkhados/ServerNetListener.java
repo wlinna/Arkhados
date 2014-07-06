@@ -30,8 +30,8 @@ import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
-import arkhados.net.Sender;
 import arkhados.net.ServerSender;
+import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.PlayerDataStrings;
 import java.util.List;
 
@@ -39,14 +39,12 @@ import java.util.List;
  *
  * @author william
  */
-public class ServerNetListener implements ConnectionListener, CommandHandler {
+public class ServerNetListener implements ConnectionListener, CommandHandler, ServerClientDataStrings {
 
     private ServerMain app;
-    private Server server;
 
     public ServerNetListener(ServerMain app, Server server) {
         this.app = app;
-        this.server = server;
         server.addConnectionListener(this);
     }
 
@@ -58,6 +56,7 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
             ServerSender sender = app.getStateManager().getState(ServerSender.class);
             sender.addConnection(conn);
             app.getStateManager().getState(Receiver.class).addConnection(conn);
+
             TopicOnlyCommand connectionEstablishendCommand =
                     new TopicOnlyCommand(Topic.CONNECTION_ESTABLISHED);
             sender.addCommand(connectionEstablishendCommand);
@@ -126,6 +125,9 @@ public class ServerNetListener implements ConnectionListener, CommandHandler {
         final int playerId = PlayerData.getNew(commmand.getName());
         PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
         PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
+
+        source.setAttribute(PLAYER_ID, playerId);
+
         ServerClientData.setConnected(clientId, true);
         ServerClientData.setPlayerId(clientId, playerId);
         ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId, true);

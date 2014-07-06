@@ -119,7 +119,8 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
             app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-
+                    ServerFogManager fogManager = app.getStateManager().getState(ServerFogManager.class);
+                    
 
                     int i = 0;
                     for (PlayerData playerData : PlayerData.getPlayers()) {
@@ -131,6 +132,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                         final int entityId = worldManager.addNewEntity(nodeBuilderId,
                                 startingLocation, new Quaternion(), playerData.getId());
                         playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
+                        fogManager.addPlayer(playerData.getId(), entityId);
                     }
 
                     logger.log(Level.INFO, "Created characters");

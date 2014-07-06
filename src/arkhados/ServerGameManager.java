@@ -29,18 +29,23 @@ public class ServerGameManager extends AbstractAppState {
 
     private WorldManager worldManager;
     private RoundManager roundManager;
+    private ServerFogManager fogManager;
     private boolean running;
     private Application app;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-        System.out.println("Initializing ServerGameManager");
         super.initialize(stateManager, app);
         worldManager = app.getStateManager().getState(WorldManager.class);
         roundManager = new RoundManager();
-        roundManager.setEnabled(false);        
+        fogManager = new ServerFogManager();
+
+        roundManager.setEnabled(false);
         stateManager.attach(roundManager);
         stateManager.getState(Receiver.class).registerCommandHandler(roundManager);
+
+        stateManager.attach(fogManager);
+
         this.app = app;
     }
 
@@ -48,13 +53,13 @@ public class ServerGameManager extends AbstractAppState {
         if (running) {
             return false;
         }
-        
+
         Sender sender = app.getStateManager().getState(Sender.class);
-        
+
         roundManager.setEnabled(true);
 
-        worldManager.preloadModels(new String[]{"Models/Mage.j3o", "Models/Warwolf.j3o",
-            "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+        worldManager.preloadModels(new String[]{"Models/Mage.j3o",
+            "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
 
         running = true;
         sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
