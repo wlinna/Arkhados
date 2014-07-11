@@ -36,11 +36,9 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,64 +46,69 @@ import java.util.Map;
  *
  * @author william
  */
-public class ServerEntityAwarenessControl extends AbstractControl {
+public class PlayerEntityAwareness {
 
+    private Node ownNode;
     private Map<Spatial, Boolean> characterFlags = new HashMap<>(6);
+    private final int playerId;
     private Node walls;
     private Ray ray = new Ray();
     private float rangeSquared = FastMath.sqr(140);
     private Vector3f reUsableVec = new Vector3f();
     private ServerFogManager fogManager;
 
-    public ServerEntityAwarenessControl(Node walls, ServerFogManager fogManager) {
+    public PlayerEntityAwareness(int playerId, Node walls, ServerFogManager fogManager) {
+        this.playerId = playerId;
         this.walls = walls;
         this.fogManager = fogManager;
-    }        
+    }
 
-    @Override
-    protected void controlUpdate(float tpf) {
+    public void update(float tpf) {
         for (Map.Entry<Spatial, Boolean> entry : characterFlags.entrySet()) {
             Spatial character = entry.getKey();
 
-            boolean previousFlag = entry.getValue();
+            boolean previousFlag = isAwareOf(entry.getKey());
             boolean newFlag;
 
-            if (character == getSpatial()) {
+            if (character == getOwnNode()) {
+                entry.setValue(true);
                 continue;
             }
 
-            float distanceSquared = character.getLocalTranslation()
-                    .distanceSquared(getSpatial().getLocalTranslation());
-
-            if (distanceSquared > rangeSquared) {
-                entry.setValue(false);
-                if (previousFlag == true) {
-                    fogManager.visibilityChanged(getSpatial(), character, false);
-                }
-                continue;
-            }
-
-            newFlag = wallTest(spatial, FastMath.sqrt(distanceSquared));
+            newFlag = testVisibility(character);
+            entry.setValue(newFlag);
 
             if (newFlag != previousFlag) {
-                fogManager.visibilityChanged(spatial, character, newFlag);
+                fogManager.visibilityChanged(this, character, newFlag);
             }
-
-            entry.setValue(newFlag);
         }
+    }
+
+    public boolean testVisibility(Spatial other) {
+        if (other == getOwnNode()) {
+            return true;
+        }
+
+        float distanceSquared = other.getLocalTranslation()
+                .distanceSquared(getOwnNode().getLocalTranslation());
+
+        if (distanceSquared > rangeSquared) {
+            return false;
+        }
+        return true;
     }
 
     private boolean wallTest(Spatial other, float distance) {
         Vector3f direction = reUsableVec;
         direction.set(other.getLocalTranslation());
-        direction.subtractLocal(getSpatial().getLocalTranslation()).normalizeLocal();
+        direction.subtractLocal(getOwnNode().getLocalTranslation()).normalizeLocal();
 
         CollisionResults collisionResults = new CollisionResults();
 
-        ray.setOrigin(getSpatial().getLocalTranslation());
+        ray.setOrigin(getOwnNode().getLocalTranslation());
         ray.setDirection(direction);
         ray.setLimit(distance);
-        ray.collideWith(walls, collisionResults);
+        walls.collideWith(ray, collisionResults);
 
         if (collisionResults.size() == 0) {
             return true;
@@ -114,11 +117,33 @@ public class ServerEntityAwarenessControl extends AbstractControl {
         return false;
     }
 
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
     public ServerFogManager getFogManager() {
         return fogManager;
+    }
+
+    public boolean isAwareOf(Spatial other) {
+        if (other == getOwnNode() || !characterFlags.containsKey(other)) {
+            return true;
+        }
+
+        return characterFlags.get(other);
+    }
+
+    public boolean addCharacter(Spatial character) {
+        boolean sees = testVisibility(character);
+        characterFlags.put(character, sees);
+        return sees;
+    }
+
+    public Spatial getOwnNode() {
+        return ownNode;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setOwnNode(Node ownNode) {
+        this.ownNode = ownNode;
     }
 }

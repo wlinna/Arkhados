@@ -28,6 +28,7 @@ import com.jme3.scene.control.AbstractControl;
 public class EntityVariableControl extends AbstractControl {
 
     private WorldManager worldManager;
+    private PlayerEntityAwareness awareness;
     private Sender sender;
     
     public EntityVariableControl(WorldManager worldManager, Sender sender) {
@@ -59,5 +60,13 @@ public class EntityVariableControl extends AbstractControl {
 
     public Sender getSender() {
         return sender;
+    }
+
+    public PlayerEntityAwareness getAwareness() {
+        return awareness;
+    }
+
+    public void setAwareness(PlayerEntityAwareness awareness) {
+        this.awareness = awareness;
     }
 }

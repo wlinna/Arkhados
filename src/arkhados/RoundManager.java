@@ -14,12 +14,12 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.controls.PlayerEntityAwareness;
 import arkhados.ui.hud.ClientHudManager;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
@@ -37,12 +37,14 @@ import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import java.util.List;
 
 /**
  *
- * @author william TODO: I think that current Round-protocol is very confusing
- * and hard to understand. It might need rework
+ * @author william TODO: I think that current Round-protocol is very confusing and hard to
+ * understand. It might need rework
  */
 public class RoundManager extends AbstractAppState implements CommandHandler {
 
@@ -87,6 +89,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         logger.log(Level.INFO, "Creating world");
         ++currentRound;
         app.enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 if (currentRound > 1) {
                     cleanupPreviousRound();
@@ -120,10 +123,10 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                 @Override
                 public Void call() throws Exception {
                     ServerFogManager fogManager = app.getStateManager().getState(ServerFogManager.class);
-                    
 
-                    int i = 0;
+                    int i = 0;                    
                     for (PlayerData playerData : PlayerData.getPlayers()) {
+                        PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerData.getId());
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
                         final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
@@ -132,17 +135,16 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                         final int entityId = worldManager.addNewEntity(nodeBuilderId,
                                 startingLocation, new Quaternion(), playerData.getId());
                         playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
-                        fogManager.addPlayer(playerData.getId(), entityId);
                     }
 
                     logger.log(Level.INFO, "Created characters");
 
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
-
                         sender.addCommand(new SetPlayersCharacterCommand(entityId, playerData.getId()));
                     }
 
+                    fogManager.addPlayerListToPlayers();
                     logger.log(Level.INFO, "Informing players of their characters");
                     return null;
                 }
@@ -187,6 +189,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
             logger.log(Level.INFO, "Disabling syncManager");
 
+            app.getStateManager().getState(ServerFogManager.class).clearAwareness();
             syncManager.stopListening();
         }
         roundRunning = false;

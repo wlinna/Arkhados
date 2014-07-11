@@ -94,10 +94,10 @@ public class ActionQueueControl extends AbstractControl {
         if (animationControl != null) {
             animationControl.animateAction(action.getTypeId());
         }
-        ServerEntityAwarenessControl awareness = spatial.getControl(ServerEntityAwarenessControl.class);
+        PlayerEntityAwareness awareness = spatial.getControl(EntityVariableControl.class).getAwareness();
         if (awareness != null) {
             final Integer id = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            awareness.getFogManager().addCommand(new ActionCommand(id, action.getTypeId()));
+            awareness.getFogManager().addCommand(spatial, new ActionCommand(id, action.getTypeId()));
         }
     }
 }

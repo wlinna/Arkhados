@@ -95,7 +95,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
             if (syncControl != null) {
                 StateData data = syncControl.getSyncableData(null);
                 if (data != null) {
-                    fogManager.addCommand(data);
+                    fogManager.addCommand(spatial, data);
                 }
             }
         }

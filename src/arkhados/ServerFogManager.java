@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.controls.EntityVariableControl;
+import arkhados.controls.PlayerEntityAwareness;
 import arkhados.messages.syncmessages.AddEntityCommand;
 import arkhados.messages.syncmessages.RemoveEntityCommand;
 import arkhados.net.Command;
@@ -30,10 +32,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,10 +43,9 @@ import java.util.Map;
 public class ServerFogManager extends AbstractAppState {
 
     private Application app;
-    // Node is player's node. No other nodes are saved
-    private final Map<Node, List<Command>> enqueuedGuaranteed = new HashMap<>();
-    private final Map<Node, List<Command>> enqueuedUnreliables = new HashMap<>();
-    private final Map<Node, HostedConnection> nodeConnectionMap = new HashMap<>();
+    private final Map<PlayerEntityAwareness, HostedConnection> awarenessConnectionMap = new HashMap<>();
+    private Node walls;
+    private float checkTimer = 0;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -56,32 +55,65 @@ public class ServerFogManager extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
+        checkTimer -= tpf;
+        if (checkTimer > 0) {
+            return;
+        }
+
+        checkTimer = Globals.DEFAULT_SYNC_FREQUENCY / 2f;
+
+        for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
+            playerEntityAwareness.update(tpf);
+        }
     }
 
-    public void addCommand(Command command) {
+    public void addCommand(Spatial spatial, Command command) {
         ServerSender sender = app.getStateManager().getState(ServerSender.class);
-        sender.addCommand(command);
+
+        for (Map.Entry<PlayerEntityAwareness, HostedConnection> entry : awarenessConnectionMap.entrySet()) {
+            PlayerEntityAwareness awareness = entry.getKey();
+            if (awareness.isAwareOf(spatial)) {
+                sender.addCommandForSingle(command, entry.getValue());
+            }
+        }
     }
 
-    public void visibilityChanged(Spatial one, Spatial another, boolean sees) {
-        Node player = (Node) one;
-        int entityId = another.getUserData(UserDataStrings.ENTITY_ID);
+    public void createNewEntity(Spatial spatial, Command command) {
+        ServerSender sender = app.getStateManager().getState(ServerSender.class);
+
+
+        PlayerEntityAwareness myAwareness = searchForAwareness(spatial);
+
+        for (Map.Entry<PlayerEntityAwareness, HostedConnection> entry : awarenessConnectionMap.entrySet()) {
+            PlayerEntityAwareness awareness = entry.getKey();
+            if (awareness.testVisibility(spatial)) {
+                sender.addCommandForSingle(command, entry.getValue());
+            }
+
+            if (awareness != myAwareness && myAwareness != null) {
+                visibilityChanged(myAwareness, awareness.getOwnNode(), true);
+            }
+        }
+    }
+
+    public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {
+        int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
         Command command;
 
         if (sees) {
-            int nodeBuilderId = another.getUserData(UserDataStrings.NODE_BUILDER_ID);
-            int playerId = another.getUserData(UserDataStrings.PLAYER_ID);
+            int nodeBuilderId = target.getUserData(UserDataStrings.NODE_BUILDER_ID);
+            int playerId = target.getUserData(UserDataStrings.PLAYER_ID);
 
             Vector3f location;
             Quaternion rotation;
 
-            RigidBodyControl body = another.getControl(RigidBodyControl.class);
+            RigidBodyControl body = target.getControl(RigidBodyControl.class);
             if (body != null) {
                 location = body.getPhysicsLocation();
                 rotation = body.getPhysicsRotation();
             } else {
-                location = another.getLocalTranslation();
-                rotation = another.getLocalRotation();
+                location = target.getLocalTranslation();
+                rotation = target.getLocalRotation();
             }
             command = new AddEntityCommand(entityId, nodeBuilderId, location, rotation, playerId);
         } else {
@@ -89,23 +121,64 @@ public class ServerFogManager extends AbstractAppState {
         }
 
         ServerSender sender = app.getStateManager().getState(ServerSender.class);
-        sender.addCommand(command);
+        sender.addCommandForSingle(command, awarenessConnectionMap.get(awareness));
     }
 
-    public void addPlayer(int entityId, int playerId) {
-        Node entity = (Node) app.getStateManager().getState(WorldManager.class).getEntity(entityId);
+    public void addPlayerListToPlayers() {
+        for (PlayerEntityAwareness awareness : awarenessConnectionMap.keySet()) {
+            for (PlayerEntityAwareness awareness2 : awarenessConnectionMap.keySet()) {
+                awareness.addCharacter(awareness2.getOwnNode());
+            }
+        }
+    }
+
+    public PlayerEntityAwareness createAwarenessForPlayer(int playerId) {
+        PlayerEntityAwareness playerAwareness = new PlayerEntityAwareness(playerId, walls, this);
         Collection<HostedConnection> connections = app.getStateManager()
                 .getState(ServerSender.class).getServer().getConnections();
-        
+
         for (HostedConnection hostedConnection : connections) {
-            
             if (hostedConnection.getAttribute(ServerClientDataStrings.PLAYER_ID) == playerId) {
-                nodeConnectionMap.put(entity, hostedConnection);
+                awarenessConnectionMap.put(playerAwareness, hostedConnection);
                 break;
-            }                
+            }
         }
-        
-        enqueuedGuaranteed.put(entity, new ArrayList<Command>());
-        enqueuedUnreliables.put(entity, new ArrayList<Command>());
+
+        return playerAwareness;
+    }
+
+    public void registerCharacterForPlayer(int playerId, Node character) {
+        for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
+            if (playerEntityAwareness.getPlayerId() == playerId) {
+                playerEntityAwareness.setOwnNode(character);
+                character.getControl(EntityVariableControl.class).setAwareness(playerEntityAwareness);
+                break;
+            }
+        }
+    }
+
+    public void setWalls(Node walls) {
+        this.walls = walls;
+    }
+
+    private PlayerEntityAwareness searchForAwareness(Spatial spatial) {
+        for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
+            if (playerEntityAwareness.getOwnNode() == spatial) {
+                return playerEntityAwareness;
+            }
+        }
+
+        return null;
+    }
+
+    public void clearAwareness() {
+        for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
+            Spatial spatial = playerEntityAwareness.getOwnNode();
+            if (spatial != null) {
+                spatial.getControl(EntityVariableControl.class).setAwareness(null);
+            }
+        }
+
+        awarenessConnectionMap.clear();
     }
 }

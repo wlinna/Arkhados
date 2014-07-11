@@ -173,7 +173,7 @@ public class SpellCastControl extends AbstractControl {
     public void cast(int input, Vector3f targetLocation) {
         Spell spell = keySpellMappings.get(input);
 
-        ServerEntityAwarenessControl awareness = getSpatial().getControl(ServerEntityAwarenessControl.class);
+        PlayerEntityAwareness awareness = getSpatial().getControl(EntityVariableControl.class).getAwareness();
         if (awareness != null) {
 
             final CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
@@ -184,7 +184,7 @@ public class SpellCastControl extends AbstractControl {
             final EntityAction castingAction = spell.buildCastAction((Node) spatial, targetLocation);
             spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
             Vector3f direction = targetLocation.subtract(spatial.getLocalTranslation());
-            awareness.getFogManager().addCommand(
+            awareness.getFogManager().addCommand(spatial,
                     new StartCastingSpellCommand((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID),
                     spell.getId(), direction));
         }
@@ -203,25 +203,25 @@ public class SpellCastControl extends AbstractControl {
 
     public void setCooldown(int spellId, float cooldown) {
         cooldowns.put(spellId, cooldown);
-        ServerEntityAwarenessControl awareness =
-                getSpatial().getControl(ServerEntityAwarenessControl.class);
+        PlayerEntityAwareness awareness =
+                getSpatial().getControl(EntityVariableControl.class).getAwareness();
 
         if (awareness != null) {
             final Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            awareness.getFogManager().addCommand(new SetCooldownCommand(entityId, spellId, cooldown, true));
+            awareness.getFogManager().addCommand(spatial, new SetCooldownCommand(entityId, spellId, cooldown, true));
         }
     }
 
     public void putOnCooldown(Spell spell) {
         cooldowns.put(spell.getId(), spell.getCooldown());
 
-        ServerEntityAwarenessControl awareness =
-                getSpatial().getControl(ServerEntityAwarenessControl.class);
+        PlayerEntityAwareness awareness =
+                getSpatial().getControl(EntityVariableControl.class).getAwareness();
 
         if (awareness != null) {
             Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            awareness.getFogManager().addCommand(new SetCooldownCommand(entityId,
+            awareness.getFogManager().addCommand(spatial, new SetCooldownCommand(entityId,
                     spell.getId(), spell.getCooldown(), true));
         }
     }

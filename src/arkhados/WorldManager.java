@@ -35,7 +35,7 @@ import java.util.HashMap;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.EntityVariableControl;
-import arkhados.controls.ServerEntityAwarenessControl;
+import arkhados.controls.PlayerEntityAwareness;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.controls.UserInputControl;
@@ -183,6 +183,10 @@ public class WorldManager extends AbstractAppState {
 
         cam.setLocation(new Vector3f(0.0f, 160.0f, 20.0f));
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+
+        if (isServer()) {
+            app.getStateManager().getState(ServerFogManager.class).setWalls((Node) worldRoot.getChild("Walls"));
+        }
     }
 
     /**
@@ -222,20 +226,19 @@ public class WorldManager extends AbstractAppState {
         entity.addControl(variableControl);
 
         boolean isCharacter = entity.getControl(CharacterPhysicsControl.class) != null;
-        
+
         if (isCharacter && PlayerData.isHuman(playerId)) {
             entity.addControl(new UserInputControl());
         }
-        
-        
+
+
         ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
-        if (serverFogManager != null) {            
+        if (serverFogManager != null) {
             if (isCharacter) {
-                entity.addControl(new ServerEntityAwarenessControl((Node)
-                        worldRoot.getChild("Walls"), serverFogManager));
+                serverFogManager.registerCharacterForPlayer(playerId, (Node) entity);
             }
-            
-            serverFogManager.addCommand(new AddEntityCommand(
+
+            serverFogManager.createNewEntity(entity, new AddEntityCommand(
                     id, nodeBuilderId, location, rotation, playerId));
         }
 
