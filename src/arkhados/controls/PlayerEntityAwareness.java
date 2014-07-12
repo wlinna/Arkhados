@@ -32,13 +32,13 @@
 package arkhados.controls;
 
 import arkhados.ServerFogManager;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,14 +88,28 @@ public class PlayerEntityAwareness {
         if (other == getOwnNode()) {
             return true;
         }
+        
+        // Temporary
+        if (other.getControl(CharacterPhysicsControl.class) == null) {
+            return true;
+        }
+        
+        Vector3f otherLocation;
+        
+        RigidBodyControl rigidBody = other.getControl(RigidBodyControl.class);
+        if (rigidBody != null) {
+            otherLocation = rigidBody.getPhysicsLocation();
+        } else {
+            otherLocation = other.getLocalTranslation();
+        }
 
-        float distanceSquared = other.getLocalTranslation()
-                .distanceSquared(getOwnNode().getLocalTranslation());
+        float distanceSquared = otherLocation.distanceSquared(getOwnNode().getLocalTranslation());
 
         if (distanceSquared > rangeSquared) {
             return false;
         }
-        return true;
+        
+        return wallTest(other, FastMath.sqrt(distanceSquared));
     }
 
     private boolean wallTest(Spatial other, float distance) {
@@ -104,13 +118,14 @@ public class PlayerEntityAwareness {
         direction.subtractLocal(getOwnNode().getLocalTranslation()).normalizeLocal();
 
         CollisionResults collisionResults = new CollisionResults();
-
+        
         ray.setOrigin(getOwnNode().getLocalTranslation());
         ray.setDirection(direction);
         ray.setLimit(distance);
         walls.collideWith(ray, collisionResults);
 
-        if (collisionResults.size() == 0) {
+        if (collisionResults.size() == 0 || 
+                collisionResults.getClosestCollision().getDistance() > distance) {
             return true;
         }
 

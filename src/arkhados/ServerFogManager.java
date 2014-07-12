@@ -81,7 +81,6 @@ public class ServerFogManager extends AbstractAppState {
     public void createNewEntity(Spatial spatial, Command command) {
         ServerSender sender = app.getStateManager().getState(ServerSender.class);
 
-
         PlayerEntityAwareness myAwareness = searchForAwareness(spatial);
 
         for (Map.Entry<PlayerEntityAwareness, HostedConnection> entry : awarenessConnectionMap.entrySet()) {
@@ -91,7 +90,9 @@ public class ServerFogManager extends AbstractAppState {
             }
 
             if (awareness != myAwareness && myAwareness != null) {
-                visibilityChanged(myAwareness, awareness.getOwnNode(), true);
+                if (myAwareness.testVisibility(awareness.getOwnNode())) {
+                    visibilityChanged(myAwareness, awareness.getOwnNode(), true);
+                }
             }
         }
     }

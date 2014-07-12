@@ -316,7 +316,7 @@ public class WorldManager extends AbstractAppState {
         }
 
         if (isClient()) {
-            if (!"".equals(reason)) {
+            if (reason != -1) {
                 EntityEventControl eventControl = spatial.getControl(EntityEventControl.class);
                 if (eventControl != null) {
                     eventControl.getOnRemoval().exec(this, reason);
