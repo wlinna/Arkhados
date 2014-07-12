@@ -35,7 +35,6 @@ import java.util.HashMap;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.EntityVariableControl;
-import arkhados.controls.PlayerEntityAwareness;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.controls.UserInputControl;
@@ -151,7 +150,7 @@ public class WorldManager extends AbstractAppState {
         worldRoot = (Node) assetManager.loadModel("Scenes/LavaArenaWithWalls.j3o");
 
         RigidBodyControl physics = new RigidBodyControl(
-                new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0f)), 0f);
+                new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0)), 0);
         physics.setFriction(1f);
         physics.setRestitution(0f);
         physics.setCollideWithGroups(CollisionGroups.NONE);
@@ -178,10 +177,10 @@ public class WorldManager extends AbstractAppState {
         worldRoot.addLight(sun);
 
         space.addAll(worldRoot);
-        space.setGravity(new Vector3f(0f, -98.1f, 0));
+        space.setGravity(new Vector3f(0, -98.1f, 0));
         rootNode.attachChild(worldRoot);
 
-        cam.setLocation(new Vector3f(0.0f, 160.0f, 20.0f));
+        cam.setLocation(new Vector3f(0, 160, 20));
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         if (isServer()) {
@@ -231,7 +230,6 @@ public class WorldManager extends AbstractAppState {
             entity.addControl(new UserInputControl());
         }
 
-
         ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
         if (serverFogManager != null) {
             if (isCharacter) {
@@ -248,10 +246,11 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void temporarilyRemoveEntity(int id) {
-        Sender sender = app.getStateManager().getState(Sender.class);
+        Sender sender = app.getStateManager().getState(Sender.class);        
         if (sender.isServer()) {
             sender.addCommand(new TemporarilyRemoveEntityCommand(id));
         }
+        
         Spatial spatial = getEntity(id);
         spatial.removeFromParent();
         syncManager.removeEntity(id);
@@ -323,7 +322,10 @@ public class WorldManager extends AbstractAppState {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
             }
+
+            app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);
         }
+
         spatial.removeFromParent();
         LightControl lightControl = spatial.getControl(LightControl.class);
         if (lightControl != null) {

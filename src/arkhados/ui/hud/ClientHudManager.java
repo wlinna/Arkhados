@@ -170,7 +170,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         BitmapText hpBar = new BitmapText(guiFont);
 
         hpBar.setSize(guiFont.getCharSet().getRenderedSize());
-        hpBar.setBox(new Rectangle(0f, 0f, 40f, 10f));
+        hpBar.setBox(new Rectangle(0, 0, 40, 10));
         hpBar.setColor(ColorRGBA.Red);
         hpBar.setAlignment(BitmapFont.Align.Center);
         hpBar.center();
@@ -183,15 +183,33 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         Node character = characters.get(index);
         BitmapText hpBar = hpBars.get(index);
         float health = (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT);
-        if (health == 0.0f) {
+        if (health == 0) {
             hpBar.setText("");
             return;
         }
         // TODO: Implement better method to get character's head's location
         Vector3f hpBarLocation = cam.getScreenCoordinates(
-                character.getLocalTranslation().add(0f, 20.0f, 0.0f)).add(-15f, 40f, 0f);
+                character.getLocalTranslation().add(0, 20, 0)).add(-15, 40, 0);
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
+    }
+    
+    public void entityDisappeared(Spatial spatial) {
+        if (!(spatial instanceof Node)) {
+            return;
+        }
+        
+        Node node = (Node) spatial;
+        
+        int index = characters.indexOf(node);
+        
+        if (index != -1) {
+            BitmapText hpBar = hpBars.get(index);
+            hpBar.removeFromParent();
+            hpBars.remove(index);
+            
+            characters.remove(index);
+        }
     }
 
     @Override
