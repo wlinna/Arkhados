@@ -69,6 +69,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     // HACK: This is only meant for initial implementation testing. Remove this when all round statistics are accessible via GUI
     private boolean roundTableCreated = false;
     private List<Element> statisticsPanels = new ArrayList<>();
+    // HACK: 
+    private boolean hudCreated = false;
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -94,8 +96,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         if (playerCharacter == null) {
             UserCommandManager userCommandManager = stateManager.getState(UserCommandManager.class);
             playerCharacter = userCommandManager.getCharacter();
-            if (playerCharacter != null) {
+            if (playerCharacter != null && !hudCreated) {
                 loadSpellIcons();
+                hudCreated = true;
             }
         } else {
             updateSpellIcons();
@@ -143,6 +146,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         for (BitmapText hpBar : hpBars) {
             hpBar.removeFromParent();
         }
+
         hpBars.clear();
         currentSeconds = -1;
         playerCharacter = null;
@@ -193,28 +197,29 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
     }
-    
+
     public void entityDisappeared(Spatial spatial) {
         if (!(spatial instanceof Node)) {
             return;
         }
-        
+
         Node node = (Node) spatial;
-        
+
         int index = characters.indexOf(node);
-        
+
         if (index != -1) {
             BitmapText hpBar = hpBars.get(index);
             hpBar.removeFromParent();
             hpBars.remove(index);
-            
+
             characters.remove(index);
         }
-    }
 
-    @Override
-    public void cleanup() {
-        super.cleanup();
+        if (spatial == playerCharacter) {
+            SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
+            playerCharacter.removeControl(castControl);
+            playerCharacter = null;
+        }
     }
 
     @Override
@@ -252,7 +257,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         statisticsLayer.hideWithoutEffect();
     }
 
-    public void updateStatistics(final List<PlayerRoundStats> playerRoundStatsList) {
+    public void updateStatistics(List<PlayerRoundStats> playerRoundStatsList) {
         final Element statisticsPanel = screen.findElementByName("panel_statistics");
         for (PlayerRoundStats playerRoundStats : playerRoundStatsList) {
 

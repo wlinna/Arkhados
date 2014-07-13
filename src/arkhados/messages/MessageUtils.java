@@ -22,10 +22,8 @@ import arkhados.messages.syncmessages.ActionCommand;
 import arkhados.messages.syncmessages.AddEntityCommand;
 import arkhados.messages.syncmessages.BuffCommand;
 import arkhados.messages.syncmessages.RemoveEntityCommand;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityCommand;
 import arkhados.messages.syncmessages.SetCooldownCommand;
 import arkhados.messages.syncmessages.StartCastingSpellCommand;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityCommand;
 import arkhados.messages.syncmessages.statedata.CharacterSyncData;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
@@ -73,9 +71,7 @@ public class MessageUtils {
 
         // <Sync>
         Serializer.registerClass(AddEntityCommand.class);
-        Serializer.registerClass(RestoreTemporarilyRemovedEntityCommand.class);
         Serializer.registerClass(RemoveEntityCommand.class);
-        Serializer.registerClass(TemporarilyRemoveEntityCommand.class);
         Serializer.registerClasses(StateData.class, CharacterSyncData.class, GenericSyncData.class, ProjectileSyncData.class);
         Serializer.registerClass(EliteSoldierSyncData.class);
         Serializer.registerClass(StartCastingSpellCommand.class);

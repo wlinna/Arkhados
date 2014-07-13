@@ -41,13 +41,12 @@ import arkhados.controls.UserInputControl;
 import arkhados.effects.BuffEffect;
 import arkhados.messages.syncmessages.AddEntityCommand;
 import arkhados.messages.syncmessages.RemoveEntityCommand;
-import arkhados.messages.syncmessages.RestoreTemporarilyRemovedEntityCommand;
-import arkhados.messages.syncmessages.TemporarilyRemoveEntityCommand;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -186,6 +185,11 @@ public class WorldManager extends AbstractAppState {
         if (isServer()) {
             app.getStateManager().getState(ServerFogManager.class).setWalls((Node) worldRoot.getChild("Walls"));
         }
+        
+        UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
+        if (userCommandManager != null) {
+            userCommandManager.createCameraControl();
+        }
     }
 
     /**
@@ -210,6 +214,8 @@ public class WorldManager extends AbstractAppState {
         setEntityTranslation(entity, location, rotation);
         entity.setUserData(UserDataStrings.PLAYER_ID, playerId);
         entity.setUserData(UserDataStrings.ENTITY_ID, id);
+        entity.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
+        entity.setUserData(UserDataStrings.INVISIBLE_TO_ENEMY, false);
         entities.put(id, entity);
         syncManager.addObject(id, entity);
         space.addAll(entity);
@@ -236,8 +242,8 @@ public class WorldManager extends AbstractAppState {
                 serverFogManager.registerCharacterForPlayer(playerId, (Node) entity);
             }
 
-            serverFogManager.createNewEntity(entity, new AddEntityCommand(
-                    id, nodeBuilderId, location, rotation, playerId));
+            serverFogManager.createNewEntity(entity,
+                    new AddEntityCommand(id, nodeBuilderId, location, rotation, playerId));
         }
 
         if (isClient()) {
@@ -246,12 +252,8 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void temporarilyRemoveEntity(int id) {
-        Sender sender = app.getStateManager().getState(Sender.class);        
-        if (sender.isServer()) {
-            sender.addCommand(new TemporarilyRemoveEntityCommand(id));
-        }
-        
         Spatial spatial = getEntity(id);
+        spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, true);
         spatial.removeFromParent();
         syncManager.removeEntity(id);
 
@@ -262,12 +264,8 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
-        Sender sender = app.getStateManager().getState(Sender.class);
-        if (sender.isServer()) {
-            sender.addCommand(new RestoreTemporarilyRemovedEntityCommand(id,
-                    location, rotation));
-        }
         Spatial spatial = getEntity(id);
+        spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
         worldRoot.attachChild(spatial);
         syncManager.addObject(id, spatial);
 
@@ -313,17 +311,24 @@ public class WorldManager extends AbstractAppState {
         Spatial spatial = entities.remove(id);
         if (spatial == null) {
             return;
-        }
-
+        }        
+        
         if (isClient()) {
             if (reason != -1) {
                 EntityEventControl eventControl = spatial.getControl(EntityEventControl.class);
                 if (eventControl != null) {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
-            }
+                
+                if (reason == RemovalReasons.DISAPPEARED) {
+                    UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
+                    if (id == userCommandManager.getCharacterId()) {
+                        userCommandManager.nullifyCharacter();
+                    }
+                }
+            } 
 
-            app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);
+            app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);            
         }
 
         spatial.removeFromParent();

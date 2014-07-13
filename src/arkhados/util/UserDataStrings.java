@@ -43,6 +43,10 @@ public class UserDataStrings {
     public final static String DAMAGE_PER_SECOND = "damage-per-second";
     public final static String IMPULSE_FACTOR = "impulse-factor";
 
+    
+    public final static String INVISIBLE_TO_ALL = "invisible-all";
+    public final static String INVISIBLE_TO_ENEMY = "invisible-enemy";
+    
     // NOTE: INCAPACITATE_LENGTH has no functionality yet
     public final static String INCAPACITATE_LENGTH = "incapacitate-length";
 }

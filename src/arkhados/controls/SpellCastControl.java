@@ -14,28 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.ServerFogManager;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import arkhados.WorldManager;
 import arkhados.actions.CastingSpellAction;
 import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.SetCooldownCommand;
 import arkhados.messages.syncmessages.StartCastingSpellCommand;
-import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;

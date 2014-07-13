@@ -32,6 +32,7 @@
 package arkhados.controls;
 
 import arkhados.ServerFogManager;
+import arkhados.util.UserDataStrings;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.FastMath;
@@ -41,13 +42,14 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  *
  * @author william
  */
 public class PlayerEntityAwareness {
-
+private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.class.getName());
     private Node ownNode;
     private Map<Spatial, Boolean> characterFlags = new HashMap<>(6);
     private final int playerId;
@@ -67,15 +69,11 @@ public class PlayerEntityAwareness {
         for (Map.Entry<Spatial, Boolean> entry : characterFlags.entrySet()) {
             Spatial character = entry.getKey();
 
-            boolean previousFlag = isAwareOf(entry.getKey());
+            boolean previousFlag = entry.getValue();
             boolean newFlag;
 
-            if (character == getOwnNode()) {
-                entry.setValue(true);
-                continue;
-            }
-
             newFlag = testVisibility(character);
+            
             entry.setValue(newFlag);
 
             if (newFlag != previousFlag) {
@@ -85,6 +83,9 @@ public class PlayerEntityAwareness {
     }
 
     public boolean testVisibility(Spatial other) {
+        if (other.getUserData(UserDataStrings.INVISIBLE_TO_ALL)) {
+            return false;
+        }
         if (other == getOwnNode()) {
             return true;
         }
@@ -137,7 +138,10 @@ public class PlayerEntityAwareness {
     }
 
     public boolean isAwareOf(Spatial other) {
-        if (other == getOwnNode() || !characterFlags.containsKey(other)) {
+        if (other == getOwnNode() && other.getUserData(UserDataStrings.INVISIBLE_TO_ALL) == false) {
+            return true;
+        }
+        if (!characterFlags.containsKey(other)) {
             return true;
         }
 

@@ -61,7 +61,7 @@ public class UserCommandManager extends AbstractAppState {
     private Vector3f mouseGroundPosition = new Vector3f();
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private Listener listener;
-    
+
     public UserCommandManager(Sender sender, InputManager inputManager) {
         this.sender = sender;
         this.inputManager = inputManager;
@@ -76,6 +76,15 @@ public class UserCommandManager extends AbstractAppState {
         listener = app.getListener();
         cam = app.getCamera();
     }
+
+    public void createCameraControl() {
+        Node camNode = new Node("cam-node");
+        worldManager.getWorldRoot().attachChild(camNode);
+        FreeCameraControl cameraControl = new FreeCameraControl(cam, inputManager);
+        camNode.addControl(cameraControl);
+        cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
+    }
+    
     private ActionListener actionCastSpell = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
@@ -163,11 +172,8 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void followPlayer() {
-        Node camNode = new Node("cam-node");
-        worldManager.getWorldRoot().attachChild(camNode);
-//        camNode.addControl(new FollowCharacterControl(character, cam));
-        camNode.addControl(new FreeCameraControl(character, cam, inputManager));
-        camNode.getControl(FreeCameraControl.class).setRelativePosition(new Vector3f(0f, 150f, 30f));
+        worldManager.getWorldRoot().getChild("cam-node").getControl(FreeCameraControl.class)
+                .setCharacter(character);
     }
 
     public void sendWalkDirection() {
@@ -222,6 +228,8 @@ public class UserCommandManager extends AbstractAppState {
 
     public void nullifyCharacter() {
         character = null;
+//        worldManager.getWorldRoot().getChild("cam-node")
+//                .getControl(FreeCameraControl.class).setCharacter(null);
     }
 
     private InfluenceInterfaceControl getCharacterInterface() {
@@ -239,7 +247,11 @@ public class UserCommandManager extends AbstractAppState {
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
-
+    
+    public int getCharacterId() {
+        return characterId;
+    }
+    
     public void setCharacterId(int characterId) {
         this.characterId = characterId;
     }
@@ -251,7 +263,6 @@ public class UserCommandManager extends AbstractAppState {
             ClientHudManager hudManager = app.getStateManager().getState(ClientHudManager.class);
             character.getControl(CharacterHudControl.class).setHudManager(hudManager);
             followPlayer();
-
             return true;
         }
         return false;
@@ -264,4 +275,5 @@ public class UserCommandManager extends AbstractAppState {
 
         sender.addCommand(new UcWalkDirection(down, right));
     }
+
 }

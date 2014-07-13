@@ -32,10 +32,6 @@
 package arkhados.controls;
 
 import arkhados.ClientSettings;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.input.InputManager;
 import com.jme3.math.Plane;
 import com.jme3.math.Ray;
@@ -46,7 +42,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import java.io.IOException;
 
 /**
  *
@@ -65,61 +60,53 @@ public class FreeCameraControl extends AbstractControl {
     private float timeToReach = 20f;
     private float timeMoved = this.timeToReach;
 
-    public FreeCameraControl(Node character, Camera cam, InputManager inputManager) {
-        this.character = character;
+    public FreeCameraControl(Camera cam, InputManager inputManager) {
         this.cam = cam;
         this.inputManager = inputManager;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        this.calculateMouseLocation();
-        Vector3f midPoint = this.intersectionPoint.subtract(character.getLocalTranslation()).multLocal(0.5f);
-        midPoint.addLocal(this.relativePosition);
+        if (character == null) {
+            return;
+        }
+        calculateMouseLocation();
+        Vector3f midPoint = intersectionPoint.subtract(character.getLocalTranslation()).multLocal(0.5f);
+        midPoint.addLocal(relativePosition);
         midPoint.addLocal(character.getLocalTranslation());
-        this.targetDestination.set(midPoint);
+        targetDestination.set(midPoint);
 
-        float distance = this.cam.getLocation().distance(this.targetDestination);
+        float distance = cam.getLocation().distance(targetDestination);
 
         float factor = tpf * ClientSettings.getFreeCameraSpeed() / distance;
         if (factor > 1f) {
             factor = 1f;
         }
-        this.cam.setLocation(this.cam.getLocation().interpolate(this.targetDestination, factor));
+        cam.setLocation(cam.getLocation().interpolate(targetDestination, factor));
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
-    }
-
     private void calculateMouseLocation() {
-        final Vector2f mouse2dPosition = this.inputManager.getCursorPosition();
-        final Vector3f mouse3dPosition = this.cam
+        final Vector2f mouse2dPosition = inputManager.getCursorPosition();
+        final Vector3f mouse3dPosition = cam
                 .getWorldCoordinates(mouse2dPosition, 0.0f);
 
-
-        final Vector3f rayDirection = this.cam
+        final Vector3f rayDirection = cam
                 .getWorldCoordinates(mouse2dPosition, 1.0f)
                 .subtractLocal(mouse3dPosition).normalizeLocal();
 
-
         Ray ray = new Ray(mouse3dPosition, rayDirection);
-        boolean intersects = ray.intersectsWherePlane(this.floorPlane, this.intersectionPoint);
+        boolean intersects = ray.intersectsWherePlane(floorPlane, intersectionPoint);
     }
 
     public void setRelativePosition(Vector3f relativePosition) {
         this.relativePosition = relativePosition;
+    }
+
+    public void setCharacter(Node character) {
+        this.character = character;
     }
 }

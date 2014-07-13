@@ -35,6 +35,8 @@ import com.jme3.scene.Spatial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -42,6 +44,7 @@ import java.util.Map;
  */
 public class ServerFogManager extends AbstractAppState {
 
+    private static final Logger logger = Logger.getLogger(ServerFogManager.class.getName());
     private Application app;
     private final Map<PlayerEntityAwareness, HostedConnection> awarenessConnectionMap = new HashMap<>();
     private Node walls;
@@ -97,7 +100,7 @@ public class ServerFogManager extends AbstractAppState {
         }
     }
 
-    public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {
+    public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {        
         int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
         Command command;
 
