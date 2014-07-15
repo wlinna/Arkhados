@@ -84,7 +84,6 @@ public class UserCommandManager extends AbstractAppState {
         camNode.addControl(cameraControl);
         cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
-    
     private ActionListener actionCastSpell = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
@@ -107,10 +106,6 @@ public class UserCommandManager extends AbstractAppState {
     private ActionListener actionMoveDirection = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
-            InfluenceInterfaceControl influenceInterface = getCharacterInterface();
-            if (influenceInterface == null || influenceInterface.isDead()) {
-                return;
-            }
             if (movementKeyFlags.get(name) == false && !isPressed) {
                 return;
             }
@@ -125,6 +120,11 @@ public class UserCommandManager extends AbstractAppState {
                 down += isPressed ? -1 : 1;
             } else if ("move-down".equals(name)) {
                 down += isPressed ? 1 : -1;
+            }
+
+            InfluenceInterfaceControl influenceInterface = getCharacterInterface();
+            if (influenceInterface != null && influenceInterface.isDead()) {
+                return;
             }
 
             sendWalkDirection();
@@ -247,11 +247,11 @@ public class UserCommandManager extends AbstractAppState {
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
-    
+
     public int getCharacterId() {
         return characterId;
     }
-    
+
     public void setCharacterId(int characterId) {
         this.characterId = characterId;
     }
@@ -275,5 +275,4 @@ public class UserCommandManager extends AbstractAppState {
 
         sender.addCommand(new UcWalkDirection(down, right));
     }
-
 }

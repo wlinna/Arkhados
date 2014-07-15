@@ -63,7 +63,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private List<Node> characters = new ArrayList<>();
     private List<BitmapText> hpBars = new ArrayList<>();
     private int currentSeconds = -1;
-    private HashMap<String, Element> spellIcons = new HashMap<>(6);
+    private Map<String, Element> spellIcons = new HashMap<>(6);
     private Spatial playerCharacter = null;
     private AppStateManager stateManager;
     // HACK: This is only meant for initial implementation testing. Remove this when all round statistics are accessible via GUI
@@ -71,6 +71,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private List<Element> statisticsPanels = new ArrayList<>();
     // HACK: 
     private boolean hudCreated = false;
+    private HashMap<Integer, Float> cooldowns = null;
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -99,6 +100,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             if (playerCharacter != null && !hudCreated) {
                 loadSpellIcons();
                 hudCreated = true;
+                cooldowns = playerCharacter.getControl(SpellCastControl.class).getCooldowns();
+            } else if (playerCharacter != null && hudCreated) {
+                playerCharacter.getControl(SpellCastControl.class).setCooldowns(cooldowns);
             }
         } else {
             updateSpellIcons();
@@ -168,6 +172,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         hideRoundStatistics();
 
         spellIcons.clear();
+        
+        hudCreated = false;
     }
 
     private void createHpBar() {

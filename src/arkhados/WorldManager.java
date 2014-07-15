@@ -121,7 +121,7 @@ public class WorldManager extends AbstractAppState {
                     app.getStateManager().getState(ClientHudManager.class),
                     effectHandler);
 
-            // FIXME: Sometimes shader linking error happens here
+            // FIXME: Sometimes shader linking error happens here with Intel GPU's. 
 //            try {
 //                final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
 //                final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);

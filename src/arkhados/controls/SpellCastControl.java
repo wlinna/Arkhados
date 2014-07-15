@@ -283,4 +283,12 @@ public class SpellCastControl extends AbstractControl {
     public void setCasting(boolean casting) {
         this.casting = casting;
     }
+
+    public HashMap<Integer, Float> getCooldowns() {
+        return cooldowns;
+    }
+
+    public void setCooldowns(HashMap<Integer, Float> cooldowns) {
+        this.cooldowns = cooldowns;
+    }
 }
