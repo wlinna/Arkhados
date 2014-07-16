@@ -185,7 +185,7 @@ public class WorldManager extends AbstractAppState {
         if (isServer()) {
             app.getStateManager().getState(ServerFogManager.class).setWalls((Node) worldRoot.getChild("Walls"));
         }
-        
+
         UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
         if (userCommandManager != null) {
             userCommandManager.createCameraControl();
@@ -302,33 +302,34 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void removeEntity(int id, int reason) {
-        Sender sender = app.getStateManager().getState(Sender.class);
-        if (sender.isServer()) {
-            app.getStateManager().getState(Sender.class).addCommand(
-                    new RemoveEntityCommand(id, reason));
-        }
+        ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
+
         syncManager.removeEntity(id);
         Spatial spatial = entities.remove(id);
         if (spatial == null) {
             return;
-        }        
-        
+        }
+
+        if (serverFogManager != null) {
+            serverFogManager.removeEntity(spatial, new RemoveEntityCommand(id, reason));
+        }
+
         if (isClient()) {
             if (reason != -1) {
                 EntityEventControl eventControl = spatial.getControl(EntityEventControl.class);
                 if (eventControl != null) {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
-                
+
                 if (reason == RemovalReasons.DISAPPEARED) {
                     UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
                     if (id == userCommandManager.getCharacterId()) {
                         userCommandManager.nullifyCharacter();
                     }
                 }
-            } 
+            }
 
-            app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);            
+            app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);
         }
 
         spatial.removeFromParent();

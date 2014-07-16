@@ -143,7 +143,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     @Override
     public StateData getSyncableData(StateData stateData) {
         if (this.needsSync) {
-            this.needsSync = false;
+            this.needsSync = true;
             return new ProjectileSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
         }
 

@@ -88,6 +88,7 @@ public class ServerFogManager extends AbstractAppState {
 
         for (Map.Entry<PlayerEntityAwareness, HostedConnection> entry : awarenessConnectionMap.entrySet()) {
             PlayerEntityAwareness awareness = entry.getKey();
+            awareness.addEntity(spatial);
             if (awareness.testVisibility(spatial)) {
                 sender.addCommandForSingle(command, entry.getValue());
             }
@@ -100,7 +101,18 @@ public class ServerFogManager extends AbstractAppState {
         }
     }
 
-    public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {        
+    public void removeEntity(Spatial spatial, Command command) {
+        ServerSender sender = app.getStateManager().getState(ServerSender.class);
+
+        for (Map.Entry<PlayerEntityAwareness, HostedConnection> entry : awarenessConnectionMap.entrySet()) {
+            PlayerEntityAwareness awareness = entry.getKey();
+            if (awareness.removeEntity(spatial)) {
+                sender.addCommandForSingle(command, entry.getValue());
+            }
+        }
+    }
+
+    public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {
         int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
         Command command;
 
@@ -131,7 +143,7 @@ public class ServerFogManager extends AbstractAppState {
     public void addPlayerListToPlayers() {
         for (PlayerEntityAwareness awareness : awarenessConnectionMap.keySet()) {
             for (PlayerEntityAwareness awareness2 : awarenessConnectionMap.keySet()) {
-                awareness.addCharacter(awareness2.getOwnNode());
+                awareness.addEntity(awareness2.getOwnNode());
             }
         }
     }

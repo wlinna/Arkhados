@@ -49,9 +49,10 @@ import java.util.logging.Logger;
  * @author william
  */
 public class PlayerEntityAwareness {
-private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.class.getName());
+
+    private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.class.getName());
     private Node ownNode;
-    private Map<Spatial, Boolean> characterFlags = new HashMap<>(6);
+    private Map<Spatial, Boolean> entityFlags = new HashMap<>(6);
     private final int playerId;
     private Node walls;
     private Ray ray = new Ray();
@@ -66,14 +67,14 @@ private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.clas
     }
 
     public void update(float tpf) {
-        for (Map.Entry<Spatial, Boolean> entry : characterFlags.entrySet()) {
+        for (Map.Entry<Spatial, Boolean> entry : entityFlags.entrySet()) {
             Spatial character = entry.getKey();
 
             boolean previousFlag = entry.getValue();
             boolean newFlag;
 
             newFlag = testVisibility(character);
-            
+
             entry.setValue(newFlag);
 
             if (newFlag != previousFlag) {
@@ -89,14 +90,14 @@ private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.clas
         if (other == getOwnNode()) {
             return true;
         }
-        
-        // Temporary
-        if (other.getControl(CharacterPhysicsControl.class) == null) {
-            return true;
-        }
-        
+
+//        // Temporary
+//        if (other.getControl(CharacterPhysicsControl.class) == null) {
+//            return true;
+//        }
+
         Vector3f otherLocation;
-        
+
         RigidBodyControl rigidBody = other.getControl(RigidBodyControl.class);
         if (rigidBody != null) {
             otherLocation = rigidBody.getPhysicsLocation();
@@ -109,7 +110,7 @@ private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.clas
         if (distanceSquared > rangeSquared) {
             return false;
         }
-        
+
         return wallTest(other, FastMath.sqrt(distanceSquared));
     }
 
@@ -119,14 +120,14 @@ private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.clas
         direction.subtractLocal(getOwnNode().getLocalTranslation()).normalizeLocal();
 
         CollisionResults collisionResults = new CollisionResults();
-        
+
         ray.setOrigin(getOwnNode().getLocalTranslation());
         ray.setDirection(direction);
         ray.setLimit(distance);
         walls.collideWith(ray, collisionResults);
 
-        if (collisionResults.size() == 0 || 
-                collisionResults.getClosestCollision().getDistance() > distance) {
+        if (collisionResults.size() == 0
+                || collisionResults.getClosestCollision().getDistance() > distance) {
             return true;
         }
 
@@ -141,17 +142,25 @@ private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.clas
         if (other == getOwnNode() && other.getUserData(UserDataStrings.INVISIBLE_TO_ALL) == false) {
             return true;
         }
-        if (!characterFlags.containsKey(other)) {
+        if (!entityFlags.containsKey(other)) {
             return true;
         }
 
-        return characterFlags.get(other);
+        return entityFlags.get(other);
     }
 
-    public boolean addCharacter(Spatial character) {
+    public boolean addEntity(Spatial character) {
         boolean sees = testVisibility(character);
-        characterFlags.put(character, sees);
+        entityFlags.put(character, sees);
         return sees;
+    }
+
+    public boolean removeEntity(Spatial entity) {
+        Boolean saw = entityFlags.remove(entity);
+        if (saw == null) {
+            return false;
+        }
+        return saw;
     }
 
     public Spatial getOwnNode() {
