@@ -1,0 +1,14 @@
+MaterialDef RangeFog {
+    MaterialParameters {
+        Vector3 PlayerPosition
+    }
+    Technique {
+        VertexShader GLSL100:   MatDefs/RangeFog/RangeFog.vert
+        FragmentShader GLSL100: MatDefs/RangeFog/RangeFog.frag
+
+        WorldParameters {
+            WorldMatrix
+            WorldViewProjectionMatrix
+        }
+    }
+}

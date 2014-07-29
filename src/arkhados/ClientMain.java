@@ -129,7 +129,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ClientHudManager clientHudManager;
     private RoundManager roundManager;
     private EffectHandler effectHandler;
-    
     private ClientSender sender;
     private Receiver receiver;
 
@@ -146,6 +145,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         clientHudManager = new ClientHudManager(cam, guiNode, guiFont);
 
+        stateManager.attach(new ClientFogManager());
         stateManager.attach(clientHudManager);
         stateManager.attach(bulletState);
         bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
@@ -170,15 +170,15 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         roundManager = new RoundManager();
         stateManager.attach(roundManager);
-        
+
         sender = new ClientSender();
         receiver = new Receiver();
-        receiver.registerCommandHandler(effectHandler);               
-        
+        receiver.registerCommandHandler(effectHandler);
+
         userCommandManager = new UserCommandManager(sender, inputManager);
-        
+
         stateManager.attach(userCommandManager);
-      
+
         stateManager.attach(sender);
         stateManager.attach(receiver);
 
@@ -186,6 +186,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.registerCommandHandler(syncManager);
         receiver.registerCommandHandler(listenerManager);
         receiver.registerCommandHandler(roundManager);
+
+//        stateManager.attach(new ClientFogManager());
     }
 
     @Override
@@ -235,10 +237,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 findElementByName("server_ip").getControl(TextFieldControl.class).getText();
 
 
-        clientWrapper.set(Network.createClient());       
+        clientWrapper.set(Network.createClient());
         listenerManager.reset();
         clientWrapper.get().addClientStateListener(listenerManager);
-        
+
         clientWrapper.get().addMessageListener(receiver, OneTrueMessage.class);
         sender.reset();
         receiver.reset();

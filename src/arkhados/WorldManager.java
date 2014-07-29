@@ -184,6 +184,8 @@ public class WorldManager extends AbstractAppState {
 
         if (isServer()) {
             app.getStateManager().getState(ServerFogManager.class).setWalls((Node) worldRoot.getChild("Walls"));
+        } else {
+            app.getStateManager().getState(ClientFogManager.class).createFog(worldRoot);
         }
 
         UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
@@ -248,6 +250,9 @@ public class WorldManager extends AbstractAppState {
 
         if (isClient()) {
             clientMain.getUserCommandManager().trySetPlayersCharacter(entity);
+            if (isCharacter) {
+                app.getStateManager().getState(ClientFogManager.class).setPlayerNode((Node)entity);
+            }
         }
     }
 
