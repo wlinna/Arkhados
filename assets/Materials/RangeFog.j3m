@@ -1,0 +1,7 @@
+Material MyFog : MatDefs/RangeFog/RangeFog.j3md {
+     MaterialParameters {
+     }
+    AdditionalRenderState {
+        Blend Alpha
+    }
+}

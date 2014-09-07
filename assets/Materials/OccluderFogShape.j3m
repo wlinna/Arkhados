@@ -1,0 +1,7 @@
+Material Wall Fog Shape : MatDefs/OccluderFog/OccluderFogShape.j3md {
+     MaterialParameters {
+     }
+    AdditionalRenderState {
+      Blend Alpha
+    }
+}

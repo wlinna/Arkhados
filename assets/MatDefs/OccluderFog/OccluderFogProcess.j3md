@@ -1,0 +1,16 @@
+MaterialDef OccluderFogProcess {
+    MaterialParameters {
+        Texture2D FogShape
+    }
+    Technique {
+        VertexShader GLSL100:   MatDefs/OccluderFog/OccluderFogProcess.vert
+        FragmentShader GLSL100: MatDefs/OccluderFog/OccluderFogProcess.frag
+
+        WorldParameters {
+            WorldMatrix
+            ViewProjectionMatrix;
+            WorldViewProjectionMatrix
+            WorldMatrixInverseTranspose
+        }
+    }
+}

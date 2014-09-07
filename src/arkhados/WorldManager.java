@@ -50,6 +50,7 @@ import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
@@ -132,6 +133,8 @@ public class WorldManager extends AbstractAppState {
 //            }
 //            finally {
 //            }
+            
+//            app.getStateManager().attach(new BulletDebugAppState(space));
         }
 
         Spell.initSpells(entityFactory, assetManager, this);
@@ -146,7 +149,7 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void loadLevel() {
-        worldRoot = (Node) assetManager.loadModel("Scenes/LavaArenaWithWalls.j3o");
+        worldRoot = (Node) assetManager.loadModel("Scenes/LavaArenaWithFogWalls.j3o");
 
         RigidBodyControl physics = new RigidBodyControl(
                 new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0)), 0);
@@ -185,7 +188,9 @@ public class WorldManager extends AbstractAppState {
         if (isServer()) {
             app.getStateManager().getState(ServerFogManager.class).setWalls((Node) worldRoot.getChild("Walls"));
         } else {
-            app.getStateManager().getState(ClientFogManager.class).createFog(worldRoot);
+            ClientFogManager clientFogManager = app.getStateManager().getState(ClientFogManager.class);
+            app.getViewPort().addProcessor(clientFogManager);
+            clientFogManager.createFog(worldRoot);
         }
 
         UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);

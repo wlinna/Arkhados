@@ -1,0 +1,16 @@
+MaterialDef OccluderFogShape {
+    MaterialParameters {
+        Vector3 PlayerPosition
+    }
+    Technique {
+        VertexShader GLSL100:   MatDefs/OccluderFog/OccluderFogShape.vert
+        FragmentShader GLSL100: MatDefs/OccluderFog/OccluderFogShape.frag
+
+        WorldParameters {
+            WorldMatrix
+            ViewProjectionMatrix;
+            WorldViewProjectionMatrix
+            WorldMatrixInverseTranspose
+        }
+    }
+}

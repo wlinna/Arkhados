@@ -1,0 +1,7 @@
+Material My Material : MatDefs/OccluderFog/OccluderFogProcess.j3md {
+     MaterialParameters {
+     }
+    AdditionalRenderState {
+        Blend Alpha
+    }
+}

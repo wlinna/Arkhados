@@ -135,7 +135,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
-        setDisplayStatView(false);
+        setDisplayStatView(true);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
         bulletState = new BulletAppState();
@@ -145,7 +145,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         clientHudManager = new ClientHudManager(cam, guiNode, guiFont);
 
-        stateManager.attach(new ClientFogManager());
+        ClientFogManager fogManager = new ClientFogManager();
+        stateManager.attach(fogManager);
+        
         stateManager.attach(clientHudManager);
         stateManager.attach(bulletState);
         bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);

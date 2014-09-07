@@ -84,6 +84,10 @@ public class BasicSquareArena extends AbstractArena {
     private void resetWallPhysics(PhysicsSpace space) {
         List<Spatial> children = ((Node) this.getTerrainNode().getChild("Walls")).getChildren();
         for (Spatial wall : children) {
+//            Node node = (Node) wallModel;
+            
+//            Spatial wall = node.getChild("Wall");            
+            
             wall.removeControl(PhysicsControl.class);
 
             CollisionShape meshShape = CollisionShapeFactory.createMeshShape(wall);
@@ -94,7 +98,7 @@ public class BasicSquareArena extends AbstractArena {
             wall.addControl(wallPhysics);
             wall.getControl(RigidBodyControl.class).setCollisionGroup(CollisionGroups.WALLS);
 
-            space.addAll(wall);
+//            space.addAll(wall);
         }
     }
 }
