@@ -61,6 +61,7 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
     private Material fogProcessMaterial;
     private ViewPort viewPort;
     private SimpleApplication app;
+    private Geometry screenQuad = null;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -240,8 +241,6 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 //        if (fogShapeMaterial != null && player != null) {
 //            fogShapeMaterial.setVector3("PlayerPosition", player.getLocalTranslation());
 //        }
-
-        super.render(rm);
     }
 
     public void setPlayerNode(Node playerNode) {
@@ -268,13 +267,13 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 
         int width = 1024;
         int height = 1024;
-        
+
         // TODO: Find a way to use custom width and height.
         // If for example 1024, 1024 is used, screen ends up looking wrong and mouse doesn't work correctly
         // If resolution is big and I use screen width and height, performance suffers
         width = viewPort.getCamera().getWidth();
         height = viewPort.getCamera().getHeight();
-        
+
         fogFb = new FrameBuffer(width, height, 1);
         colorTexture = new Texture2D(width, height, Image.Format.RGBA8);
         fogFb.setColorTexture(colorTexture);
@@ -285,13 +284,15 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
             @Override
             public Void call() throws Exception {
                 Quad front = new Quad(viewPort.getCamera().getWidth(), viewPort.getCamera().getHeight());
-                Geometry quadGeometry = new Geometry("front-quad", front);
-                quadGeometry.setMaterial(fogProcessMaterial);
-                ((SimpleApplication) app).getRootNode().attachChild(quadGeometry);
-                quadGeometry.setQueueBucket(RenderQueue.Bucket.Gui);
+                screenQuad = new Geometry("front-quad", front);
+                screenQuad.setMaterial(fogProcessMaterial);
+                ((SimpleApplication) app).getRootNode().attachChild(screenQuad);
+                screenQuad.setQueueBucket(RenderQueue.Bucket.Gui);
                 return null;
             }
         });
+
+        initialized = true;
     }
 
     @Override
@@ -334,5 +335,36 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 
     @Override
     public void postFrame(FrameBuffer out) {
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+
+        renderManager = null;
+        viewPort = null;
+
+        mat = null;
+        fogProcessMaterial = null;
+        fogShapeMaterial = null;
+
+        if (fogFb != null) {
+            fogFb.dispose();
+        }
+        fogFb = null;
+
+        if (rangeFogQuad != null) {
+            rangeFogQuad.removeFromParent();
+        }
+
+        rangeFogQuad = null;
+
+        if (screenQuad != null) {
+            screenQuad.removeFromParent();
+        }
+        screenQuad = null;
+
+        player = null;
+        occluders = null;
     }
 }

@@ -96,9 +96,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
             fileHandler.setLevel(Level.FINE);
             Logger.getLogger("").addHandler(fileHandler);
-        } catch (IOException ex) {
-            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
+        } catch (IOException | SecurityException ex) {
             Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
         }
 

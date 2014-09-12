@@ -50,7 +50,6 @@ import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
@@ -109,7 +108,6 @@ public class WorldManager extends AbstractAppState {
 
         syncManager = app.getStateManager().getState(SyncManager.class);
 
-
         Sender sender = stateManager.getState(Sender.class);
 
         if (sender.isServer()) {
@@ -133,7 +131,7 @@ public class WorldManager extends AbstractAppState {
 //            }
 //            finally {
 //            }
-            
+
 //            app.getStateManager().attach(new BulletDebugAppState(space));
         }
 
@@ -254,9 +252,9 @@ public class WorldManager extends AbstractAppState {
         }
 
         if (isClient()) {
-            clientMain.getUserCommandManager().trySetPlayersCharacter(entity);
-            if (isCharacter) {
-                app.getStateManager().getState(ClientFogManager.class).setPlayerNode((Node)entity);
+            boolean ownedByMe = clientMain.getUserCommandManager().trySetPlayersCharacter(entity);
+            if (ownedByMe) {
+                app.getStateManager().getState(ClientFogManager.class).setPlayerNode((Node) entity);
             }
         }
     }
@@ -413,6 +411,11 @@ public class WorldManager extends AbstractAppState {
         idCounter = 0;
 
         worldRoot = null;
+
+        if (isClient()) {
+            ClientFogManager clientFogManager = app.getStateManager().getState(ClientFogManager.class);        
+            app.getViewPort().removeProcessor(clientFogManager);
+        }
     }
 
     @Override
