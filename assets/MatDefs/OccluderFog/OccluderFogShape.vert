@@ -29,22 +29,19 @@ void main() {
 
    vec3 fromCharacterToVertex = normalize(vertexWorldPos.xyz - characterPos);
 
-   vec3 worldNormal3 = normalize((g_WorldMatrixInverseTranspose * inNormal));
-   vec4 worldNormal4 = vec4(worldNormal3, 0.0);
+   vec3 worldNormal3 = normalize(g_WorldMatrixInverseTranspose * inNormal);
 
    float dotRes = dot(worldNormal3, fromCharacterToVertex);
 
    if (dotRes > 0.0) {
-      vec4 movedPos = vec4(vertexWorldPos.xyz + fromCharacterToVertex * 200.0, 1.0);
+      vec4 movedPos = vec4(vertexWorldPos.xyz + fromCharacterToVertex * 400.0, 1.0);
       varyingPos = movedPos;
       gl_Position = g_ViewProjectionMatrix * movedPos;
-   }
-
-   else {
+   } else {
      gl_Position = g_ViewProjectionMatrix * (g_WorldMatrix * pos);
    }
 
-   r = abs(inNormal.x);
-   g = dotRes;
-   b = abs(inNormal.z);
+//   r = abs(inNormal.x);
+  // g = dotRes;
+   //b = abs(inNormal.z);
 }

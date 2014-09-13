@@ -94,7 +94,7 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 
         for (Spatial wall : walls.getChildren()) {
             Node wallNode = (Node) wall;
-            Geometry fogGeom = (Geometry) wallNode.getChild("FogMeshGeom");
+            Geometry fogGeom = (Geometry) wallNode.getChild("FogMeshGeom1");
             occluders.add(fogGeom);
             fogGeom.setCullHint(Spatial.CullHint.Always);
 

@@ -50,6 +50,7 @@ import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
@@ -120,7 +121,7 @@ public class WorldManager extends AbstractAppState {
                     app.getStateManager().getState(ClientHudManager.class),
                     effectHandler);
 
-            // FIXME: Sometimes shader linking error happens here with Intel GPU's. 
+            // FIXME: Shader linking error happens here with Intel GPU's. 
 //            try {
 //                final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
 //                final BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.SceneAndObjects);

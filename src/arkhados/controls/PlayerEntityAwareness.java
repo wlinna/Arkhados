@@ -91,11 +91,6 @@ public class PlayerEntityAwareness {
             return true;
         }
 
-//        // Temporary
-//        if (other.getControl(CharacterPhysicsControl.class) == null) {
-//            return true;
-//        }
-
         Vector3f otherLocation;
 
         RigidBodyControl rigidBody = other.getControl(RigidBodyControl.class);
