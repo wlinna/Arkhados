@@ -7,6 +7,11 @@ void main() {
               + pow(vertexWorldPos.z - characterPos.z, 2.0)
                  );
 
-    float alpha = clamp(0.4 * d / (120 - 80) - 0.4 * 80 / (120 - 80), 0, 0.4);
+    float alpha = clamp(0.4 * d / (120.0 - 80.0) - 0.4 * 80.0 / (120.0 - 80.0), 0.0, 0.4);
+
+    if (alpha <= 0.01) {
+       discard;
+    }
+
     gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);   
 }
