@@ -26,9 +26,6 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import arkhados.messages.usercommands.UcCastSpellCommand;
-import arkhados.messages.usercommands.UcMouseTargetCommand;
-import arkhados.messages.usercommands.UcWalkDirection;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
@@ -46,11 +43,13 @@ public class ServerMain extends SimpleApplication {
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
-            FileHandler fileHandler = new FileHandler();
+            FileHandler fileHandler = new FileHandler("./Arkhados_Server%g.log", 0, 10);
             fileHandler.setLevel(Level.FINE);
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
+        } catch (Exception ex) {
+            System.exit(-1);
         }
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);

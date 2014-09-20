@@ -57,12 +57,15 @@ import com.jme3.scene.control.LightControl;
 import com.jme3.scene.control.LodControl;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author william
  */
 public class WorldManager extends AbstractAppState {
+    private final static Logger logger = Logger.getLogger(WorldManager.class.getName());    
 
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
@@ -256,11 +259,13 @@ public class WorldManager extends AbstractAppState {
             boolean ownedByMe = clientMain.getUserCommandManager().trySetPlayersCharacter(entity);
             if (ownedByMe) {
                 app.getStateManager().getState(ClientFogManager.class).setPlayerNode((Node) entity);
+                logger.log(Level.INFO, "Setting player's node. Id {0}, playerId {1}", new Object[]{id, playerId});
             }
         }
     }
 
     public void temporarilyRemoveEntity(int id) {
+        logger.log(Level.FINE, "Temporarily removing entity with id {0}", id);
         Spatial spatial = getEntity(id);
         spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, true);
         spatial.removeFromParent();
@@ -273,6 +278,7 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
+        logger.log(Level.FINE, "Restoring temporarily removed entity. Id {0}", id);
         Spatial spatial = getEntity(id);
         spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
         worldRoot.attachChild(spatial);

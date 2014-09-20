@@ -277,7 +277,7 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
         fogFb = new FrameBuffer(width, height, 1);
         colorTexture = new Texture2D(width, height, Image.Format.RGBA8);
         fogFb.setColorTexture(colorTexture);
-        fogFb.setDepthTexture(new Texture2D(width, height, Image.Format.Depth));
+//        fogFb.setDepthTexture(new Texture2D(width, height, Image.Format.Depth));
         fogProcessMaterial.setTexture("FogShape", colorTexture);
 
         app.enqueue(new Callable<Void>() {

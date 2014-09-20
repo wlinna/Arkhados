@@ -116,6 +116,9 @@ public class ServerFogManager extends AbstractAppState {
         int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
         Command command;
 
+        logger.log(Level.FINE, "Visibility of target {0} changed for awareness {1}. Sees: {2}",
+                new Object[] {entityId, awareness.getPlayerId(), sees});
+        
         if (sees) {
             int nodeBuilderId = target.getUserData(UserDataStrings.NODE_BUILDER_ID);
             int playerId = target.getUserData(UserDataStrings.PLAYER_ID);
