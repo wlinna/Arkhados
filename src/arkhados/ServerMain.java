@@ -34,11 +34,6 @@ import arkhados.spell.buffs.AbstractBuff;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 
-/**
- * test
- *
- * @author normenhansen
- */
 public class ServerMain extends SimpleApplication {
 
     public static void main(String[] args) {
