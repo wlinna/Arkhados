@@ -9,7 +9,7 @@ void main() {
 
     float alpha = clamp(0.4 * d / (120.0 - 80.0) - 0.4 * 80.0 / (120.0 - 80.0), 0.0, 0.4);
 
-    if (alpha <= 0.01) {
+    if (alpha <= 0.02) {
        discard;
     }
 

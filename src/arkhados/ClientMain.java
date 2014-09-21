@@ -49,6 +49,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.prefs.BackingStoreException;
 
 public class ClientMain extends SimpleApplication implements ScreenController {
@@ -85,15 +86,19 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public static void main(String[] args) {
-        Logger.getLogger("").setLevel(Level.ALL);
+        Logger.getLogger("").setLevel(Level.INFO);
         Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
-        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
+        Logger.getLogger("com.jme3.system.lwjgl.LwjglContext").setLevel(Level.SEVERE);
+        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);       
+        
         AppSettings settings = new AppSettings(true);
 
         FileHandler fileHandler;
         try {
             fileHandler = new FileHandler("./Arkhados_Client%g.log", 0, 10);
             fileHandler.setLevel(Level.FINE);
+            fileHandler.setFormatter(new SimpleFormatter());
+
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException | SecurityException ex) {
             Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,7 +137,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
-        setDisplayStatView(true);
+        setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
         bulletState = new BulletAppState();

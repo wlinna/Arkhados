@@ -32,6 +32,7 @@ import arkhados.net.Sender;
 import arkhados.net.ServerSender;
 import arkhados.spell.buffs.AbstractBuff;
 import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
 /**
  * test
@@ -44,7 +45,8 @@ public class ServerMain extends SimpleApplication {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
             FileHandler fileHandler = new FileHandler("./Arkhados_Server%g.log", 0, 10);
-            fileHandler.setLevel(Level.FINE);
+            fileHandler.setLevel(Level.INFO);
+            fileHandler.setFormatter(new SimpleFormatter());
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
