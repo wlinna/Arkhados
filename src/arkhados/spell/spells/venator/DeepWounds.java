@@ -53,7 +53,7 @@ public class DeepWounds extends Spell {
 
     public static DeepWounds create() {
         final float cooldown = 8f;
-        final float range = 30f;
+        final float range = 50f;
         final float castTime = 0.3f;
 
         final DeepWounds spell = new DeepWounds("Deep Wounds", cooldown, range, castTime);
