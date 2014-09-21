@@ -85,8 +85,10 @@ next task. It involves creating map with walls and making sure that
 player can't end up inside or on top of wall with movement spells like
 Rocket Jump or Firewalk.
 
-**Add fog of war** This is very important because combined with walls
-it allows many new tactics that would otherwise be impossible.
+**Improve fog of war** Arkhados has fog of war but it should be
+  improved visually and perhaps optimized. One way to optimize it
+  would be to make framebuffer smaller but so far I've failed to do
+  that.
 
 **Add nice trail effects**
 Shotgun and machinegun bullets would look lot nicer if they had some
