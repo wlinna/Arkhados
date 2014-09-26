@@ -36,17 +36,15 @@ public class UcMouseTargetCommand extends StateData {
         this.location = location;
     }
     
-    
-
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
         CharacterPhysicsControl physicsControl = character.getControl(CharacterPhysicsControl.class);
-        physicsControl.setTargetLocation(this.location);        
+        physicsControl.setTargetLocation(location);        
         
         if (!physicsControl.isMotionControlled()
                 && physicsControl.getWalkDirection().equals(Vector3f.ZERO)) {
-            physicsControl.lookAt(this.location);
+            physicsControl.lookAt(location);
         }
     }
 

@@ -92,16 +92,21 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 
         occluders = new ArrayList<>();
 
+        Material dummyMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        dummyMat.setColor("Color", ColorRGBA.BlackNoAlpha);
+
         for (Spatial wall : walls.getChildren()) {
             Node wallNode = (Node) wall;
-            Geometry fogGeom = (Geometry) wallNode.getChild("FogMeshGeom1");
+            Geometry orig = (Geometry) wallNode.getChild("FogMeshGeom1");
+            Geometry fogGeom = (Geometry) orig.deepClone();
+            orig.removeFromParent();
+            wallNode.attachChild(fogGeom);
+                        
             occluders.add(fogGeom);
             fogGeom.setCullHint(Spatial.CullHint.Always);
 
             doubleVertices(fogGeom);
 
-            Material dummyMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            dummyMat.setColor("Color", ColorRGBA.BlackNoAlpha);
             fogGeom.setMaterial(dummyMat);
         }
     }
@@ -235,12 +240,6 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 
     @Override
     public void render(RenderManager rm) {
-//        if (rangeFogQuad != null && player != null) {
-//            rangeFogQuad.getMaterial().setVector3("PlayerPosition", player.getLocalTranslation());
-//        }
-//        if (fogShapeMaterial != null && player != null) {
-//            fogShapeMaterial.setVector3("PlayerPosition", player.getLocalTranslation());
-//        }
     }
 
     public void setPlayerNode(Node playerNode) {

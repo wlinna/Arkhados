@@ -259,7 +259,7 @@ public class WorldManager extends AbstractAppState {
             boolean ownedByMe = clientMain.getUserCommandManager().trySetPlayersCharacter(entity);
             if (ownedByMe) {
                 app.getStateManager().getState(ClientFogManager.class).setPlayerNode((Node) entity);
-                logger.log(Level.INFO, "Setting player's node. Id {0}, playerId {1}", new Object[]{id, playerId});
+                logger.log(Level.INFO, "Setting player''s node. Id {0}, playerId {1}", new Object[]{id, playerId});
             }
         }
     }
