@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class FeralScream extends Spell {
     {
-        super.iconName = "feral_scream.png";
+        iconName = "feral_scream.png";
     }
 
     public FeralScream(String name, float cooldown, float range, float castTime) {
@@ -51,6 +51,7 @@ public class FeralScream extends Spell {
         final FeralScream spell = new FeralScream("Feral Scream", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 return new FeralScreamAction(range, 45f);
             }
@@ -75,36 +76,39 @@ class FeralScreamAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
 
-        CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-        super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation()).normalizeLocal();
+        spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
         final Vector3f forward = viewDirection.mult(range);
 
         Quaternion yaw = new Quaternion();
-        yaw.fromAngleAxis(this.maxRotationalDifference, Vector3f.UNIT_Y);
+        yaw.fromAngleAxis(maxRotationalDifference, Vector3f.UNIT_Y);
         final Vector3f leftNormal = yaw.mult(forward);
         leftNormal.set(-leftNormal.z, 0, leftNormal.x);
-        Plane leftPlane = new Plane(leftNormal, super.spatial.getLocalTranslation().dot(leftNormal));
+        Plane leftPlane = new Plane(leftNormal, spatial.getLocalTranslation().dot(leftNormal));
 
-        yaw.fromAngleAxis(-this.maxRotationalDifference, Vector3f.UNIT_Y);
+        yaw.fromAngleAxis(-maxRotationalDifference, Vector3f.UNIT_Y);
         final Vector3f rightNormal = yaw.mult(forward);
         rightNormal.set(rightNormal.z, 0, -rightNormal.x);
-        Plane rightPlane = new Plane(rightNormal, super.spatial.getLocalTranslation().dot(rightNormal));
+        Plane rightPlane = new Plane(rightNormal, spatial.getLocalTranslation().dot(rightNormal));
 
-        List<SpatialDistancePair> spatialDistances = WorldManager.getSpatialsWithinDistance(super.spatial, this.range);
+        List<SpatialDistancePair> spatialDistances = WorldManager.getSpatialsWithinDistance(spatial, range);
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
             InfluenceInterfaceControl influenceInterface = spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class);
             if (influenceInterface == null) {
                 continue;
             }
-            if (!this.isInCone(leftPlane, rightPlane, spatialDistancePair.spatial)) {
+            if (!isInCone(leftPlane, rightPlane, spatialDistancePair.spatial)) {
                 continue;
             }
-            final float duration = 1f;
+            final float duration = 2f;
             FearCC fear = new FearCC(-1, duration);
-            fear.setInitialDirection(spatialDistancePair.spatial.getLocalTranslation().subtract(super.spatial.getLocalTranslation()));
+            final Vector3f initialDirection = spatialDistancePair.spatial.getLocalTranslation().
+                    subtract(spatial.getLocalTranslation());
+            
+            fear.setInitialDirection(initialDirection);
             fear.attachToCharacter(influenceInterface);
         }
         return false;

@@ -95,7 +95,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         FileHandler fileHandler;
         try {
-            fileHandler = new FileHandler("./Arkhados_Client%g.log", 0, 10);
+            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0, 10);            
             fileHandler.setLevel(Level.FINE);
             fileHandler.setFormatter(new SimpleFormatter());
 

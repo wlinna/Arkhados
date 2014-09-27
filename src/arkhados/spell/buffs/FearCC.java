@@ -28,8 +28,8 @@ import com.jme3.scene.Spatial;
 public class FearCC extends CrowdControlBuff {
     private Vector3f initialDirection = new Vector3f();
     {
-        super.name = "Fear";
-        super.setTypeId(BuffTypeIds.FEAR);
+        name = "Fear";
+        setTypeId(BuffTypeIds.FEAR);
     }
 
     public FearCC(int id, float duration) {
@@ -47,18 +47,18 @@ public class FearCC extends CrowdControlBuff {
     }
 
     public void setInitialDirection(Vector3f initialDirection) {
-        this.initialDirection = initialDirection;
+        this.initialDirection = initialDirection.normalize();        
     }
 
     @Override
     public void update(float time) {
         super.update(time);
-        this.targetInterface.setCanControlMovement(false);
+        targetInterface.setCanControlMovement(false);
     }
 
     @Override
     public void destroy() {
-        this.targetInterface.setCanControlMovement(true);
+        targetInterface.setCanControlMovement(true);
         super.destroy();
 
     }
