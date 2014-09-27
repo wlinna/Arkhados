@@ -63,24 +63,24 @@ public class KeySetter implements RawInputListener, ScreenController {
         this.app = app;
         this.inputManager = inputManager;
 
-        this.buttonIdInputMappingMap.put("button_up", InputMappingStrings.MOVE_UP);
-        this.buttonIdInputMappingMap.put("button_down", InputMappingStrings.MOVE_DOWN);
-        this.buttonIdInputMappingMap.put("button_left", InputMappingStrings.MOVE_LEFT);
-        this.buttonIdInputMappingMap.put("button_right", InputMappingStrings.MOVE_RIGHT);
+        buttonIdInputMappingMap.put("button_up", InputMappingStrings.MOVE_UP);
+        buttonIdInputMappingMap.put("button_down", InputMappingStrings.MOVE_DOWN);
+        buttonIdInputMappingMap.put("button_left", InputMappingStrings.MOVE_LEFT);
+        buttonIdInputMappingMap.put("button_right", InputMappingStrings.MOVE_RIGHT);
 
-        this.buttonIdInputMappingMap.put("button_m1", InputMappingStrings.M1);
-        this.buttonIdInputMappingMap.put("button_m2", InputMappingStrings.M2);
+        buttonIdInputMappingMap.put("button_m1", InputMappingStrings.M1);
+        buttonIdInputMappingMap.put("button_m2", InputMappingStrings.M2);
 
-        this.buttonIdInputMappingMap.put("button_q", InputMappingStrings.Q);
-        this.buttonIdInputMappingMap.put("button_e", InputMappingStrings.E);
-        this.buttonIdInputMappingMap.put("button_r", InputMappingStrings.R);
-        this.buttonIdInputMappingMap.put("button_space", InputMappingStrings.SPACE);
+        buttonIdInputMappingMap.put("button_q", InputMappingStrings.Q);
+        buttonIdInputMappingMap.put("button_e", InputMappingStrings.E);
+        buttonIdInputMappingMap.put("button_r", InputMappingStrings.R);
+        buttonIdInputMappingMap.put("button_space", InputMappingStrings.SPACE);
 
-        this.inputManager.deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
+//        this.inputManager.deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
 
-        for (String inputMapping : this.buttonIdInputMappingMap.values()) {
-            Trigger trigger = this.loadInput(inputMapping).trigger;
-            this.inputManager.addMapping(inputMapping, trigger);
+        for (String inputMapping : buttonIdInputMappingMap.values()) {
+            Trigger trigger = loadInput(inputMapping).trigger;
+            inputManager.addMapping(inputMapping, trigger);
         }
     }
 
@@ -108,36 +108,37 @@ public class KeySetter implements RawInputListener, ScreenController {
 
     @Override
     public void onMouseButtonEvent(MouseButtonEvent evt) {
-        if (this.currentInputName == null || this.currentKeyButton == null) {
+        if (currentInputName == null || currentKeyButton == null) {
             return;
         }
-        this.inputManager.removeRawInputListener(this);
+        inputManager.removeRawInputListener(this);
 
         final MouseButtonTrigger trigger = new MouseButtonTrigger(evt.getButtonIndex());
-        this.inputManager.deleteMapping(this.currentInputName);
-        this.inputManager.addMapping(this.currentInputName, trigger);
-        this.saveInput(this.currentInputName, trigger);
+        inputManager.deleteMapping(currentInputName);
+        inputManager.addMapping(currentInputName, trigger);
+        saveInput(currentInputName, trigger);
 
         try {
-            this.app.getContext().getSettings().save(ClientMain.PREFERENCES_KEY);
+            app.getContext().getSettings().save(ClientMain.PREFERENCES_KEY);
         } catch (BackingStoreException ex) {
             Logger.getLogger(KeySetter.class.getName()).log(Level.SEVERE, "Failed to save settings", ex);
         }
 
         this.app.enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 if (trigger.getMouseButton() == 0) {
-                    KeySetter.this.currentKeyButton.setText("Mouse Left");
+                    currentKeyButton.setText("Mouse Left");
                 } else if (trigger.getMouseButton() == 1) {
-                    KeySetter.this.currentKeyButton.setText("Mouse Right");
+                    currentKeyButton.setText("Mouse Right");
                 } else if (trigger.getMouseButton() == 2) {
-                    KeySetter.this.currentKeyButton.setText("Mouse Middle");
+                    currentKeyButton.setText("Mouse Middle");
                 } else {
-                    KeySetter.this.currentKeyButton.setText("Mouse Strange");
+                    currentKeyButton.setText("Mouse Strange");
                 }
 
-                KeySetter.this.currentKeyButton = null;
-                KeySetter.this.currentInputName = null;
+                currentKeyButton = null;
+                currentInputName = null;
 
                 return null;
             }
@@ -148,32 +149,33 @@ public class KeySetter implements RawInputListener, ScreenController {
 
     @Override
     public void onKeyEvent(KeyInputEvent evt) {
-        if (this.currentInputName == null || this.currentKeyButton == null) {
+        if (currentInputName == null || currentKeyButton == null) {
             return;
         }
         if (evt.getKeyCode() == KeyInput.KEY_ESCAPE) {
+            evt.setConsumed();
             return;
         }
-        this.inputManager.removeRawInputListener(this);
+        inputManager.removeRawInputListener(this);
 
         KeyTrigger trigger = new KeyTrigger(evt.getKeyCode());
 
-        this.inputManager.deleteMapping(this.currentInputName);
-        this.inputManager.addMapping(this.currentInputName, trigger);
-        this.saveInput(this.currentInputName, trigger);
+        inputManager.deleteMapping(currentInputName);
+        inputManager.addMapping(currentInputName, trigger);
+        saveInput(currentInputName, trigger);
         try {
-            this.app.getContext().getSettings().save(ClientMain.PREFERENCES_KEY);
+            app.getContext().getSettings().save(ClientMain.PREFERENCES_KEY);
         } catch (BackingStoreException ex) {
             Logger.getLogger(KeySetter.class.getName()).log(Level.SEVERE, "Failed to save settings", ex);
         }
         final String keyChar = Character.toString(evt.getKeyChar()).toUpperCase();
         evt.setConsumed();
-        this.app.enqueue(new Callable<Void>() {
+        app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                KeySetter.this.currentKeyButton.setText(keyChar);
+                currentKeyButton.setText(keyChar);
 
-                KeySetter.this.currentKeyButton = null;
-                KeySetter.this.currentInputName = null;
+                currentKeyButton = null;
+                currentInputName = null;
                 return null;
             }
         });
@@ -189,7 +191,7 @@ public class KeySetter implements RawInputListener, ScreenController {
         this.nifty = nifty;
         this.screen = screen;
 
-        this.app.enqueue(new Callable<Void>() {
+        app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
                 for (String buttonName : buttonIdInputMappingMap.keySet()) {
                     final String inputMapping = buttonIdInputMappingMap.get(buttonName);
@@ -228,14 +230,14 @@ public class KeySetter implements RawInputListener, ScreenController {
 
     @Override
     public void onEndScreen() {
-        this.inputManager.removeRawInputListener(this);
+        inputManager.removeRawInputListener(this);
     }
 
     public void waitAndSetKey(final String buttonId, final String inputName) {
-        this.currentKeyButton = this.screen.findNiftyControl(buttonId, Button.class);
-        this.currentInputName = inputName;
-        this.inputManager.addRawInputListener(this);
-        this.app.enqueue(new Callable<Void>() {
+        currentKeyButton = screen.findNiftyControl(buttonId, Button.class);
+        currentInputName = inputName;
+        inputManager.addRawInputListener(this);
+        app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
                 currentKeyButton.setText("Press esc to cancel");
                 return null;
@@ -245,11 +247,11 @@ public class KeySetter implements RawInputListener, ScreenController {
     }
 
     public void checked(final String cboxId) {
-        final CheckBox cbox = this.screen.findNiftyControl(cboxId, CheckBox.class);
+        final CheckBox cbox = screen.findNiftyControl(cboxId, CheckBox.class);
         if (cbox == null) {
             return;
         }
-        this.app.enqueue(new Callable<Void>() {
+        app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 cbox.toggle();
@@ -268,16 +270,16 @@ public class KeySetter implements RawInputListener, ScreenController {
     }
 
     public void gotoMenu(final String menu) {
-        this.app.enqueue(new Callable<Void>() {
+        app.enqueue(new Callable<Void>() {
             public Void call() throws Exception {
-                KeySetter.this.nifty.gotoScreen(menu);
+                nifty.gotoScreen(menu);
                 return null;
             }
         });
     }
 
     private TriggerPair loadInput(final String inputMappingString) {
-        final String inputString = this.app.getContext().getSettings().getString(inputMappingString);
+        final String inputString = app.getContext().getSettings().getString(inputMappingString);
         if (inputString == null) {
             return null;
         }
@@ -296,12 +298,12 @@ public class KeySetter implements RawInputListener, ScreenController {
 
     private void saveInput(final String inputMappingString, KeyTrigger trigger) {
         final String inputString = "keyboard::" + Integer.toString(trigger.getKeyCode());
-        this.app.getContext().getSettings().putString(inputMappingString, inputString);
+        app.getContext().getSettings().putString(inputMappingString, inputString);
     }
 
     private void saveInput(final String inputMappingString, MouseButtonTrigger trigger) {
         final String inputString = "mouse::" + Integer.toString(trigger.getMouseButton());
-        this.app.getContext().getSettings().putString(inputMappingString, inputString);
+        app.getContext().getSettings().putString(inputMappingString, inputString);
     }
 }
 
