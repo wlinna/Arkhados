@@ -3,7 +3,7 @@
 Note: Most of the assets are done by artists that are not part of the project.
 See CREDITS.md for attributions.
 
-## CC0 ##
+## CC0 (Public Domain) ##
 
 - circle.blend and all its derivatives
 - EmberCircleAlphaMap.png
@@ -15,6 +15,7 @@ See CREDITS.md for attributions.
 - rend.png
 - FireballExplosion.wav
 - Shotgun.wav
+- Firewalk.wav
 - All Wall related files
 
 ## CC-BY 3.0 ##

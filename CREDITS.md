@@ -7,6 +7,19 @@
 ## Designs ##
 
 - Allexit - Hero designs
+- William Linna - Hero designs
+
+## Code contributions ##
+
+- Teemu Salminen (added sound effect for Firewalk)
+
+## Early phase testing ##
+
+- William Linna
+- Allexit
+- Teemu Salminen
+- Otto Tuominen
+- Iivari Sassi
 
 # Also thanks to #
 
@@ -100,3 +113,7 @@ Original work can be found from [freesound](http://www.freesound.org/people/Read
 
 lensflare8642 for Shotgun sound. Sound is licensed under CC0. Original
 work can be found from [freesound](http://freesound.org/people/lensflare8642/sounds/145209/)
+
+Ogrebane for Firewalk sound (Firewalk.wav). Firewalk is modified version of
+Ogrebane's Teleport spell, which is licensed under CC0. Original work
+can be found from [OGA](http://opengameart.org/content/teleport-spell)

@@ -23,6 +23,8 @@ import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
+import arkhados.effects.EffectBox;
+import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
@@ -38,11 +40,13 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class EmberMage extends AbstractNodeBuilder {
-
+    public static final int ACTION_FIREWALK = 0;
     private ClientHudManager clientHudManager;
 
     public EmberMage(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
+        super.setEffectBox(new EffectBox());
+        super.getEffectBox().addActionEffect(ACTION_FIREWALK, new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
     }
 
     @Override

@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.characters.EmberMage;
 import arkhados.controls.GenericSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
@@ -94,12 +95,13 @@ public class Firewalk extends Spell {
     private static class CastFirewalkAction extends EntityAction {
 
         private final Spell spell;
-        private final WorldManager world;
         private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
+        private final WorldManager world;
 
         public CastFirewalkAction(Spell spell, WorldManager world) {
             this.spell = spell;
             this.world = world;
+            super.setTypeId(EmberMage.ACTION_FIREWALK);
         }
 
         public void addAdditionalBuff(AbstractBuff buff) {
