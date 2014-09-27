@@ -16,6 +16,7 @@ package arkhados.spell.buffs.buffinformation;
 
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
+import com.jme3.audio.AudioNode;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -48,6 +49,7 @@ class FlameShield extends BuffEffect {
         super(timeLeft);
     }
     private Node node = null;
+    private AudioNode sound = null;
 
     public void addToCharacter(final CharacterBuffControl buffControl) {
         final Node characterNode = (Node) buffControl.getSpatial();
@@ -55,8 +57,8 @@ class FlameShield extends BuffEffect {
         final float radius = 12f;
         final Sphere sphere = new Sphere(32, 32, radius);
         final Geometry geometry = new Geometry("shield-geom", sphere);
-        this.node = new Node("shield-node");
-        this.node.attachChild(geometry);
+        node = new Node("shield-node");
+        node.attachChild(geometry);
 
 //        final Material material = BuffEffect.assetManager.loadMaterial("Materials/PurifyingMaterial.j3m");
         final Material material = new Material(BuffEffect.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -69,13 +71,21 @@ class FlameShield extends BuffEffect {
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);;
         geometry.setMaterial(material);
 
-        characterNode.attachChild(this.node);
+        characterNode.attachChild(node);
         this.node.move(0f, 10f, 0f);
+        
+        sound = new AudioNode(BuffEffect.assetManager, "Effects/Sound/PurifyingFlame.wav");
+        node.attachChild(sound);
+        sound.setLooping(true);
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
+        sound.play();
     }
 
     @Override
     public void destroy() {
-        assert this.node != null;
-        this.node.removeFromParent();
+        sound.stop();
+        node.removeFromParent();
     }
 }

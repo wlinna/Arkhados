@@ -114,6 +114,10 @@ Original work can be found from [freesound](http://www.freesound.org/people/Read
 lensflare8642 for Shotgun sound. Sound is licensed under CC0. Original
 work can be found from [freesound](http://freesound.org/people/lensflare8642/sounds/145209/)
 
-Ogrebane for Firewalk sound (Firewalk.wav). Firewalk is modified version of
-Ogrebane's Teleport spell, which is licensed under CC0. Original work
-can be found from [OGA](http://opengameart.org/content/teleport-spell)
+Ogrebane for Firewalk sound (Firewalk.wav). Firewalk's sound is modified
+version of Ogrebane's Teleport spell -sound, which is licensed under
+CC0. Original work can be found from [OGA](http://opengameart.org/content/teleport-spell)
+
+spookymodem for Purifying Flame's sound (PurifyingFlame.wav).
+PurifyingFlame.wav is based on spookymodem's Magic Shield -sound which
+is licensed under CC-BY 3.0. Original work can be found from [OGA](http://opengameart.org/content/magic-shield)

@@ -36,6 +36,7 @@ See CREDITS.md for attributions.
 - rocket_launger.png
 - like_a_pro.png
 - MeteorBoom.wav
+- PurifyingFlame.wav
 - All DamagingDagger related files
 - All Archer related files
 
