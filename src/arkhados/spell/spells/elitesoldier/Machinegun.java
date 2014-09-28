@@ -61,7 +61,7 @@ public class Machinegun extends Spell {
             }
         };
 
-        spell.nodeBuilder = new PelletBuilder(15);
+        spell.nodeBuilder = new PelletBuilder(40);
         return spell;
     }
 }

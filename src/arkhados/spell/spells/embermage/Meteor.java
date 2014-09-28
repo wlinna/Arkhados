@@ -125,7 +125,7 @@ class CastMeteorAction extends EntityAction {
         final Spatial meteor = worldManager.getEntity(entityId);
 
         final MotionEvent motionControl = new MotionEvent(meteor, path);
-        motionControl.setInitialDuration(1f);
+        motionControl.setInitialDuration(0.6f);
         motionControl.setSpeed(1f);
 
         final InfluenceInterfaceControl casterInterface = spatial.getControl(InfluenceInterfaceControl.class);

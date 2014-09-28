@@ -47,7 +47,7 @@ public class Shotgun extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 0.7f;
+        final float cooldown = 0.6f;
         final float range = 80f;
         final float castTime = 0.3f;
 
@@ -60,7 +60,7 @@ public class Shotgun extends Spell {
             }
         };
 
-        spell.nodeBuilder = new PelletBuilder(30);
+        spell.nodeBuilder = new PelletBuilder(40);
 
         return spell;
     }
@@ -68,8 +68,8 @@ public class Shotgun extends Spell {
 
 class CastShotgunAction extends EntityAction {
 
-    private static final int PELLETS = 8;
-    private static final float SPREAD = 20f * FastMath.DEG_TO_RAD;
+    private static final int PELLETS = 6;
+    private static final float SPREAD = 13f * FastMath.DEG_TO_RAD;
     private static final float STEP = SPREAD / (PELLETS - 1);
     private WorldManager worldManager;
     private final Shotgun spell;

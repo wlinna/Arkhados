@@ -60,7 +60,7 @@ public class RocketLauncher extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 4f;
+        final float cooldown = 1.5f;
         final float range = 80f;
         final float castTime = 0.3f;
 
