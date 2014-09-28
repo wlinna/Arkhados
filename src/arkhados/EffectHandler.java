@@ -45,7 +45,12 @@ public class EffectHandler implements CommandHandler {
 
     private void handleAction(final ActionCommand actionCommand) {
         final Spatial entity = this.worldManager.getEntity(actionCommand.getSyncId());
-        int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
+        if (entity == null) {
+            return;
+        }
+        
+        int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);         
+        
         final EffectBox box = this.actionEffects.get(nodeBuilderId);
         if (box == null) {
             return;
