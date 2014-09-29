@@ -140,6 +140,8 @@ class CastMeteorAction extends EntityAction {
                     final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
                     final SplashAction splash = new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
+                    int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
+                    splash.setExcludedTeam(teamId);
                     splash.setSpatial(meteor);
                     splash.update(0f);
                     destroy();

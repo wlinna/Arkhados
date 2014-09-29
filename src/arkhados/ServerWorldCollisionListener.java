@@ -99,15 +99,10 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile,
             InfluenceInterfaceControl target) {
-
-        final int projectilePlayerId = projectile.getSpatial()
-                .getUserData(UserDataStrings.PLAYER_ID);
-        final int projectileTeamId = PlayerData
-                .getIntData(projectilePlayerId, PlayerDataStrings.TEAM_ID);
-        final int targetPlayerId =
-                target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final int targetTeamId =
-                PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+ 
+        final int projectileTeamId = projectile.getSpatial().getUserData(UserDataStrings.TEAM_ID);
+        final int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        final int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
 
         if (targetTeamId == projectileTeamId) {
             return;

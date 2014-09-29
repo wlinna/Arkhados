@@ -16,6 +16,7 @@ package arkhados.actions.castspellactions;
 
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.actions.SplashAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -40,7 +41,7 @@ public class CastProjectileAction extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
-    private final List<AbstractBuff> additionalBuffs = new ArrayList<AbstractBuff>();
+    private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
 
     public CastProjectileAction(Spell spell, WorldManager worldManager) {
         this.spell = spell;
@@ -48,36 +49,41 @@ public class CastProjectileAction extends EntityAction {
     }
 
     public void addBuff(final AbstractBuff buff) {
-        this.additionalBuffs.add(buff);
+        additionalBuffs.add(buff);
     }
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
+        final CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-        super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation()).normalizeLocal();
+        spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
-        float characterRadius = super.spatial.getUserData(UserDataStrings.RADIUS);
-        final Vector3f spawnLocation = super.spatial.getLocalTranslation()
+        float characterRadius = spatial.getUserData(UserDataStrings.RADIUS);
+        final Vector3f spawnLocation = spatial.getLocalTranslation()
                 .add(viewDirection.mult(characterRadius / 1.5f)).addLocal(0f, 10.0f, 0.0f);
-        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        final int projectileId = this.worldManager.addNewEntity(this.spell.getId(),
+        final int projectileId = worldManager.addNewEntity(spell.getId(),
                 spawnLocation, Quaternion.IDENTITY, playerId);
-        final Spatial projectile = this.worldManager.getEntity(projectileId);
+        final Spatial projectile = worldManager.getEntity(projectileId);
 
         final Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
-        final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
         final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
-        projectileControl.setRange(this.spell.getRange());
+        projectileControl.setRange(spell.getRange());
         projectileControl.setDirection(viewDirection);
-        projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+        projectileControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+        SplashAction splashAction = projectileControl.getSplashAction();
+        if (splashAction != null) {
+            int teamId = projectile.getUserData(UserDataStrings.TEAM_ID);
+            splashAction.setExcludedTeam(teamId);
+        }
 
         final SpellBuffControl buffControl = projectile.getControl(SpellBuffControl.class);
-        for (AbstractBuff buff : this.additionalBuffs) {
+        for (AbstractBuff buff : additionalBuffs) {
             buffControl.addBuff(buff);
         }
 

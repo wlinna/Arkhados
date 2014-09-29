@@ -15,6 +15,7 @@
 package arkhados.actions;
 
 import arkhados.CharacterInteraction;
+import arkhados.PlayerData;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.controls.CharacterPhysicsControl;
@@ -22,6 +23,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
+import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
@@ -32,6 +34,7 @@ import java.util.List;
 /**
  *
  * @author william
+ * TODO: Currently SplashAction seems to be meant for negative things only. There could be healing splash too or something like that.
  */
 public class SplashAction extends EntityAction {
 
@@ -42,6 +45,7 @@ public class SplashAction extends EntityAction {
     private List<AbstractBuff> splashBuffs;
     private boolean splashBuffsOnly = false;
     private List<Spatial> excluded = new ArrayList<>();
+    private Integer excludedTeam = null;
 
     public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling, List<AbstractBuff> buffsToApply) {
         this.radius = radius;
@@ -62,12 +66,12 @@ public class SplashAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(super.spatial, radius);
+        final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(spatial, radius);
         if (spatialsOnDistance == null) {
             return false;
         }
 
-        final InfluenceInterfaceControl casterInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        final InfluenceInterfaceControl casterInterface = spatial.getControl(InfluenceInterfaceControl.class);
 
         for (SpatialDistancePair pair : spatialsOnDistance) {
             final InfluenceInterfaceControl targetInterface = pair.spatial.getControl(InfluenceInterfaceControl.class);
@@ -77,6 +81,13 @@ public class SplashAction extends EntityAction {
 
             if (excluded.contains(pair.spatial)) {
                 continue;
+            }
+
+            if (excludedTeam != null) {
+                int teamId = pair.spatial.getUserData(UserDataStrings.TEAM_ID);                
+                if (teamId == excludedTeam) {
+                    continue;
+                }
             }
 
             // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
@@ -89,12 +100,11 @@ public class SplashAction extends EntityAction {
             }
             final float damage = baseDamage * damageDistanceFactor;
 
-
             List<AbstractBuff> buffsToApply = null;
             if (splashBuffsOnly) {
                 buffsToApply = splashBuffs;
             } else {
-                final SpellBuffControl buffControl = super.spatial.getControl(SpellBuffControl.class);
+                final SpellBuffControl buffControl = spatial.getControl(SpellBuffControl.class);
                 if (buffControl != null) {
                     buffsToApply = buffControl.getBuffs();
                     if (splashBuffs != null) {
@@ -108,19 +118,19 @@ public class SplashAction extends EntityAction {
             final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
             Float impulseFactor;
             if (customImpulse == null) {
-                impulseFactor = super.spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
+                impulseFactor = spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
             } else {
                 impulseFactor = customImpulse;
             }
             Vector3f impulse;
 
-            RigidBodyControl colliderPhysics = super.spatial.getControl(RigidBodyControl.class);
+            RigidBodyControl colliderPhysics = spatial.getControl(RigidBodyControl.class);
 
             if (colliderPhysics != null) {
                 impulse = pair.spatial.getLocalTranslation()
                         .subtract(colliderPhysics.getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
             } else {
-                impulse = pair.spatial.getLocalTranslation().subtract(super.spatial.getLocalTranslation())
+                impulse = pair.spatial.getLocalTranslation().subtract(spatial.getLocalTranslation())
                         .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
             }
 
@@ -128,6 +138,10 @@ public class SplashAction extends EntityAction {
         }
 
         return false;
+    }
+
+    public void setExcludedTeam(int teamId) {
+        excludedTeam = teamId;
     }
 
     public void excludeSpatial(Spatial oneSpatial) {

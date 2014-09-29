@@ -225,6 +225,9 @@ public class WorldManager extends AbstractAppState {
         entity.setUserData(UserDataStrings.ENTITY_ID, id);
         entity.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
         entity.setUserData(UserDataStrings.INVISIBLE_TO_ENEMY, false);
+        int teamId = PlayerData.getIntData(playerId, PlayerDataStrings.TEAM_ID);
+        entity.setUserData(UserDataStrings.TEAM_ID, teamId);
+        
         entities.put(id, entity);
         syncManager.addObject(id, entity);
         space.addAll(entity);
@@ -242,7 +245,8 @@ public class WorldManager extends AbstractAppState {
         boolean isCharacter = entity.getControl(CharacterPhysicsControl.class) != null;
 
         if (isCharacter && PlayerData.isHuman(playerId)) {
-            entity.addControl(new UserInputControl());
+            UserInputControl userInputControl = new UserInputControl();
+            entity.addControl(userInputControl);
         }
 
         ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);

@@ -58,8 +58,8 @@ public class AreaEffectControl extends AbstractControl {
         if (actionQueue != null &&  actionQueue.getCurrent() instanceof DelayAction) {
             return;
         }
-        final Integer myPlayerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int myTeamId = PlayerData.getIntData(myPlayerId, PlayerDataStrings.TEAM_ID);
+
+        final int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
@@ -122,6 +122,6 @@ public class AreaEffectControl extends AbstractControl {
         if (ownerInterface == null) {
             throw new IllegalArgumentException("Null cannot be ownerInterface");
         }
-        ownerInterface = ownerInterface;
+        this.ownerInterface = ownerInterface;
     }
 }

@@ -187,9 +187,11 @@ class RocketBuilder extends AbstractNodeBuilder {
         node.addControl(physicsBody);
 
         ProjectileControl projectileControl = new ProjectileControl();
+        
         SplashAction splash = new SplashAction(30f, 100f, DistanceScaling.LINEAR, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
+        
         node.addControl(projectileControl);
         final SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
