@@ -128,6 +128,8 @@ public class ServerNetListener implements ConnectionListener, CommandHandler, Se
 
         source.setAttribute(PLAYER_ID, playerId);
 
+        ServerPlayerInputHandler.get().addPlayerInputState(playerId);
+        
         ServerClientData.setConnected(clientId, true);
         ServerClientData.setPlayerId(clientId, playerId);
         ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId, true);

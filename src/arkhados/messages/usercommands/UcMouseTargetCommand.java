@@ -53,7 +53,7 @@ public class UcMouseTargetCommand extends StateData {
         return false;
     }
 
-    public void setLocation(Vector3f location) {
-        this.location = location;
+    public Vector3f getLocation() {
+        return location;
     }
 }

@@ -15,6 +15,7 @@
 package arkhados.controls;
 
 import arkhados.PlayerData;
+import arkhados.ServerPlayerInputState;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
@@ -27,9 +28,7 @@ import com.jme3.scene.control.AbstractControl;
  * @author william
  */
 public class UserInputControl extends AbstractControl {
-
-    private int previousRight = 0;
-    private int previousDown = 0;
+    private ServerPlayerInputState inputState;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -39,12 +38,11 @@ public class UserInputControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public void setUpDownDirection(int right, int down) {
+    public void updateDirection() {
         InfluenceInterfaceControl influenceInterface =
-                super.spatial.getControl(InfluenceInterfaceControl.class);
-        this.saveDirection(right, down);
+                spatial.getControl(InfluenceInterfaceControl.class);
 
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
 
         if (!influenceInterface.canControlMovement()
                 || !influenceInterface.canMove()
@@ -52,8 +50,11 @@ public class UserInputControl extends AbstractControl {
             return;
         }
 
-        Vector3f newWalkDirection = new Vector3f(right, 0f, down);
-        Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        int right = inputState.previousRight;
+        int down = inputState.previousDown;
+        
+        Vector3f newWalkDirection = new Vector3f(right, 0, down);
+        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
 
         physics.setWalkDirection(newWalkDirection);
@@ -61,15 +62,15 @@ public class UserInputControl extends AbstractControl {
         if (down != 0 || right != 0) {
 
             if (!influenceInterface.isAbleToCastWhileMoving()) {
-                Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+                Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
                 Boolean commandMoveInterrupts =
                         PlayerData.getBooleanData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
 
-                SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+                SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
                 if (castControl.isChanneling()
                         || commandMoveInterrupts != null && commandMoveInterrupts) {
-                    super.spatial.getControl(SpellCastControl.class).safeInterrupt();
+                    spatial.getControl(SpellCastControl.class).safeInterrupt();
                 }
             }
 
@@ -79,29 +80,33 @@ public class UserInputControl extends AbstractControl {
         }
     }
 
-    private void saveDirection(int right, int down) {
-        this.previousRight = right;
-        this.previousDown = down;
-    }
-
     /**
      * Sets walk direction based on saved saved direction
      */
     public void restoreWalking() {
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)
                 || physics.isMotionControlled()) {
             return;
         }
-
-        Vector3f newWalkDirection = new Vector3f(this.previousRight, 0f, this.previousDown);
-        Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        
+        
+        Vector3f newWalkDirection = new Vector3f(inputState.previousRight, 0, inputState.previousDown);
+        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
 
         if (!newWalkDirection.equals(Vector3f.ZERO) && physics.isEnabled()) {
-            super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
+            spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
         }
 
-        super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
+        spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
+    }
+
+    public ServerPlayerInputState getInputState() {
+        return inputState;
+    }
+
+    public void setInputState(ServerPlayerInputState inputState) {
+        this.inputState = inputState;
     }
 }

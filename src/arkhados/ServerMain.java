@@ -59,7 +59,6 @@ public class ServerMain extends SimpleApplication {
         app.start(JmeContext.Type.Headless);
 //        app.start();
     }
-    
     private Server server;
     private ServerNetListener listenerManager;
     private ServerGameManager gameManager;
@@ -83,21 +82,26 @@ public class ServerMain extends SimpleApplication {
             server.start();
         } catch (IOException ex) {
         }
-        
+
         receiver = new Receiver();
         server.addMessageListener(receiver, OneTrueMessage.class);
-        
+
         sender = new ServerSender(server);
         AbstractBuff.setSender(sender);
-        
+
         receiver.registerCommandHandler(sender);
-        
+
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
         listenerManager = new ServerNetListener(this, server);
         syncManager = new SyncManager(this);
-        receiver.registerCommandHandler(syncManager);
+
+        ServerPlayerInputHandler serverPlayerInputHandler = ServerPlayerInputHandler.get();
+        serverPlayerInputHandler.setApp(this);
+
         receiver.registerCommandHandler(listenerManager);
+        receiver.registerCommandHandler(serverPlayerInputHandler);
+        receiver.registerCommandHandler(syncManager);
 
         stateManager.attach(sender);
         stateManager.attach(receiver);
@@ -105,7 +109,7 @@ public class ServerMain extends SimpleApplication {
         stateManager.attach(worldManager);
         stateManager.attach(gameManager);
         stateManager.attach(physicsState);
-        
+
         physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
     }
 

@@ -65,8 +65,8 @@ import java.util.logging.Logger;
  * @author william
  */
 public class WorldManager extends AbstractAppState {
-    private final static Logger logger = Logger.getLogger(WorldManager.class.getName());    
 
+    private final static Logger logger = Logger.getLogger(WorldManager.class.getName());
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
         new Vector3f(-50, 0, -50),
@@ -227,7 +227,7 @@ public class WorldManager extends AbstractAppState {
         entity.setUserData(UserDataStrings.INVISIBLE_TO_ENEMY, false);
         int teamId = PlayerData.getIntData(playerId, PlayerDataStrings.TEAM_ID);
         entity.setUserData(UserDataStrings.TEAM_ID, teamId);
-        
+
         entities.put(id, entity);
         syncManager.addObject(id, entity);
         space.addAll(entity);
@@ -246,6 +246,11 @@ public class WorldManager extends AbstractAppState {
 
         if (isCharacter && PlayerData.isHuman(playerId)) {
             UserInputControl userInputControl = new UserInputControl();
+            if (isServer()) {
+                ServerPlayerInputState inputState = ServerPlayerInputHandler.get().getPlayerInputState(playerId);
+                inputState.currentActiveSpatial = entity;
+                userInputControl.setInputState(inputState);
+            }
             entity.addControl(userInputControl);
         }
 
@@ -424,7 +429,7 @@ public class WorldManager extends AbstractAppState {
         worldRoot = null;
 
         if (isClient()) {
-            ClientFogManager clientFogManager = app.getStateManager().getState(ClientFogManager.class);        
+            ClientFogManager clientFogManager = app.getStateManager().getState(ClientFogManager.class);
             app.getViewPort().removeProcessor(clientFogManager);
         }
     }

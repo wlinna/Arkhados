@@ -44,12 +44,21 @@ public class UcWalkDirection extends StateData {
 
     @Override
     public void applyData(Object target) {
-        Node character = (Node) target;
-        final UserInputControl inputControl = character.getControl(UserInputControl.class);
-        if (inputControl == null) {
-            return;
-        }
+//        Node character = (Node) target;
+//        
+//        final UserInputControl inputControl = character.getControl(UserInputControl.class);
+//        if (inputControl == null) {
+//            return;
+//        }
+//
+//        inputControl.setUpDownDirection(this.right, this.down);
+    }       
 
-        inputControl.setUpDownDirection(this.right, this.down);
+    public byte getDown() {
+        return down;
+    }
+
+    public byte getRight() {
+        return right;
     }
 }
