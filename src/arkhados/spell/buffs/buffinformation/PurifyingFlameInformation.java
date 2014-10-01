@@ -76,8 +76,7 @@ class FlameShield extends BuffEffect {
         
         sound = new AudioNode(BuffEffect.assetManager, "Effects/Sound/PurifyingFlame.wav");
         node.attachChild(sound);
-        // FIXME: Enable looping but fix the problem that sound doesn't end if someone else has this
-        sound.setLooping(false);
+        sound.setLooping(true);
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);

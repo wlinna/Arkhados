@@ -20,6 +20,7 @@
 - Teemu Salminen
 - Otto Tuominen
 - Iivari Sassi
+- Oskari Saari
 
 # Also thanks to #
 

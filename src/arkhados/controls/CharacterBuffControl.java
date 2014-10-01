@@ -20,6 +20,7 @@ import arkhados.ui.hud.BuffIconBuilder;
 import arkhados.ui.hud.ClientHudManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -40,6 +41,17 @@ public class CharacterBuffControl extends AbstractControl {
     private ClientHudManager hudManager = null;
     private Element buffPanel = null;
 
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        
+        if (spatial == null) {
+            for (BuffEffect buffEffect : buffs.values()) {
+                buffEffect.destroy();
+            }
+        }
+    }
+  
     public void addBuff(int buffId, int buffTypeId, float duration) {
         final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
@@ -74,7 +86,8 @@ public class CharacterBuffControl extends AbstractControl {
         if (buffEffect != null) {
             buffEffect.destroy();
         } else {
-            logger.log(Level.WARNING, "buffEffect with id {0} in buffs!", buffId);
+            // FIXME: This seems to happen often!
+            logger.log(Level.WARNING, "buffEffect with id {0} NOT IN buffs or IS null!", buffId);
         }
 
         if (hudManager == null) {
@@ -123,4 +136,6 @@ public class CharacterBuffControl extends AbstractControl {
         this.hudManager = hudManager;
         buffPanel = hudManager.getScreen().findElementByName("panel_right");
     }
+    
+    
 }

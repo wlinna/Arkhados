@@ -17,6 +17,7 @@ package arkhados;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
+import arkhados.controls.CharacterBuffControl;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -350,8 +351,13 @@ public class WorldManager extends AbstractAppState {
             }
 
             app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);
+            
+            // TODO: Consider doing this to all controls to generalize destruction
+            CharacterBuffControl buffControl = spatial.getControl(CharacterBuffControl.class);
+            spatial.removeControl(buffControl);
         }
-
+                
+        
         spatial.removeFromParent();
         LightControl lightControl = spatial.getControl(LightControl.class);
         if (lightControl != null) {
