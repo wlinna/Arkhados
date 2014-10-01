@@ -38,8 +38,8 @@ import com.jme3.scene.Spatial;
 public class Shotgun extends Spell {
 
     {
-        this.iconName = "shotgun.png";
-        this.setMoveTowardsTarget(false);
+        iconName = "shotgun.png";
+        setMoveTowardsTarget(false);
     }
 
     public Shotgun(String name, float cooldown, float range, float castTime) {
@@ -54,6 +54,7 @@ public class Shotgun extends Spell {
         final Shotgun spell = new Shotgun("Shotgun", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 final CastShotgunAction castShotgun = new CastShotgunAction(spell, Spell.worldManager);
                 return castShotgun;
@@ -71,26 +72,26 @@ class CastShotgunAction extends EntityAction {
     private static final int PELLETS = 6;
     private static final float SPREAD = 13f * FastMath.DEG_TO_RAD;
     private static final float STEP = SPREAD / (PELLETS - 1);
-    private WorldManager worldManager;
+    private WorldManager world;
     private final Shotgun spell;
 
-    CastShotgunAction(Shotgun spell, WorldManager worldManager) {
+    CastShotgunAction(Shotgun spell, WorldManager world) {
         this.spell = spell;
-        this.worldManager = worldManager;
-        super.setTypeId(EliteSoldier.ACTION_SHOTGUN);
+        this.world = world;
+        setTypeId(EliteSoldier.ACTION_SHOTGUN);
     }
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
+        final CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-        super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation()).normalizeLocal();
+        spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
-        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        Vector3f spawnLocation = super.spatial.getLocalTranslation();
+        Vector3f spawnLocation = spatial.getLocalTranslation();
         Quaternion currentRotation = new Quaternion();
 
         for (int i = 0; i < PELLETS; ++i) {
@@ -98,18 +99,18 @@ class CastShotgunAction extends EntityAction {
 
             Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
 
-            final int projectileId = this.worldManager.addNewEntity(spell.getId(),
+            final int projectileId = world.addNewEntity(spell.getId(),
                     spawnLocation, Quaternion.IDENTITY, playerId);
-            final Spatial projectile = this.worldManager.getEntity(projectileId);
+            final Spatial projectile = world.getEntity(projectileId);
 
             final Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
-            final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+            final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
             final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
-            projectileControl.setRange(this.spell.getRange());
+            projectileControl.setRange(spell.getRange());
             projectileControl.setDirection(pelletDirection);
-            projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+            projectileControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
         }
         
         return false;
