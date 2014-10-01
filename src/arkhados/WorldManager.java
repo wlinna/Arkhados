@@ -304,10 +304,6 @@ public class WorldManager extends AbstractAppState {
         }
 
         setEntityTranslation(spatial, location, rotation);
-
-        if (isClient()) {
-            app.getStateManager().getState(UserCommandManager.class).sendWalkDirection();
-        }
     }
 
     private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {

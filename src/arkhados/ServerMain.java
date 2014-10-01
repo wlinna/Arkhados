@@ -39,7 +39,7 @@ public class ServerMain extends SimpleApplication {
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
-            FileHandler fileHandler = new FileHandler("./Arkhados_Server%g.log", 0, 10);
+            FileHandler fileHandler = new FileHandler("./Arkhados_Server_%u_gen_%g.log", 0, 10);
             fileHandler.setLevel(Level.INFO);
             fileHandler.setFormatter(new SimpleFormatter());
             Logger.getLogger("").addHandler(fileHandler);

@@ -63,8 +63,11 @@ public class PurifyingFlame extends Spell {
                 final CastSelfBuffAction action = new CastSelfBuffAction();
                 final Node aoeContainer = new Node("purifying-flame");
                 if (worldManager.isServer()) {
-                    final Integer playerId = caster.getUserData(UserDataStrings.PLAYER_ID);
+                    final Integer playerId = caster.getUserData(UserDataStrings.PLAYER_ID);                                        
                     aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
+                    
+                    int teamId = caster.getUserData(UserDataStrings.TEAM_ID);
+                    aoeContainer.setUserData(UserDataStrings.TEAM_ID, teamId);
 
                     final GhostControl ghost = new GhostControl(new SphereCollisionShape(8f));
                     ghost.setCollisionGroup(CollisionGroups.CHARACTERS);
