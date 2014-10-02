@@ -29,6 +29,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -135,6 +136,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         return fire;
     }
 
+    @Override
     public Node build() {
         final Sphere sphere = new Sphere(32, 32, 1.0f);
 
@@ -145,7 +147,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -191,7 +193,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
         node.addControl(characterCollision);
-//
+
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());
@@ -260,6 +262,9 @@ class FireballRemovalAction implements RemovalEventAction {
 
     @Override
     public void exec(WorldManager worldManager, int reason) {
+        if (reason == RemovalReasons.DISAPPEARED) {
+            return;
+        }
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
         leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
         createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
