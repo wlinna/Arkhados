@@ -36,8 +36,8 @@ import java.util.List;
  */
 public class InfluenceInterfaceControl extends AbstractControl {
 
-    private List<CrowdControlBuff> crowdControlInfluences = new ArrayList<>();
-    private List<AbstractBuff> otherBuffs = new ArrayList<>();
+    private final List<CrowdControlBuff> crowdControlBuffs = new ArrayList<>();
+    private final List<AbstractBuff> otherBuffs = new ArrayList<>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
@@ -51,38 +51,38 @@ public class InfluenceInterfaceControl extends AbstractControl {
      * @param damage
      */
     public float doDamage(float damage, final boolean canBreakCC) {
-        if (this.dead) {
+        if (isDead()) {
             return 0f;
         }
-        Float healthBefore = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        Float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
         // TODO: Generic damage mitigation by shields
-        for (AbstractBuff buff : this.getBuffs()) {
+        for (AbstractBuff buff : getBuffs()) {
             if (buff instanceof ArmorBuff) {
                 damage = ((ArmorBuff) buff).mitigate(damage);
                 break;
             }
         }
         float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
-        super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         if (health == 0.0f) {
-            this.death();
+            death();
         }
 
         if (canBreakCC) {
-            this.removeDamageSensitiveBuffs();
+            removeDamageSensitiveBuffs();
         }
         return healthBefore - health;
     }
 
     public float heal(float healing) {
-        if (this.dead) {
+        if (isDead()) {
             return 0f;
         }
         // TODO: Healing mitigation from negative buff
-        final Float maxHealth = super.spatial.getUserData(UserDataStrings.HEALTH_MAX);
-        final Float healthBefore = super.spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        final Float maxHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        final Float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
         final float health = FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
-        super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         return health - healthBefore;
 
     }
@@ -91,13 +91,13 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (crowdControlInfluence == null) {
             return;
         }
-        this.crowdControlInfluences.add(crowdControlInfluence);
+        crowdControlBuffs.add(crowdControlInfluence);
 
         // TODO: Check whether other buffs stop casting or not
         if (crowdControlInfluence instanceof IncapacitateCC) {
-            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
-            super.spatial.getControl(SpellCastControl.class).setCasting(false);
-            super.spatial.getControl(ActionQueueControl.class).clear();
+            spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+            spatial.getControl(SpellCastControl.class).setCasting(false);
+            spatial.getControl(ActionQueueControl.class).clear();
         }
     }
 
@@ -105,20 +105,19 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (buff == null) {
             return;
         }
-        this.otherBuffs.add(buff);
+        otherBuffs.add(buff);
     }
 
     public void setHealth(float health) {
-        super.spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-        if (this.dead) {
-            return;
+        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (isDead()) {
         } else if (health == 0.0) {
-            this.death();
+            death();
         }
     }
 
     public boolean canMove() {
-        for (CrowdControlBuff crowdControlInfluence : crowdControlInfluences) {
+        for (CrowdControlBuff crowdControlInfluence : crowdControlBuffs) {
             if (crowdControlInfluence instanceof IncapacitateCC) {
                 return false;
             }
@@ -132,15 +131,15 @@ public class InfluenceInterfaceControl extends AbstractControl {
             return false;
         }
         
-        return this.canControlMovement;
+        return canControlMovement;
     }
 
     public void setCanControlMovement(boolean can) {
-        this.canControlMovement = can;
+        canControlMovement = can;
     }
 
     public boolean canCast() {
-        for (CrowdControlBuff crowdControlInfluence : crowdControlInfluences) {
+        for (CrowdControlBuff crowdControlInfluence : crowdControlBuffs) {
             // Consider letting buffs to set property and just returning that property
             if (crowdControlInfluence instanceof IncapacitateCC) {
                 return false;
@@ -152,9 +151,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void death() {
-        this.dead = true;
-        super.spatial.getControl(CharacterAnimationControl.class).death();
-        super.spatial.getControl(SpellCastControl.class).setEnabled(false);
+        dead = true;
+        spatial.getControl(CharacterAnimationControl.class).death();
+        spatial.getControl(SpellCastControl.class).setEnabled(false);
     }
 
     @Override
@@ -164,37 +163,36 @@ public class InfluenceInterfaceControl extends AbstractControl {
          * First set entity's attributes to their defaults like damagefactor and
          * movement speed.
          */
-        super.spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
-        this.immuneToProjectiles = false;
+        spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+        immuneToProjectiles = false;
 
         /**
          * Some buff or action might require entity's speed to remain constant
          * until the end (for example, Venator's ChargeAction).
          */
-        if (!this.isSpeedConstant()) {
-            Float msBase = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
-            super.spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
+        if (!isSpeedConstant()) {
+            Float msBase = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
+            spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
         }
 
-        this.applyBuffs(tpf);
+        applyBuffs(tpf);
 
-        final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
+        SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
 
         /**
          * This code here applies changes to movement if player can move.
          */
-        if (this.canMove() && !castControl.isCasting()
-                && !castControl.isChanneling() && this.isServer) {
+        if (canMove() && !castControl.isCasting()
+                && !castControl.isChanneling() && isServer) {
 
-            final CharacterPhysicsControl physics =
-                    super.spatial.getControl(CharacterPhysicsControl.class);
+            CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
 
-            if (this.canControlMovement()) {
-                super.spatial.getControl(UserInputControl.class).restoreWalking();
+            if (canControlMovement()) {
+                spatial.getControl(UserInputControl.class).restoreWalking();
 
             } else {
-                if (!this.isSpeedConstant() && physics.getDictatedDirection().equals(Vector3f.ZERO)) {
-                    Float msCurrent = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                if (!isSpeedConstant() && physics.getDictatedDirection().equals(Vector3f.ZERO)) {
+                    Float msCurrent = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
                     Vector3f walkDir = physics.getWalkDirection();
                     Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
                     physics.setWalkDirection(newWalkDir);
@@ -204,7 +202,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     private void applyBuffs(float tpf) {
-        for (Iterator<AbstractBuff> it = this.otherBuffs.iterator(); it.hasNext();) {
+        for (Iterator<AbstractBuff> it = otherBuffs.iterator(); it.hasNext();) {
             AbstractBuff buff = it.next();
             buff.update(tpf);
             if (!buff.shouldContinue()) {
@@ -214,7 +212,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
             CrowdControlBuff cc = it.next();
             cc.update(tpf);
             if (!cc.shouldContinue()) {
@@ -234,12 +232,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void setIsServer(boolean flag) {
-        this.isServer = flag;
+        isServer = flag;
     }
 
     private void removeDamageSensitiveBuffs() {
 
-        for (Iterator<CrowdControlBuff> it = crowdControlInfluences.iterator(); it.hasNext();) {
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
             CrowdControlBuff cc = it.next();
             boolean remove = false;
             // TODO: Use some kind of flag instead of detecting type
@@ -256,15 +254,15 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void setSpeedConstant(boolean constantSpeed) {
-        this.speedConstant = constantSpeed;
+        speedConstant = constantSpeed;
     }
 
     public boolean isSpeedConstant() {
-        return this.speedConstant;
+        return speedConstant;
     }
 
     public boolean isImmuneToProjectiles() {
-        return this.immuneToProjectiles;
+        return immuneToProjectiles;
     }
 
     public void setImmuneToProjectiles(boolean immuneToProjectiles) {
@@ -277,13 +275,13 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     private <T extends AbstractBuff> boolean hasBuff(Class<T> buffClass) {
         if (buffClass.isAssignableFrom(CrowdControlBuff.class)) {
-            for (AbstractBuff buff : this.crowdControlInfluences) {
+            for (AbstractBuff buff : crowdControlBuffs) {
                 if (buffClass.isAssignableFrom(buff.getClass())) {
                     return true;
                 }
             }
         } else {
-            for (AbstractBuff buff : this.getBuffs()) {
+            for (AbstractBuff buff : getBuffs()) {
                 if (buffClass.isAssignableFrom(buff.getClass())) {
                     return true;
                 }
@@ -293,6 +291,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean isAbleToCastWhileMoving() {
-        return this.hasBuff(AbleToCastWhileMovingBuff.class);
+        return hasBuff(AbleToCastWhileMovingBuff.class);
+    }
+
+    public List<CrowdControlBuff> getCrowdControlBuffs() {
+        return crowdControlBuffs;
     }
 }

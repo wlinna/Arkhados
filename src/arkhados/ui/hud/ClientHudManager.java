@@ -342,6 +342,15 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             }
         }
     }
+    
+    public void clearBuffIcons() {
+        Element buffIcons = screen.findElementByName("panel_right");
+        Iterator<Element> it = buffIcons.getElements().iterator();
+        for (; it.hasNext();) {
+            Element element = it.next();
+            nifty.removeElement(screen, element);            
+        }        
+    }
 
     public Nifty getNifty() {
         return nifty;

@@ -134,8 +134,6 @@ public class CharacterBuffControl extends AbstractControl {
 
     void setHudManager(ClientHudManager hudManager) {
         this.hudManager = hudManager;
-        buffPanel = hudManager.getScreen().findElementByName("panel_right");
-    }
-    
-    
+        buffPanel = hudManager.getScreen().findElementByName("panel_right");      
+    }        
 }

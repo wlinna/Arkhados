@@ -17,7 +17,6 @@ package arkhados.controls;
 import arkhados.ui.hud.ClientHudManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 /**
@@ -38,6 +37,6 @@ public class CharacterHudControl extends AbstractControl {
 
     public void setHudManager(ClientHudManager hudManager) {
         this.hudManager = hudManager;
-        super.spatial.getControl(CharacterBuffControl.class).setHudManager(hudManager);
+        spatial.getControl(CharacterBuffControl.class).setHudManager(hudManager);
     }
 }

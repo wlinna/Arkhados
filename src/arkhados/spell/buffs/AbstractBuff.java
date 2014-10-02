@@ -25,23 +25,22 @@ import arkhados.util.UserDataStrings;
  * @author william
  */
 public abstract class AbstractBuff {
-    private static int currentBuffId = 0;
 
+    private static int currentBuffId = 0;
     // TODO: Consider removing this. If there's going to be way to
     private static Sender sender;
     protected String name = null;
     private int typeId = -1;
-
     private int buffGroupId;
     protected float duration;
     protected InfluenceInterfaceControl targetInterface = null;
     private InfluenceInterfaceControl ownerInterface = null;
     protected boolean friendly = false;
-
     private int buffId = ++currentBuffId;
+
     /**
-     * @param buffGroupId identifies group of buffs so that they can be removed
-     * with single dispel. Not used currently
+     * @param buffGroupId identifies group of buffs so that they can be removed with single dispel.
+     * Not used currently
      */
     public AbstractBuff(int buffGroupId, float duration) {
         this.buffGroupId = buffGroupId;
@@ -51,10 +50,22 @@ public abstract class AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
-        if (typeId != -1) {
-            final Integer entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSender().addCommand(new BuffCommand(entityId, typeId, buffId, duration, true));            
+        
+        BuffCommand buffCommand = generateBuffCommand(true);
+        if (buffCommand != null) {
+            getSender().addCommand(buffCommand);
         }
+    }
+
+    public BuffCommand generateBuffCommand(boolean added) {
+        Integer entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+        if (typeId != -1) {
+            BuffCommand buffCommand = new BuffCommand(entityId, typeId, buffId, duration, added);
+            
+            return buffCommand;
+        }
+        
+        return null;
     }
 
     /**
@@ -70,8 +81,7 @@ public abstract class AbstractBuff {
     }
 
     /**
-     * Method for checking from buff's internal state whether it should be
-     * removed or not
+     * Method for checking from buff's internal state whether it should be removed or not
      *
      * @return true if buff should continue. false, if it should be removed
      */
@@ -83,9 +93,9 @@ public abstract class AbstractBuff {
     }
 
     public void destroy() {
-        if (typeId != -1) {
-            final Integer entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSender().addCommand(new BuffCommand(entityId, typeId, buffId, duration, false));
+        BuffCommand buffCommand = generateBuffCommand(false);
+        if (buffCommand != null) {            
+            getSender().addCommand(buffCommand);
         }
     }
 

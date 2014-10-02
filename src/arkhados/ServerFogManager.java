@@ -15,11 +15,15 @@
 package arkhados;
 
 import arkhados.controls.EntityVariableControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.PlayerEntityAwareness;
 import arkhados.messages.syncmessages.AddEntityCommand;
+import arkhados.messages.syncmessages.BuffCommand;
 import arkhados.messages.syncmessages.RemoveEntityCommand;
 import arkhados.net.Command;
 import arkhados.net.ServerSender;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
@@ -34,6 +38,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -114,11 +119,12 @@ public class ServerFogManager extends AbstractAppState {
 
     public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {
         int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
-        Command command;
 
         logger.log(Level.INFO, "Visibility of target {0} changed for awareness {1}. Sees: {2}",
-                new Object[] {entityId, awareness.getPlayerId(), sees});
-        
+                new Object[]{entityId, awareness.getPlayerId(), sees});
+
+        ServerSender sender = app.getStateManager().getState(ServerSender.class);
+
         if (sees) {
             int nodeBuilderId = target.getUserData(UserDataStrings.NODE_BUILDER_ID);
             int playerId = target.getUserData(UserDataStrings.PLAYER_ID);
@@ -134,13 +140,31 @@ public class ServerFogManager extends AbstractAppState {
                 location = target.getLocalTranslation();
                 rotation = target.getLocalRotation();
             }
-            command = new AddEntityCommand(entityId, nodeBuilderId, location, rotation, playerId);
-        } else {
-            command = new RemoveEntityCommand(entityId, RemovalReasons.DISAPPEARED);
-        }
+            Command command = new AddEntityCommand(entityId, nodeBuilderId, location, rotation, playerId);
+            sender.addCommandForSingle(command, awarenessConnectionMap.get(awareness));
 
-        ServerSender sender = app.getStateManager().getState(ServerSender.class);
-        sender.addCommandForSingle(command, awarenessConnectionMap.get(awareness));
+            InfluenceInterfaceControl influenceInterface = target.getControl(InfluenceInterfaceControl.class);
+            if (influenceInterface != null) {
+                informAboutBuffs(sender, awareness, influenceInterface.getBuffs());
+                informAboutBuffs(sender, awareness, influenceInterface.getCrowdControlBuffs());
+
+
+            }
+
+        } else {
+            Command command = new RemoveEntityCommand(entityId, RemovalReasons.DISAPPEARED);
+            sender.addCommandForSingle(command, awarenessConnectionMap.get(awareness));
+        }
+    }
+
+    private <T extends AbstractBuff> void informAboutBuffs(ServerSender sender, PlayerEntityAwareness awareness,
+            List<T> buffs) {
+        for (AbstractBuff abstractBuff : buffs) {
+            BuffCommand command = abstractBuff.generateBuffCommand(true);
+            if (command != null) {
+                sender.addCommandForSingle(command, awarenessConnectionMap.get(awareness));
+            }
+        }
     }
 
     public void addPlayerListToPlayers() {

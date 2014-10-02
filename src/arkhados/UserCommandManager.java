@@ -257,10 +257,11 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        // FIXME: NullPointerException
+        // FIXME: NullPointerException. Or is it here anymore?
         if ((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID) == characterId) {
             character = (Node) spatial;
             ClientHudManager hudManager = app.getStateManager().getState(ClientHudManager.class);
+            hudManager.clearBuffIcons();
             character.getControl(CharacterHudControl.class).setHudManager(hudManager);
             followPlayer();
             return true;
