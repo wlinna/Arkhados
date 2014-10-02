@@ -11,7 +11,7 @@
 
 ## Code contributions ##
 
-- Teemu Salminen (added sound effect for Firewalk)
+- Teemu Salminen (added sound effects for Embermage's spells)
 
 ## Early phase testing ##
 
@@ -119,6 +119,11 @@ Ogrebane for Firewalk sound (Firewalk.wav). Firewalk's sound is modified
 version of Ogrebane's Teleport spell -sound, which is licensed under
 CC0. Original work can be found from [OGA](http://opengameart.org/content/teleport-spell)
 
-spookymodem for Purifying Flame's sound (PurifyingFlame.wav).
-PurifyingFlame.wav is based on spookymodem's Magic Shield -sound which
-is licensed under CC-BY 3.0. Original work can be found from [OGA](http://opengameart.org/content/magic-shield)
+spookymodem for Purifying Flame's and MagmaBash' sound
+(PurifyingFlame.wav and MagmaBash.wav). PurifyingFlame.wav is based on
+spookymodem's Magic Shield -sound which is licensed under CC-BY
+3.0. Original work can be found from
+[OGA](http://opengameart.org/content/magic-shield). MagmaBash.wav is
+based on spookymodem's Magic Smite -sound and was modified a little
+bit by Teemu Salminen. Origian Magic Smite can be found from
+[freesound](https://www.freesound.org/people/spookymodem/sounds/249819/)

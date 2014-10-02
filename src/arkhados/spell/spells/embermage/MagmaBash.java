@@ -26,6 +26,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
@@ -39,10 +40,11 @@ import com.jme3.scene.shape.Sphere;
 import java.util.Iterator;
 
 /**
- * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage or
- * knockback but incapacitates enemy for specified time.
+ * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage or knockback but
+ * incapacitates enemy for specified time.
  */
 public class MagmaBash extends Spell {
+
     {
         iconName = "magma_bash.png";
     }
@@ -110,6 +112,14 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
             fire.getParticleInfluencer().setVelocityVariation(0.2f);
             fire.setRandomAngle(true);
             node.attachChild(fire);
+            
+
+            AudioNode sound = new AudioNode(AbstractNodeBuilder.assetManager, "Effects/Sound/MagmaBash.wav");
+            node.attachChild(sound);
+            sound.setPositional(true);
+            sound.setReverbEnabled(false);
+            sound.setVolume(1f);
+            sound.play();
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(3);

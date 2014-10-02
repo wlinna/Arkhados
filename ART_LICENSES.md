@@ -16,6 +16,7 @@ See CREDITS.md for attributions.
 - FireballExplosion.wav
 - Shotgun.wav
 - Firewalk.wav
+- MagmaBash.wav
 - All Wall related files
 
 ## CC-BY 3.0 ##
