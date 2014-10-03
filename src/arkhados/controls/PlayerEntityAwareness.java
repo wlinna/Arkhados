@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 public class PlayerEntityAwareness {
 
     private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.class.getName());
-    private Node ownNode;
+    private Spatial ownSpatial;
     private Map<Spatial, Boolean> entityFlags = new HashMap<>(6);
     private final int playerId;
     private Node walls;
@@ -87,7 +87,7 @@ public class PlayerEntityAwareness {
         if (other.getUserData(UserDataStrings.INVISIBLE_TO_ALL)) {
             return false;
         }
-        if (other == getOwnNode()) {
+        if (other == getOwnSpatial()) {
             return true;
         }
 
@@ -100,7 +100,7 @@ public class PlayerEntityAwareness {
             otherLocation = other.getLocalTranslation();
         }
 
-        float distanceSquared = otherLocation.distanceSquared(getOwnNode().getLocalTranslation());
+        float distanceSquared = otherLocation.distanceSquared(getOwnSpatial().getLocalTranslation());
 
         if (distanceSquared > rangeSquared) {
             return false;
@@ -112,11 +112,11 @@ public class PlayerEntityAwareness {
     private boolean wallTest(Spatial other, float distance) {
         Vector3f direction = reUsableVec;
         direction.set(other.getLocalTranslation());
-        direction.subtractLocal(getOwnNode().getLocalTranslation()).normalizeLocal();
+        direction.subtractLocal(getOwnSpatial().getLocalTranslation()).normalizeLocal();
 
         CollisionResults collisionResults = new CollisionResults();
 
-        ray.setOrigin(getOwnNode().getLocalTranslation());
+        ray.setOrigin(getOwnSpatial().getLocalTranslation());
         ray.setDirection(direction);
         ray.setLimit(distance);
         walls.collideWith(ray, collisionResults);
@@ -134,7 +134,7 @@ public class PlayerEntityAwareness {
     }
 
     public boolean isAwareOf(Spatial other) {
-        if (other == getOwnNode() && other.getUserData(UserDataStrings.INVISIBLE_TO_ALL) == false) {
+        if (other == getOwnSpatial() && other.getUserData(UserDataStrings.INVISIBLE_TO_ALL) == false) {
             return true;
         }
         if (!entityFlags.containsKey(other)) {
@@ -158,15 +158,15 @@ public class PlayerEntityAwareness {
         return saw;
     }
 
-    public Spatial getOwnNode() {
-        return ownNode;
+    public Spatial getOwnSpatial() {
+        return ownSpatial;
     }
 
     public int getPlayerId() {
         return playerId;
     }
 
-    public void setOwnNode(Node ownNode) {
-        this.ownNode = ownNode;
+    public void setOwnSpatial(Spatial ownNode) {
+        this.ownSpatial = ownNode;
     }
 }

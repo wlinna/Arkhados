@@ -99,8 +99,8 @@ public class ServerFogManager extends AbstractAppState {
             }
 
             if (awareness != myAwareness && myAwareness != null) {
-                if (myAwareness.testVisibility(awareness.getOwnNode())) {
-                    visibilityChanged(myAwareness, awareness.getOwnNode(), true);
+                if (myAwareness.testVisibility(awareness.getOwnSpatial())) {
+                    visibilityChanged(myAwareness, awareness.getOwnSpatial(), true);
                 }
             }
         }
@@ -170,7 +170,7 @@ public class ServerFogManager extends AbstractAppState {
     public void addPlayerListToPlayers() {
         for (PlayerEntityAwareness awareness : awarenessConnectionMap.keySet()) {
             for (PlayerEntityAwareness awareness2 : awarenessConnectionMap.keySet()) {
-                awareness.addEntity(awareness2.getOwnNode());
+                awareness.addEntity(awareness2.getOwnSpatial());
             }
         }
     }
@@ -190,10 +190,10 @@ public class ServerFogManager extends AbstractAppState {
         return playerAwareness;
     }
 
-    public void registerCharacterForPlayer(int playerId, Node character) {
+    public void registerCharacterForPlayer(int playerId, Spatial character) {
         for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
             if (playerEntityAwareness.getPlayerId() == playerId) {
-                playerEntityAwareness.setOwnNode(character);
+                playerEntityAwareness.setOwnSpatial(character);
                 character.getControl(EntityVariableControl.class).setAwareness(playerEntityAwareness);
                 break;
             }
@@ -206,7 +206,7 @@ public class ServerFogManager extends AbstractAppState {
 
     private PlayerEntityAwareness searchForAwareness(Spatial spatial) {
         for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
-            if (playerEntityAwareness.getOwnNode() == spatial) {
+            if (playerEntityAwareness.getOwnSpatial() == spatial) {
                 return playerEntityAwareness;
             }
         }
@@ -216,7 +216,7 @@ public class ServerFogManager extends AbstractAppState {
 
     public void clearAwareness() {
         for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
-            Spatial spatial = playerEntityAwareness.getOwnNode();
+            Spatial spatial = playerEntityAwareness.getOwnSpatial();
             if (spatial != null) {
                 spatial.getControl(EntityVariableControl.class).setAwareness(null);
             }

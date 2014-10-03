@@ -295,6 +295,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void addChat(final String name, final String message) {
         enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
                 ListBox listBox = screen.findNiftyControl("chat_list", ListBox.class);
@@ -306,6 +307,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void sendChat() {
         enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
                 TextField textField = screen.findNiftyControl("chat_text", TextField.class);
@@ -333,20 +335,20 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public void run() {
                 try {
                     enqueue(new Callable<Void>() {
+                        @Override
                         public Void call() throws Exception {
                             worldManager.preloadModels(new String[]{"Models/Archer.j3o",
                                 "Models/Mage.j3o", "Models/Warwolf.j3o",
                                 "Models/Circle.j3o", "Models/DamagingDagger.j3o",
                                 "Scenes/LavaArenaWithWalls.j3o"});
-                            worldManager.preloadSoundEffects(new String[]{"FireballExplosion.wav",
-                                "MeteorBoom.wav", "Shotgun.wav"});
+                            worldManager.preloadSoundEffects(new String[]{"EmberCircle.wav",
+                                "FireballExplosion.wav", "Firewalk.wav", "MagmaBash.wav", 
+                                "MeteorBoom.wav", "PurifyingFlame.wav", "Shotgun.wav", });
                             nifty.gotoScreen("default_hud");
                             return null;
                         }
                     }).get();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -359,6 +361,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void gotoMenu(final String menu) {
         enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 nifty.gotoScreen(menu);
                 return null;
