@@ -127,3 +127,6 @@ spookymodem's Magic Shield -sound which is licensed under CC-BY
 based on spookymodem's Magic Smite -sound and was modified a little
 bit by Teemu Salminen. Origian Magic Smite can be found from
 [freesound](https://www.freesound.org/people/spookymodem/sounds/249819/)
+
+midimagician for EmberCircle's sound (EmberCircle.wav). Sound is
+licensed under CC0. Original work can be found from [freesound](http://freesound.org/people/midimagician/sounds/249418/)

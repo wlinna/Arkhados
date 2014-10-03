@@ -28,6 +28,7 @@ import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamagOverTimeInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
@@ -147,6 +148,13 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     fire.setLocalTranslation(Vector3f.ZERO);
                     EmitterCircleShape emitterShape = new EmitterCircleShape(Vector3f.ZERO, 1f);
                     fire.setShape(emitterShape);
+
+                    AudioNode sound = new AudioNode(AbstractNodeBuilder.assetManager, "Effects/Sound/EmberCircle.wav");
+                    node.attachChild(sound);
+                    sound.setPositional(true);
+                    sound.setReverbEnabled(false);
+                    sound.setVolume(1f);
+                    sound.play();
 
                     return false;
                 }

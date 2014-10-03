@@ -17,6 +17,7 @@ See CREDITS.md for attributions.
 - Shotgun.wav
 - Firewalk.wav
 - MagmaBash.wav
+- EmberCircle.wav
 - All Wall related files
 
 ## CC-BY 3.0 ##
