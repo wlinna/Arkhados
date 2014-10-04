@@ -14,12 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.util.InputMappingStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.audio.AudioSource;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.math.FastMath;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -37,11 +43,51 @@ public class MusicManager extends AbstractAppState {
     private float volume = 0.2f;
     private boolean playing = false;
     private final Application app;
+    private final InputManager inputManager;
 
-    public MusicManager(Application app, AssetManager assetManager) {
+    public MusicManager(Application app, InputManager inputManager, AssetManager assetManager) {
         this.assetManager = assetManager;
         this.app = app;
+        this.inputManager = inputManager;
+        
+        inputManager.addMapping(InputMappingStrings.VOLUME_UP, new KeyTrigger(KeyInput.KEY_F10));
+        inputManager.addMapping(InputMappingStrings.VOLUME_DOWN, new KeyTrigger(KeyInput.KEY_F9));
+        
+        inputManager.addListener(changeVolumeActionListener, InputMappingStrings.VOLUME_UP, 
+                InputMappingStrings.VOLUME_DOWN);
     }
+    
+    private ActionListener changeVolumeActionListener = new ActionListener() {
+
+        @Override
+        public void onAction(String name, boolean isPressed, float tpf) {
+            if (isPressed) {
+                return;
+            }
+            float newVolume = volume;
+            
+            if (InputMappingStrings.VOLUME_UP.equals(name)) {
+                newVolume += 0.1f;
+            } else if (InputMappingStrings.VOLUME_DOWN.equals(name)) {
+                newVolume -= 0.1f;
+            }
+            
+            newVolume = FastMath.clamp(newVolume, 0, 1);
+            volume = newVolume;
+            
+            app.enqueue(new Callable<Void>() {
+
+                @Override
+                public Void call() throws Exception {
+                    if (musicPlayer != null) {
+                        musicPlayer.setVolume(volume);
+                    }
+                    return null;
+                }
+            });
+            
+        }
+    };
 
     private void playNext() {
         if (heroMusic.isEmpty()) {

@@ -46,7 +46,11 @@ public class InputMappingStrings {
         StringNumberMap.put(SPACE, 9);
     }
     
+    public final static String VOLUME_DOWN = "volume-down";
+    public final static String VOLUME_UP = "volume-up";
+    
     public static Integer getId(String name) {        
         return StringNumberMap.get(name);
     }
+    
 }

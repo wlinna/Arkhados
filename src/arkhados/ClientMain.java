@@ -191,7 +191,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.registerCommandHandler(listenerManager);
         receiver.registerCommandHandler(roundManager);
 
-        MusicManager musicManager = new MusicManager(this, getAssetManager());
+        MusicManager musicManager = new MusicManager(this, getInputManager(), getAssetManager());
         musicManager.setHero("EmberMage");
         stateManager.attach(musicManager);        
     }
