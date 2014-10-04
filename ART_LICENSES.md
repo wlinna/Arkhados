@@ -35,6 +35,7 @@ See CREDITS.md for attributions.
 - plasma.png
 - shotgun.png
 - machine_gun.png
+- railgun.png
 - rocket_launger.png
 - like_a_pro.png
 - MeteorBoom.wav

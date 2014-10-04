@@ -50,7 +50,8 @@ J. W. Bjerk (eleazzaar) for following spell icons:
 - Fireball
 - Survival Instinct
 - Shotgun
-- Machinegun
+- Railgun
+- Machinegun (not used anymore)
 - Round of Plasma
 - Rocket Launcher
 

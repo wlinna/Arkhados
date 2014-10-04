@@ -99,7 +99,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
         spellCastControl.putSpell(Spell.getSpell("Shotgun"), InputMappingStrings.getId(InputMappingStrings.M1));
 
-        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.getId(InputMappingStrings.M2));
+//        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Railgun"), InputMappingStrings.getId(InputMappingStrings.M2));
         spellCastControl.putSpell(Spell.getSpell("Plasmagun"), InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"), InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(Spell.getSpell("Like a Pro"), InputMappingStrings.getId(InputMappingStrings.R));
@@ -120,7 +121,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
         final AnimationData animationData = new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
         animControl.addSpellAnimation("Shotgun", animationData);
-        animControl.addSpellAnimation("Machinegun", animationData);
+//        animControl.addSpellAnimation("Machinegun", animationData);
+        animControl.addSpellAnimation("Railgun", animationData);
         animControl.addSpellAnimation("Plasmagun", animationData);
         animControl.addSpellAnimation("Rocket Launcher", animationData);
         animControl.addSpellAnimation("Like a Pro", null);

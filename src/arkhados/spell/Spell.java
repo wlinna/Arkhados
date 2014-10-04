@@ -20,6 +20,7 @@ import arkhados.controls.ProjectileControl;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
 import arkhados.spell.spells.elitesoldier.Machinegun;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
+import arkhados.spell.spells.elitesoldier.Railgun;
 import arkhados.spell.spells.elitesoldier.RocketJump;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
 import arkhados.spell.spells.elitesoldier.Shotgun;
@@ -47,27 +48,23 @@ import java.util.HashMap;
  *
  * @author william
  */
-
 /**
- * Spell contains data of spell's base data. Each Spell is created only once and
- * their data does not change.
+ * Spell contains data of spell's base data. Each Spell is created only once and their data does not
+ * change.
  */
 public abstract class Spell {
 
     protected static AssetManager assetManager = null;
     protected static WorldManager worldManager = null;
-
     /**
-     * Spells has all spells mapped by their name so that spell data can be
-     * retrieved from anywhere
+     * Spells has all spells mapped by their name so that spell data can be retrieved from anywhere
      */
     private static HashMap<Integer, Spell> Spells = new HashMap<>();
     private static HashMap<String, Integer> SpellNameCreationIdMap = new HashMap<>();
-    
 
     /**
-     * Creates each spell and saves them to Spells-map. Should be called only
-     * once
+     * Creates each spell and saves them to Spells-map. Should be called only once
+     *
      * @param assetManager will be saved to static variable assetManager
      * @param worldManager will be save to static variable worldManager
      */
@@ -79,7 +76,7 @@ public abstract class Spell {
         AbstractNodeBuilder.setWorldManager(worldManager);
 
         ProjectileControl.setWorldManager(worldManager);
-        
+
         // *************** INIT spells here ************************
 
         addSpell(entityFactory, Fireball.create());
@@ -89,43 +86,43 @@ public abstract class Spell {
         addSpell(entityFactory, PurifyingFlame.create());
         addSpell(entityFactory, Firewalk.create());
         addSpell(entityFactory, Ignite.create());
-       
+
         addSpell(entityFactory, Rend.create());
         addSpell(entityFactory, Dagger.create());
         addSpell(entityFactory, Leap.create());
         addSpell(entityFactory, FeralScream.create());
         addSpell(entityFactory, DeepWounds.create());
         addSpell(entityFactory, SurvivalInstinct.create());
-                
-        addSpell(entityFactory, Shotgun.create());        
-        addSpell(entityFactory, Machinegun.create());      
-        addSpell(entityFactory, Plasmagun.create());        
-        addSpell(entityFactory, RocketLauncher.create()); 
-        addSpell(entityFactory, LikeAPro.create());        
+
+        addSpell(entityFactory, Shotgun.create());
+//        addSpell(entityFactory, Machinegun.create());                
+        addSpell(entityFactory, Railgun.create());
+        addSpell(entityFactory, Plasmagun.create());
+        addSpell(entityFactory, RocketLauncher.create());
+        addSpell(entityFactory, LikeAPro.create());
         addSpell(entityFactory, RocketJump.create());
     }
-    
+
     private static void addSpell(EntityFactory entityFactory, Spell spell) {
         int nodeBuilderId = entityFactory.addNodeBuilder(spell.nodeBuilder);
         spell.setId(nodeBuilderId);
         Spells.put(nodeBuilderId, spell);
         SpellNameCreationIdMap.put(spell.getName(), nodeBuilderId);
     }
-    
+
     public static Spell getSpell(int creationId) {
         return Spells.get(creationId);
     }
-    
+
     public static Spell getSpell(String spellName) {
         Integer creationId = SpellNameCreationIdMap.get(spellName);
-        
+
         if (creationId == null) {
             return null;
         }
-       
+
         return Spells.get(creationId);
     }
-
     private final String name;
     private int id;
     private final float cooldown;
@@ -133,16 +130,15 @@ public abstract class Spell {
     private final float castTime;
     private boolean canMoveWhileCasting = false;
     private boolean moveTowardsTarget = true;
-
     // HACK: This is used by SpellCastControl to determine if character should restore walking after casting action
     protected boolean multipart = false;
     protected String iconName = null;
-
     protected CastSpellActionBuilder castSpellActionBuilder;
     protected AbstractNodeBuilder nodeBuilder;
 
     /**
      * Creates spell with given parameters
+     *
      * @param name visible to player so give human friendly name
      * @param cooldown Time it takes to 'reload' spell so that it can be used again
      * @param range range of spell. NOTE: Currently not used in projectiles
@@ -177,8 +173,9 @@ public abstract class Spell {
 
     /**
      * Constructs new EntityAction that will cast the spell.
-     * @param vec Initial direction or target location vector, depending on
-     * spell. Often not necessary.
+     *
+     * @param vec Initial direction or target location vector, depending on spell. Often not
+     * necessary.
      * @return EntityAction that will cast the spell
      */
     public EntityAction buildCastAction(Node caster, Vector3f vec) {

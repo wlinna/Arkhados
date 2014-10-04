@@ -99,47 +99,56 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile,
             InfluenceInterfaceControl target) {
- 
-        final int projectileTeamId = projectile.getSpatial().getUserData(UserDataStrings.TEAM_ID);
-        final int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        final int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+        
+        int projectileTeamId = projectile.getSpatial().getUserData(UserDataStrings.TEAM_ID);
+        int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
 
         if (targetTeamId == projectileTeamId) {
             return;
         }
+        
+        if (projectile.getHurted().contains(target.getSpatial())) {
+            return;
+        }
 
         int removalReason = RemovalReasons.COLLISION;
-        if (target.isImmuneToProjectiles()) {
+        if (target.isImmuneToProjectiles() && projectile.isProjectile()) {
             removalReason = RemovalReasons.ABSORBED;
         } else {
             final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
             final SpellBuffControl buffControl = projectile.getSpatial()
                     .getControl(SpellBuffControl.class);
-            
+
             final boolean canBreakCC = damage > 0f ? true : false;
-            
+
             CharacterInteraction.harm(projectile.getOwnerInterface(), target,
                     damage, buffControl.getBuffs(), canBreakCC);
 
             Float impulseFactor = projectile.getSpatial()
                     .getUserData(UserDataStrings.IMPULSE_FACTOR);
-            
+
             Vector3f impulse = target.getSpatial().getLocalTranslation()
                     .subtract(projectile.getRigidBodyControl()
                     .getPhysicsLocation().setY(0)).normalizeLocal()
                     .multLocal(impulseFactor);
-            
+
             target.getSpatial().getControl(CharacterPhysicsControl.class)
                     .applyImpulse(impulse);
-                        
+
             if (projectile.getSplashAction() != null) {
-                projectile.getSplashAction().excludeSpatial(target.getSpatial());                
+                projectile.getSplashAction().excludeSpatial(target.getSpatial());
                 projectile.getSplashAction().update(0);
             }
         }
 
-        worldManager.removeEntity((Integer) projectile.getSpatial()
-                .getUserData(UserDataStrings.ENTITY_ID), removalReason);
+        int entityId = projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+
+        if (projectile.isProjectile()) {
+            worldManager.removeEntity(entityId, removalReason);
+        } else {
+            projectile.getHurted().add(target.getSpatial());
+        }
     }
 
     private void projectileWallCollision(ProjectileControl projectile, Spatial wall) {
@@ -147,7 +156,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             projectile.getSplashAction().update(0);
         }
 
-        worldManager.removeEntity((Integer) projectile.getSpatial()
-                .getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.COLLISION);
+        int entityId = projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+        worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
     }
 }

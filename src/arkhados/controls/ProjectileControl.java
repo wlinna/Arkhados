@@ -28,6 +28,10 @@ import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -46,11 +50,16 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     private SplashAction splashAction = null;
     private boolean needsSync = true;   
 
+    // This is if we want spatial to behave like projectile without certain properties
+    private boolean isProjectile = true;
+    private final Set<Spatial> hurtList = new HashSet<>();
+    
     // Not used anymore but I'm saving it for projectiles that can be set
     // to explode at selected location
     public void setTarget(Vector3f target) {
+        float speedMovement = getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
         direction = target.subtract(rigidBodyControl.getPhysicsLocation()).setY(0.0f)
-                .normalizeLocal().multLocal((Float) super.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT));
+                .normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
         rotation.lookAt(direction, Vector3f.UNIT_Y);
         rigidBodyControl.setPhysicsRotation(rotation);
@@ -67,9 +76,8 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
      * ownerships.
      */
     public void setDirection(Vector3f direction) {
-        this.direction = direction.setY(0f).normalizeLocal().multLocal(
-                (Float) super.getSpatial().getUserData(
-                UserDataStrings.SPEED_MOVEMENT));
+        float speedMovement = getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
+        this.direction = direction.setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
         rotation.lookAt(direction, Vector3f.UNIT_Y);
         rigidBodyControl.setPhysicsRotation(rotation);
@@ -100,14 +108,15 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
                 splashAction.update(tpf);
             }
             
-            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
+            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            ProjectileControl.worldManager.removeEntity(entityId , RemovalReasons.EXPIRED);
         }
 
         if (age > ProjectileControl.timeToLive) {
             if (splashAction != null) {
                 splashAction.update(tpf);
             }
-            ProjectileControl.worldManager.removeEntity((Integer) super.spatial.getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
+            ProjectileControl.worldManager.removeEntity((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
         }
     }
 
@@ -143,7 +152,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     public StateData getSyncableData(StateData stateData) {
         if (needsSync) {
             needsSync = true;
-            return new ProjectileSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
+            return new ProjectileSyncData((int) getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
         }
 
         return null;
@@ -151,5 +160,17 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
 
     public SplashAction getSplashAction() {
         return splashAction;
+    }
+
+    public boolean isProjectile() {
+        return isProjectile;
+    }
+
+    public void setIsProjectile(boolean isProjectile) {
+        this.isProjectile = isProjectile;
+    }
+
+    public Set<Spatial> getHurted() {
+        return hurtList;
     }
 }
