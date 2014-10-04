@@ -39,6 +39,10 @@ See CREDITS.md for attributions.
 - like_a_pro.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
+- Carmack.ogg
+- ElectricQuake.ogg
+- SteepsOfDestiny.ogg
+- TheDarkAmulet.ogg
 - All DamagingDagger related files
 - All Archer related files
 

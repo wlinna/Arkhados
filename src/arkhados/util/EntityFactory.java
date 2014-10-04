@@ -81,12 +81,9 @@ public class EntityFactory {
         int venatorId = this.addNodeBuilder(new Venator(clientHudManager));        
         int soldierId = this.addNodeBuilder(new EliteSoldier(clientHudManager));
 
-
-        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Mage", mageId);
+        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("EmberMage", mageId);
         NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Venator", venatorId);
-        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Elite Soldier", soldierId);
-
-
+        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("EliteSoldier", soldierId);
     }
 
     private int newNodeBuilderId() {

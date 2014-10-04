@@ -123,7 +123,7 @@ public class ServerNetListener implements ConnectionListener, CommandHandler, Se
         }
 
         final int playerId = PlayerData.getNew(commmand.getName());
-        PlayerData.setData(playerId, PlayerDataStrings.HERO, "Mage");
+        PlayerData.setData(playerId, PlayerDataStrings.HERO, "EmberMage");
         PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
 
         source.setAttribute(PLAYER_ID, playerId);

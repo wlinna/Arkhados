@@ -191,7 +191,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.registerCommandHandler(listenerManager);
         receiver.registerCommandHandler(roundManager);
 
-//        stateManager.attach(new ClientFogManager());
+        MusicManager musicManager = new MusicManager(this, getAssetManager());
+        musicManager.setHero("EmberMage");
+        stateManager.attach(musicManager);        
     }
 
     @Override
@@ -222,6 +224,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void setStatusText(final String text) {
         enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 statusText.setText(text);
                 return null;
@@ -320,7 +323,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         });
     }
 
-    public void selectHero(final String heroName) {
+    public void selectHero(String heroName) {
+        stateManager.getState(MusicManager.class).setHero(heroName);
         sender.addCommand(new ClientSelectHeroCommand(heroName));
     }
 
@@ -332,6 +336,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         flyCam.setEnabled(false);
 
         new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     enqueue(new Callable<Void>() {
@@ -343,7 +348,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                                 "Scenes/LavaArenaWithWalls.j3o"});
                             worldManager.preloadSoundEffects(new String[]{"EmberCircle.wav",
                                 "FireballExplosion.wav", "Firewalk.wav", "MagmaBash.wav", 
-                                "MeteorBoom.wav", "PurifyingFlame.wav", "Shotgun.wav", });
+                                "MeteorBoom.wav", "PurifyingFlame.wav", "Shotgun.wav"});
                             nifty.gotoScreen("default_hud");
                             return null;
                         }

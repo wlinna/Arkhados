@@ -125,7 +125,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
 
                     int i = 0;                    
                     for (PlayerData playerData : PlayerData.getPlayers()) {
-                        PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerData.getId());
+                        fogManager.createAwarenessForPlayer(playerData.getId());
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
                         final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
@@ -166,6 +166,14 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         if (sender.isClient()) {
             clientMain.getUserCommandManager().setEnabled(true);
             stateManager.getState(ClientHudManager.class).startRound();
+            app.enqueue(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    stateManager.getState(MusicManager.class).setPlaying(true);
+                    return null;
+                }
+            });
+            
         }
     }
 
@@ -199,6 +207,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         if (worldManager.isClient()) {
             clientMain.getUserCommandManager().setEnabled(false);
             stateManager.getState(ClientHudManager.class).showRoundStatistics();
+            stateManager.getState(MusicManager.class).setPlaying(false);
         }
 
         roundEndTimer.setTimeLeft(5f);

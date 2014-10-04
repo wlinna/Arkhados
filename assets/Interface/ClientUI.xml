@@ -287,10 +287,10 @@
                     <panel id="ranged" childLayout="vertical" >
                         <text style="nifty-label" text="Ranged" />
                         <control id="embermage" name="button" label="Embermage">
-                            <interact onClick="selectHero(Mage)" />
+                            <interact onClick="selectHero(EmberMage)" />
                         </control>
                         <control id="elitesoldier" name="button" label="Elite Soldier">
-                            <interact onClick="selectHero(Elite Soldier)" />
+                            <interact onClick="selectHero(EliteSoldier)" />
                         </control>
                     </panel>
                     <panel id="melee" childLayout="vertical" >

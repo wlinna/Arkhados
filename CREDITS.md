@@ -130,3 +130,22 @@ bit by Teemu Salminen. Origian Magic Smite can be found from
 
 midimagician for EmberCircle's sound (EmberCircle.wav). Sound is
 licensed under CC0. Original work can be found from [freesound](http://freesound.org/people/midimagician/sounds/249418/)
+
+[Joe Reynolds – Professorlamp](jrtheories.webs.com) for music
+Carmack. Music is licensed under CC-BY 3.0. Original work can be found
+from [OGA](http://opengameart.org/content/carmack)
+
+Android128 for music ElectricQuake. Music is licensed under CC-BY
+3.0. Original work can be found from
+[OGA](http://opengameart.org/content/electric-quake)
+
+[Alexandr Zhelanov](https://soundcloud.com/alexandr-zhelanov) for
+music SteepsOfDestiny. Original work can be found from
+[OGA](http://opengameart.org/content/steeps-of-destiny)
+
+[Matthew Pablo](http://www.matthewpablo.com/) for music The Dark
+Amulet. The Dark Amulet is licensed under CC-BY 3.0. Original work can
+be found from
+[OGA](http://opengameart.org/content/the-dark-amulet-dark-mage-theme)
+
+NOTE: There will be ingame credits screen when game matures more.
