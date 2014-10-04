@@ -62,10 +62,11 @@ solution.
 effect. And it would be nice if characters would scream (or something
 like that) when they die.
 
-**Find or create good music**
-I'm not actually sure if I wan't music to depend on character, arena
-or nothing but I think music depending on character is the nicest
-option.
+**Find or create good music** In Arkhados every hero uses different
+  set of music. I also plan on adding generic music list that any hero
+  can use so that they don't need to listen to same music over and
+  over. Currently Venator has no music at all and other two heroes
+  have only 2 soundtracks. Can you find more?
 
 Menu music would be nice too.
 
