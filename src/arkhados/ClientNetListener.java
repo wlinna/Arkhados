@@ -144,7 +144,8 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
 
     private void handleLoginCommand(ServerLoginCommand loginCommand) {
         if (loginCommand.isAccepted()) {
-            app.getUserCommandManager().setPlayerId(loginCommand.getPlayerId());
+            app.getStateManager().getState(UserCommandManager.class).
+                    setPlayerId(loginCommand.getPlayerId());
             AppSettings settings = app.getContext().getSettings();
 
             boolean movingInterrupts = settings.getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
@@ -156,8 +157,10 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
     }
 
     private void handleSetPlayersCharacter(SetPlayersCharacterCommand message) {
-        if (app.getUserCommandManager().getPlayerId() == message.getPlayerId()) {
-            app.getUserCommandManager().setCharacterId(message.getEntityId());
+        UserCommandManager userCommandManager = app.getStateManager()
+                .getState(UserCommandManager.class);
+        if (userCommandManager.getPlayerId() == message.getPlayerId()) {
+            userCommandManager.setCharacterId(message.getEntityId());
             System.out.println(String.format("Your entityId: %d", message.getEntityId()));
         }
     }

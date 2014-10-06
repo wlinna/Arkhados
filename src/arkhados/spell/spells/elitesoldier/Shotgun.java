@@ -14,8 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
-import arkhados.EffectHandler;
-import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EliteSoldier;

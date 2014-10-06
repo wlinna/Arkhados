@@ -127,7 +127,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ClientNetListener listenerManager;
     private SyncManager syncManager;
     private BulletAppState bulletState;
-    private UserCommandManager userCommandManager;
     private ClientHudManager clientHudManager;
     private RoundManager roundManager;
     private EffectHandler effectHandler;
@@ -179,7 +178,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver = new Receiver();
         receiver.registerCommandHandler(effectHandler);
 
-        userCommandManager = new UserCommandManager(sender, inputManager);
+        UserCommandManager userCommandManager = new UserCommandManager(sender, inputManager);
 
         stateManager.attach(userCommandManager);
 
@@ -360,10 +359,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         }).start();
     }
 
-    public UserCommandManager getUserCommandManager() {
-        return userCommandManager;
-    }
-
     public void gotoMenu(final String menu) {
         enqueue(new Callable<Void>() {
             @Override
@@ -406,6 +401,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void loseFocus() {
         super.loseFocus();
-        userCommandManager.onLoseFocus();
+        stateManager.getState(UserCommandManager.class).onLoseFocus();
     }
 }

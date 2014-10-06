@@ -164,7 +164,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         }
         roundRunning = true;
         if (sender.isClient()) {
-            clientMain.getUserCommandManager().setEnabled(true);
+            stateManager.getState(UserCommandManager.class).setEnabled(true);
             stateManager.getState(ClientHudManager.class).startRound();
             app.enqueue(new Callable<Void>() {
                 @Override
@@ -183,7 +183,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         syncManager.addObject(-1, worldManager);
         if (worldManager.isClient()) {
             stateManager.getState(ClientHudManager.class).clear();
-            clientMain.getUserCommandManager().nullifyCharacter();
+            stateManager.getState(UserCommandManager.class).nullifyCharacter();
         }
     }
 
@@ -205,7 +205,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         worldManager.setEnabled(false);
 
         if (worldManager.isClient()) {
-            clientMain.getUserCommandManager().setEnabled(false);
+            stateManager.getState(UserCommandManager.class).setEnabled(false);
             stateManager.getState(ClientHudManager.class).showRoundStatistics();
             stateManager.getState(MusicManager.class).setPlaying(false);
         }
@@ -342,7 +342,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                 syncManager.clear();
 
                 PlayerData.destroyAllData();
-                clientMain.getUserCommandManager().nullifyCharacter();
+                stateManager.getState(UserCommandManager.class).nullifyCharacter();
                 stateManager.getState(ClientHudManager.class).endGame();
                 return null;
             }

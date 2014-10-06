@@ -23,7 +23,6 @@ import arkhados.messages.syncmessages.RemoveEntityCommand;
 import arkhados.net.Command;
 import arkhados.net.ServerSender;
 import arkhados.spell.buffs.AbstractBuff;
-import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;

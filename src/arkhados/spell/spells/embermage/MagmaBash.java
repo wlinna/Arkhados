@@ -113,12 +113,11 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
             fire.setRandomAngle(true);
             node.attachChild(fire);
             
-
             AudioNode sound = new AudioNode(AbstractNodeBuilder.assetManager, "Effects/Sound/MagmaBash.wav");
             node.attachChild(sound);
             sound.setPositional(true);
             sound.setReverbEnabled(false);
-            sound.setVolume(1f);
+            sound.setVolume(1f);            
             sound.play();
         }
 
