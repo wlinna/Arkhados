@@ -38,7 +38,6 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.controls.textfield.TextFieldControl;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -89,13 +88,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         Logger.getLogger("").setLevel(Level.INFO);
         Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
         Logger.getLogger("com.jme3.system.lwjgl.LwjglContext").setLevel(Level.SEVERE);
-        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);       
-        
+        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
+
         AppSettings settings = new AppSettings(true);
 
         FileHandler fileHandler;
         try {
-            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0, 10);            
+            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0, 10);
             fileHandler.setLevel(Level.FINE);
             fileHandler.setFormatter(new SimpleFormatter());
 
@@ -123,15 +122,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private NiftyJmeDisplay niftyDisplay;
     private TextRenderer statusText;
     private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
-    private WorldManager worldManager;
-    private ClientNetListener listenerManager;
-    private SyncManager syncManager;
-    private BulletAppState bulletState;
     private ClientHudManager clientHudManager;
-    private RoundManager roundManager;
-    private EffectHandler effectHandler;
     private ClientSender sender;
-    private Receiver receiver;
 
     @Override
     public void simpleInitApp() {
@@ -139,7 +131,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
-        bulletState = new BulletAppState();
+        BulletAppState bulletState = new BulletAppState();
         bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
 
         inputManager.setCursorVisible(true);
@@ -148,7 +140,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         ClientFogManager fogManager = new ClientFogManager();
         stateManager.attach(fogManager);
-        
+
         stateManager.attach(clientHudManager);
         stateManager.attach(bulletState);
         bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
@@ -156,26 +148,26 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         flyCam.setMoveSpeed(25.0f);
         startNifty();
 
-        syncManager = new SyncManager(this);
+        SyncManager syncManager = new SyncManager(this);
         stateManager.attach(syncManager);
 
-        effectHandler = new EffectHandler(this);
-        worldManager = new WorldManager(effectHandler);
+        EffectHandler effectHandler = new EffectHandler(this);
+        WorldManager worldManager = new WorldManager(effectHandler);
         effectHandler.setWorldManager(worldManager);
 
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
-        listenerManager = new ClientNetListener(clientWrapper);
+        ClientNetListener listenerManager = new ClientNetListener(clientWrapper);
         stateManager.attach(listenerManager);
 
         stateManager.attach(worldManager);
 
-        roundManager = new RoundManager();
+        RoundManager roundManager = new RoundManager();
         stateManager.attach(roundManager);
 
         sender = new ClientSender();
-        receiver = new Receiver();
+        Receiver receiver = new Receiver();
         receiver.registerCommandHandler(effectHandler);
 
         UserCommandManager userCommandManager = new UserCommandManager(sender, inputManager);
@@ -192,7 +184,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         MusicManager musicManager = new MusicManager(this, getInputManager(), getAssetManager());
         musicManager.setHero("EmberMage");
-        stateManager.attach(musicManager);        
+        stateManager.attach(musicManager);
     }
 
     @Override
@@ -232,20 +224,21 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void connect() {
-        // FIXME: TextFieldControl is deprecated
-        final String username = nifty.getScreen("join_server")
-                .findElementByName("username_text")
-                .getControl(TextFieldControl.class).getText();
+        Screen joinScreen = nifty.getScreen("join_server");
+        String username = joinScreen.findNiftyControl("username_text", TextField.class)
+                .getDisplayedText();
 
-        final int port = Integer.parseInt(nifty.getScreen("join_server")
-                .findElementByName("server_port").getControl(TextFieldControl.class).getText());
-        final String ip = nifty.getScreen("join_server").
-                findElementByName("server_ip").getControl(TextFieldControl.class).getText();
-
-
+        int port = Integer.parseInt(joinScreen.findNiftyControl("server_port", TextField.class)
+                .getDisplayedText());
+        String ip = joinScreen.findNiftyControl("server_ip", TextField.class).getDisplayedText();        
+        
         clientWrapper.set(Network.createClient());
+        
+        ClientNetListener listenerManager = stateManager.getState(ClientNetListener.class);
         listenerManager.reset();
         clientWrapper.get().addClientStateListener(listenerManager);
+
+        Receiver receiver = stateManager.getState(Receiver.class);
 
         clientWrapper.get().addMessageListener(receiver, OneTrueMessage.class);
         sender.reset();
@@ -313,9 +306,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
                 TextField textField = screen.findNiftyControl("chat_text", TextField.class);
-                sender.addCommand(new ChatMessage(
-                        listenerManager.getName(),
-                        textField.getText()));
+                String name = stateManager.getState(ClientNetListener.class).getName();
+
+                sender.addCommand(new ChatMessage(name, textField.getDisplayedText()));
                 textField.setText("");
                 return null;
             }
@@ -341,12 +334,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                     enqueue(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
+                            WorldManager worldManager = stateManager.getState(WorldManager.class);
                             worldManager.preloadModels(new String[]{"Models/Archer.j3o",
                                 "Models/Mage.j3o", "Models/Warwolf.j3o",
                                 "Models/Circle.j3o", "Models/DamagingDagger.j3o",
                                 "Scenes/LavaArenaWithWalls.j3o"});
                             worldManager.preloadSoundEffects(new String[]{"EmberCircle.wav",
-                                "FireballExplosion.wav", "Firewalk.wav", "MagmaBash.wav", 
+                                "FireballExplosion.wav", "Firewalk.wav", "MagmaBash.wav",
                                 "MeteorBoom.wav", "PurifyingFlame.wav", "Shotgun.wav"});
                             nifty.gotoScreen("default_hud");
                             return null;
@@ -392,10 +386,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             clientWrapper.get().close();
         }
         super.destroy();
-    }
-
-    public RoundManager getRoundManager() {
-        return roundManager;
     }
 
     @Override
