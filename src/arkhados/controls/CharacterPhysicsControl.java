@@ -15,6 +15,7 @@
 package arkhados.controls;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -40,17 +41,17 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        super.rigidBody.setUserObject(spatial);
-        super.rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
-        super.rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN |
-                CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
-        super.rigidBody.setFriction(1f);
-        super.rigidBody.setRestitution(0f);
-        super.rigidBody.setGravity(Vector3f.ZERO);
+        rigidBody.setUserObject(spatial);
+        rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
+        rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN | CollisionGroups.CHARACTERS |
+                CollisionGroups.WALLS);
+        rigidBody.setFriction(1f);
+        rigidBody.setRestitution(0f);
+        rigidBody.setGravity(Vector3f.ZERO);
     }
 
     public void lookAt(Vector3f targetlocation) {
-        this.setViewDirection(targetLocation.subtract(super.spatial.getLocalTranslation()));
+        setViewDirection(targetLocation.subtract(spatial.getLocalTranslation()));
     }
 
     @Override
@@ -58,12 +59,12 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.prePhysicsTick(space, tpf);
 
         if (impulseToApply != null) {
-            this.rigidBody.applyImpulse(this.impulseToApply, Vector3f.ZERO);
-            this.impulseToApply = null;
+            rigidBody.applyImpulse(impulseToApply, Vector3f.ZERO);
+            impulseToApply = null;
         }
         if (queuedLinearVelocity != null) {
-            this.rigidBody.setLinearVelocity(this.queuedLinearVelocity);
-            this.queuedLinearVelocity = null;
+            rigidBody.setLinearVelocity(queuedLinearVelocity);
+            queuedLinearVelocity = null;
         }
     }
 
@@ -73,37 +74,38 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     }
 
     public void applyImpulse(Vector3f impulse) {
-        this.impulseToApply = impulse;
+        impulseToApply = impulse;
     }
 
     public void enqueueSetLinearVelocity(Vector3f velocity) {
-        this.queuedLinearVelocity = velocity;
+        queuedLinearVelocity = velocity;
     }
 
     public Vector3f getTargetLocation() {
-        return this.targetLocation;
+        return targetLocation;
     }
 
     public void setTargetLocation(Vector3f target) {
-        this.targetLocation.set(target);
+        targetLocation.set(target);
     }
 
     public void switchToMotionCollisionMode() {
-        super.setEnabled(false);
-        this.setMotionControlled(true);
+        setEnabled(false);
+        setMotionControlled(true);
     }
 
     public void switchToNormalPhysicsMode() {
-        super.setEnabled(true);
-        this.setMotionControlled(false);
+        setEnabled(true);
+        setMotionControlled(false);
     }
 
     public Vector3f calculateTargetDirection() {
-        return this.targetLocation.subtract(super.spatial.getLocalTranslation());
+        return targetLocation.subtract(spatial.getLocalTranslation());
     }
 
     public CapsuleCollisionShape getCapsuleShape() {
-        CapsuleCollisionShape capsuleCollisionShape = new CapsuleCollisionShape(getFinalRadius(), (getFinalHeight() - (2 * getFinalRadius())));
+        CapsuleCollisionShape capsuleCollisionShape = new CapsuleCollisionShape(getFinalRadius(),
+                (getFinalHeight() - (2 * getFinalRadius())));
         return capsuleCollisionShape;
     }
 
@@ -113,11 +115,11 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
 
     public void setDictatedDirection(Vector3f dictatedDirection) {
         this.dictatedDirection = dictatedDirection;
-        this.setWalkDirection(dictatedDirection);
+        setWalkDirection(dictatedDirection);
     }       
 
     public boolean isMotionControlled() {
-        return this.motionControlled;
+        return motionControlled;
     }
 
     public void setMotionControlled(boolean motionControlled) {

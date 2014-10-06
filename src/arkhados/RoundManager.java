@@ -52,7 +52,6 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     private SyncManager syncManager;
     private AppStateManager stateManager;
     private Application app;
-    private ClientMain clientMain = null;
     private int currentRound = 0;
     private int rounds = 3;
     private boolean roundRunning = false;
@@ -68,10 +67,6 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         this.stateManager = stateManager;
         syncManager.addObject(-1, worldManager);
         this.app = app;
-
-        if (worldManager.isClient()) {
-            clientMain = (ClientMain) app;
-        }
     }
 
     public void serverStartGame() {
@@ -123,15 +118,15 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                 public Void call() throws Exception {
                     ServerFogManager fogManager = app.getStateManager().getState(ServerFogManager.class);
 
-                    int i = 0;                    
+                    int i = 0;
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         fogManager.createAwarenessForPlayer(playerData.getId());
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
-                        final String heroName = playerData.getStringData(PlayerDataStrings.HERO);
-                        final int nodeBuilderId =
+                        String heroName = playerData.getStringData(PlayerDataStrings.HERO);
+                        int nodeBuilderId =
                                 NodeBuilderIdHeroNameMatcherSingleton.get().getId(heroName);
-                        final int entityId = worldManager.addNewEntity(nodeBuilderId,
+                        int entityId = worldManager.addNewEntity(nodeBuilderId,
                                 startingLocation, new Quaternion(), playerData.getId());
                         playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
                     }
@@ -156,6 +151,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     }
 
     private void startNewRound() {
+        Globals.worldRunning = true;
         Sender sender = app.getStateManager().getState(Sender.class);
         logger.log(Level.INFO, "Starting new round");
         if (sender.isServer()) {
@@ -173,7 +169,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
                     return null;
                 }
             });
-            
+
         }
     }
 
@@ -188,6 +184,7 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     }
 
     private void endRound() {
+        Globals.worldRunning = false;
         Sender sender = app.getStateManager().getState(Sender.class);
         logger.log(Level.INFO, "Ending round");
         if (sender.isServer()) {

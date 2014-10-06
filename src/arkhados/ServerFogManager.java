@@ -146,8 +146,6 @@ public class ServerFogManager extends AbstractAppState {
             if (influenceInterface != null) {
                 informAboutBuffs(sender, awareness, influenceInterface.getBuffs());
                 informAboutBuffs(sender, awareness, influenceInterface.getCrowdControlBuffs());
-
-
             }
 
         } else {

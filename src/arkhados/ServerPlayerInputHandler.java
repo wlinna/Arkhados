@@ -80,7 +80,7 @@ public class ServerPlayerInputHandler implements CommandHandler {
                 }
             });
         } else {
-            System.out.println("Entity id for player " + playerId + " does not exist");
+            System.out.println("There is no playerId for sourceId " + source.getId());
         }
     }
 

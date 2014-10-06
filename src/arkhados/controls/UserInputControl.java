@@ -64,8 +64,8 @@ public class UserInputControl extends AbstractControl {
             if (!influenceInterface.isAbleToCastWhileMoving()) {
                 Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-                Boolean commandMoveInterrupts =
-                        PlayerData.getBooleanData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                Boolean commandMoveInterrupts = PlayerData.getBooleanData(playerId,
+                        PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
 
                 SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
                 if (castControl.isChanneling()

@@ -30,5 +30,8 @@ public class Globals {
         DEFAULT_SYNC_FREQUENCY = 1f / packets;
     }
     
-    public static AssetManager assetManager = null;    
+    public static AssetManager assetManager = null;
+
+    // FIXME: Make own class for variables that describe world state
+    public static boolean worldRunning = false;
 }

@@ -15,8 +15,6 @@
 package arkhados.messages.usercommands;
 
 import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Node;
-import arkhados.controls.UserInputControl;
 import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
@@ -36,22 +34,9 @@ public class UcWalkDirection extends StateData {
         this.down = (byte) down;
         this.right = (byte) right;
     }
-    
-    public void setDownRight(int down, int right) {
-        this.down = (byte) down;
-        this.right = (byte) right;
-    }
 
     @Override
     public void applyData(Object target) {
-//        Node character = (Node) target;
-//        
-//        final UserInputControl inputControl = character.getControl(UserInputControl.class);
-//        if (inputControl == null) {
-//            return;
-//        }
-//
-//        inputControl.setUpDownDirection(this.right, this.down);
     }       
 
     public byte getDown() {

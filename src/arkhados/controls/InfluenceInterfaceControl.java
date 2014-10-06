@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.Globals;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.ArmorBuff;
@@ -152,12 +153,17 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public void death() {
         dead = true;
+        spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
         spatial.getControl(CharacterAnimationControl.class).death();
         spatial.getControl(SpellCastControl.class).setEnabled(false);
     }
 
     @Override
     protected void controlUpdate(float tpf) {
+        if (!Globals.worldRunning) {
+            return;
+        }
+        
         // TODO: Refactor InfluenceInterfaceControl's controlUpdate. It is very hard to understand.
         /**
          * First set entity's attributes to their defaults like damagefactor and

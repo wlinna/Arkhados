@@ -75,6 +75,10 @@ public class UserCommandManager extends AbstractAppState {
         worldManager = stateManager.getState(WorldManager.class);
         listener = app.getListener();
         cam = app.getCamera();
+        
+        inputManager.addListener(actionMoveDirection,
+                    InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
+                    InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
     }
 
     public void createCameraControl() {
@@ -97,8 +101,7 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
             if (name != null) {
-                sender.addCommand(
-                        new UcCastSpellCommand(InputMappingStrings.getId(name),
+                sender.addCommand(new UcCastSpellCommand(InputMappingStrings.getId(name),
                         mouseGroundPosition));
             }
         }
@@ -122,28 +125,19 @@ public class UserCommandManager extends AbstractAppState {
                 down += isPressed ? 1 : -1;
             }
 
-            InfluenceInterfaceControl influenceInterface = getCharacterInterface();
-            if (influenceInterface != null && influenceInterface.isDead()) {
-                return;
-            }
-
             sendWalkDirection();
         }
     };
 
     private void disableInputListeners() {
         if (inputListenersActive) {
-            inputManager.removeListener(actionMoveDirection);
             inputManager.removeListener(actionCastSpell);
         }
         inputListenersActive = false;
     }
 
     private void enableInputListeners() {
-        if (!inputListenersActive) {
-            inputManager.addListener(actionMoveDirection,
-                    InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
-                    InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+        if (!inputListenersActive) {            
             inputManager.addListener(actionCastSpell,
                     InputMappingStrings.M1, InputMappingStrings.M2,
                     InputMappingStrings.Q, InputMappingStrings.E,
@@ -183,14 +177,11 @@ public class UserCommandManager extends AbstractAppState {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        down = 0;
-        right = 0;
 
         if (enabled) {
             enableInputListeners();
         } else {
             disableInputListeners();
-            clearMovementFlags();
         }
     }
 
@@ -212,7 +203,7 @@ public class UserCommandManager extends AbstractAppState {
                 .subtractLocal(mouse3dPosition).normalizeLocal();
 
         Ray ray = new Ray(mouse3dPosition, rayDirection);
-        boolean intersects = ray.intersectsWherePlane(floorPlane, mouseGroundPosition);
+        ray.intersectsWherePlane(floorPlane, mouseGroundPosition);
     }
 
     public Spatial getCharacter() {
