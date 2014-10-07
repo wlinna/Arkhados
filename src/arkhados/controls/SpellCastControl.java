@@ -85,7 +85,7 @@ public class SpellCastControl extends AbstractControl {
         EntityAction action = spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
             casting = false;
-            final Spell spell = ((CastingSpellAction) action).getSpell();
+            Spell spell = ((CastingSpellAction) action).getSpell();
             spatial.getControl(ActionQueueControl.class).clear();
             setCooldown(spell.getId(), 0f);
         } else if (action != null && action instanceof ChannelingSpellAction) {

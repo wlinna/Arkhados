@@ -17,8 +17,8 @@ package arkhados.actions.castspellactions;
 import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.DebugControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.UserInputControl;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class MeleeAttackAction extends EntityAction {
 
-    private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
+    private List<AbstractBuff> buffs = new ArrayList<>();
     private float damage;
     private float range;
 
@@ -45,44 +45,48 @@ public class MeleeAttackAction extends EntityAction {
     }
 
     public void addBuff(AbstractBuff buff) {
-        this.buffs.add(buff);
+        buffs.add(buff);
     }
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
-        Vector3f hitDirection = physicsControl.calculateTargetDirection().normalize().multLocal(this.range);
+        final CharacterPhysicsControl physicsControl = spatial
+                .getControl(CharacterPhysicsControl.class);
+        Vector3f hitDirection = physicsControl.calculateTargetDirection().normalize()
+                .multLocal(range);
 
         physicsControl.setViewDirection(hitDirection);
         final PhysicsSpace space = physicsControl.getPhysicsSpace();
-        Vector3f to = super.spatial.getLocalTranslation().add(hitDirection);
+        Vector3f to = spatial.getLocalTranslation().add(hitDirection);
 
-        List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().clone().setY(3f), to.setY(3f));
+        List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().clone()
+                .setY(3f), to.setY(3f));
         for (PhysicsRayTestResult result : results) {
-            final PhysicsCollisionObject collisionObject = result.getCollisionObject();
-            final Object userObject = collisionObject.getUserObject();
+            PhysicsCollisionObject collisionObject = result.getCollisionObject();
+            Object userObject = collisionObject.getUserObject();
             if (!(userObject instanceof Node)) {
                 continue;
             }
             final Node node = (Node) userObject;
-            if (node == super.spatial) {
+            if (node == spatial) {
                 continue;
             }
-            final InfluenceInterfaceControl targetInfluenceControl = node.getControl(InfluenceInterfaceControl.class);
+            final InfluenceInterfaceControl targetInfluenceControl = node
+                    .getControl(InfluenceInterfaceControl.class);
             if (targetInfluenceControl == null) {
                 continue;
             }
 
-            final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-            final float rawDamage = this.damage * damageFactor;
+            final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+            final float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
-            CharacterInteraction.harm(super.spatial.getControl(InfluenceInterfaceControl.class),
-                    targetInfluenceControl, rawDamage, this.buffs, true);
+            CharacterInteraction.harm(spatial.getControl(InfluenceInterfaceControl.class),
+                    targetInfluenceControl, rawDamage, buffs, true);
 
             // TODO: Add mechanism that allows melee attack to knock enemy back
             break;
-
-        }
+        }        
+        
         return false;
     }
 }

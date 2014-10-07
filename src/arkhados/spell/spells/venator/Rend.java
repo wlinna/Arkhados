@@ -19,6 +19,7 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.UserInputControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
@@ -31,8 +32,8 @@ import com.jme3.scene.Node;
 public class Rend extends Spell {
 
     {
-        super.iconName = "rend.png";
-        super.multipart = true;
+        iconName = "rend.png";
+        multipart = true;
     }
     public Rend(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
@@ -47,9 +48,9 @@ public class Rend extends Spell {
         spell.setCanMoveWhileCasting(true);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-//                return new MeleeAttackAction(150f, range);
-                return new TripleMeleeAttackAction(spell);
+                return new DoubleMeleeAttackAction(spell);
             }
         };
 
@@ -58,20 +59,20 @@ public class Rend extends Spell {
     }
 }
 
-class TripleMeleeAttackAction extends EntityAction {
+class DoubleMeleeAttackAction extends EntityAction {
     private final Spell spell;
 
-    public TripleMeleeAttackAction(Spell spell) {
+    public DoubleMeleeAttackAction(Spell spell) {
         this.spell = spell;
     }
 
     @Override
     public boolean update(float tpf) {
         // TODO: Make an attack start with different animation than previous one
-        final float range = this.spell.getRange();
-        final ActionQueueControl queue = super.spatial.getControl(ActionQueueControl.class);
+        final float range = spell.getRange();
+        final ActionQueueControl queue = spatial.getControl(ActionQueueControl.class);
         final MeleeAttackAction action1 = new MeleeAttackAction(50f, range);
-        final CastingSpellAction action2Anim = new CastingSpellAction(this.spell, true);
+        final CastingSpellAction action2Anim = new CastingSpellAction(spell, true);
         final MeleeAttackAction action2 = new MeleeAttackAction(60f, range);
         
         // action1 already has the default spell casting animation
@@ -79,6 +80,14 @@ class TripleMeleeAttackAction extends EntityAction {
         queue.enqueueAction(action1);
         queue.enqueueAction(action2Anim);
         queue.enqueueAction(action2);
+        
+        queue.enqueueAction(new EntityAction() {
+            @Override
+            public boolean update(float tpf) {
+                spatial.getControl(UserInputControl.class).restoreWalking();
+                return false;
+            }
+        });
 
         return false;
     }

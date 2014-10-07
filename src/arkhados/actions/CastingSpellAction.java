@@ -35,12 +35,12 @@ public class CastingSpellAction extends EntityAction {
     private boolean followedByAnotherAnimation = false;
     private InfluenceInterfaceControl influenceInterface;
 
-    public CastingSpellAction(final Spell spell) {
+    public CastingSpellAction(Spell spell) {
         this.spell = spell;
-        this.delay = spell.getCastTime();
+        delay = spell.getCastTime();
     }
 
-    public CastingSpellAction(final Spell spell, boolean followedByAnother) {
+    public CastingSpellAction(Spell spell, boolean followedByAnother) {
         this(spell);
         this.followedByAnotherAnimation = followedByAnother;
     }
@@ -48,36 +48,39 @@ public class CastingSpellAction extends EntityAction {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        this.influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);        
+        influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);        
     }
-    
+        
     @Override
     public boolean update(float tpf) {
-        this.delay -= tpf;
-        if (this.delay <= 0f) {
-            if (!this.spell.canMoveWhileCasting() && !this.followedByAnotherAnimation) {
-                super.spatial.getControl(UserInputControl.class).restoreWalking();
+        // TODO: Refactor and / or comment logic
+        
+        delay -= tpf;
+        
+        if (delay <= 0f) { // Go inside when casting is over
+            if (!spell.canMoveWhileCasting() && !followedByAnotherAnimation) {
+                spatial.getControl(UserInputControl.class).restoreWalking();
             }
 
-            if (!this.followedByAnotherAnimation) {
-                super.spatial.getControl(SpellCastControl.class).setCasting(false);
+            if (!followedByAnotherAnimation) {
+                spatial.getControl(SpellCastControl.class).setCasting(false);
             }
             return false;
         }
-        super.spatial.getControl(SpellCastControl.class).setCasting(true);
+        spatial.getControl(SpellCastControl.class).setCasting(true);
 
-        if (!this.spell.canMoveWhileCasting() && !this.influenceInterface.isAbleToCastWhileMoving()) {
-            super.spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        if (!spell.canMoveWhileCasting() && !influenceInterface.isAbleToCastWhileMoving()) {
+            spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
         } else {
-            if (this.spell.moveTowardsTarget()) {
-                final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+            if (spell.moveTowardsTarget()) {
+                CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
                 if (!physics.getWalkDirection().equals(Vector3f.ZERO)) {
-                    if (this.movementDirection == null) {
-                        final Float speedMovement = super.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-                        this.movementDirection = physics.calculateTargetDirection();
-                        this.movementDirection.normalizeLocal().multLocal(speedMovement);
+                    if (movementDirection == null) {
+                        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                        movementDirection = physics.calculateTargetDirection();
+                        movementDirection.normalizeLocal().multLocal(speedMovement);
                     }
-                    physics.setWalkDirection(this.movementDirection);
+                    physics.setWalkDirection(movementDirection);
                 }
             }
         }
@@ -85,6 +88,6 @@ public class CastingSpellAction extends EntityAction {
     }
     
     public Spell getSpell() {
-        return this.spell;
+        return spell;
     }
 }

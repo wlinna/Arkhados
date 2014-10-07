@@ -62,7 +62,7 @@ public class UserInputControl extends AbstractControl {
         if (down != 0 || right != 0) {
 
             if (!influenceInterface.isAbleToCastWhileMoving()) {
-                Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+                int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
                 Boolean commandMoveInterrupts = PlayerData.getBooleanData(playerId,
                         PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
@@ -89,10 +89,9 @@ public class UserInputControl extends AbstractControl {
                 || physics.isMotionControlled()) {
             return;
         }
-        
-        
+                
         Vector3f newWalkDirection = new Vector3f(inputState.previousRight, 0, inputState.previousDown);
-        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
 
         if (!newWalkDirection.equals(Vector3f.ZERO) && physics.isEnabled()) {

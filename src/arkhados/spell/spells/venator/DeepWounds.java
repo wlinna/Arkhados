@@ -43,8 +43,8 @@ import java.util.List;
 public class DeepWounds extends Spell {
 
     {
-        super.iconName = "deep_wounds.png";
-        super.setMoveTowardsTarget(true);
+        iconName = "deep_wounds.png";
+        setMoveTowardsTarget(true);
     }
 
     public DeepWounds(String name, float cooldown, float range, float castTime) {
@@ -74,21 +74,22 @@ class CastDeepWoundsAction extends EntityAction {
 
     public CastDeepWoundsAction(DeepWounds spell) {
         this.spell = spell;
-        super.setTypeId(Venator.ANIM_SWIPE_UP);
+        setTypeId(Venator.ANIM_SWIPE_UP);
     }
 
     @Override
     public boolean update(float tpf) {
-        ActionQueueControl actionQueue = super.spatial.getControl(ActionQueueControl.class);
-        ChargeAction charge = new ChargeAction(this.spell);
-        actionQueue.enqueueAction(charge);
+        ChargeAction charge = new ChargeAction(spell);
+        spatial.getControl(ActionQueueControl.class).enqueueAction(charge);
 
         BleedBuff bleedBuff = new BleedBuff(-1, 5f);
-        bleedBuff.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
-        Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        bleedBuff.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+        
+        Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         bleedBuff.setDamagePerUnit(2f * damageFactor);
         charge.addBuff(bleedBuff);
-        super.spatial.getControl(UserInputControl.class).restoreWalking();
+
+        spatial.getControl(UserInputControl.class).restoreWalking();
         return false;
     }
 }
@@ -105,65 +106,67 @@ class ChargeAction extends EntityAction {
     private List<AbstractBuff> buffs = new ArrayList<>();
 
     public ChargeAction(final DeepWounds spell) {
-        this.range = spell.getRange();
+        range = spell.getRange();
     }
 
     public void addBuff(AbstractBuff buff) {
-        this.buffs.add(buff);
+        buffs.add(buff);
     }
 
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
         CapsuleCollisionShape shape = physics.getCapsuleShape();
         shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
         ghost = new GhostControl(shape);
         ghost.setCollisionGroup(CollisionGroups.NONE);
         ghost.setCollideWithGroups(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
 
-        this.ghostNode = new Node("Ghost Node");
-        ((Node) spatial).attachChild(this.ghostNode);
-        this.ghostNode.addControl(ghost);
+        ghostNode = new Node("Ghost Node");
+        ((Node) spatial).attachChild(ghostNode);
+        ghostNode.addControl(ghost);
 
         physics.getPhysicsSpace().add(ghost);
     }
 
     @Override
     public boolean update(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects = this.ghost.getOverlappingObjects();
+        List<PhysicsCollisionObject> collisionObjects = ghost.getOverlappingObjects();
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial target = (Spatial) collisionObject.getUserObject();
-                if (target == super.spatial) {
+                if (target == spatial) {
                     continue;
                 }
 
                 if (collisionObject.getCollisionGroup() == CollisionGroups.CHARACTERS) {
-                    this.collided(target);
+                    collided(target);
                 }
                 return false;
             }
         }
 
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
-        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        InfluenceInterfaceControl influenceInterface =
+                spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(false);
 
-        if (!this.isCharging) {
-            this.direction = physics.getTargetLocation().subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-            physics.setViewDirection(this.direction);
-            direction.multLocal(this.chargeSpeed);
+        if (!isCharging) {
+            direction = physics.getTargetLocation().subtract(spatial.getLocalTranslation())
+                    .normalizeLocal();
+            physics.setViewDirection(direction);
+            direction.multLocal(chargeSpeed);
             physics.setDictatedDirection(direction);
-            this.isCharging = true;
+            isCharging = true;
             influenceInterface.setSpeedConstant(true);
             return true;
         }
 
-        physics.setViewDirection(this.direction);
+        physics.setViewDirection(direction);
 
-        this.distanceMoved += this.chargeSpeed * tpf;
-        if (this.distanceMoved >= this.range) {
+        distanceMoved += chargeSpeed * tpf;
+        if (distanceMoved >= range) {
             return false;
         }
 
@@ -171,29 +174,31 @@ class ChargeAction extends EntityAction {
     }
 
     private void collided(Spatial target) {
-        final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         final float rawDamage = 100f * damageFactor;
 
-        InfluenceInterfaceControl targetInfluenceControl = target.getControl(InfluenceInterfaceControl.class);
-        CharacterInteraction.harm(super.spatial.getControl(InfluenceInterfaceControl.class),
-                targetInfluenceControl, rawDamage, this.buffs, true);
+        InfluenceInterfaceControl targetInfluenceControl =
+                target.getControl(InfluenceInterfaceControl.class);
+        CharacterInteraction.harm(spatial.getControl(InfluenceInterfaceControl.class),
+                targetInfluenceControl, rawDamage, buffs, true);
     }
 
     @Override
     public void end() {
         super.end();
-        InfluenceInterfaceControl influenceInterface = super.spatial.getControl(InfluenceInterfaceControl.class);
+        InfluenceInterfaceControl influenceInterface =
+                spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(true);
         influenceInterface.setSpeedConstant(false);
-        CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
 
         physics.getDictatedDirection().zero();
         physics.setWalkDirection(Vector3f.ZERO);
         physics.enqueueSetLinearVelocity(Vector3f.ZERO);
 
-        ghost.getPhysicsSpace().remove(this.ghost);
-        this.ghostNode.removeFromParent();
-        this.ghostNode.removeControl(this.ghost);
+        ghost.getPhysicsSpace().remove(ghost);
+        ghostNode.removeFromParent();
+        ghostNode.removeControl(ghost);
     }
 }
 
@@ -204,8 +209,8 @@ class BleedBuff extends AbstractBuff {
     private float dmgPerUnit = 2f;
 
     {
-        super.name = "Deep Wounds";
-        super.setTypeId(BuffTypeIds.DEEP_WOUNDS);
+        name = "Deep Wounds";
+        setTypeId(BuffTypeIds.DEEP_WOUNDS);
     }
 
     public BleedBuff(int buffGroupId, float duration) {
@@ -215,18 +220,20 @@ class BleedBuff extends AbstractBuff {
     @Override
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         super.attachToCharacter(targetInterface);
-        this.spatial = targetInterface.getSpatial();
-        this.physics = this.spatial.getControl(CharacterPhysicsControl.class);
+        spatial = targetInterface.getSpatial();
+        physics = spatial.getControl(CharacterPhysicsControl.class);
     }
 
     @Override
     public void update(float time) {
         super.update(time);
-        if (this.physics.getWalkDirection().equals(Vector3f.ZERO)) {
+        if (physics.getWalkDirection().equals(Vector3f.ZERO)) {
             return;
         }
-        Float dmg = ((Float) this.spatial.getUserData(UserDataStrings.SPEED_MOVEMENT)) * time * dmgPerUnit;
-        CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, dmg, null, true);
+
+        float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        Float dmg = speedMovement * time * dmgPerUnit;
+        CharacterInteraction.harm(getOwnerInterface(), targetInterface, dmg, null, true);
     }
 
     public void setDamagePerUnit(float dmgPerUnit) {

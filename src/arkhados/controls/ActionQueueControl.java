@@ -51,6 +51,9 @@ public class ActionQueueControl extends AbstractControl {
         if (current != null) {
             current.end();
         }
+        // TODO: Rethink clear-method
+        // This is dangerous, because clear is public method and through many hoops, can be
+        // called from current.update
         current = null;
         actions.clear();
     }
