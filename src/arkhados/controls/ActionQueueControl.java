@@ -51,7 +51,7 @@ public class ActionQueueControl extends AbstractControl {
         if (current != null) {
             current.end();
         }
-        // TODO: Rethink clear-method
+        // TODO: Maybe rethink clear-method
         // This is dangerous, because clear is public method and through many hoops, can be
         // called from current.update
         current = null;
@@ -64,6 +64,10 @@ public class ActionQueueControl extends AbstractControl {
             return;
         }
         boolean active = current.update(tpf);
+        if (current == null) { // current.update may call clear through many hoops
+            return;
+        }
+
         if (shouldSimulate) {
             simulateAction(current);
             shouldSimulate = false;
