@@ -45,7 +45,7 @@ import java.util.List;
  * @author william TODO: I think that current Round-protocol is very confusing and hard to
  * understand. It might need rework
  */
-public class RoundManager extends AbstractAppState implements CommandHandler {
+public class RoundManager implements CommandHandler {
 
     private static final Logger logger = Logger.getLogger(RoundManager.class.getName());
     private WorldManager worldManager;
@@ -58,13 +58,11 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
     private Timer roundStartTimer = new Timer(5);
     private Timer roundEndTimer = new Timer(5);
 
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
+    public void initialize(Application app) {
         logger.setLevel(Level.INFO);
-        super.initialize(stateManager, app);
+        stateManager = app.getStateManager();
         worldManager = stateManager.getState(WorldManager.class);
         syncManager = stateManager.getState(SyncManager.class);
-        this.stateManager = stateManager;
         syncManager.addObject(-1, worldManager);
         this.app = app;
     }
@@ -211,7 +209,6 @@ public class RoundManager extends AbstractAppState implements CommandHandler {
         roundEndTimer.setActive(true);
     }
 
-    @Override
     public void update(float tpf) {
         Sender sender = app.getStateManager().getState(Sender.class);
         roundStartTimer.update(tpf);

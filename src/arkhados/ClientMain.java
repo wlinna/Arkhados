@@ -124,6 +124,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
     private ClientHudManager clientHudManager;
     private ClientSender sender;
+    private RoundManager roundManager;
 
     @Override
     public void simpleInitApp() {
@@ -163,8 +164,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         stateManager.attach(worldManager);
 
-        RoundManager roundManager = new RoundManager();
-        stateManager.attach(roundManager);
+        roundManager = new RoundManager();
+        roundManager.initialize(this);
 
         sender = new ClientSender();
         Receiver receiver = new Receiver();
@@ -189,6 +190,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void simpleUpdate(float tpf) {
+        roundManager.update(tpf);
     }
 
     @Override
@@ -230,10 +232,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         int port = Integer.parseInt(joinScreen.findNiftyControl("server_port", TextField.class)
                 .getDisplayedText());
-        String ip = joinScreen.findNiftyControl("server_ip", TextField.class).getDisplayedText();        
-        
+        String ip = joinScreen.findNiftyControl("server_ip", TextField.class).getDisplayedText();
+
         clientWrapper.set(Network.createClient());
-        
+
         ClientNetListener listenerManager = stateManager.getState(ClientNetListener.class);
         listenerManager.reset();
         clientWrapper.get().addClientStateListener(listenerManager);

@@ -14,8 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.GameMode;
+import arkhados.gamemode.LastManStanding;
 import arkhados.messages.TopicOnlyCommand;
-import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -28,21 +29,19 @@ import com.jme3.app.state.AppStateManager;
 public class ServerGameManager extends AbstractAppState {
 
     private WorldManager worldManager;
-    private RoundManager roundManager;
     private ServerFogManager fogManager;
-    private boolean running;
+    private boolean running = false;
     private Application app;
 
+    private GameMode gameMode = null;
+    
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        gameMode = new LastManStanding();
+        gameMode.initialize(app);
         worldManager = app.getStateManager().getState(WorldManager.class);
-        roundManager = new RoundManager();
         fogManager = new ServerFogManager();
-
-        roundManager.setEnabled(false);
-        stateManager.attach(roundManager);
-        stateManager.getState(Receiver.class).registerCommandHandler(roundManager);
 
         stateManager.attach(fogManager);
 
@@ -56,21 +55,27 @@ public class ServerGameManager extends AbstractAppState {
 
         Sender sender = app.getStateManager().getState(Sender.class);
 
-        roundManager.setEnabled(true);
+        gameMode.startGame();
 
-        worldManager.preloadModels(new String[]{"Models/Mage.j3o",
-            "Models/Warwolf.j3o", "Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+        worldManager.preloadModels(new String[]{"Models/Circle.j3o", "Models/DamagingDagger.j3o"});
+        
+        app.getStateManager().getState(SyncManager.class).addObject(-1, worldManager);
 
         running = true;
         sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
 
-        roundManager.serverStartGame();
+        gameMode.startGame();
 
         return true;
     }
 
     @Override
     public void update(float tpf) {
+        if (!running) {
+            return;
+        }
+        
+        gameMode.update(tpf);
     }
 
     @Override
