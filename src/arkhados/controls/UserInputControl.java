@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.ServerPlayerInputState;
 import arkhados.util.PlayerDataStrings;
@@ -46,7 +47,8 @@ public class UserInputControl extends AbstractControl {
 
         if (!influenceInterface.canControlMovement()
                 || !influenceInterface.canMove()
-                || physics.isMotionControlled()) {
+                || physics.isMotionControlled()
+                || !Globals.worldRunning) {
             return;
         }
 
@@ -86,7 +88,7 @@ public class UserInputControl extends AbstractControl {
     public void restoreWalking() {
         CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)
-                || physics.isMotionControlled()) {
+                || physics.isMotionControlled() || !Globals.worldRunning) {
             return;
         }
                 
