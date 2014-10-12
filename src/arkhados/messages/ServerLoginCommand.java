@@ -26,15 +26,17 @@ import com.jme3.network.serializing.Serializable;
 public class ServerLoginCommand implements Command {
     private String name;
     private int playerId;
-    private boolean accepted;
+    private boolean accepted;    
+    private String gameMode;
 
     public ServerLoginCommand() {
     }
 
-    public ServerLoginCommand(String nick, int playerId, boolean accepted) {
+    public ServerLoginCommand(String nick, int playerId, boolean accepted, String gameMode) {
         this.name = nick;
         this.playerId = playerId;
         this.accepted = accepted;
+        this.gameMode = gameMode;
     }
 
     public String getName() {
@@ -52,5 +54,9 @@ public class ServerLoginCommand implements Command {
     @Override
     public boolean isGuaranteed() {
         return true;
+    }
+
+    public String getGameMode() {
+        return gameMode;
     }
 }

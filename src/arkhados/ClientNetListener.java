@@ -153,6 +153,8 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
             ClientSettingsCommand clientSettingsCommand = new ClientSettingsCommand(movingInterrupts);
             Sender sender = app.getStateManager().getState(Sender.class);
             sender.addCommand(clientSettingsCommand);
+            
+            app.setupGameMode(loginCommand.getGameMode());
         }
     }
 

@@ -132,7 +132,8 @@ public class ServerNetListener implements ConnectionListener, CommandHandler, Se
         
         ServerClientData.setConnected(clientId, true);
         ServerClientData.setPlayerId(clientId, playerId);
-        ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId, true);
+        ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId,
+                true, "LastManStanding");
         sender.addCommandForSingle(serverLoginMessage, source);
         sender.addCommand(PlayerDataTableCommand.makeFromPlayerDataList());
     }

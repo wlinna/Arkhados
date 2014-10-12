@@ -15,6 +15,7 @@
 package arkhados;
 
 import arkhados.controls.PlayerEntityAwareness;
+import arkhados.gamemode.GameMode;
 import arkhados.ui.hud.ClientHudManager;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -57,14 +58,16 @@ public class RoundManager implements CommandHandler {
     private boolean roundRunning = false;
     private Timer roundStartTimer = new Timer(5);
     private Timer roundEndTimer = new Timer(5);
-
-    public void initialize(Application app) {
+    private GameMode gameMode;
+    
+    public void initialize(Application app, GameMode gameMode) {
         logger.setLevel(Level.INFO);
         stateManager = app.getStateManager();
         worldManager = stateManager.getState(WorldManager.class);
         syncManager = stateManager.getState(SyncManager.class);
         syncManager.addObject(-1, worldManager);
         this.app = app;
+        this.gameMode = gameMode;
     }
 
     public void serverStartGame() {
@@ -338,6 +341,7 @@ public class RoundManager implements CommandHandler {
                 PlayerData.destroyAllData();
                 stateManager.getState(UserCommandManager.class).nullifyCharacter();
                 stateManager.getState(ClientHudManager.class).endGame();
+                gameMode.gameEnded();
                 return null;
             }
         });

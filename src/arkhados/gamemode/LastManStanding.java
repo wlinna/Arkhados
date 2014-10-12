@@ -31,7 +31,7 @@ public class LastManStanding extends GameMode {
         super.initialize(app);
 
         roundManager = new RoundManager();
-        roundManager.initialize(app);
+        roundManager.initialize(app, this);
         app.getStateManager().getState(Receiver.class).registerCommandHandler(roundManager);
     }
 

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.gamemode;
 
+import arkhados.ClientMain;
 import com.jme3.app.Application;
 
 /**
@@ -33,6 +34,13 @@ public abstract class GameMode {
     public abstract void update(float tpf);
 
     public abstract void playerDied(int playerId);
+    
+    public void gameEnded() {        
+        if (app instanceof ClientMain) {
+            ClientMain clientMain = (ClientMain) app;
+            clientMain.gameEnded();
+        }
+    }
 
     public Application getApp() {
         return app;

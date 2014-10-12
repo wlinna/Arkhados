@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.GameMode;
+import arkhados.gamemode.LastManStanding;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.ChatMessage;
@@ -125,6 +127,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ClientHudManager clientHudManager;
     private ClientSender sender;
     private RoundManager roundManager;
+    private GameMode gameMode = null;
 
     @Override
     public void simpleInitApp() {
@@ -164,9 +167,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         stateManager.attach(worldManager);
 
-        roundManager = new RoundManager();
-        roundManager.initialize(this);
-
         sender = new ClientSender();
         Receiver receiver = new Receiver();
         receiver.registerCommandHandler(effectHandler);
@@ -181,7 +181,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.registerCommandHandler(sender);
         receiver.registerCommandHandler(syncManager);
         receiver.registerCommandHandler(listenerManager);
-        receiver.registerCommandHandler(roundManager);
 
         MusicManager musicManager = new MusicManager(this, getInputManager(), getAssetManager());
         musicManager.setHero("EmberMage");
@@ -190,7 +189,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void simpleUpdate(float tpf) {
-        roundManager.update(tpf);
+        if (gameMode != null) {
+            gameMode.update(tpf);
+        }
     }
 
     @Override
@@ -261,6 +262,22 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             setStatusText(ex.getMessage());
             Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void setupGameMode(final String gameModeString) {
+        enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                switch (gameModeString) {
+                    case "LastManStanding":
+                        gameMode = new LastManStanding();
+                        gameMode.initialize(ClientMain.this);
+                        break;
+                }
+                return null;
+            }
+        });
+
     }
 
     public void toLobby() {
@@ -336,6 +353,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                     enqueue(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
+                            gameMode.setRunning(true);
                             WorldManager worldManager = stateManager.getState(WorldManager.class);
                             worldManager.preloadModels(new String[]{"Models/Archer.j3o",
                                 "Models/Mage.j3o", "Models/Warwolf.j3o",
@@ -355,6 +373,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         }).start();
     }
 
+    public void gameEnded() {
+        this.gameMode = null;
+    }
+    
     public void gotoMenu(final String menu) {
         enqueue(new Callable<Void>() {
             @Override
