@@ -53,4 +53,12 @@ public class LastManStanding extends GameMode {
     @Override
     public void playerDied(int playerId) {
     }
+
+    @Override
+    public void gameEnded() {
+        super.gameEnded();
+
+        Receiver receiver = getApp().getStateManager().getState(Receiver.class);
+        receiver.removeCommandHandler(roundManager);
+    }
 }
