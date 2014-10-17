@@ -42,6 +42,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -57,7 +58,7 @@ public class PlayerEntityAwareness {
     private Node walls;
     private Ray ray = new Ray();
     private float rangeSquared = FastMath.sqr(140);
-    private Vector3f reUsableVec = new Vector3f();
+    private Vector3f _reUsableVec = new Vector3f();
     private ServerFogManager fogManager;
 
     public PlayerEntityAwareness(int playerId, Node walls, ServerFogManager fogManager) {
@@ -84,7 +85,15 @@ public class PlayerEntityAwareness {
     }
 
     public boolean testVisibility(Spatial other) {
+        if (other == null) {
+            return false;
+        }
         if (other.getUserData(UserDataStrings.INVISIBLE_TO_ALL)) {
+            return false;
+        }
+        if (getOwnSpatial() == null) {
+            logger.log(Level.WARNING, "Player {0} tried testVisibility without owning spatial",
+                    playerId);
             return false;
         }
         if (other == getOwnSpatial()) {
@@ -110,7 +119,7 @@ public class PlayerEntityAwareness {
     }
 
     private boolean wallTest(Spatial other, float distance) {
-        Vector3f direction = reUsableVec;
+        Vector3f direction = _reUsableVec;
         direction.set(other.getLocalTranslation());
         direction.subtractLocal(getOwnSpatial().getLocalTranslation()).normalizeLocal();
 

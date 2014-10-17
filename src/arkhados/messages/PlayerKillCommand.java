@@ -12,16 +12,40 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.util;
+
+package arkhados.messages;
+
+import arkhados.net.Command;
+import com.jme3.network.serializing.Serializable;
 
 /**
  *
  * @author william
  */
-public class RemovalReasons {    
-    public static final int COLLISION = 0;
-    public static final int EXPIRED = 1;
-    public static final int ABSORBED = 2;
-    public static final int DISAPPEARED = 3;
-    public static final int DEATH = 4;
+
+@Serializable
+public class PlayerKillCommand implements Command {
+    private int diedPlayerId;
+    private int killerPlayerId;
+
+    public PlayerKillCommand() {
+    }
+
+    public PlayerKillCommand(int diedPlayerId, int killerPlayerId) {
+        this.diedPlayerId = diedPlayerId;
+        this.killerPlayerId = killerPlayerId;
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
+    }
+
+    public int getDiedPlayerId() {
+        return diedPlayerId;
+    }
+
+    public int getKillerPlayerId() {
+        return killerPlayerId;
+    }
 }

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.LastManStanding;
 import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -97,18 +98,22 @@ public class ServerNetListener implements ConnectionListener, CommandHandler, Se
 
         switch (topicCommand.getTopicId()) {
             case Topic.BATTLE_STATISTICS_REQUEST:
-                final BattleStatisticsResponse response = BattleStatisticsResponse.buildBattleStatisticsResponse();
+                BattleStatisticsResponse response =
+                        BattleStatisticsResponse.buildBattleStatisticsResponse();
                 sender.addCommand(response);
                 break;
             case Topic.START_GAME:
-                sender.addCommand(topicCommand);
-                app.startGame();
+                // HACK: This is wrong place for this. Clean this up
+                if (app.getStateManager().getState(ServerGameManager.class).getGameMode()
+                        instanceof LastManStanding) {
+                    sender.addCommand(topicCommand);
+                    app.startGame();
+                }
                 break;
             case Topic.UDP_HANDSHAKE_REQUEST:
-                sender.addCommandForSingle(new TopicOnlyCommand(
-                        Topic.UDP_HANDSHAKE_ACK, false), source);
+                sender.addCommandForSingle(new TopicOnlyCommand(Topic.UDP_HANDSHAKE_ACK, false),
+                        source);
                 break;
-
         }
     }
 
@@ -122,18 +127,24 @@ public class ServerNetListener implements ConnectionListener, CommandHandler, Se
             return;
         }
 
-        final int playerId = PlayerData.getNew(commmand.getName());
+        final int playerId = PlayerData.getNew(commmand.getName());        
         PlayerData.setData(playerId, PlayerDataStrings.HERO, "EmberMage");
         PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
 
         source.setAttribute(PLAYER_ID, playerId);
 
         ServerPlayerInputHandler.get().addPlayerInputState(playerId);
-        
+
         ServerClientData.setConnected(clientId, true);
         ServerClientData.setPlayerId(clientId, playerId);
+        ServerClientData.addConnection(playerId, source);
+
+        ServerGameManager gameManager = app.getStateManager().getState(ServerGameManager.class);
+        gameManager.playerJoined(playerId);        
+        
+        String modeKey = gameManager.getGameMode().getClass().getSimpleName();
         ServerLoginCommand serverLoginMessage = new ServerLoginCommand(commmand.getName(), playerId,
-                true, "LastManStanding");
+                true, modeKey);
         sender.addCommandForSingle(serverLoginMessage, source);
         sender.addCommand(PlayerDataTableCommand.makeFromPlayerDataList());
     }

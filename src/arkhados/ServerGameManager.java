@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
-import arkhados.gamemode.LastManStanding;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Sender;
 import com.jme3.app.Application;
@@ -32,13 +32,16 @@ public class ServerGameManager extends AbstractAppState {
     private ServerFogManager fogManager;
     private boolean running = false;
     private Application app;
+    private GameMode gameMode;
 
-    private GameMode gameMode = null;
-    
+    public ServerGameManager(GameMode gameMode) {
+        this.gameMode = gameMode;
+        CharacterInteraction.gameMode = gameMode;
+    }
+
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        gameMode = new LastManStanding();
         gameMode.initialize(app);
         worldManager = app.getStateManager().getState(WorldManager.class);
         fogManager = new ServerFogManager();
@@ -46,6 +49,11 @@ public class ServerGameManager extends AbstractAppState {
         stateManager.attach(fogManager);
 
         this.app = app;
+
+        if (gameMode instanceof DeathMatch) {
+            ServerMain serverApp = (ServerMain) app;
+            serverApp.startGame();
+        }
     }
 
     public synchronized boolean startGame() {
@@ -55,10 +63,8 @@ public class ServerGameManager extends AbstractAppState {
 
         Sender sender = app.getStateManager().getState(Sender.class);
 
-        gameMode.startGame();
-
         worldManager.preloadModels(new String[]{"Models/Circle.j3o", "Models/DamagingDagger.j3o"});
-        
+
         app.getStateManager().getState(SyncManager.class).addObject(-1, worldManager);
 
         running = true;
@@ -74,12 +80,20 @@ public class ServerGameManager extends AbstractAppState {
         if (!running) {
             return;
         }
-        
+
         gameMode.update(tpf);
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+    
+    public void playerJoined(int playerId) {
+        gameMode.playerJoined(playerId);
     }
 }

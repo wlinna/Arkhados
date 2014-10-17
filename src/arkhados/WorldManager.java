@@ -326,13 +326,14 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void removeEntity(int id, int reason) {
-        ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
-
-        syncManager.removeEntity(id);
         Spatial spatial = entities.remove(id);
         if (spatial == null) {
             return;
         }
+        
+        ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
+
+        syncManager.removeEntity(id);        
 
         if (serverFogManager != null) {
             serverFogManager.removeEntity(spatial, new RemoveEntityCommand(id, reason));

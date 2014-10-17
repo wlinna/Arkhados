@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.DeathMatch;
 import arkhados.messages.MessageUtils;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
@@ -72,7 +73,7 @@ public class ServerMain extends SimpleApplication {
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
         worldManager = new WorldManager();
-        gameManager = new ServerGameManager();
+        gameManager = new ServerGameManager(new DeathMatch());
         physicsState = new BulletAppState();
         physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         flyCam.setEnabled(false);
@@ -110,7 +111,7 @@ public class ServerMain extends SimpleApplication {
         stateManager.attach(gameManager);
         stateManager.attach(physicsState);
 
-        physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
+        physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);        
     }
 
     public void startGame() {
@@ -118,6 +119,7 @@ public class ServerMain extends SimpleApplication {
         flyCam.setMoveSpeed(25.0f);
         inputManager.setCursorVisible(true);
         enqueue(new Callable<Void>() {
+            @Override
             public Void call() throws Exception {
                 gameManager.startGame();
                 return null;

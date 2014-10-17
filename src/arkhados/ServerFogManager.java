@@ -36,7 +36,7 @@ import com.jme3.network.HostedConnection;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,7 +50,8 @@ public class ServerFogManager extends AbstractAppState {
 
     private static final Logger logger = Logger.getLogger(ServerFogManager.class.getName());
     private Application app;
-    private final Map<PlayerEntityAwareness, HostedConnection> awarenessConnectionMap = new HashMap<>();
+    private final Map<PlayerEntityAwareness, HostedConnection> awarenessConnectionMap =
+            new LinkedHashMap<>();
     private Node walls;
     private float checkTimer = 0;
 
@@ -112,6 +113,10 @@ public class ServerFogManager extends AbstractAppState {
             PlayerEntityAwareness awareness = entry.getKey();
             if (awareness.removeEntity(spatial)) {
                 sender.addCommandForSingle(command, entry.getValue());
+            }
+
+            if (awareness.getOwnSpatial() == spatial) {
+                awareness.setOwnSpatial(null);
             }
         }
     }
@@ -185,6 +190,17 @@ public class ServerFogManager extends AbstractAppState {
         }
 
         return playerAwareness;
+    }
+
+    public void teachAboutPrecedingEntities(PlayerEntityAwareness awareness) {
+        // TODO IMPORTANT: This is not enough. There might be something near player at spawn time
+        for (PlayerEntityAwareness otherAwareness : awarenessConnectionMap.keySet()) {
+            if (otherAwareness == awareness) {
+                break;
+            }
+
+            awareness.addEntity(otherAwareness.getOwnSpatial());
+        }
     }
 
     public void registerCharacterForPlayer(int playerId, Spatial character) {

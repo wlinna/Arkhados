@@ -51,7 +51,7 @@ public class LastManStanding extends GameMode {
     }
 
     @Override
-    public void playerDied(int playerId) {
+    public void playerDied(int playerId, int killersPlayerId) {
     }
 
     @Override

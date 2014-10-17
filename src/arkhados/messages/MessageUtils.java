@@ -67,7 +67,6 @@ public class MessageUtils {
         Serializer.registerClass(RoundStartCountdownCommand.class);
         // </RoundProtocol>
 
-        Serializer.registerClass(SetPlayersCharacterCommand.class);
 
         // <Sync>
         Serializer.registerClass(AddEntityCommand.class);
@@ -80,12 +79,16 @@ public class MessageUtils {
         Serializer.registerClass(BuffCommand.class);
         // </Sync>
 
-        Serializer.registerClass(BattleStatisticsResponse.class);
-
         // <UserCommands>
         Serializer.registerClass(UcCastSpellCommand.class);
         Serializer.registerClass(UcWalkDirection.class);
         Serializer.registerClass(UcMouseTargetCommand.class);
-        // </UserCommands>        
+        // </UserCommands>
+
+        // <Other>
+        Serializer.registerClass(SetPlayersCharacterCommand.class);
+        Serializer.registerClass(BattleStatisticsResponse.class);
+        Serializer.registerClass(PlayerKillCommand.class);
+        // </Other>
     }
 }

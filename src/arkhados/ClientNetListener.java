@@ -173,7 +173,6 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
             ClientLoginCommand command = new ClientLoginCommand(name);
             sender.addCommand(command);
             handshakeComplete = true;
-            app.toLobby();
             app.setStatusText("");
         }
     }

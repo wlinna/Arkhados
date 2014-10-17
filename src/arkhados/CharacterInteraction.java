@@ -15,6 +15,7 @@
 package arkhados;
 
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.gamemode.GameMode;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.RoundStats;
 import arkhados.util.UserDataStrings;
@@ -27,36 +28,46 @@ import java.util.List;
  * @author william
  */
 public class CharacterInteraction {
-    private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
 
-    public static void harm(final InfluenceInterfaceControl attacker,
-            final InfluenceInterfaceControl target, final float rawDamage,
-            final List<AbstractBuff> buffs, final boolean canBreakCC) {
+    private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
+    // TODO: Consider if we really want to put gameMode here or not
+    public static GameMode gameMode = null;
+
+    public static void harm(InfluenceInterfaceControl attacker,
+            InfluenceInterfaceControl target, final float rawDamage,
+            List<AbstractBuff> buffs, boolean canBreakCC) {
 
         if (target == null) {
             return;
         }
-        
+
         if (target.isDead()) {
             return;
         }
 
         final float damageDone = target.doDamage(rawDamage, canBreakCC);
 
+        int attackerPlayerId;
+
         if (attacker != null) {
-            final Spatial attackerSpatial = attacker.getSpatial();
-            final Float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
-            final float lifeStolen = lifeSteal * damageDone;
+            Spatial attackerSpatial = attacker.getSpatial();
+            float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
+            float lifeStolen = lifeSteal * damageDone;
             attacker.heal(lifeStolen);
 
-            final Integer playerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
-            getCurrentRoundStats().addDamageForPlayer(playerId, damageDone);
-            getCurrentRoundStats().addHealthRestorationForPlayer(playerId, lifeStolen);
-
-            if (target.isDead()) {
-                getCurrentRoundStats().addKill(playerId);
-            }
+            attackerPlayerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
+            getCurrentRoundStats().addDamageForPlayer(attackerPlayerId, damageDone);
+            getCurrentRoundStats().addHealthRestorationForPlayer(attackerPlayerId, lifeStolen);
+        } else {
+            attackerPlayerId = -1;
         }
+
+        if (target.isDead()) {
+            getCurrentRoundStats().addKill(attackerPlayerId);
+            int deadPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+            gameMode.playerDied(deadPlayerId, attackerPlayerId);
+        }
+
         if (buffs != null) {
             for (AbstractBuff buff : buffs) {
                 if (buff != null && !buff.isFriendly()) {

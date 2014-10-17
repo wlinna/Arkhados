@@ -31,6 +31,7 @@
  */
 package arkhados;
 
+import com.jme3.network.HostedConnection;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -39,8 +40,9 @@ import java.util.HashMap;
  * @author normenhansen
  */
 public class ServerClientData {
-
-    private static HashMap<Integer, ServerClientData> players = new HashMap<>();
+    
+    private static final HashMap<Integer, HostedConnection> connections = new HashMap<>();
+    private static final HashMap<Integer, ServerClientData> players = new HashMap<>();
     private int id;
     private long latencySampleCount = 0;
     private float latestLatency;
@@ -51,7 +53,7 @@ public class ServerClientData {
     public static synchronized Collection<Integer> getClients() {
         return players.keySet();
     }
-
+    
     public static synchronized void add(int id) {
         ServerClientData.players.put(id, new ServerClientData(id));                
     }
@@ -92,6 +94,14 @@ public class ServerClientData {
         return ServerClientData.players.get(id).getAverageLatency();
     }
 
+    public static synchronized void addConnection(int playerId, HostedConnection connection) {
+        connections.put(playerId, connection);
+    }
+    
+    public static synchronized HostedConnection getConnection(int playerId) {
+        return connections.get(playerId);
+    }
+    
     /**
      * Object implementation of ClientData
      */
@@ -116,16 +126,16 @@ public class ServerClientData {
     }
     
     public void addLatencySample(float latency) {
-        this.averageLatency = (this.averageLatency * this.latencySampleCount + latency) / (this.latencySampleCount + 1);
-        this.latestLatency = latency;
-        ++this.latencySampleCount;
+        averageLatency = (averageLatency * latencySampleCount + latency) / (latencySampleCount + 1);
+        latestLatency = latency;
+        ++latencySampleCount;
     }
     
     public float getAverageLatency() {
-        return this.averageLatency;
+        return averageLatency;
     }
     
     public float getLatestLatency() {
-        return this.latestLatency;
+        return latestLatency;
     }
 }

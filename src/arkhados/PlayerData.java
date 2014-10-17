@@ -49,7 +49,7 @@ import java.util.Map.Entry;
  * TODO: Many methods use LinkedList instead of ArrayList. Consider converting to ArrayList.
  */
 @Serializable
-public class PlayerData {
+public final class PlayerData {
 
     private static HashMap<Integer, PlayerData> players = new HashMap<>();
     private int id;
@@ -59,6 +59,10 @@ public class PlayerData {
     private HashMap<String, Long> longData = new HashMap<>();
     private HashMap<String, Boolean> booleanData = new HashMap<>();
     private HashMap<String, String> stringData = new HashMap<>();
+
+    public static synchronized PlayerData getPlayerId(int id) {
+        return players.get(id);
+    }
 
     public static synchronized List<PlayerData> getHumanPlayers() {
         LinkedList<PlayerData> list = new LinkedList<>();
@@ -196,12 +200,11 @@ public class PlayerData {
         this(id, name, -1);
     }
 
-
     public PlayerData(int id, String name, int aiControl) {
         this.id = id;
         this.aiControl = aiControl;
-        this.setData("name", name);
-        this.setData("entity-id", -1);
+        setData("name", name);
+        setData("entity-id", -1);
     }
 
     public int getId() {

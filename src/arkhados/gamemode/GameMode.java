@@ -33,7 +33,12 @@ public abstract class GameMode {
 
     public abstract void update(float tpf);
 
-    public abstract void playerDied(int playerId);
+    public void playerJoined(int playerId) { }
+    
+    public abstract void playerDied(int playerId, int killersPlayerId);
+    
+    public void cleanup() {        
+    }  
     
     public void gameEnded() {        
         if (app instanceof ClientMain) {
@@ -52,5 +57,5 @@ public abstract class GameMode {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }
+    }    
 }

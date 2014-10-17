@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.gamemode.LastManStanding;
 import arkhados.ui.hud.ClientHudManager;
@@ -270,14 +271,21 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             public Void call() throws Exception {
                 switch (gameModeString) {
                     case "LastManStanding":
+                        toLobby();
                         gameMode = new LastManStanding();
                         gameMode.initialize(ClientMain.this);
+                        break;
+                    case "DeathMatch":
+                        DeathMatch dm = new DeathMatch();
+                        gameMode = dm;
+                        gameMode.initialize(ClientMain.this);
+                        dm.setNifty(nifty);
+                        gameMode.startGame();
                         break;
                 }
                 return null;
             }
         });
-
     }
 
     public void toLobby() {
@@ -374,9 +382,10 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void gameEnded() {
-        this.gameMode = null;
+        gameMode.cleanup();
+        gameMode = null;
     }
-    
+
     public void gotoMenu(final String menu) {
         enqueue(new Callable<Void>() {
             @Override

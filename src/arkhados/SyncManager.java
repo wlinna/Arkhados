@@ -115,7 +115,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
         }
     }
 
-    void addObject(int id, Object object) {
+    public void addObject(int id, Object object) {
         syncObjects.put(id, object);
     }
 
