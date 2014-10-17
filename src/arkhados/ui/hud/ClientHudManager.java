@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @author william
  */
-// TODO: ClientHudManager is kind of messy and fragile. Please clean it up.
+// TODO: ClientHudManager is messy and fragile. Clean it up.
 public class ClientHudManager extends AbstractAppState implements ScreenController {
 
     private Nifty nifty;

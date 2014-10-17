@@ -30,12 +30,12 @@ public class RoundStats {
     public void initializeRound() {
         final List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
-            this.playerStats.put(playerData.getId(), new PlayerRoundStats(playerData.getId()));
+            playerStats.put(playerData.getId(), new PlayerRoundStats(playerData.getId()));
         }
     }
     
-    public void addDamageForPlayer(final Integer playerId, float damage) {
-        final PlayerRoundStats player = this.playerStats.get(playerId);
+    public void addDamageForPlayer(Integer playerId, float damage) {
+        PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
             return;
@@ -45,7 +45,7 @@ public class RoundStats {
     }
 
     public void addHealthRestorationForPlayer(final Integer playerId, float restoration) {
-        final PlayerRoundStats player = this.playerStats.get(playerId);
+        PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
             return;
@@ -54,8 +54,12 @@ public class RoundStats {
         player.healthRestored += restoration;
     }
     
-    public void addKill(final Integer playerId) {
-        final PlayerRoundStats player = this.playerStats.get(playerId);
+    public void addKill(int playerId) {
+        if (playerId == -1) {
+            return;
+        }
+        
+        PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
             return;
@@ -65,7 +69,7 @@ public class RoundStats {
     }
     
     public ArrayList<PlayerRoundStats> buildCurrentPlayerRoundStatsList() {
-        final ArrayList<PlayerRoundStats> playerRoundStatsList = new ArrayList<>(playerStats.values());
+        ArrayList<PlayerRoundStats> playerRoundStatsList = new ArrayList<>(playerStats.values());
         return playerRoundStatsList;
     }
 }

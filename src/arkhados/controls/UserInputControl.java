@@ -48,13 +48,14 @@ public class UserInputControl extends AbstractControl {
         if (!influenceInterface.canControlMovement()
                 || !influenceInterface.canMove()
                 || physics.isMotionControlled()
+                || influenceInterface.isDead()
                 || !Globals.worldRunning) {
             return;
         }
 
         int right = inputState.previousRight;
         int down = inputState.previousDown;
-        
+
         Vector3f newWalkDirection = new Vector3f(right, 0, down);
         Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
@@ -86,12 +87,15 @@ public class UserInputControl extends AbstractControl {
      * Sets walk direction based on saved saved direction
      */
     public void restoreWalking() {
+        InfluenceInterfaceControl influenceInterface =
+                spatial.getControl(InfluenceInterfaceControl.class);
         CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)
-                || physics.isMotionControlled() || !Globals.worldRunning) {
+                || physics.isMotionControlled() || influenceInterface.isDead()
+                || !Globals.worldRunning) {
             return;
         }
-                
+
         Vector3f newWalkDirection = new Vector3f(inputState.previousRight, 0, inputState.previousDown);
         float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
         newWalkDirection.normalizeLocal().multLocal(speedMovement);
