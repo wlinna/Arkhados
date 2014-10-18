@@ -16,6 +16,7 @@ package arkhados.gamemode;
 
 import arkhados.CharacterInteraction;
 import arkhados.Globals;
+import arkhados.MusicManager;
 import arkhados.PlayerData;
 import arkhados.ServerFogManager;
 import arkhados.SyncManager;
@@ -253,6 +254,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         super.cleanup();
         nifty.removeScreen("deathmatch-hero-selection");
         nifty.unregisterScreenController(heroSelectionScreenController);
+        stateManager.getState(MusicManager.class).setPlaying(false);
     }
 }
 

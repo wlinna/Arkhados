@@ -28,6 +28,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.FastMath;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 /**
@@ -44,39 +45,37 @@ public class MusicManager extends AbstractAppState {
     private boolean playing = false;
     private final Application app;
     private final InputManager inputManager;
+    private String currentHero = "";
 
     public MusicManager(Application app, InputManager inputManager, AssetManager assetManager) {
         this.assetManager = assetManager;
         this.app = app;
         this.inputManager = inputManager;
-        
+
         inputManager.addMapping(InputMappingStrings.VOLUME_UP, new KeyTrigger(KeyInput.KEY_F10));
         inputManager.addMapping(InputMappingStrings.VOLUME_DOWN, new KeyTrigger(KeyInput.KEY_F9));
-        
-        inputManager.addListener(changeVolumeActionListener, InputMappingStrings.VOLUME_UP, 
+
+        inputManager.addListener(changeVolumeActionListener, InputMappingStrings.VOLUME_UP,
                 InputMappingStrings.VOLUME_DOWN);
     }
-    
     private ActionListener changeVolumeActionListener = new ActionListener() {
-
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
             if (isPressed) {
                 return;
             }
             float newVolume = volume;
-            
+
             if (InputMappingStrings.VOLUME_UP.equals(name)) {
                 newVolume += 0.1f;
             } else if (InputMappingStrings.VOLUME_DOWN.equals(name)) {
                 newVolume -= 0.1f;
             }
-            
+
             newVolume = FastMath.clamp(newVolume, 0, 1);
             volume = newVolume;
-            
-            app.enqueue(new Callable<Void>() {
 
+            app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
                     if (musicPlayer != null) {
@@ -85,7 +84,7 @@ public class MusicManager extends AbstractAppState {
                     return null;
                 }
             });
-            
+
         }
     };
 
@@ -103,12 +102,19 @@ public class MusicManager extends AbstractAppState {
         musicPlayer.play();
     }
 
-    public void start() {
-        playing = !heroMusic.isEmpty();
-    }
-
     public void setHero(String heroName) {
+        if (currentHero.equals(heroName)) {
+            return;
+        }
+
+        if (musicPlayer != null) {
+            musicPlayer.stop();
+        }
+
         heroMusic.clear();
+
+        currentHero = heroName;
+
         switch (heroName) {
             case "EmberMage":
                 heroMusic.add(generateHeroMusicPath(heroName, "TheDarkAmulet"));
@@ -121,10 +127,14 @@ public class MusicManager extends AbstractAppState {
             case "Venator":
                 break;
         }
+        if (heroMusic.size() > 0) {
+            heroMusicIndex = new Random().nextInt(heroMusic.size());
+        }
     }
 
     public void clearHeroMusic() {
         heroMusic.clear();
+        currentHero = "";
     }
 
     private static String generateHeroMusicPath(String heroName, String name) {
@@ -166,6 +176,7 @@ public class MusicManager extends AbstractAppState {
     @Override
     public void stateDetached(AppStateManager stateManager) {
         super.stateDetached(stateManager);
+        currentHero = "";
         if (musicPlayer != null) {
             musicPlayer.stop();
         }
