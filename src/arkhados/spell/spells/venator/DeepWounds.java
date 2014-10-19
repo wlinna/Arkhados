@@ -27,9 +27,12 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -84,8 +87,8 @@ class CastDeepWoundsAction extends EntityAction {
 
         BleedBuff bleedBuff = new BleedBuff(-1, 5f);
         bleedBuff.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
-        
-        Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+
+        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         bleedBuff.setDamagePerUnit(2f * damageFactor);
         charge.addBuff(bleedBuff);
 
@@ -94,7 +97,7 @@ class CastDeepWoundsAction extends EntityAction {
     }
 }
 
-class ChargeAction extends EntityAction {
+class ChargeAction extends EntityAction implements PhysicsCollisionListener {
 
     private boolean isCharging = false;
     private final float chargeSpeed = 255f;
@@ -104,6 +107,8 @@ class ChargeAction extends EntityAction {
     private GhostControl ghost;
     private Node ghostNode;
     private List<AbstractBuff> buffs = new ArrayList<>();
+    private boolean hasCollided = false;
+    private Spatial collidedWith = null;
 
     public ChargeAction(final DeepWounds spell) {
         range = spell.getRange();
@@ -128,23 +133,16 @@ class ChargeAction extends EntityAction {
         ghostNode.addControl(ghost);
 
         physics.getPhysicsSpace().add(ghost);
+        physics.getPhysicsSpace().addCollisionListener(this);
     }
 
     @Override
     public boolean update(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects = ghost.getOverlappingObjects();
-        for (PhysicsCollisionObject collisionObject : collisionObjects) {
-            if (collisionObject.getUserObject() instanceof Spatial) {
-                Spatial target = (Spatial) collisionObject.getUserObject();
-                if (target == spatial) {
-                    continue;
-                }
-
-                if (collisionObject.getCollisionGroup() == CollisionGroups.CHARACTERS) {
-                    collided(target);
-                }
-                return false;
+        if (hasCollided) {
+            if (collidedWith != null) {
+                collided(collidedWith);
             }
+            return false;
         }
 
         CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
@@ -174,7 +172,7 @@ class ChargeAction extends EntityAction {
     }
 
     private void collided(Spatial target) {
-        final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         final float rawDamage = 100f * damageFactor;
 
         InfluenceInterfaceControl targetInfluenceControl =
@@ -196,9 +194,37 @@ class ChargeAction extends EntityAction {
         physics.setWalkDirection(Vector3f.ZERO);
         physics.enqueueSetLinearVelocity(Vector3f.ZERO);
 
+        ghost.getPhysicsSpace().removeCollisionListener(this);
+
         ghost.getPhysicsSpace().remove(ghost);
         ghostNode.removeFromParent();
         ghostNode.removeControl(ghost);
+    }
+
+    @Override
+    public void collision(PhysicsCollisionEvent event) {
+        if (hasCollided) {
+            return;
+        }
+        if ((event.getObjectA() != ghost && event.getObjectB() != ghost) ||
+                (event.getObjectA().getUserObject() == event.getObjectB().getUserObject())) {
+            return;
+        }
+               
+        PhysicsCollisionObject otherObject = event.getObjectA().getUserObject() == spatial
+                ? event.getObjectB()
+                : event.getObjectA();        
+
+        if (otherObject.getCollisionGroup() != CollisionGroups.CHARACTERS &&
+                otherObject.getCollisionGroup() != CollisionGroups.WALLS) {
+            return;
+        }
+
+        hasCollided = true;
+
+        if (otherObject.getCollisionGroup() == CollisionGroups.CHARACTERS) {
+            collidedWith = (Spatial) otherObject.getUserObject();
+        }
     }
 }
 
