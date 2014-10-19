@@ -68,6 +68,9 @@ public class PlayerEntityAwareness {
     }
 
     public void update(float tpf) {
+        if (ownSpatial == null) {
+            return;
+        }
         for (Map.Entry<Spatial, Boolean> entry : entityFlags.entrySet()) {
             Spatial character = entry.getKey();
 
@@ -147,7 +150,7 @@ public class PlayerEntityAwareness {
             return true;
         }
         if (!entityFlags.containsKey(other)) {
-            return true;
+            return true; // This needs explanation. It seems counter-intuitive
         }
 
         return entityFlags.get(other);

@@ -43,7 +43,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Manages things so that players are not aware of other entities behind walls or too far away
+ * TODO: ServerFogManager is too complex and error prone. Refactor it
  * @author william
  */
 public class ServerFogManager extends AbstractAppState {
@@ -99,7 +100,8 @@ public class ServerFogManager extends AbstractAppState {
             }
 
             if (awareness != myAwareness && myAwareness != null) {
-                if (myAwareness.testVisibility(awareness.getOwnSpatial())) {
+                if (myAwareness.testVisibility(awareness.getOwnSpatial()) &&
+                        !myAwareness.isAwareOf(awareness.getOwnSpatial())) {
                     visibilityChanged(myAwareness, awareness.getOwnSpatial(), true);
                 }
             }
@@ -116,6 +118,9 @@ public class ServerFogManager extends AbstractAppState {
             }
 
             if (awareness.getOwnSpatial() == spatial) {
+                int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                logger.log(Level.INFO, "Character with id {0} belonged for player with id {1}. Nulling",
+                        new Object[]{entityId, awareness.getPlayerId()});
                 awareness.setOwnSpatial(null);
             }
         }
@@ -202,8 +207,11 @@ public class ServerFogManager extends AbstractAppState {
             awareness.addEntity(otherAwareness.getOwnSpatial());
         }
     }
-
+    
     public void registerCharacterForPlayer(int playerId, Spatial character) {
+        int entityId = character.getUserData(UserDataStrings.ENTITY_ID);
+        logger.log(Level.INFO, "Registering character with id {0} for player with id {1}",
+                new Object[]{entityId, playerId});
         for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
             if (playerEntityAwareness.getPlayerId() == playerId) {
                 playerEntityAwareness.setOwnSpatial(character);
@@ -226,8 +234,8 @@ public class ServerFogManager extends AbstractAppState {
 
         return null;
     }
-
-    public void clearAwareness() {
+    
+    public void clearAwarenesses() {
         for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
             Spatial spatial = playerEntityAwareness.getOwnSpatial();
             if (spatial != null) {

@@ -246,6 +246,8 @@ public class WorldManager extends AbstractAppState {
         boolean isCharacter = entity.getControl(CharacterPhysicsControl.class) != null;
 
         if (isCharacter && PlayerData.isHuman(playerId)) {
+            logger.log(Level.INFO, "Adding entity {0} for player {1}", new Object[]{id, playerId});
+
             UserInputControl userInputControl = new UserInputControl();
             if (isServer()) {
                 ServerPlayerInputState inputState = ServerPlayerInputHandler.get()
@@ -326,14 +328,16 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void removeEntity(int id, int reason) {
+        logger.log(Level.INFO, "Removing entity with id {0}", id);
+
         Spatial spatial = entities.remove(id);
         if (spatial == null) {
             return;
         }
-        
+
         ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
 
-        syncManager.removeEntity(id);        
+        syncManager.removeEntity(id);
 
         if (serverFogManager != null) {
             serverFogManager.removeEntity(spatial, new RemoveEntityCommand(id, reason));
@@ -347,6 +351,7 @@ public class WorldManager extends AbstractAppState {
                 }
 
                 if (reason == RemovalReasons.DISAPPEARED) {
+                    logger.log(Level.INFO, "Entity {0} disappeared", id);
                     UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
                     if (id == userCommandManager.getCharacterId()) {
                         userCommandManager.nullifyCharacter();
@@ -355,13 +360,13 @@ public class WorldManager extends AbstractAppState {
             }
 
             app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);
-            
+
             // TODO: Consider doing this to all controls to generalize destruction
             CharacterBuffControl buffControl = spatial.getControl(CharacterBuffControl.class);
             spatial.removeControl(buffControl);
         }
-                
-        
+
+
         spatial.removeFromParent();
         LightControl lightControl = spatial.getControl(LightControl.class);
         if (lightControl != null) {

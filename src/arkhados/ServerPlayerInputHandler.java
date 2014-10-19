@@ -72,6 +72,7 @@ public class ServerPlayerInputHandler implements CommandHandler {
         final int playerId = ServerClientData.getPlayerId(source.getId());
 
         if (playerId != -1) {
+            // TODO: Consider if this is the best place to put app.enqueue
             app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {

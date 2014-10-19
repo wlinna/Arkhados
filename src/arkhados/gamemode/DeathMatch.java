@@ -138,7 +138,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         final Callable<Void> callable =
                 new Callable<Void>() {
             @Override
-            public Void call() throws Exception {
+            public Void call() throws Exception {                
                 int oldEntityId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
                 worldManager.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
@@ -150,12 +150,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                         new Quaternion(), playerId);
                 playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
 
-                Spatial spatial = worldManager.getEntity(entityId);
-
                 SetPlayersCharacterCommand playersCharacterCommand =
                         new SetPlayersCharacterCommand(entityId, playerId);
-                ServerFogManager fogManager = stateManager.getState(ServerFogManager.class);
-                fogManager.registerCharacterForPlayer(playerId, spatial);
 
                 stateManager.getState(ServerSender.class).addCommand(playersCharacterCommand);
                 return null;
@@ -168,7 +164,6 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 getApp().enqueue(callable);
             }
         }, delay);
-
     }
 
     private Vector3f getNewSpawnLocation() {
@@ -199,7 +194,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 UserCommandManager userCommandManager =
                         stateManager.getState(UserCommandManager.class);
                 int characterId = userCommandManager.getCharacterId();
-                worldManager.removeEntity(characterId, spawnLocationIndex);
+                worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
                 userCommandManager.nullifyCharacter();
                 stateManager.getState(ClientHudManager.class).clear();
                 nifty.gotoScreen("deathmatch-hero-selection");

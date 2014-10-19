@@ -195,7 +195,7 @@ public class RoundManager implements CommandHandler {
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
             logger.log(Level.INFO, "Disabling syncManager");
 
-            app.getStateManager().getState(ServerFogManager.class).clearAwareness();
+            app.getStateManager().getState(ServerFogManager.class).clearAwarenesses();
             syncManager.stopListening();
         }
         roundRunning = false;
