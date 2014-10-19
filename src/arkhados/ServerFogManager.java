@@ -43,8 +43,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Manages things so that players are not aware of other entities behind walls or too far away
- * TODO: ServerFogManager is too complex and error prone. Refactor it
+ * Manages things so that players are not aware of other entities behind walls or too far away TODO:
+ * ServerFogManager is too complex and error prone. Refactor it
+ *
  * @author william
  */
 public class ServerFogManager extends AbstractAppState {
@@ -90,7 +91,7 @@ public class ServerFogManager extends AbstractAppState {
     public void createNewEntity(Spatial spatial, Command command) {
         ServerSender sender = app.getStateManager().getState(ServerSender.class);
 
-        PlayerEntityAwareness myAwareness = searchForAwareness(spatial);
+//        PlayerEntityAwareness myAwareness = searchForAwareness(spatial);
 
         for (Map.Entry<PlayerEntityAwareness, HostedConnection> entry : awarenessConnectionMap.entrySet()) {
             PlayerEntityAwareness awareness = entry.getKey();
@@ -99,12 +100,14 @@ public class ServerFogManager extends AbstractAppState {
                 sender.addCommandForSingle(command, entry.getValue());
             }
 
-            if (awareness != myAwareness && myAwareness != null) {
-                if (myAwareness.testVisibility(awareness.getOwnSpatial()) &&
-                        !myAwareness.isAwareOf(awareness.getOwnSpatial())) {
-                    visibilityChanged(myAwareness, awareness.getOwnSpatial(), true);
-                }
-            }
+            // This is at least temporarily disabled because it seems to cause problems and it's
+            // not clear what its benefits are
+//            if (awareness != myAwareness && myAwareness != null) {
+//                if (myAwareness.testVisibility(awareness.getOwnSpatial()) &&
+//                        !myAwareness.isAwareOf(awareness.getOwnSpatial())) {
+////                    visibilityChanged(myAwareness, awareness.getOwnSpatial(), true);
+//                }
+//            }
         }
     }
 
@@ -129,8 +132,8 @@ public class ServerFogManager extends AbstractAppState {
     public void visibilityChanged(PlayerEntityAwareness awareness, Spatial target, boolean sees) {
         int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
 
-        logger.log(Level.INFO, "Visibility of target {0} changed for awareness {1}. Sees: {2}",
-                new Object[]{entityId, awareness.getPlayerId(), sees});
+//        logger.log(Level.INFO, "Visibility of target {0} changed for awareness {1}. Sees: {2}",
+//                new Object[]{entityId, awareness.getPlayerId(), sees});
 
         ServerSender sender = app.getStateManager().getState(ServerSender.class);
 
@@ -207,7 +210,7 @@ public class ServerFogManager extends AbstractAppState {
             awareness.addEntity(otherAwareness.getOwnSpatial());
         }
     }
-    
+
     public void registerCharacterForPlayer(int playerId, Spatial character) {
         int entityId = character.getUserData(UserDataStrings.ENTITY_ID);
         logger.log(Level.INFO, "Registering character with id {0} for player with id {1}",
@@ -234,7 +237,7 @@ public class ServerFogManager extends AbstractAppState {
 
         return null;
     }
-    
+
     public void clearAwarenesses() {
         for (PlayerEntityAwareness playerEntityAwareness : awarenessConnectionMap.keySet()) {
             Spatial spatial = playerEntityAwareness.getOwnSpatial();
