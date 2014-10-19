@@ -55,25 +55,28 @@ public class AreaEffectControl extends AbstractControl {
     protected void controlUpdate(float tpf) {
         // HACK
         ActionQueueControl actionQueue = getSpatial().getControl(ActionQueueControl.class);
-        if (actionQueue != null &&  actionQueue.getCurrent() instanceof DelayAction) {
+        if (actionQueue != null && actionQueue.getCurrent() instanceof DelayAction) {
             return;
         }
 
-        final int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
-        List<PhysicsCollisionObject> collisionObjects = this.ghostControl.getOverlappingObjects();
+        int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        List<PhysicsCollisionObject> collisionObjects = ghostControl.getOverlappingObjects();
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (!(collisionObject.getUserObject() instanceof Spatial)) {
                 continue;
             }
-            final Spatial other = (Spatial) collisionObject.getUserObject();
-            final InfluenceInterfaceControl targetInterface = other.getControl(InfluenceInterfaceControl.class);
+            Spatial other = (Spatial) collisionObject.getUserObject();
+            InfluenceInterfaceControl targetInterface =
+                    other.getControl(InfluenceInterfaceControl.class);
+
             if (targetInterface == null) {
                 continue;
             }
-            final Integer othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
-            final Integer othersTeamId = PlayerData.getIntData(othersPlayerId, PlayerDataStrings.TEAM_ID);
-            final boolean sameTeam = myTeamId == othersTeamId;
+
+            int othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+            int othersTeamId = PlayerData.getIntData(othersPlayerId, PlayerDataStrings.TEAM_ID);
+            boolean sameTeam = myTeamId == othersTeamId;
             for (Influence influence : influences) {
                 if (sameTeam && influence.isFriendly()) {
                     influence.affect(targetInterface, tpf);
@@ -85,7 +88,8 @@ public class AreaEffectControl extends AbstractControl {
             if (!enteredPlayers.containsKey(targetInterface)) {
                 enteredPlayers.put(targetInterface, false);
                 if (!sameTeam) {
-                    CharacterInteraction.harm(ownerInterface, targetInterface, 0f, enterBuffs, false);
+                    CharacterInteraction.harm(ownerInterface, targetInterface, 0f,
+                            enterBuffs, false);
                 }
             }
         }
@@ -97,6 +101,8 @@ public class AreaEffectControl extends AbstractControl {
         if (influence == null) {
             throw new IllegalArgumentException("Nulls not allowed in containers");
         }
+
+        influence.setOwner(ownerInterface);
         influences.add(influence);
     }
 
@@ -104,6 +110,7 @@ public class AreaEffectControl extends AbstractControl {
         if (buff == null) {
             throw new IllegalArgumentException("Nulls not allowed in containers");
         }
+
         enterBuffs.add(buff);
     }
 
@@ -111,6 +118,7 @@ public class AreaEffectControl extends AbstractControl {
         if (buff == null) {
             throw new IllegalArgumentException("Nulls not allowed in containers");
         }
+
         exitBuffs.add(buff);
     }
 
@@ -122,6 +130,7 @@ public class AreaEffectControl extends AbstractControl {
         if (ownerInterface == null) {
             throw new IllegalArgumentException("Null cannot be ownerInterface");
         }
+
         this.ownerInterface = ownerInterface;
     }
 }

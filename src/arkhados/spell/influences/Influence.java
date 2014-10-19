@@ -15,7 +15,6 @@
 package arkhados.spell.influences;
 
 import arkhados.controls.InfluenceInterfaceControl;
-import com.jme3.scene.Spatial;
 
 /**
  *
@@ -25,4 +24,6 @@ public  interface Influence {
 
     public boolean isFriendly();
     public void affect(InfluenceInterfaceControl target, float tpf);
+    
+    public void setOwner(InfluenceInterfaceControl influenceInterface);
 }

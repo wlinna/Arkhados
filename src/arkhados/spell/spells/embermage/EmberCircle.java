@@ -25,7 +25,7 @@ import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.DamageOverTimeBuff;
-import arkhados.spell.influences.DamagOverTimeInfluence;
+import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.audio.AudioNode;
@@ -91,9 +91,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         node.setQueueBucket(RenderQueue.Bucket.Transparent);
         material.setTexture("AlphaMap", assetManager.loadTexture("Textures/EmberCircleAlphaMap.png"));
-//        material.setBoolean("UseAlpha", true);
         node.setMaterial(material);
-
 
         node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
         ActionQueueControl actionQueue = new ActionQueueControl();
@@ -112,9 +110,9 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {
-                    Float dps = (Float) spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
-                    areaEffectControl.addInfluence(new DamagOverTimeInfluence(dps));
-
+                    float dps = spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
+                    areaEffectControl.addInfluence(new DamageOverTimeInfluence(dps));
+                    
                     node.addControl(new TimedExistenceControl(5f, true));
 
                     return false;

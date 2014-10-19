@@ -17,24 +17,19 @@ package arkhados.spell.influences;
 import arkhados.controls.InfluenceInterfaceControl;
 
 /**
+ *
  * @author william
  */
-public class DamagOverTimeInfluence implements Influence {
 
-    private float dps;
 
-    public DamagOverTimeInfluence(float dps) {
-        this.dps = dps;
+public abstract class AbstractInfluence implements Influence {
+    private InfluenceInterfaceControl owner = null;
+
+    public InfluenceInterfaceControl getOwner() {
+        return owner;
     }
 
-    public void affect(final InfluenceInterfaceControl targetInterface, final float tpf) {
-        if (targetInterface != null) {
-            // FIXME: Rounding errors cause significant changes in total damage
-            targetInterface.doDamage(this.dps * tpf, true);
-        }
-    }
-
-    public boolean isFriendly() {
-        return false;
+    public void setOwner(InfluenceInterfaceControl owner) {
+        this.owner = owner;
     }
 }

@@ -25,7 +25,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
-import arkhados.spell.influences.DamagOverTimeInfluence;
+import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -82,10 +82,15 @@ public class PurifyingFlame extends Spell {
                     }
 
                     float baseDps = 100f;
-                    final Float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    final float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
                     final float dps = baseDps * damageFactor;
-
-                    areaEffectControl.addInfluence(new DamagOverTimeInfluence(dps));
+                    DamageOverTimeInfluence damageOverTime = new DamageOverTimeInfluence(dps);
+                    damageOverTime.setBreaksCrowdControl(false);
+                    areaEffectControl.addInfluence(damageOverTime);
+                    
+                    InfluenceInterfaceControl casterInfluenceInterface =
+                            caster.getControl(InfluenceInterfaceControl.class);                    
+                    areaEffectControl.setOwnerInterface(casterInfluenceInterface);
 
                     aoeContainer.addControl(areaEffectControl);
 
