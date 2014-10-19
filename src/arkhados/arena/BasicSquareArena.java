@@ -45,7 +45,7 @@ public class BasicSquareArena extends AbstractArena {
     @Override
     public void readWorld(WorldManager worldManager, AssetManager assetManager) {
         super.readWorld(worldManager, assetManager);
-        
+
         this.resetWallPhysics(worldManager.getSpace());
 
         final Vector3f extent = ((BoundingBox) super.getTerrainNode().getWorldBound()).getExtent(new Vector3f());
@@ -55,18 +55,18 @@ public class BasicSquareArena extends AbstractArena {
             this.createLavaQuad();
             worldManager.getClientMain().getAudioRenderer().setEnvironment(new Environment(Environment.Cavern));
         }
-    } 
-    
+    }
+
     private void createLavaQuad() {
         Quad quad = new Quad(512, 512, true);
         Geometry geom = new Geometry("lava-terrain", quad);
         final Material lavaMaterial = super.getAssetManager().loadMaterial("Materials/LavaTerrain.j3m");
         geom.setMaterial(lavaMaterial);
-        ((Node)super.getWorldManager().getWorldRoot().getChild("terrain")).attachChild(geom);
-        
+        ((Node) super.getWorldManager().getWorldRoot().getChild("terrain")).attachChild(geom);
+
         geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
         geom.setLocalTranslation(-256, -2, -256);
-        
+
         final AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(ColorRGBA.White.mult(0.3f));
         super.getTerrainNode().getParent().addLight(ambientLight);
@@ -83,19 +83,18 @@ public class BasicSquareArena extends AbstractArena {
 
     private void resetWallPhysics(PhysicsSpace space) {
         List<Spatial> children = ((Node) this.getTerrainNode().getChild("Walls")).getChildren();
-        for (Spatial wall : children) {
-            
-            // TODO: Use only fog's mesh shape to build collision mesh
-//            Node node = (Node) wallGroup;
-            
-//            Spatial wall = node.getChild("Wall");            
-            
-            wall.removeControl(PhysicsControl.class);
+        for (Spatial wallNode : children) {
+            Spatial wall = ((Node) wallNode).getChild("Wall");
+            wall.scale(6f);
+
+            space.removeAll(wallNode);
 
             CollisionShape meshShape = CollisionShapeFactory.createMeshShape(wall);
+
+            wall.scale(1f / 6f);
             RigidBodyControl wallPhysics = new RigidBodyControl(meshShape, 0);
             wallPhysics.setCollideWithGroups(CollisionGroups.NONE);
-            
+
             wallPhysics.setFriction(0.5f);
             wall.addControl(wallPhysics);
             wall.getControl(RigidBodyControl.class).setCollisionGroup(CollisionGroups.WALLS);
