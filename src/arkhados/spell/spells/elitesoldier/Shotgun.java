@@ -45,7 +45,7 @@ public class Shotgun extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 0.6f;
+        final float cooldown = 0.8f;
         final float range = 80f;
         final float castTime = 0.3f;
 
@@ -54,12 +54,12 @@ public class Shotgun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                final CastShotgunAction castShotgun = new CastShotgunAction(spell, Spell.worldManager);
+                CastShotgunAction castShotgun = new CastShotgunAction(spell, Spell.worldManager);
                 return castShotgun;
             }
         };
 
-        spell.nodeBuilder = new PelletBuilder(40);
+        spell.nodeBuilder = new PelletBuilder(35);
 
         return spell;
     }
@@ -81,13 +81,14 @@ class CastShotgunAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation()).normalizeLocal();
+        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation())
+                .normalizeLocal();
         spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
-        final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
         Vector3f spawnLocation = spatial.getLocalTranslation();
         Quaternion currentRotation = new Quaternion();
@@ -97,15 +98,15 @@ class CastShotgunAction extends EntityAction {
 
             Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
 
-            final int projectileId = world.addNewEntity(spell.getId(),
-                    spawnLocation, Quaternion.IDENTITY, playerId);
-            final Spatial projectile = world.getEntity(projectileId);
+            int projectileId = world.addNewEntity(spell.getId(), spawnLocation, Quaternion.IDENTITY,
+                    playerId);
+            Spatial projectile = world.getEntity(projectileId);
 
-            final Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
-            final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+            final float damage = projectile.getUserData(UserDataStrings.DAMAGE);
+            final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-            final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
+            ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
             projectileControl.setRange(spell.getRange());
             projectileControl.setDirection(pelletDirection);
             projectileControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
