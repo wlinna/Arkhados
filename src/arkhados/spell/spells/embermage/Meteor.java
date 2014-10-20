@@ -208,7 +208,7 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
         node.setMaterial(material);
 
         node.setUserData(UserDataStrings.DAMAGE, 300f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 15000f);
+        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 25000f);
 
         final SpellBuffControl spellBuffControl = new SpellBuffControl();
         node.addControl(spellBuffControl);

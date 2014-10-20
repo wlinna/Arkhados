@@ -168,7 +168,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     private Vector3f getNewSpawnLocation() {
         spawnLocationIndex = (spawnLocationIndex + 1) % WorldManager.STARTING_LOCATIONS.length;
-        return WorldManager.STARTING_LOCATIONS[spawnLocationIndex].clone().setY(2f);
+        return WorldManager.STARTING_LOCATIONS[spawnLocationIndex].clone().setY(1f);
     }
 
     @Override
