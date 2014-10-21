@@ -152,6 +152,10 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
 
         hpBars.clear();
+        clearAllButHpBars();
+    }
+    
+    public void clearAllButHpBars() {
         currentSeconds = -1;
         playerCharacter = null;
 
@@ -172,7 +176,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         hideRoundStatistics();
 
         spellIcons.clear();
-        
+
         hudCreated = false;
     }
 
@@ -342,14 +346,14 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             }
         }
     }
-    
+
     public void clearBuffIcons() {
         Element buffIcons = screen.findElementByName("panel_right");
         Iterator<Element> it = buffIcons.getElements().iterator();
         for (; it.hasNext();) {
             Element element = it.next();
-            nifty.removeElement(screen, element);            
-        }        
+            nifty.removeElement(screen, element);
+        }
     }
 
     public Nifty getNifty() {

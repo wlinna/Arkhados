@@ -196,7 +196,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 int characterId = userCommandManager.getCharacterId();
                 worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
                 userCommandManager.nullifyCharacter();
-                stateManager.getState(ClientHudManager.class).clear();
+                stateManager.getState(ClientHudManager.class).clearAllButHpBars();
                 nifty.gotoScreen("deathmatch-hero-selection");
                 return null;
             }
