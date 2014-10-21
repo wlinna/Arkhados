@@ -123,9 +123,11 @@ public class DeathMatch extends GameMode implements CommandHandler {
     public void playerJoined(int playerId) {
         spawnTimers.put(playerId, new Timer(0));
         ServerFogManager fogManager = stateManager.getState(ServerFogManager.class);
-        if (fogManager != null) {
+        if (fogManager != null) { // Same as asking for if this is server
             PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerId);
             fogManager.teachAboutPrecedingEntities(awareness);
+            
+            CharacterInteraction.addPlayer(playerId);
         }
     }
 
@@ -196,7 +198,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 int characterId = userCommandManager.getCharacterId();
                 worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
                 userCommandManager.nullifyCharacter();
-                stateManager.getState(ClientHudManager.class).clearAllButHpBars();
+                ClientHudManager hudManager = stateManager.getState(ClientHudManager.class);
+                hudManager.clearAllButHpBars();
+                hudManager.showRoundStatistics();                
                 nifty.gotoScreen("deathmatch-hero-selection");
                 return null;
             }

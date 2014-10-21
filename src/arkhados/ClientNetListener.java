@@ -109,7 +109,8 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
                 handleLoginCommand((ServerLoginCommand) command);
             } else if (command instanceof BattleStatisticsResponse) {
                 BattleStatisticsResponse response = (BattleStatisticsResponse) command;
-                app.getStateManager().getState(ClientHudManager.class).updateStatistics(response.getPlayerRoundStatsList());
+                app.getStateManager().getState(ClientHudManager.class)
+                        .setLatestRoundStatsList(response.getPlayerRoundStatsList());
             } else if (command instanceof SetPlayersCharacterCommand) {
                 handleSetPlayersCharacter((SetPlayersCharacterCommand) command);
             }

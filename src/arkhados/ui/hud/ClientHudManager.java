@@ -72,6 +72,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     // HACK: 
     private boolean hudCreated = false;
     private HashMap<Integer, Float> cooldowns = null;
+    
+    private List<PlayerRoundStats> latestRoundStatsList = null;
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -196,7 +198,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private void updateHpBar(int index) {
         Node character = characters.get(index);
         BitmapText hpBar = hpBars.get(index);
-        float health = (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT);
+        float health = character.getUserData(UserDataStrings.HEALTH_CURRENT);
         if (health == 0) {
             hpBar.setText("");
             return;
@@ -205,7 +207,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         Vector3f hpBarLocation = cam.getScreenCoordinates(
                 character.getLocalTranslation().add(0, 20, 0)).add(-15, 40, 0);
         hpBar.setLocalTranslation(hpBarLocation);
-        hpBar.setText(String.format("%.0f", (Float) character.getUserData(UserDataStrings.HEALTH_CURRENT)));
+        hpBar.setText(String.format("%.0f", health));
     }
 
     public void entityDisappeared(Spatial spatial) {
@@ -245,9 +247,9 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void initializePlayerStatisticsPanels() {
-        final Element statisticsPanel = screen.findElementByName("panel_statistics");
+        Element statisticsPanel = screen.findElementByName("panel_statistics");
         assert statisticsPanel != null;
-        final List<PlayerData> playerDataList = PlayerData.getPlayers();
+        List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
             statisticsPanels.add(new PlayerStatisticsPanelBuilder(
                     playerData.getId()).build(nifty, screen, statisticsPanel));
@@ -258,24 +260,28 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         initializePlayerStatisticsPanels();
         Sender sender = stateManager.getState(Sender.class);
         sender.addCommand(new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
-        final Element statisticsLayer = screen.findElementByName("layer_statistics");
+        Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.show();
     }
 
     public void hideRoundStatistics() {
-        final Element statisticsLayer = screen.findElementByName("layer_statistics");
+        Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.hideWithoutEffect();
-    }
+    }        
 
-    public void updateStatistics(List<PlayerRoundStats> playerRoundStatsList) {
-        final Element statisticsPanel = screen.findElementByName("panel_statistics");
-        for (PlayerRoundStats playerRoundStats : playerRoundStatsList) {
+    public void updateStatistics() {
+        if (latestRoundStatsList == null) {
+            return;
+        }
+        
+        Element statisticsPanel = screen.findElementByName("panel_statistics");
+        for (PlayerRoundStats playerRoundStats : latestRoundStatsList) {
 
-            final Element damagePanel = statisticsPanel.findElementByName(
+            Element damagePanel = statisticsPanel.findElementByName(
                     playerRoundStats.playerId + "-damage");
-            final Element restorationPanel = statisticsPanel.findElementByName(
+            Element restorationPanel = statisticsPanel.findElementByName(
                     playerRoundStats.playerId + "-restoration");
-            final Element killsPanel = statisticsPanel.findElementByName(
+            Element killsPanel = statisticsPanel.findElementByName(
                     playerRoundStats.playerId + "-kills");
 
             damagePanel.getRenderer(TextRenderer.class).setText(
@@ -362,5 +368,14 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
     public Screen getScreen() {
         return screen;
+    }
+
+    public void setLatestRoundStatsList(List<PlayerRoundStats> latestRoundStatsList) {
+        this.latestRoundStatsList = latestRoundStatsList;
+        Element statisticsLayer = screen.findElementByName("layer_statistics");
+        
+        if (statisticsLayer.isVisible())  {
+            updateStatistics();
+        }
     }
 }

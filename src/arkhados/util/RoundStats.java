@@ -28,10 +28,14 @@ public class RoundStats {
     private HashMap<Integer, PlayerRoundStats> playerStats = new HashMap<>();    
     
     public void initializeRound() {
-        final List<PlayerData> playerDataList = PlayerData.getPlayers();
+        List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
             playerStats.put(playerData.getId(), new PlayerRoundStats(playerData.getId()));
         }
+    }
+    
+    public void addPlayer(int playerId) {
+        playerStats.put(playerId, new PlayerRoundStats(playerId));
     }
     
     public void addDamageForPlayer(Integer playerId, float damage) {

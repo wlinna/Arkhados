@@ -84,6 +84,11 @@ public class CharacterInteraction {
         roundStats.initializeRound();
         roundStatList.add(roundStats);
     }
+    
+    public static void addPlayer(int playerId) {
+        RoundStats round = roundStatList.get(roundStatList.size() -1);
+        round.addPlayer(playerId);
+    }
 
     public static RoundStats getCurrentRoundStats() {
         return roundStatList.get(roundStatList.size() - 1);
