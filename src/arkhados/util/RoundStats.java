@@ -72,6 +72,19 @@ public class RoundStats {
         player.kills++;
     }
     
+    public int getKills(int playerId) {
+        if (playerId == -1) {
+            return -1;
+        }
+        
+        PlayerRoundStats player = playerStats.get(playerId);
+        if (player == null) {
+            return -1;
+        }
+        
+        return player.kills;
+    }
+    
     public ArrayList<PlayerRoundStats> buildCurrentPlayerRoundStatsList() {
         ArrayList<PlayerRoundStats> playerRoundStatsList = new ArrayList<>(playerStats.values());
         return playerRoundStatsList;

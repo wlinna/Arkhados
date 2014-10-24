@@ -39,4 +39,10 @@ public class CharacterHudControl extends AbstractControl {
         this.hudManager = hudManager;
         spatial.getControl(CharacterBuffControl.class).setHudManager(hudManager);
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        spatial.getControl(CharacterBuffControl.class).setEnabled(enabled);
+    }        
 }

@@ -15,6 +15,7 @@
 package arkhados.gamemode;
 
 import arkhados.CharacterInteraction;
+import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.MusicManager;
 import arkhados.PlayerData;
@@ -28,14 +29,15 @@ import arkhados.messages.ClientSelectHeroCommand;
 import arkhados.messages.PlayerKillCommand;
 import arkhados.messages.SetPlayersCharacterCommand;
 import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.ClientSender;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
-import arkhados.ui.HeroSelectionBuilder;
 import arkhados.ui.hud.ClientHudManager;
-import arkhados.ui.hud.DeathMatchHeroSelectionScreenController;
+import arkhados.ui.hud.DeathMatchHeroSelectionLayerBuilder;
+import arkhados.ui.hud.DeathMatchHeroSelectionLayerController;
 import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
@@ -46,12 +48,9 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
-import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.LayerBuilder;
-import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -70,7 +69,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private int spawnLocationIndex = 0;
     private final HashMap<Integer, Timer> spawnTimers = new HashMap<>();
     private Nifty nifty;
-    private ScreenController heroSelectionScreenController = null;
+    private int killLimit = 15;
+    private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
+    private Element heroSelectionLayer;
 
     @Override
     public void initialize(Application app) {
@@ -104,7 +105,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 Sender sender = stateManager.getState(Sender.class);
 
                 if (sender.isClient()) {
-                    nifty.gotoScreen("deathmatch-hero-selection");
+                    nifty.gotoScreen("default_hud");
+                    heroSelectionLayer.show();
                     sender.addCommand(new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
                 } else if (sender.isServer()) {
                     syncManager.setEnabled(true);
@@ -126,7 +128,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         if (fogManager != null) { // Same as asking for if this is server
             PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerId);
             fogManager.teachAboutPrecedingEntities(awareness);
-            
+
             CharacterInteraction.addPlayer(playerId);
         }
     }
@@ -140,7 +142,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         final Callable<Void> callable =
                 new Callable<Void>() {
             @Override
-            public Void call() throws Exception {                
+            public Void call() throws Exception {
                 int oldEntityId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
                 worldManager.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
@@ -180,9 +182,15 @@ public class DeathMatch extends GameMode implements CommandHandler {
         if (sender.isServer()) {
             ServerSender serverSender = (ServerSender) sender;
             serverSender.addCommand(new PlayerKillCommand(playerId, killersPlayerId));
-            spawnTimers.get(playerId).setTimeLeft(5f);
+            spawnTimers.get(playerId).setTimeLeft(6f);
+            int kills = CharacterInteraction.getCurrentRoundStats().getKills(killersPlayerId);
+
+            if (kills >= killLimit) {
+                serverSender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
+            }
         } else if (sender.isClient()) {
             int myPlayerId = stateManager.getState(UserCommandManager.class).getPlayerId();
+
             if (playerId == myPlayerId) {
                 handleOwnDeath();
             }
@@ -200,8 +208,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 userCommandManager.nullifyCharacter();
                 ClientHudManager hudManager = stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButHpBars();
-                hudManager.showRoundStatistics();                
-                nifty.gotoScreen("deathmatch-hero-selection");
+                hudManager.showRoundStatistics();
+                heroSelectionLayer.showWithoutEffects();
                 return null;
             }
         });
@@ -230,6 +238,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
             if (command instanceof PlayerKillCommand) {
                 PlayerKillCommand pkCommand = (PlayerKillCommand) command;
                 playerDied(pkCommand.getDiedPlayerId(), pkCommand.getKillerPlayerId());
+            } else if (command instanceof TopicOnlyCommand) {
+                clientHandleTopicOnlyCommand((TopicOnlyCommand) command);
             }
         }
     }
@@ -240,32 +250,87 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
-        heroSelectionScreenController = new DeathMatchHeroSelectionScreenController(getApp());
-        nifty.registerScreenController();
-        String id = "deathmatch-hero-selection";
-        Screen screen = new DeathmatchHeroSelectionScreenBuilder(id, heroSelectionScreenController)
-                .build(nifty);
-        nifty.addScreen(id, screen);
+
+        DeathMatchHeroSelectionLayerBuilder layerBuilder =
+                new DeathMatchHeroSelectionLayerBuilder();
+
+        Screen screen = nifty.getScreen("default_hud");
+
+        heroSelectionLayer = layerBuilder.build(nifty, screen, screen.getRootElement());
+
+        DeathMatchHeroSelectionLayerController control =
+                heroSelectionLayer.getControl(DeathMatchHeroSelectionLayerController.class);
+        control.setStateManager(stateManager);
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
-        nifty.removeScreen("deathmatch-hero-selection");
-        nifty.unregisterScreenController(heroSelectionScreenController);
         stateManager.getState(MusicManager.class).setPlaying(false);
     }
-}
 
-class DeathmatchHeroSelectionScreenBuilder extends ScreenBuilder {
+    private void clientHandleTopicOnlyCommand(TopicOnlyCommand command) {
+        switch (command.getTopicId()) {
+            case Topic.GAME_ENDED:
+                gameEnded();
+                break;
+        }
+    }
 
-    public DeathmatchHeroSelectionScreenBuilder(String id, ScreenController controller) {
-        super(id, controller);
-        layer(new LayerBuilder() {
-            {
-                childLayoutCenter();
-                panel(new HeroSelectionBuilder());
-            }
-        });
+    @Override
+    public void gameEnded() {
+
+
+        final Sender sender = stateManager.getState(Sender.class);
+
+        if (sender.isClient()) {
+
+            final ClientHudManager hudManager = stateManager.getState(ClientHudManager.class);
+            getApp().enqueue(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    hudManager.clear();
+                    hudManager.showRoundStatistics();
+                    nifty.removeElement(nifty.getScreen("default_hud"), heroSelectionLayer);
+                    return null;
+                }
+            });
+
+            getApp().enqueue(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    stateManager.getState(SyncManager.class).clear();
+                    // TODO: Find out why following line causes statistics to not appear
+//                    stateManager.getState(UserCommandManager.class).nullifyCharacter();
+                    stateManager.getState(ClientHudManager.class).disableCharacterHudControl();
+                    return null;
+                }
+            });
+
+
+
+            final Callable<Void> callable =
+                    new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+
+                    ((ClientSender) sender).getClient().close();
+
+                    PlayerData.destroyAllData();
+                    hudManager.endGame();
+                    stateManager.getState(WorldManager.class).clear();
+                    stateManager.getState(UserCommandManager.class).nullifyCharacter();
+                    ((ClientMain) getApp()).gameEnded();
+                    return null;
+                }
+            };
+
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    getApp().enqueue(callable);
+                }
+            }, 15000);
+        }
     }
 }

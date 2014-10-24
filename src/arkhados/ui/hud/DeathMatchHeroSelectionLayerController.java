@@ -20,29 +20,31 @@ import arkhados.net.Sender;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.xml.xpp3.Attributes;
+import java.util.Properties;
 
 /**
  *
  * @author william
  */
+public class DeathMatchHeroSelectionLayerController implements Controller {
 
-
-public class DeathMatchHeroSelectionScreenController implements ScreenController {
-
-    private Application app;
-    private Nifty nifty;
     private AppStateManager stateManager;
+    private Element element;
 
-    public DeathMatchHeroSelectionScreenController(Application app) {
-        this.app = app;
-        stateManager = app.getStateManager();
+
+    @Override
+    public void bind(Nifty nifty, Screen screen, Element element, Properties parameter,
+            Attributes controlDefinitionAttributes) {
+        this.element = element;
     }
 
     @Override
-    public void bind(Nifty nifty, Screen screen) {
-        this.nifty = nifty;
+    public void init(Properties parameter, Attributes controlDefinitionAttributes) {
     }
 
     @Override
@@ -50,17 +52,22 @@ public class DeathMatchHeroSelectionScreenController implements ScreenController
     }
 
     @Override
-    public void onEndScreen() {
+    public void onFocus(boolean getFocus) {
+    }
+
+    @Override
+    public boolean inputEvent(NiftyInputEvent inputEvent) {
+        return false;
     }
 
     public void selectHero(String heroName) {
         stateManager.getState(MusicManager.class).setHero(heroName);
         stateManager.getState(MusicManager.class).setPlaying(true);
         stateManager.getState(Sender.class).addCommand(new ClientSelectHeroCommand(heroName));
-        nifty.gotoScreen("default_hud");
+        element.hide();
     }
-    
-    public void backToHud() {
-        nifty.gotoScreen("default_hud");        
+
+    public void setStateManager(AppStateManager stateManager) {
+        this.stateManager = stateManager;
     }
 }

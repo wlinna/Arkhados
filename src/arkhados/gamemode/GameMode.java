@@ -15,7 +15,15 @@
 package arkhados.gamemode;
 
 import arkhados.ClientMain;
+import arkhados.SyncManager;
+import arkhados.Topic;
+import arkhados.UserCommandManager;
+import arkhados.messages.TopicOnlyCommand;
+import arkhados.net.ServerSender;
+import arkhados.ui.hud.ClientHudManager;
 import com.jme3.app.Application;
+import com.jme3.app.state.AppStateManager;
+import java.util.concurrent.Callable;
 
 /**
  *
@@ -24,7 +32,7 @@ import com.jme3.app.Application;
 public abstract class GameMode {
     private Application app;
     private boolean running = false;
-    
+
     public void initialize(Application app) {
         this.app = app;
     }
@@ -33,17 +41,29 @@ public abstract class GameMode {
 
     public abstract void update(float tpf);
 
-    public void playerJoined(int playerId) { }
-    
+    public void playerJoined(int playerId) {
+    }
+
     public abstract void playerDied(int playerId, int killersPlayerId);
-    
-    public void cleanup() {        
-    }  
-    
-    public void gameEnded() {        
+
+    public void cleanup() {
+    }
+
+    public void gameEnded() {
         if (app instanceof ClientMain) {
-            ClientMain clientMain = (ClientMain) app;
-            clientMain.gameEnded();
+            app.enqueue(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    AppStateManager stateManager = app.getStateManager();
+                    stateManager.getState(SyncManager.class).clear();
+                    stateManager.getState(UserCommandManager.class).nullifyCharacter();
+                    stateManager.getState(ClientHudManager.class).disableCharacterHudControl();
+                    return null;
+                }
+            });
+        } else {
+            getApp().getStateManager().getState(ServerSender.class).addCommand(
+                    new TopicOnlyCommand(Topic.GAME_ENDED));
         }
     }
 
@@ -57,5 +77,5 @@ public abstract class GameMode {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }    
+    }
 }

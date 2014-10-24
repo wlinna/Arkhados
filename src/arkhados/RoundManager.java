@@ -60,7 +60,7 @@ public class RoundManager implements CommandHandler {
     private Timer roundStartTimer = new Timer(5);
     private Timer roundEndTimer = new Timer(5);
     private GameMode gameMode;
-    
+
     public void initialize(Application app, GameMode gameMode) {
         logger.setLevel(Level.INFO);
         stateManager = app.getStateManager();
@@ -233,7 +233,7 @@ public class RoundManager implements CommandHandler {
             if (currentRound < rounds) {
                 createWorld();
             } else {
-                sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
+                gameMode.gameEnded();
             }
         }
 
@@ -334,15 +334,14 @@ public class RoundManager implements CommandHandler {
         app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                ClientSender sender = app.getStateManager().getState(ClientSender.class);
+                ClientSender sender = stateManager.getState(ClientSender.class);
+                stateManager.getState(WorldManager.class).clear();
                 sender.getClient().close();
-                worldManager.clear();
-                syncManager.clear();
 
                 PlayerData.destroyAllData();
-                stateManager.getState(UserCommandManager.class).nullifyCharacter();
                 stateManager.getState(ClientHudManager.class).endGame();
                 gameMode.gameEnded();
+                ((ClientMain) app).gameEnded();
                 return null;
             }
         });
