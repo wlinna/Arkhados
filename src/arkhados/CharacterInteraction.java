@@ -21,7 +21,9 @@ import arkhados.util.RoundStats;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -31,7 +33,8 @@ public class CharacterInteraction {
 
     private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
     // TODO: Consider if we really want to put gameMode here or not
-    public static GameMode gameMode = null;
+    public static GameMode gameMode = null;   
+    private static final Map<Integer, Integer> latestDamager = new HashMap<>();
 
     public static void harm(InfluenceInterfaceControl attacker,
             InfluenceInterfaceControl target, final float rawDamage,
@@ -47,6 +50,7 @@ public class CharacterInteraction {
 
         final float damageDone = target.doDamage(rawDamage, canBreakCC);
 
+        int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
         int attackerPlayerId;
 
         if (attacker != null) {
@@ -58,14 +62,16 @@ public class CharacterInteraction {
             attackerPlayerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
             getCurrentRoundStats().addDamageForPlayer(attackerPlayerId, damageDone);
             getCurrentRoundStats().addHealthRestorationForPlayer(attackerPlayerId, lifeStolen);
+
+            latestDamager.put(targetPlayerId, attackerPlayerId);
         } else {
             attackerPlayerId = -1;
         }
 
         if (target.isDead()) {
-            getCurrentRoundStats().addKill(attackerPlayerId);
-            int deadPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-            gameMode.playerDied(deadPlayerId, attackerPlayerId);
+            int latestDamagerId = latestDamager.get(targetPlayerId);
+            getCurrentRoundStats().addKill(latestDamagerId);
+            gameMode.playerDied(targetPlayerId, latestDamagerId);
         }
 
         if (buffs != null) {
@@ -84,9 +90,9 @@ public class CharacterInteraction {
         roundStats.initializeRound();
         roundStatList.add(roundStats);
     }
-    
+
     public static void addPlayer(int playerId) {
-        RoundStats round = roundStatList.get(roundStatList.size() -1);
+        RoundStats round = roundStatList.get(roundStatList.size() - 1);
         round.addPlayer(playerId);
     }
 
