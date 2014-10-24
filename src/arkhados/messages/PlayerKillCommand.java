@@ -27,13 +27,15 @@ import com.jme3.network.serializing.Serializable;
 public class PlayerKillCommand implements Command {
     private int diedPlayerId;
     private int killerPlayerId;
+    private int killingSpree;
 
     public PlayerKillCommand() {
     }
 
-    public PlayerKillCommand(int diedPlayerId, int killerPlayerId) {
+    public PlayerKillCommand(int diedPlayerId, int killerPlayerId, int killingSpree) {
         this.diedPlayerId = diedPlayerId;
         this.killerPlayerId = killerPlayerId;
+        this.killingSpree = killingSpree;
     }
 
     @Override
@@ -47,5 +49,9 @@ public class PlayerKillCommand implements Command {
 
     public int getKillerPlayerId() {
         return killerPlayerId;
+    }
+
+    public int getKillingSpree() {
+        return killingSpree;
     }
 }

@@ -196,7 +196,6 @@
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="Enter nickname" valign="center"/>
                 <control id="username_text" name="textfield" align="center" valign="center" width="60%">
-                    <interact onEnter="connect()"/>
                 </control>
                 <text style="nifty-label" text=""/>
                 <control id="start_button" name="button" label="Start Game" align="center">
@@ -275,7 +274,7 @@
 
     <screen id="hero_selection" controller="arkhados.ClientMain">
         <layer childLayout="center">
-            <panel id="panel_root" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
                     <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true" />
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true" />
@@ -341,7 +340,7 @@
         <layer id="layer_countdown" childLayout="center" valign="center">
             <panel id="panel_countdown" valign="center" align="center" childLayout="absolute">
                 <!--textLineHeight doesn't appear to be working :(-->
-                <text id="text_countdown" style="nifty-label" text="#" align="center" x="50%" y="30%" height="40px" width="40px" textLineHeight="30" />
+                <text id="text_countdown" style="nifty-label" text="" align="center" x="50%" y="30%" height="40px" width="40px" textLineHeight="30" />
             </panel>
         </layer>
         <layer id="layer_statistics" childLayout="center" valign="center" visible="false">

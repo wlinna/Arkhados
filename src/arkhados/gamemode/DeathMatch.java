@@ -124,6 +124,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     @Override
     public void playerJoined(int playerId) {
         spawnTimers.put(playerId, new Timer(0));
+
         ServerFogManager fogManager = stateManager.getState(ServerFogManager.class);
         if (fogManager != null) { // Same as asking for if this is server
             PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerId);
@@ -131,6 +132,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
             CharacterInteraction.addPlayer(playerId);
         }
+
+        killingSprees.put(playerId, 0);
     }
 
     private void playerChoseHero(final int playerId, final String heroName) {
@@ -177,23 +180,27 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void playerDied(int playerId, int killersPlayerId) {
-        Sender sender = stateManager.getState(Sender.class);
+        Sender sender = stateManager.getState(ServerSender.class);
 
-        if (sender.isServer()) {
-            ServerSender serverSender = (ServerSender) sender;
-            serverSender.addCommand(new PlayerKillCommand(playerId, killersPlayerId));
-            spawnTimers.get(playerId).setTimeLeft(6f);
-            int kills = CharacterInteraction.getCurrentRoundStats().getKills(killersPlayerId);
+        int killingSpree = killingSprees.get(killersPlayerId) + 1;
+        killingSprees.put(killersPlayerId, killingSpree);
 
-            if (kills >= killLimit) {
-                serverSender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
-            }
-        } else if (sender.isClient()) {
-            int myPlayerId = stateManager.getState(UserCommandManager.class).getPlayerId();
+        sender.addCommand(new PlayerKillCommand(playerId, killersPlayerId, killingSpree));
+        spawnTimers.get(playerId).setTimeLeft(6f);
+        int kills = CharacterInteraction.getCurrentRoundStats().getKills(killersPlayerId);
 
-            if (playerId == myPlayerId) {
-                handleOwnDeath();
-            }
+        if (kills >= killLimit) {
+            sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
+        }
+    }
+
+    private void clientPlayerDied(int playerId, int killersId, int killingSpree) {
+        killingSprees.put(playerId, 0);
+        killingSprees.put(killersId, killingSpree);
+        int myPlayerId = stateManager.getState(UserCommandManager.class).getPlayerId();
+
+        if (playerId == myPlayerId) {
+            handleOwnDeath();
         }
     }
 
@@ -237,7 +244,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
         for (Command command : guaranteed) {
             if (command instanceof PlayerKillCommand) {
                 PlayerKillCommand pkCommand = (PlayerKillCommand) command;
-                playerDied(pkCommand.getDiedPlayerId(), pkCommand.getKillerPlayerId());
+                clientPlayerDied(pkCommand.getDiedPlayerId(), pkCommand.getKillerPlayerId(),
+                        pkCommand.getKillingSpree());
             } else if (command instanceof TopicOnlyCommand) {
                 clientHandleTopicOnlyCommand((TopicOnlyCommand) command);
             }
@@ -321,6 +329,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     stateManager.getState(WorldManager.class).clear();
                     stateManager.getState(UserCommandManager.class).nullifyCharacter();
                     ((ClientMain) getApp()).gameEnded();
+                    killingSprees.clear();
                     return null;
                 }
             };
