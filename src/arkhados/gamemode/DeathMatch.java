@@ -72,6 +72,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private int killLimit = 15;
     private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
     private Element heroSelectionLayer;
+    
+    private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
 
     @Override
     public void initialize(Application app) {
@@ -130,6 +132,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
             PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerId);
             fogManager.teachAboutPrecedingEntities(awareness);
 
+            canPickHeroMap.put(playerId, Boolean.TRUE);
             CharacterInteraction.addPlayer(playerId);
         }
 
@@ -137,10 +140,17 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     private void playerChoseHero(final int playerId, final String heroName) {
+        Boolean canPickHero = canPickHeroMap.get(playerId);
+        if (canPickHero == null || canPickHero == Boolean.FALSE) {
+            return;
+        }
+        canPickHeroMap.put(playerId, Boolean.FALSE);
+        
         long delay = (long) spawnTimers.get(playerId).getTimeLeft() * 1000;
         if (delay < 0) {
             delay = 0;
         }
+        
 
         final Callable<Void> callable =
                 new Callable<Void>() {
@@ -180,6 +190,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void playerDied(int playerId, int killersPlayerId) {
+        canPickHeroMap.put(playerId, Boolean.TRUE);
+        
         Sender sender = stateManager.getState(ServerSender.class);
 
         int killingSpree = killingSprees.get(killersPlayerId) + 1;
