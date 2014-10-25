@@ -26,6 +26,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamageOverTimeInfluence;
+import arkhados.spell.influences.SlowInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.audio.AudioNode;
@@ -100,7 +101,8 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         actionQueue.enqueueAction(new DelayAction(0.8f));
 
         if (worldManager.isServer()) {
-            GhostControl ghost = new GhostControl(new CylinderCollisionShape(new Vector3f(radius, 0.05f, radius), 1));
+            GhostControl ghost = new GhostControl(new CylinderCollisionShape(
+                    new Vector3f(radius, 0.05f, radius), 1));
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
             node.addControl(ghost);
 
@@ -112,6 +114,9 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                 public boolean update(float tpf) {
                     float dps = spatial.getUserData(UserDataStrings.DAMAGE_PER_SECOND);
                     areaEffectControl.addInfluence(new DamageOverTimeInfluence(dps));
+                    SlowInfluence slowInfluence = new SlowInfluence();
+                    slowInfluence.setSlowFactor(0.8f);
+                    areaEffectControl.addInfluence(slowInfluence);
                     
                     node.addControl(new TimedExistenceControl(5f, true));
 
@@ -124,9 +129,12 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {
-                    final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50 * (int) radius);
-                    Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-                    materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+                    ParticleEmitter fire = new ParticleEmitter("fire-emitter",
+                            ParticleMesh.Type.Triangle, 50 * (int) radius);
+                    Material materialRed =
+                            new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                    materialRed.setTexture("Texture", 
+                            assetManager.loadTexture("Effects/flame.png"));
                     fire.setMaterial(materialRed);
                     fire.setImagesX(2);
                     fire.setImagesY(2);
@@ -147,7 +155,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     EmitterCircleShape emitterShape = new EmitterCircleShape(Vector3f.ZERO, 1f);
                     fire.setShape(emitterShape);
 
-                    AudioNode sound = new AudioNode(AbstractNodeBuilder.assetManager, "Effects/Sound/EmberCircle.wav");
+                    AudioNode sound = new AudioNode(assetManager, "Effects/Sound/EmberCircle.wav");
                     node.attachChild(sound);
                     sound.setPositional(true);
                     sound.setReverbEnabled(false);
