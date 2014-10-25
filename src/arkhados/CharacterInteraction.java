@@ -33,7 +33,7 @@ public class CharacterInteraction {
 
     private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
     // TODO: Consider if we really want to put gameMode here or not
-    public static GameMode gameMode = null;   
+    public static GameMode gameMode = null;
     private static final Map<Integer, Integer> latestDamager = new HashMap<>();
 
     public static void harm(InfluenceInterfaceControl attacker,
@@ -69,8 +69,12 @@ public class CharacterInteraction {
         }
 
         if (target.isDead()) {
-            int latestDamagerId = latestDamager.get(targetPlayerId);
-            getCurrentRoundStats().addKill(latestDamagerId);
+            Integer latestDamagerId = latestDamager.get(targetPlayerId);
+            if (latestDamagerId != null) {
+                getCurrentRoundStats().addKill(latestDamagerId);
+            } else {
+                latestDamagerId = -1;
+            }
             gameMode.playerDied(targetPlayerId, latestDamagerId);
         }
 

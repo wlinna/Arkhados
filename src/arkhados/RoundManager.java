@@ -260,7 +260,7 @@ public class RoundManager implements CommandHandler {
                     logger.log(Level.WARNING, "Character of id {0} is null!", entityId);
                 }
             }
-            if (aliveAmount == 0) {
+            if (aliveAmount == 1) {
                 endRound();
             }
         }
