@@ -116,14 +116,6 @@ characters.
 
 **Artificial Intelligence**
 
-**Testing server**
-If I now want to change something on client side like particle effect
-or HUD, I need to shutdown and start both client and server and then
-join the game, select hero and finally start the game. It would be lot
-nicer if I had simpler test server where player can join while game is
-running. There would be no roundmanager, lobby or anything that makes
-testing slower.
-
 **Contribute on [ArkhadosNet](github.com/dnyarri/ArkhadosNet)**
 Arkhados uses ArkhadosNet for networking. I'm sure it could be
 improved and having some kind of tests for it would be very good.
