@@ -247,6 +247,7 @@ public class WorldManager extends AbstractAppState {
 
         if (isCharacter && PlayerData.isHuman(playerId)) {
             logger.log(Level.INFO, "Adding entity {0} for player {1}", new Object[]{id, playerId});
+            entity.setUserData(UserDataStrings.FOLLOW_ME, true);
 
             UserInputControl userInputControl = new UserInputControl();
             if (isServer()) {
@@ -257,11 +258,13 @@ public class WorldManager extends AbstractAppState {
             }
             entity.addControl(userInputControl);
         }
+        
+        boolean followMe = entity.getUserDataKeys().contains(UserDataStrings.FOLLOW_ME);        
 
         ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
         if (serverFogManager != null) {
             if (isCharacter) {
-                serverFogManager.registerCharacterForPlayer(playerId, (Node) entity);
+                serverFogManager.registerCharacterForPlayer(playerId, entity);
             }
 
             serverFogManager.createNewEntity(entity,
@@ -269,12 +272,17 @@ public class WorldManager extends AbstractAppState {
         }
 
         if (isClient()) {
-            boolean ownedByMe = app.getStateManager().getState(UserCommandManager.class)
-                    .trySetPlayersCharacter(entity);
+            UserCommandManager userCommandManager =
+                    app.getStateManager().getState(UserCommandManager.class);
+            boolean ownedByMe = userCommandManager.trySetPlayersCharacter(entity);
+
             if (ownedByMe) {
-                app.getStateManager().getState(ClientFogManager.class).setPlayerNode((Node) entity);
+                app.getStateManager().getState(ClientFogManager.class).setPlayerNode(entity);
                 logger.log(Level.INFO, "Setting player''s node. Id {0}, playerId {1}",
                         new Object[]{id, playerId});
+            } else if (playerId == userCommandManager.getPlayerId() && followMe) {
+                app.getStateManager().getState(ClientFogManager.class).setPlayerNode(entity);
+                userCommandManager.followSpatial(entity);
             }
         }
     }

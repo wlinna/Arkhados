@@ -19,8 +19,10 @@ import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
+import arkhados.controls.EntityVariableControl;
 import arkhados.controls.GenericSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.PlayerEntityAwareness;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
@@ -113,10 +115,14 @@ public class Firewalk extends Spell {
 
         private void motion() {
             final Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
-            final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+            final int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
             final int firewalkId = world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
-            final Node firewalkNode = (Node) world.getEntity(firewalkId);
+            final Spatial firewalkNode = world.getEntity(firewalkId);
+            
+            final PlayerEntityAwareness awareness = 
+                    spatial.getControl(EntityVariableControl.class).getAwareness();
+            awareness.setOwnSpatial(firewalkNode);
 
             final SpellBuffControl buffControl = firewalkNode.getControl(SpellBuffControl.class);
             buffControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
@@ -140,8 +146,10 @@ public class Firewalk extends Spell {
                 @Override
                 public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                     if (path.getNbWayPoints() == wayPointIndex + 1) {
-                        world.restoreTemporarilyRemovedEntity(id, finalLocation, spatial.getLocalRotation());
+                        world.restoreTemporarilyRemovedEntity(id, finalLocation,
+                                spatial.getLocalRotation());
                         world.removeEntity(firewalkId, -1);
+                        awareness.setOwnSpatial(spatial);
                     }
                 }
             });
@@ -159,9 +167,10 @@ public class Firewalk extends Spell {
     private static class FirewalkNodeBuilder extends AbstractNodeBuilder {
 
         private ParticleEmitter createFireEmitter() {
-            final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-            final Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-            materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+            ParticleEmitter fire =
+                    new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
+            Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+            materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
             fire.setMaterial(materialRed);
             fire.setImagesX(2);
             fire.setImagesY(2);
@@ -180,14 +189,14 @@ public class Firewalk extends Spell {
 
         @Override
         public Node build() {
-            final Sphere sphere = new Sphere(16, 16, 0.2f);
-            final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
-            final Node node = new Node("firewalk");
+            Sphere sphere = new Sphere(16, 16, 0.2f);
+            Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+            Node node = new Node("firewalk");
             node.attachChild(projectileGeom);
 
             node.addControl(new SyncInterpolationControl());
             // TODO: Give at least bit better material
-            final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             material.setColor("Color", ColorRGBA.Yellow);
             node.setMaterial(material);
 
@@ -195,18 +204,19 @@ public class Firewalk extends Spell {
             node.setUserData(UserDataStrings.MASS, 0f);
             node.setUserData(UserDataStrings.DAMAGE, 50f);
             node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+            node.setUserData(UserDataStrings.FOLLOW_ME, true);
 
-            final SpellBuffControl buffControl = new SpellBuffControl();
-            final SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
+            SpellBuffControl buffControl = new SpellBuffControl();
+            SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
             buffControl.addBuff(slowCC);
             node.addControl(buffControl);
 
             node.addControl(new GenericSyncControl());
 
             if (worldManager.isServer()) {
-                final SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
+                SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
 
-                final GhostControl ghost = new GhostControl(collisionShape);
+                GhostControl ghost = new GhostControl(collisionShape);
                 ghost.setCollisionGroup(CollisionGroups.NONE);
                 ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
 
@@ -252,13 +262,15 @@ class FirewalkCollisionHandler extends AbstractControl {
     }
 
     private void collisionEffect(Spatial target) {
-        final InfluenceInterfaceControl targetInterface = target.getControl(InfluenceInterfaceControl.class);
+        InfluenceInterfaceControl targetInterface =
+                target.getControl(InfluenceInterfaceControl.class);
         if (targetInterface == null) {
             return;
         }
 
-        final SpellBuffControl buffControl = spatial.getControl(SpellBuffControl.class);
-        CharacterInteraction.harm(buffControl.getOwnerInterface(), targetInterface, 80f, buffControl.getBuffs(), true);
+        SpellBuffControl buffControl = spatial.getControl(SpellBuffControl.class);
+        CharacterInteraction.harm(buffControl.getOwnerInterface(), targetInterface,
+                80f, buffControl.getBuffs(), true);
     }
 
     @Override

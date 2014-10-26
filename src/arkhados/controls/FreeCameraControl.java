@@ -40,7 +40,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 /**
@@ -49,14 +49,13 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class FreeCameraControl extends AbstractControl {
 
-    private Node character;
+    private Spatial spatialToFollow;
     private Camera cam;
     private InputManager inputManager;
     private Vector3f intersectionPoint = new Vector3f();
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f relativePosition;
     private Vector3f targetDestination = new Vector3f();
-
     private float timeToReach = 20f;
     private float timeMoved = this.timeToReach;
 
@@ -67,13 +66,15 @@ public class FreeCameraControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (character == null) {
+        if (spatialToFollow == null) {
             return;
         }
+
         calculateMouseLocation();
-        Vector3f midPoint = intersectionPoint.subtract(character.getLocalTranslation()).multLocal(0.5f);
+        Vector3f midPoint = intersectionPoint.subtract(spatialToFollow.getLocalTranslation())
+                .multLocal(0.5f);
         midPoint.addLocal(relativePosition);
-        midPoint.addLocal(character.getLocalTranslation());
+        midPoint.addLocal(spatialToFollow.getLocalTranslation());
         targetDestination.set(midPoint);
 
         float distance = cam.getLocation().distance(targetDestination);
@@ -82,6 +83,7 @@ public class FreeCameraControl extends AbstractControl {
         if (factor > 1f) {
             factor = 1f;
         }
+
         cam.setLocation(cam.getLocation().interpolate(targetDestination, factor));
     }
 
@@ -91,22 +93,20 @@ public class FreeCameraControl extends AbstractControl {
 
     private void calculateMouseLocation() {
         final Vector2f mouse2dPosition = inputManager.getCursorPosition();
-        final Vector3f mouse3dPosition = cam
-                .getWorldCoordinates(mouse2dPosition, 0.0f);
+        final Vector3f mouse3dPosition = cam.getWorldCoordinates(mouse2dPosition, 0.0f);
 
-        final Vector3f rayDirection = cam
-                .getWorldCoordinates(mouse2dPosition, 1.0f)
+        final Vector3f rayDirection = cam.getWorldCoordinates(mouse2dPosition, 1.0f)
                 .subtractLocal(mouse3dPosition).normalizeLocal();
 
         Ray ray = new Ray(mouse3dPosition, rayDirection);
-        boolean intersects = ray.intersectsWherePlane(floorPlane, intersectionPoint);
+        ray.intersectsWherePlane(floorPlane, intersectionPoint);
     }
 
     public void setRelativePosition(Vector3f relativePosition) {
         this.relativePosition = relativePosition;
     }
 
-    public void setCharacter(Node character) {
-        this.character = character;
+    public void setCharacter(Spatial spatial) {
+        this.spatialToFollow = spatial;
     }
 }

@@ -50,4 +50,6 @@ public class UserDataStrings {
     // NOTE: INCAPACITATE_LENGTH has no functionality yet
     public final static String INCAPACITATE_LENGTH = "incapacitate-length";
     public final static String TEAM_ID = "team-id";
+    
+    public final static String FOLLOW_ME = "follow-me";
 }

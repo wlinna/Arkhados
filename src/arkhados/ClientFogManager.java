@@ -50,7 +50,7 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
 
     private Geometry rangeFogQuad = null;
     private Vector3f playerPosition = new Vector3f(60, 0, 0);
-    private Node player;
+    private Spatial player;
     private AssetManager assetManager;
     private Material mat;
     private FrameBuffer fogFb;
@@ -242,8 +242,8 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
     public void render(RenderManager rm) {
     }
 
-    public void setPlayerNode(Node playerNode) {
-        player = playerNode;
+    public void setPlayerNode(Spatial playerSpatial) {
+        player = playerSpatial;
         if (rangeFogQuad != null) {
             mat.setVector3("PlayerPosition", player.getLocalTranslation());
         }

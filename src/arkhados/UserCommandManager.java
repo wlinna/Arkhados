@@ -169,6 +169,11 @@ public class UserCommandManager extends AbstractAppState {
         worldManager.getWorldRoot().getChild("cam-node").getControl(FreeCameraControl.class)
                 .setCharacter(character);
     }
+    
+    public void followSpatial(Spatial spatial) {
+        worldManager.getWorldRoot().getChild("cam-node").getControl(FreeCameraControl.class)
+                .setCharacter(spatial);
+    }
 
     public void sendWalkDirection() {
         sender.addCommand(new UcWalkDirection(down, right));
