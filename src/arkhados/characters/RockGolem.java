@@ -24,14 +24,18 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
+import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.AnimationData;
+import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -61,14 +65,18 @@ public class RockGolem extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
-        entity.getChild(0).scale(3f);        
+        entity.getChild(0).scale(3f);
 
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 300f));
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
 
         entity.addControl(new ActionQueueControl());
+
         SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
+
+        Spell stoneFist = Spell.getSpell("StoneFist");
+        spellCastControl.putSpell(stoneFist, InputMappingStrings.getId(InputMappingStrings.M1));
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
@@ -79,6 +87,14 @@ public class RockGolem extends AbstractNodeBuilder {
         characterAnimControl.setWalkAnimation(runAnim);
 
         entity.addControl(characterAnimControl);
+
+//        26f / 85f;
+        float fistSpeed = AnimationData.calculateSpeedForAnimation(animControl, "Attack1",
+                27f / 85f, stoneFist.getCastTime());
+        AlternatingAnimation fistAnim = new AlternatingAnimation("Attack1", fistSpeed);
+        fistAnim.addAnimation("Attack2");
+
+        characterAnimControl.addSpellAnimation("StoneFist", fistAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
         entity.addControl(new CharacterSyncControl());
@@ -92,5 +108,26 @@ public class RockGolem extends AbstractNodeBuilder {
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         }
         return entity;
+    }
+}
+
+class AlternatingAnimation extends AnimationData {
+
+    private int currentIndex = 0;
+    private List<String> animations = new ArrayList<>(2);
+
+    public AlternatingAnimation(String name, float speed) {
+        super(name, speed, LoopMode.DontLoop);
+        animations.add(name);
+    }
+
+    public void addAnimation(String name) {
+        animations.add(name);
+    }
+
+    @Override
+    public String getName() {
+        currentIndex = (currentIndex + 1) % animations.size();
+        return animations.get(currentIndex);
     }
 }

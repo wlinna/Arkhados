@@ -52,14 +52,12 @@ public class AnimationData {
     }
 
     static public float calculateSpeedForAnimation(
-            final AnimControl animControl,
-            final String animationName,
-            final float relativeMoment,
-            final float timeWanted) {
+            AnimControl animControl, String animationName,
+            float relativeMoment, float timeWanted) {
 
-        final float animLength = animControl.getAnimationLength(animationName);
-        final float moment = relativeMoment * animLength;
-        final float speed = moment / timeWanted;
+        float animLength = animControl.getAnimationLength(animationName);
+        float moment = relativeMoment * animLength;
+        float speed = moment / timeWanted;
         return speed;
     }
 
