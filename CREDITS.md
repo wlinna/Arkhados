@@ -39,6 +39,12 @@ http://opengameart.org/content/animated-archer
 Dennis Rodriguez (ThetankOmeter) for Warwolf. William Linna (the main programmer)
 created animations. Original model (without animations) can be found from [Blendswap](http://www.blendswap.com/blends/view/56015)
 
+hendori-sama for
+[original rock golem](http://www.blendswap.com/blends/view/68618),
+[umask007 who improved rigging and did uv-work](http://opengameart.org/content/fireicestone-golem) and Dm3d for improved
+texture and additional animations. Rock Golem is licensed under CC-BY
+3.0. Final work can be found from [OGA](http://opengameart.org/content/rock-golem)
+
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)

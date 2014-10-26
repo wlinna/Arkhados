@@ -312,9 +312,14 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void addSpellIcon(int key) {
-        final Element bottomPanel = screen.findElementByName("panel_bottom");
-        final SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
-        final Spell spell = castControl.getKeySpellNameMapping(key);
+        Element bottomPanel = screen.findElementByName("panel_bottom");
+        SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
+        Spell spell = castControl.getKeySpellNameMapping(key);
+
+        if (spell == null) {
+            return;
+        }
+
         String iconPath;
         if (spell.getIconName() != null) {
             iconPath = "Interface/Images/SpellIcons/" + spell.getIconName();
@@ -346,9 +351,11 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 Element cooldownText = overlay.findElementByName(entry.getKey() + "-counter");
 
                 if (cooldown > 3) {
-                    cooldownText.getRenderer(TextRenderer.class).setText(String.format("%d", (int) cooldown));
+                    cooldownText.getRenderer(TextRenderer.class)
+                            .setText(String.format("%d", (int) cooldown));
                 } else {
-                    cooldownText.getRenderer(TextRenderer.class).setText(String.format("%.1f", cooldown));
+                    cooldownText.getRenderer(TextRenderer.class)
+                            .setText(String.format("%.1f", cooldown));
                 }
             }
         }

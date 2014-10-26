@@ -282,8 +282,8 @@
                 <text style="nifty-label" text="Select your hero" />
                 <text style="nifty-label" text="" />
 
-                <panel id="categories" childLayout="horizontal">
-                    <panel id="ranged" childLayout="vertical" >
+                <panel childLayout="horizontal">
+                    <panel childLayout="vertical" >
                         <text style="nifty-label" text="Ranged" />
                         <control id="embermage" name="button" label="Embermage">
                             <interact onClick="selectHero(EmberMage)" />
@@ -292,10 +292,16 @@
                             <interact onClick="selectHero(EliteSoldier)" />
                         </control>
                     </panel>
-                    <panel id="melee" childLayout="vertical" >
+                    <panel childLayout="vertical" >
                         <text style="nifty-label" text="Melee" />
                         <control id="venator" name="button" label="Venator">
                             <interact onClick="selectHero(Venator)" />
+                        </control>
+                    </panel>
+                    <panel childLayout="vertical" >
+                        <text style="nifty-label" text="Tank" />
+                        <control id="rockgolem" name="button" label="Rock Golem">
+                            <interact onClick="selectHero(RockGolem)" />
                         </control>
                     </panel>
                 </panel>

@@ -19,6 +19,7 @@ import arkhados.ui.hud.ClientHudManager;
 import arkhados.WorldManager;
 import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
+import arkhados.characters.RockGolem;
 import arkhados.characters.Venator;
 import arkhados.effects.EffectBox;
 import com.jme3.asset.AssetManager;
@@ -48,7 +49,7 @@ public class EntityFactory {
     public EntityFactory(AssetManager assetManager, WorldManager worldManager) {
         this.assetManager = assetManager;
         this.worldManager = worldManager;
-        this.addNodeBuilders();
+        addNodeBuilders();
     }
 
     /**
@@ -64,39 +65,43 @@ public class EntityFactory {
         this.worldManager = worldManager;
         this.clientHudManager = clientHudManager;
         this.effectHandler = effectHandler;
-        this.addNodeBuilders();
+        addNodeBuilders();
     }
 
     public Node createEntityById(int id) {
-        if (this.nodeBuilders.size() <= id) {
+        if (nodeBuilders.size() <= id) {
             return null;
         }
-        Node node = this.nodeBuilders.get(id).build();
+        Node node = nodeBuilders.get(id).build();
         node.setUserData(UserDataStrings.NODE_BUILDER_ID, id);
         return node;
     }
 
     private void addNodeBuilders() {
-        int mageId = this.addNodeBuilder(new EmberMage(clientHudManager));
-        int venatorId = this.addNodeBuilder(new Venator(clientHudManager));        
-        int soldierId = this.addNodeBuilder(new EliteSoldier(clientHudManager));
+        int mageId = addNodeBuilder(new EmberMage(clientHudManager));
+        int venatorId = addNodeBuilder(new Venator(clientHudManager));        
+        int soldierId = addNodeBuilder(new EliteSoldier(clientHudManager));
+        int golemId = addNodeBuilder(new RockGolem(clientHudManager));
 
-        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("EmberMage", mageId);
-        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("Venator", venatorId);
-        NodeBuilderIdHeroNameMatcherSingleton.get().addMapping("EliteSoldier", soldierId);
+        NodeBuilderIdHeroNameMatcherSingleton mappings = 
+                NodeBuilderIdHeroNameMatcherSingleton.get();
+        mappings.addMapping("EmberMage", mageId);
+        mappings.addMapping("Venator", venatorId);
+        mappings.addMapping("EliteSoldier", soldierId);
+        mappings.addMapping("RockGolem", golemId);
     }
 
     private int newNodeBuilderId() {
-        return ++this.runningId;
+        return ++runningId;
     }
 
     public int addNodeBuilder(NodeBuilder builder) {
-        this.nodeBuilders.add(builder);
-        int nodeBuilderId = this.newNodeBuilderId();
-        if (this.effectHandler != null && builder != null) {
+        nodeBuilders.add(builder);
+        int nodeBuilderId = newNodeBuilderId();
+        if (effectHandler != null && builder != null) {
             EffectBox effectBox = builder.getEffectBox();
             if (effectBox != null) {
-                this.effectHandler.addEffectBox(nodeBuilderId, effectBox);
+                effectHandler.addEffectBox(nodeBuilderId, effectBox);
             }
         }
         return nodeBuilderId;

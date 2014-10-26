@@ -46,6 +46,7 @@ See CREDITS.md for attributions.
 - TheDarkAmulet.ogg
 - All DamagingDagger related files
 - All Archer related files
+- All Rock Golem related files
 
 ## CC-BY-SA 3.0 ##
 

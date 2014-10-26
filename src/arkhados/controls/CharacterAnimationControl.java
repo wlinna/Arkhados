@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Original animation control for Mage. Most likely each character needs its own
- * custom character animation control and this will be changed to abstract class
+ * Original animation control for Mage. Most likely each character needs its own custom character
+ * animation control and this will be changed to abstract class
  *
  * @author william
  */
@@ -39,95 +39,98 @@ public class CharacterAnimationControl extends AbstractControl {
     private CharacterPhysicsControl characterControl;
     private AnimChannel channel;
     private float actionTime = 0f;
-    private HashMap<String, AnimationData> spellAnimationMap = new HashMap<>(6);
-    private ArrayList<AnimationData> actionAnimations = new ArrayList<>(8);
+    private final HashMap<String, AnimationData> spellAnimationMap = new HashMap<>(6);
+    private final ArrayList<AnimationData> actionAnimations = new ArrayList<>(8);
     // TODO: Allow mapping of animations to specific AnimChannels
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
 
+    public CharacterAnimationControl(AnimControl animControl) {
+        this.animControl = animControl;
+    }
+
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        this.animControl = super.spatial.getControl(AnimControl.class);
-        this.characterControl = super.spatial.getControl(CharacterPhysicsControl.class);
-
-        this.channel = this.animControl.createChannel();
-        this.channel.setAnim(this.walkAnimation.getName());
-        this.channel.setSpeed(this.walkAnimation.getSpeed());
+        characterControl = spatial.getControl(CharacterPhysicsControl.class);
+        channel = animControl.createChannel();
+        channel.setAnim(walkAnimation.getName());
+        channel.setSpeed(walkAnimation.getSpeed());
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        this.actionTime -= tpf;
-        if (this.actionTime > 0f) {
+        actionTime -= tpf;
+        if (actionTime > 0f) {
             return;
         }
 
-        if (!this.characterControl.getWalkDirection().equals(Vector3f.ZERO)
-                && !this.characterControl.isMotionControlled()) {
-            if (!this.walkAnimation.getName().equals(this.channel.getAnimationName())) {
-                this.channel.setAnim(this.walkAnimation.getName(), this.walkAnimation.getSpeed());
+        if (!characterControl.getWalkDirection().equals(Vector3f.ZERO)
+                && !characterControl.isMotionControlled()) {
+            if (!walkAnimation.getName().equals(channel.getAnimationName())) {
+                channel.setAnim(walkAnimation.getName(), walkAnimation.getSpeed());
             }
-            this.channel.setSpeed(this.walkAnimation.getSpeed());
+            channel.setSpeed(walkAnimation.getSpeed());
         } else {
-            this.channel.setSpeed(0.0f);
+            channel.setSpeed(0.0f);
         }
     }
 
     public void death() {
-        this.channel.setAnim(this.deathAnimation.getName());
-        this.channel.setSpeed(this.deathAnimation.getSpeed());
-        this.channel.setLoopMode(LoopMode.DontLoop);
-        super.setEnabled(false);
+        channel.setAnim(deathAnimation.getName());
+        channel.setSpeed(deathAnimation.getSpeed());
+        channel.setLoopMode(LoopMode.DontLoop);
+        setEnabled(false);
     }
 
-    public void castSpell(final Spell spell) {
-        final AnimationData animationData = this.spellAnimationMap.get(spell.getName());
+    public void castSpell(Spell spell) {
+        AnimationData animationData = spellAnimationMap.get(spell.getName());
         if (animationData == null) {
             return;
         }
 
-        this.actionTime = spell.getCastTime();
+        actionTime = spell.getCastTime();
 
-        this.channel.setAnim(animationData.getName());
-        this.channel.setSpeed(animationData.getSpeed());
-        this.channel.setLoopMode(animationData.getLoopMode());
+        channel.setAnim(animationData.getName());
+        channel.setSpeed(animationData.getSpeed());
+        channel.setLoopMode(animationData.getLoopMode());
     }
 
     public void animateAction(int actionId, float actionDuration) {
-        if (actionId >= this.actionAnimations.size()) {
+        if (actionId >= actionAnimations.size()) {
             return;
         }
-        final AnimationData data = this.actionAnimations.get(actionId);
-        this.channel.setAnim(data.getName());
-        this.channel.setSpeed(data.getSpeed());
-        this.channel.setLoopMode(data.getLoopMode());
+
+        AnimationData data = actionAnimations.get(actionId);
+        channel.setAnim(data.getName());
+        channel.setSpeed(data.getSpeed());
+        channel.setLoopMode(data.getLoopMode());
         if ((data.getLoopMode() == LoopMode.Loop
                 || data.getLoopMode() == LoopMode.Cycle) && actionDuration != -1) {
-            this.actionTime = actionDuration;
+            actionTime = actionDuration;
         } else {
-            this.actionTime = this.channel.getAnimMaxTime() / data.getSpeed();
+            actionTime = channel.getAnimMaxTime() / data.getSpeed();
         }
     }
 
     public void animateAction(int actionId) {
-        this.animateAction(actionId, -1);
+        animateAction(actionId, -1);
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public void addSpellAnimation(String spellName, final AnimationData animData) {
-        this.spellAnimationMap.put(spellName, animData);
+    public void addSpellAnimation(String spellName, AnimationData animData) {
+        spellAnimationMap.put(spellName, animData);
     }
-    
+
     public void addActionAnimation(AnimationData data) {
-        this.actionAnimations.add(data);        
+        actionAnimations.add(data);
     }
 
     public AnimationData getWalkAnimation() {
-        return this.walkAnimation;
+        return walkAnimation;
     }
 
     public void setWalkAnimation(AnimationData walkAnimation) {
@@ -135,7 +138,7 @@ public class CharacterAnimationControl extends AbstractControl {
     }
 
     public AnimationData getDeathAnimation() {
-        return this.deathAnimation;
+        return deathAnimation;
     }
 
     public void setDeathAnimation(AnimationData deathAnimation) {
@@ -143,7 +146,7 @@ public class CharacterAnimationControl extends AbstractControl {
     }
 
     public AnimControl getAnimControl() {
-        return this.animControl;
+        return animControl;
     }
 
     public float getActionTime() {

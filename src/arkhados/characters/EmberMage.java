@@ -31,6 +31,7 @@ import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 
@@ -45,20 +46,21 @@ public class EmberMage extends AbstractNodeBuilder {
 
     public EmberMage(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
-        super.setEffectBox(new EffectBox());
-        super.getEffectBox().addActionEffect(ACTION_FIREWALK, new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
+        setEffectBox(new EffectBox());
+        getEffectBox().addActionEffect(ACTION_FIREWALK,
+                new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
     }
 
     @Override
     public Node build() {
-        Node entity = (Node) AbstractNodeBuilder.assetManager.loadModel("Models/Mage.j3o");
-        final float movementSpeed = 35f;
+        Node entity = (Node) assetManager.loadModel("Models/Mage.j3o");
+        float movementSpeed = 35f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
-        final float radius = 5.0f;
+        float radius = 5.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        final float health = 1700f;
+        float health = 1700f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
@@ -79,34 +81,42 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
-        spellCastControl.putSpell(Spell.getSpell("Fireball"), InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), InputMappingStrings.getId(InputMappingStrings.M2));
-        spellCastControl.putSpell(Spell.getSpell("Ember Circle"), InputMappingStrings.getId(InputMappingStrings.Q));
-        spellCastControl.putSpell(Spell.getSpell("Meteor"), InputMappingStrings.getId( InputMappingStrings.E));
-        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), InputMappingStrings.getId(InputMappingStrings.R));
-        spellCastControl.putSpell(Spell.getSpell("Firewalk"), InputMappingStrings.getId(InputMappingStrings.SPACE));
+        spellCastControl.putSpell(Spell.getSpell("Fireball"),
+                InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(Spell.getSpell("Magma Bash"),
+                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
+                InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(Spell.getSpell("Meteor"),
+                InputMappingStrings.getId( InputMappingStrings.E));
+        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"),
+                InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(Spell.getSpell("Firewalk"),
+                InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
          * use same animation.
          */
-        CharacterAnimationControl animControl = new CharacterAnimationControl();
-        final AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
-        final AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
+        AnimControl animControl = entity.getControl(AnimControl.class);
+        
+        CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
+        AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
 
-        animControl.setDeathAnimation(deathAnim);
-        animControl.setWalkAnimation(walkAnim);
-        entity.addControl(animControl);
+        characterAnimControl.setDeathAnimation(deathAnim);
+        characterAnimControl.setWalkAnimation(walkAnim);
+        entity.addControl(characterAnimControl);
 
-        final AnimationData animationData = new AnimationData("Idle", 1f, LoopMode.Loop);
+        AnimationData animationData = new AnimationData("Idle", 1f, LoopMode.Loop);
 
-        animControl.addSpellAnimation("Fireball", animationData);
-        animControl.addSpellAnimation("Magma Bash", animationData);
-        animControl.addSpellAnimation("Ember Circle", animationData);
-        animControl.addSpellAnimation("Meteor", animationData);
-        animControl.addSpellAnimation("Purifying Flame", null);
-        animControl.addSpellAnimation("Firewalk", animationData);
+        characterAnimControl.addSpellAnimation("Fireball", animationData);
+        characterAnimControl.addSpellAnimation("Magma Bash", animationData);
+        characterAnimControl.addSpellAnimation("Ember Circle", animationData);
+        characterAnimControl.addSpellAnimation("Meteor", animationData);
+        characterAnimControl.addSpellAnimation("Purifying Flame", null);
+        characterAnimControl.addSpellAnimation("Firewalk", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
 
@@ -116,7 +126,7 @@ public class EmberMage extends AbstractNodeBuilder {
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 
-            this.clientHudManager.addCharacter(entity);
+            clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         }

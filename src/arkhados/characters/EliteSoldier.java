@@ -34,6 +34,7 @@ import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -54,20 +55,21 @@ public class EliteSoldier extends AbstractNodeBuilder {
     
     public EliteSoldier(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
-        super.setEffectBox(new EffectBox());
-        super.getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());       
-        super.getEffectBox().addActionEffect(ACTION_SHOTGUN, new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
+        setEffectBox(new EffectBox());
+        getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());       
+        getEffectBox().addActionEffect(ACTION_SHOTGUN,
+                new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
     }
     @Override
     public Node build() {
-        Node entity = (Node) AbstractNodeBuilder.assetManager.loadModel("Models/Archer.j3o");
-        final float movementSpeed = 36f;
+        Node entity = (Node) assetManager.loadModel("Models/Archer.j3o");
+        float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
-        final float radius = 5.0f;
+        float radius = 5.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        final float health = 1600f;
+        float health = 1600f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
@@ -89,44 +91,51 @@ public class EliteSoldier extends AbstractNodeBuilder {
          * To add spells to entity, create SpellCastControl and call its
          * putSpell-method with name of the spell as argument.
          */
-        final EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
+        EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
         entity.addControl(ammunitionControl);
 
-        final SpellCastControl spellCastControl = new SpellCastControl();
+        SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
 
-        spellCastControl.putSpell(Spell.getSpell("Shotgun"), InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(Spell.getSpell("Shotgun"),
+                InputMappingStrings.getId(InputMappingStrings.M1));
 
 //        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.getId(InputMappingStrings.M2));
-        spellCastControl.putSpell(Spell.getSpell("Railgun"), InputMappingStrings.getId(InputMappingStrings.M2));
-        spellCastControl.putSpell(Spell.getSpell("Plasmagun"), InputMappingStrings.getId(InputMappingStrings.Q));
-        spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"), InputMappingStrings.getId(InputMappingStrings.E));
-        spellCastControl.putSpell(Spell.getSpell("Like a Pro"), InputMappingStrings.getId(InputMappingStrings.R));
-        spellCastControl.putSpell(Spell.getSpell("Rocket Jump"), InputMappingStrings.getId(InputMappingStrings.SPACE));
+        spellCastControl.putSpell(Spell.getSpell("Railgun"),
+                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Plasmagun"),
+                InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"),
+                InputMappingStrings.getId(InputMappingStrings.E));
+        spellCastControl.putSpell(Spell.getSpell("Like a Pro"),
+                InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(Spell.getSpell("Rocket Jump"),
+                InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
          * use same animation.
          */
-        CharacterAnimationControl animControl = new CharacterAnimationControl();
-        final AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
-        final AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
+        AnimControl animControl = entity.getControl(AnimControl.class);
+        CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
+        AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
 
-        animControl.setDeathAnimation(deathAnim);
-        animControl.setWalkAnimation(walkAnim);
-        entity.addControl(animControl);
+        characterAnimControl.setDeathAnimation(deathAnim);
+        characterAnimControl.setWalkAnimation(walkAnim);
+        entity.addControl(characterAnimControl);
 
-        final AnimationData animationData = new AnimationData("Attack", 1f, LoopMode.DontLoop);
+        AnimationData animationData = new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
-        animControl.addSpellAnimation("Shotgun", animationData);
+        characterAnimControl.addSpellAnimation("Shotgun", animationData);
 //        animControl.addSpellAnimation("Machinegun", animationData);
-        animControl.addSpellAnimation("Railgun", animationData);
-        animControl.addSpellAnimation("Plasmagun", animationData);
-        animControl.addSpellAnimation("Rocket Launcher", animationData);
-        animControl.addSpellAnimation("Like a Pro", null);
-        animControl.addSpellAnimation("Rocket Jump", animationData);
+        characterAnimControl.addSpellAnimation("Railgun", animationData);
+        characterAnimControl.addSpellAnimation("Plasmagun", animationData);
+        characterAnimControl.addSpellAnimation("Rocket Launcher", animationData);
+        characterAnimControl.addSpellAnimation("Like a Pro", null);
+        characterAnimControl.addSpellAnimation("Rocket Jump", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
         entity.addControl(new EliteSoldierSyncControl());
@@ -135,7 +144,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 
-            this.clientHudManager.addCharacter(entity);
+            clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         }
@@ -148,7 +157,8 @@ class EliteSoldierSyncControl extends AbstractControl implements SyncControl {
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        return new EliteSoldierSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
+        return new EliteSoldierSyncData((int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
+                getSpatial());
     }
 
     @Override
