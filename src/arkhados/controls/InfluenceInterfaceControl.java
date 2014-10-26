@@ -21,6 +21,7 @@ import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.spell.influences.Influence;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
@@ -39,6 +40,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     private final List<CrowdControlBuff> crowdControlBuffs = new ArrayList<>();
     private final List<AbstractBuff> otherBuffs = new ArrayList<>();
+    private final List<Influence> influences = new ArrayList<>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
@@ -131,7 +133,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
             return false;
         }
-        
+
         return canControlMovement;
     }
 
@@ -163,38 +165,40 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (!Globals.worldRunning) {
             return;
         }
-        
+
         // TODO: Refactor InfluenceInterfaceControl's controlUpdate. It is very hard to understand.
         /**
-         * First set entity's attributes to their defaults like damagefactor and
-         * movement speed.
+         * First set entity's attributes to their defaults like damagefactor and movement speed.
          */
         spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         immuneToProjectiles = false;
 
         /**
-         * Some buff or action might require entity's speed to remain constant
-         * until the end (for example, Venator's ChargeAction).
+         * Some buff or action might require entity's speed to remain constant until the end (for
+         * example, Venator's ChargeAction).
          */
         if (!isSpeedConstant()) {
-            Float msBase = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
+            float msBase = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
             spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
         }
 
         applyBuffs(tpf);
-
+        applyInfluences(tpf);
+        
         SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
 
         /**
          * This code here applies changes to movement if player can move.
          */
-        if (canMove() && !castControl.isCasting()
-                && !castControl.isChanneling() && isServer) {
+        if (canMove() && !castControl.isCasting() && !castControl.isChanneling() && isServer) {
 
             CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-
+            Object entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            System.out.println(entityId + " movement speed " + spatial.getUserData(UserDataStrings.SPEED_MOVEMENT));
             if (canControlMovement()) {
                 spatial.getControl(UserInputControl.class).restoreWalking();
+
+
 
             } else {
                 if (!isSpeedConstant() && physics.getDictatedDirection().equals(Vector3f.ZERO)) {
@@ -226,6 +230,14 @@ public class InfluenceInterfaceControl extends AbstractControl {
                 it.remove();
                 continue;
             }
+        }
+    }
+    
+    private void applyInfluences(float tpf) {
+        for (Iterator<Influence> it = influences.iterator(); it.hasNext();) {
+            Influence influence = it.next();
+            influence.affect(this, tpf);
+            it.remove();
         }
     }
 
@@ -296,6 +308,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
         return false;
     }
 
+    public void addInfluence(Influence influence) {
+        influences.add(influence);
+    }
+    
     public boolean isAbleToCastWhileMoving() {
         return hasBuff(AbleToCastWhileMovingBuff.class);
     }

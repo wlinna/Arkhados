@@ -19,6 +19,7 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.controls.UserInputControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -84,6 +85,8 @@ class DoubleMeleeAttackAction extends EntityAction {
         queue.enqueueAction(new EntityAction() {
             @Override
             public boolean update(float tpf) {
+                // HACK: This should happen automatically
+                spatial.getControl(SpellCastControl.class).setCasting(false);
                 spatial.getControl(UserInputControl.class).restoreWalking();
                 return false;
             }
