@@ -14,10 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.ServerFogManager;
+import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.syncmessages.BuffCommand;
 import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
+import com.jme3.scene.Spatial;
 
 /**
  * Base class for all buffs, negative or positive.
@@ -50,21 +53,25 @@ public abstract class AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
-        
+
         BuffCommand buffCommand = generateBuffCommand(true);
         if (buffCommand != null) {
-            getSender().addCommand(buffCommand);
+            Spatial spatial = targetInterface.getSpatial();
+            ServerFogManager fogManager = spatial.getControl(EntityVariableControl.class)
+                    .getAwareness().getFogManager();
+
+            fogManager.addCommand(spatial, buffCommand);
         }
     }
 
     public BuffCommand generateBuffCommand(boolean added) {
-        Integer entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
         if (typeId != -1) {
             BuffCommand buffCommand = new BuffCommand(entityId, typeId, buffId, duration, added);
-            
+
             return buffCommand;
         }
-        
+
         return null;
     }
 
@@ -94,8 +101,11 @@ public abstract class AbstractBuff {
 
     public void destroy() {
         BuffCommand buffCommand = generateBuffCommand(false);
-        if (buffCommand != null) {            
-            getSender().addCommand(buffCommand);
+        if (buffCommand != null) {
+            Spatial spatial = targetInterface.getSpatial();
+            ServerFogManager fogManager = spatial.getControl(EntityVariableControl.class)
+                    .getAwareness().getFogManager();
+            fogManager.addCommand(spatial, buffCommand);
         }
     }
 
@@ -103,7 +113,7 @@ public abstract class AbstractBuff {
         return ownerInterface;
     }
 
-    public void setOwnerInterface(final InfluenceInterfaceControl ownerInterface) {
+    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
         this.ownerInterface = ownerInterface;
     }
 

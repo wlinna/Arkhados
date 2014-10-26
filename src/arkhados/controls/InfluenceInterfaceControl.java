@@ -82,9 +82,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
             return 0f;
         }
         // TODO: Healing mitigation from negative buff
-        final Float maxHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
-        final Float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        final float health = FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
+        float maxHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        Float health = FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         return health - healthBefore;
 
@@ -193,16 +193,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (canMove() && !castControl.isCasting() && !castControl.isChanneling() && isServer) {
 
             CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-            Object entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            System.out.println(entityId + " movement speed " + spatial.getUserData(UserDataStrings.SPEED_MOVEMENT));
             if (canControlMovement()) {
                 spatial.getControl(UserInputControl.class).restoreWalking();
 
-
-
             } else {
                 if (!isSpeedConstant() && physics.getDictatedDirection().equals(Vector3f.ZERO)) {
-                    Float msCurrent = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                    float msCurrent = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
                     Vector3f walkDir = physics.getWalkDirection();
                     Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
                     physics.setWalkDirection(newWalkDir);

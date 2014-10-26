@@ -14,14 +14,16 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.ServerFogManager;
+import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.messages.syncmessages.BuffCommand;
 import arkhados.util.UserDataStrings;
+import com.jme3.scene.Spatial;
 
 /**
- * Base class for all buffs that somehow restricts or limits the entity that is
- * carrying the buff. Some examples of crowd control buffs are stun, silence,
- * incapacitate, slow, snare etc.
+ * Base class for all buffs that somehow restricts or limits the entity that is carrying the buff.
+ * Some examples of crowd control buffs are stun, silence, incapacitate, slow, snare etc.
  *
  * @author william
  */
@@ -38,11 +40,17 @@ public abstract class CrowdControlBuff extends AbstractBuff {
 
     @Override
     public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
-        this.targetInterface = influenceInterface;
+        targetInterface = influenceInterface;
         influenceInterface.addCrowdControlBuff(this);
-        if (super.getTypeId() != -1) {
-            final Integer entityId = this.targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            getSender().addCommand(new BuffCommand(entityId, super.getTypeId(), super.getBuffId(), super.duration, true));
+        if (getTypeId() != -1) {
+            int entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+            // TODO: These messages should be sent through FogManager!
+            Spatial spatial = targetInterface.getSpatial();
+            ServerFogManager fogManager = spatial.getControl(EntityVariableControl.class)
+                    .getAwareness().getFogManager();
+            
+            fogManager.addCommand(spatial, 
+                    new BuffCommand(entityId, getTypeId(), getBuffId(), duration, true));
         }
     }
 }
