@@ -11,7 +11,7 @@
 
 ## Code contributions ##
 
-- Teemu Salminen (added sound effects for Embermage's spells)
+- Teemu Salminen (added many sound effects)
 
 ## Early phase testing ##
 
@@ -125,6 +125,10 @@ work can be found from [freesound](http://freesound.org/people/lensflare8642/sou
 Ogrebane for Firewalk sound (Firewalk.wav). Firewalk's sound is modified
 version of Ogrebane's Teleport spell -sound, which is licensed under
 CC0. Original work can be found from [OGA](http://opengameart.org/content/teleport-spell)
+
+[Marcus Dellicompagni](http://www.redaudiouk.com/) for Monster Roar,
+which is used for spell Feral Scream (FeralScream.wav). Monster Roar
+is licensed under CC-BY 3.0 and can be found from [freesound](http://freesound.org/people/dingo1/sounds/235259/)
 
 spookymodem for Purifying Flame's and MagmaBash' sound
 (PurifyingFlame.wav and MagmaBash.wav). PurifyingFlame.wav is based on

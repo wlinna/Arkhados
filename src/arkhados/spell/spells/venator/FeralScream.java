@@ -17,6 +17,7 @@ package arkhados.spell.spells.venator;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.characters.Venator;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
@@ -48,7 +49,7 @@ public class FeralScream extends Spell {
         final float range = 45f;
         final float castTime = 0.3f;
 
-        final FeralScream spell = new FeralScream("Feral Scream", cooldown, range, castTime);
+        FeralScream spell = new FeralScream("Feral Scream", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -70,7 +71,9 @@ class FeralScreamAction extends EntityAction {
         if (maxRotationalDifference > 90f) {
             throw new InvalidParameterException("Does not support higher rotational differences than 90 degrees");
         }
+        
         this.maxRotationalDifference = (float) Math.toRadians(maxRotationalDifference);
+        setTypeId(Venator.ACTION_FERALSCREAM);
     }
 
     @Override
@@ -79,7 +82,8 @@ class FeralScreamAction extends EntityAction {
         CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation()).normalizeLocal();
+        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation())
+                .normalizeLocal();
         spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
         final Vector3f forward = viewDirection.mult(range);
 
@@ -94,9 +98,11 @@ class FeralScreamAction extends EntityAction {
         rightNormal.set(rightNormal.z, 0, -rightNormal.x);
         Plane rightPlane = new Plane(rightNormal, spatial.getLocalTranslation().dot(rightNormal));
 
-        List<SpatialDistancePair> spatialDistances = WorldManager.getSpatialsWithinDistance(spatial, range);
+        List<SpatialDistancePair> spatialDistances =
+                WorldManager.getSpatialsWithinDistance(spatial, range);
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
-            InfluenceInterfaceControl influenceInterface = spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class);
+            InfluenceInterfaceControl influenceInterface =
+                    spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class);
             if (influenceInterface == null) {
                 continue;
             }

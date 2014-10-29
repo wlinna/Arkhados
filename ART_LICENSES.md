@@ -40,6 +40,7 @@ See CREDITS.md for attributions.
 - like_a_pro.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
+- FeralScream.wav
 - Carmack.ogg
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg

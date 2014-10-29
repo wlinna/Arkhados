@@ -23,6 +23,8 @@ import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
+import arkhados.effects.EffectBox;
+import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
@@ -43,11 +45,15 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_UP = 1;
     public static final int ANIM_SWIPE_RIGHT = 2;
     public static final int ANIM_SWIPE_LEFT = 3;
+    public static final int ACTION_FERALSCREAM = 4;
 
     private ClientHudManager clientHudManager;
 
     public Venator(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
+        setEffectBox(new EffectBox());
+        getEffectBox().addActionEffect(ACTION_FERALSCREAM,
+                new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
     }    
     
     @Override
