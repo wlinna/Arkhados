@@ -51,35 +51,42 @@ public class CastProjectileAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation()).normalizeLocal();
+        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation())
+                .normalizeLocal();
         spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
 
         float characterRadius = spatial.getUserData(UserDataStrings.RADIUS);
         final Vector3f spawnLocation = spatial.getLocalTranslation()
                 .add(viewDirection.mult(characterRadius / 1.5f)).addLocal(0f, 10.0f, 0.0f);
-        final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        final int projectileId = worldManager.addNewEntity(spell.getId(),
-                spawnLocation, Quaternion.IDENTITY, playerId);
-        final Spatial projectile = worldManager.getEntity(projectileId);
+        int projectileId = worldManager.addNewEntity(spell.getId(), spawnLocation,
+                Quaternion.IDENTITY, playerId);
+        Spatial projectile = worldManager.getEntity(projectileId);
 
-        final Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
-        final Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        float damage = projectile.getUserData(UserDataStrings.DAMAGE);
+        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-        final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
+        ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
         projectileControl.setRange(spell.getRange());
         projectileControl.setDirection(viewDirection);
-        projectileControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+        
+        InfluenceInterfaceControl influenceInterface =
+                spatial.getControl(InfluenceInterfaceControl.class);
+        
+        projectileControl.setOwnerInterface(influenceInterface);
+        
         SplashAction splashAction = projectileControl.getSplashAction();
         if (splashAction != null) {
             int teamId = projectile.getUserData(UserDataStrings.TEAM_ID);
             splashAction.setExcludedTeam(teamId);
+            splashAction.setCasterInterface(influenceInterface);
         }
 
-        final SpellBuffControl buffControl = projectile.getControl(SpellBuffControl.class);
+        SpellBuffControl buffControl = projectile.getControl(SpellBuffControl.class);
         for (AbstractBuff buff : additionalBuffs) {
             buffControl.addBuff(buff);
         }

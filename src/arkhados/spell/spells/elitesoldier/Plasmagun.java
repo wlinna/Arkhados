@@ -17,11 +17,9 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.ChannelingSpellAction;
-import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.controls.ActionQueueControl;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
@@ -55,8 +53,8 @@ import com.jme3.scene.shape.Sphere;
 public class Plasmagun extends Spell {
 
     {
-        this.iconName = "plasma.png";
-        this.setMoveTowardsTarget(false);
+        iconName = "plasma.png";
+        setMoveTowardsTarget(false);
     }
 
     public Plasmagun(String name, float cooldown, float range, float castTime) {
@@ -71,8 +69,10 @@ public class Plasmagun extends Spell {
         final Plasmagun spell = new Plasmagun("Plasmagun", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                final ChannelingSpellAction channel = new ChannelingSpellAction(spell, 3, 0.12f, new CastProjectileAction(spell, worldManager), true);                
+                ChannelingSpellAction channel = new ChannelingSpellAction(spell, 3, 0.12f, 
+                        new CastProjectileAction(spell, worldManager), true);                
                 return channel;
             }
         };
@@ -86,9 +86,10 @@ public class Plasmagun extends Spell {
 class PlasmaBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createPlasmaEmitter() {
-        final ParticleEmitter plasma = new ParticleEmitter("plasma-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/plasma-particle.png"));
+        ParticleEmitter plasma =
+                new ParticleEmitter("plasma-emitter", ParticleMesh.Type.Triangle, 200);
+        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture", assetManager.loadTexture("Effects/plasma-particle.png"));
         plasma.setMaterial(materialRed);
         plasma.setImagesX(2);
         plasma.setImagesY(2);
@@ -109,15 +110,15 @@ class PlasmaBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
-        final Sphere sphere = new Sphere(32, 32, 1.0f);
+        Sphere sphere = new Sphere(32, 32, 1.0f);
 
-        final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
-        final Node node = new Node("projectile");
+        Node node = new Node("projectile");
         node.attachChild(projectileGeom);
 
-        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -126,8 +127,8 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, 70f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
-        if (AbstractNodeBuilder.worldManager.isClient()) {
-            final ParticleEmitter plasma = this.createPlasmaEmitter();
+        if (worldManager.isClient()) {
+            ParticleEmitter plasma = createPlasmaEmitter();
             node.attachChild(plasma);
 
 
@@ -136,15 +137,16 @@ class PlasmaBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when plasmaball is
              * removed. In this case we want explosion effect.
              */
-            final PlasmaRemovalAction removalAction = new PlasmaRemovalAction(assetManager);
+            PlasmaRemovalAction removalAction = new PlasmaRemovalAction(assetManager);
             removalAction.setPlasmaEmitter(plasma);
 
 
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(5);
-        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        SphereCollisionShape collisionShape = new SphereCollisionShape(5);
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, 
+                (float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -160,12 +162,12 @@ class PlasmaBuilder extends AbstractNodeBuilder {
 
         node.addControl(physicsBody);
 
-        final ProjectileControl projectileControl = new ProjectileControl();        
-        final SplashAction splash = new SplashAction(23f, 23f, DistanceScaling.CONSTANT, null);
+        ProjectileControl projectileControl = new ProjectileControl();        
+        SplashAction splash = new SplashAction(23f, 23f, DistanceScaling.CONSTANT, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
         node.addControl(projectileControl);
-        final SpellBuffControl buffControl = new SpellBuffControl();
+        SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
         
         buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
@@ -179,9 +181,9 @@ class PlasmaRemovalAction implements RemovalEventAction {
 
     public PlasmaRemovalAction(AssetManager assetManager) {
         this.sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
-        this.sound.setPositional(true);
-        this.sound.setReverbEnabled(false);
-        this.sound.setVolume(1f);
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
     }
 
     public void setPlasmaEmitter(ParticleEmitter plasma) {
@@ -210,7 +212,7 @@ class PlasmaRemovalAction implements RemovalEventAction {
         plasma.emitAllParticles();
         plasma.setParticlesPerSec(0.0f);
 
-        this.sound.setLocalTranslation(worldTranslation);
-        this.sound.play();
+        sound.setLocalTranslation(worldTranslation);
+        sound.play();
     }
 }

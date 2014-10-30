@@ -51,8 +51,8 @@ import com.jme3.scene.shape.Sphere;
  */
 public class RocketLauncher extends Spell {
     {
-        this.iconName = "rocket_launcher.png";
-        this.setMoveTowardsTarget(false);
+        iconName = "rocket_launcher.png";
+        setMoveTowardsTarget(false);
     }
 
     public RocketLauncher(String name, float cooldown, float range, float castTime) {
@@ -67,8 +67,9 @@ public class RocketLauncher extends Spell {
         final RocketLauncher spell = new RocketLauncher("Rocket Launcher", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {            
+            @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                final CastProjectileAction castProjectile = new CastProjectileAction(spell, Spell.worldManager);
+                CastProjectileAction castProjectile = new CastProjectileAction(spell, worldManager);
                 return castProjectile;
             }
         };
@@ -82,9 +83,10 @@ public class RocketLauncher extends Spell {
 class RocketBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createSmokeEmitter() {
-        final ParticleEmitter smoke = new ParticleEmitter("smoke-emitter", ParticleMesh.Type.Triangle, 300);
-        Material materialGray = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter smoke =
+                new ParticleEmitter("smoke-emitter", ParticleMesh.Type.Triangle, 300);
+        Material materialGray = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
         smoke.setMaterial(materialGray);
         smoke.setImagesX(2);
         smoke.setImagesY(2);
@@ -106,9 +108,9 @@ class RocketBuilder extends AbstractNodeBuilder {
     }
 
     private ParticleEmitter createFireEmitter() {
-        final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 200);
+        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -131,16 +133,16 @@ class RocketBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
-        final Sphere sphere = new Sphere(32, 32, 1);
+        Sphere sphere = new Sphere(32, 32, 1);
 
-        final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
-        final Node node = new Node("projectile");
+        Node node = new Node("projectile");
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -149,11 +151,11 @@ class RocketBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, 150f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 23000f);
 
-        if (AbstractNodeBuilder.worldManager.isClient()) {
-            final ParticleEmitter fire = this.createFireEmitter();
+        if (worldManager.isClient()) {
+            ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            final ParticleEmitter smoke = this.createSmokeEmitter();
+            final ParticleEmitter smoke = createSmokeEmitter();
             node.attachChild(smoke);
 
             node.addControl(new EntityEventControl());
@@ -169,8 +171,9 @@ class RocketBuilder extends AbstractNodeBuilder {
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(6f);
-        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        SphereCollisionShape collisionShape = new SphereCollisionShape(6f);
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, 
+                (float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -209,9 +212,9 @@ class RocketRemovalAction implements RemovalEventAction {
     public RocketRemovalAction(AssetManager assetManager) {
         this.assetManager = assetManager;
         this.sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
-        this.sound.setPositional(true);
-        this.sound.setReverbEnabled(false);
-        this.sound.setVolume(1f);
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
     }
 
     public void setFireEmitter(ParticleEmitter fire) {
@@ -219,16 +222,17 @@ class RocketRemovalAction implements RemovalEventAction {
     }
 
     private void leaveSmokeTrail(final Node worldRoot, Vector3f worldTranslation) {
-        this.smokeTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(this.smokeTrail);
-        this.smokeTrail.setLocalTranslation(worldTranslation);
-        this.smokeTrail.addControl(new TimedExistenceControl(5f));
+        smokeTrail.setParticlesPerSec(0);
+        worldRoot.attachChild(smokeTrail);
+        smokeTrail.setLocalTranslation(worldTranslation);
+        smokeTrail.addControl(new TimedExistenceControl(5f));
     }
 
     private void createSmokePuff(final Node worldRoot, Vector3f worldTranslation) {
-        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(this.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", this.assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter smokePuff =
+                new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
+        Material materialGray = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
         smokePuff.setMaterial(materialGray);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
@@ -254,15 +258,16 @@ class RocketRemovalAction implements RemovalEventAction {
         smokePuff.emitAllParticles();
     }
 
+    @Override
     public void exec(WorldManager worldManager, int reason) {
         Node node = new Node("rocket-explosion");
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
-        this.leaveSmokeTrail(node, worldTranslation);
-        this.createSmokePuff(node, worldTranslation);
+        leaveSmokeTrail(node, worldTranslation);
+        createSmokePuff(node, worldTranslation);
 
         fire.removeFromParent();
         node.attachChild(fire);
-        node.attachChild(this.sound);
+        node.attachChild(sound);
         node.setLocalTranslation(worldTranslation);
         fire.setLocalTranslation(Vector3f.ZERO);
         worldManager.getWorldRoot().attachChild(node);
@@ -282,9 +287,9 @@ class RocketRemovalAction implements RemovalEventAction {
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
-//        this.sound.setLocalTranslation(worldTranslation);        
-        this.sound.setVolume(5f);
-        this.sound.play();
+//        sound.setLocalTranslation(worldTranslation);        
+        sound.setVolume(5f);
+        sound.play();
     }
 
     public void setSmokeTrail(ParticleEmitter smoke) {

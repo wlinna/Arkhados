@@ -33,8 +33,8 @@ import java.util.List;
 
 /**
  *
- * @author william
- * TODO: Currently SplashAction seems to be meant for negative things only. There could be healing splash too or something like that.
+ * @author william TODO: Currently SplashAction seems to be meant for negative things only. There
+ * could be healing splash too or something like that.
  */
 public class SplashAction extends EntityAction {
 
@@ -46,17 +46,21 @@ public class SplashAction extends EntityAction {
     private boolean splashBuffsOnly = false;
     private List<Spatial> excluded = new ArrayList<>();
     private Integer excludedTeam = null;
+    
+    private InfluenceInterfaceControl casterInterface;
 
-    public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling, List<AbstractBuff> buffsToApply) {
+    public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling,
+            List<AbstractBuff> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;
         this.damageDistance = damageDistanceScaling;
-        this.splashBuffs = buffsToApply;
+        this.splashBuffs = splashBuffs;
 
         this.customImpulse = null;
     }
 
-    public SplashAction(float radius, float baseDamage, float impulse, DistanceScaling damageDistance, List<AbstractBuff> splashBuffs) {
+    public SplashAction(float radius, float baseDamage, float impulse,
+            DistanceScaling damageDistance, List<AbstractBuff> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;
         this.customImpulse = impulse;
@@ -66,15 +70,16 @@ public class SplashAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final List<SpatialDistancePair> spatialsOnDistance = WorldManager.getSpatialsWithinDistance(spatial, radius);
+        List<SpatialDistancePair> spatialsOnDistance =
+                WorldManager.getSpatialsWithinDistance(spatial, radius);
+
         if (spatialsOnDistance == null) {
             return false;
         }
 
-        final InfluenceInterfaceControl casterInterface = spatial.getControl(InfluenceInterfaceControl.class);
-
         for (SpatialDistancePair pair : spatialsOnDistance) {
-            final InfluenceInterfaceControl targetInterface = pair.spatial.getControl(InfluenceInterfaceControl.class);
+            InfluenceInterfaceControl targetInterface =
+                    pair.spatial.getControl(InfluenceInterfaceControl.class);
             if (targetInterface == null) {
                 continue;
             }
@@ -84,7 +89,7 @@ public class SplashAction extends EntityAction {
             }
 
             if (excludedTeam != null) {
-                int teamId = pair.spatial.getUserData(UserDataStrings.TEAM_ID);                
+                int teamId = pair.spatial.getUserData(UserDataStrings.TEAM_ID);
                 if (teamId == excludedTeam) {
                     continue;
                 }
@@ -115,7 +120,8 @@ public class SplashAction extends EntityAction {
 
             CharacterInteraction.harm(casterInterface, targetInterface, damage, buffsToApply, true);
 
-            final CharacterPhysicsControl physics = pair.spatial.getControl(CharacterPhysicsControl.class);
+            CharacterPhysicsControl physics =
+                    pair.spatial.getControl(CharacterPhysicsControl.class);
             Float impulseFactor;
             if (customImpulse == null) {
                 impulseFactor = spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
@@ -128,7 +134,8 @@ public class SplashAction extends EntityAction {
 
             if (colliderPhysics != null) {
                 impulse = pair.spatial.getLocalTranslation()
-                        .subtract(colliderPhysics.getPhysicsLocation().setY(0)).normalizeLocal().multLocal(impulseFactor);
+                        .subtract(colliderPhysics.getPhysicsLocation().setY(0)).normalizeLocal()
+                        .multLocal(impulseFactor);
             } else {
                 impulse = pair.spatial.getLocalTranslation().subtract(spatial.getLocalTranslation())
                         .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
@@ -146,5 +153,13 @@ public class SplashAction extends EntityAction {
 
     public void excludeSpatial(Spatial oneSpatial) {
         excluded.add(oneSpatial);
+    }
+
+    public InfluenceInterfaceControl getCasterInterface() {
+        return casterInterface;
+    }
+
+    public void setCasterInterface(InfluenceInterfaceControl casterInterface) {
+        this.casterInterface = casterInterface;
     }
 }

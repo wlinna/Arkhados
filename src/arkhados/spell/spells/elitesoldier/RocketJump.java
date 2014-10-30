@@ -20,6 +20,7 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.effects.RocketExplosionEffect;
 import arkhados.spell.CastSpellActionBuilder;
@@ -38,7 +39,7 @@ import com.jme3.scene.Node;
 public class RocketJump extends Spell {
 
     {
-        super.iconName = "rocket_jump.jpeg";
+        iconName = "rocket_jump.jpeg";
     }
 
     public RocketJump(String name, float cooldown, float range, float castTime) {
@@ -73,26 +74,28 @@ class CastRocketJumpAction extends EntityAction {
 
     public CastRocketJumpAction(Spell spell) {
         this.spell = spell;
-        super.setTypeId(EliteSoldier.ACTION_ROCKET_JUMP);
+        setTypeId(EliteSoldier.ACTION_ROCKET_JUMP);
     }
 
     private void motionPath() {        
-        final CharacterPhysicsControl physics = super.spatial.getControl(CharacterPhysicsControl.class);
+        final CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
         physics.switchToMotionCollisionMode();
 
         final MotionPath path = new MotionPath();
 
         // We set y to 1 to prevent ground collision on start
-        final Vector3f startLocation = super.spatial.getLocalTranslation().clone().setY(1f);
-        final Vector3f finalLocation = super.spatial.getControl(SpellCastControl.class).getClosestPointToTarget(this.spell);
+        final Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
+        final Vector3f finalLocation = spatial.getControl(SpellCastControl.class)
+                .getClosestPointToTarget(spell);
 
         path.addWayPoint(startLocation);
-        path.addWayPoint(super.spatial.getLocalTranslation().add(finalLocation)
+        path.addWayPoint(spatial.getLocalTranslation().add(finalLocation)
                 .divideLocal(2).setY(finalLocation.distance(startLocation) / 1.8f));
         path.addWayPoint(finalLocation);
 
-        MotionEvent motionControl = new MotionEvent(super.spatial, path);
-        motionControl.setInitialDuration(finalLocation.distance(startLocation) / CastRocketJumpAction.forwardSpeed);
+        MotionEvent motionControl = new MotionEvent(spatial, path);
+        motionControl.setInitialDuration(finalLocation.distance(startLocation)
+                / CastRocketJumpAction.forwardSpeed);
         motionControl.setSpeed(1f);
 
         physics.setViewDirection(finalLocation.subtract(startLocation));
@@ -111,9 +114,10 @@ class CastRocketJumpAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        this.motionPath();
+        motionPath();
         SplashAction splash = new SplashAction(30, 100, 23000, DistanceScaling.CONSTANT, null);
         splash.setSpatial(spatial);
+        splash.setCasterInterface(spatial.getControl(InfluenceInterfaceControl.class));
         splash.update(-1);
         return false;
     }

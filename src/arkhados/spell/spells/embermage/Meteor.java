@@ -92,6 +92,7 @@ public class Meteor extends Spell {
     }
 }
 
+
 class CastMeteorAction extends EntityAction {
 
     private final Spell spell;
@@ -113,33 +114,37 @@ class CastMeteorAction extends EntityAction {
     public boolean update(float tpf) {
         final Vector3f startingPoint = spatial.getLocalTranslation().add(0f, 60f, 0f);
 
-        final Vector3f target = spatial.getControl(SpellCastControl.class).getClosestPointToTarget(spell);
+        final Vector3f target = 
+                spatial.getControl(SpellCastControl.class).getClosestPointToTarget(spell);
         raySelectPoint(startingPoint, target);
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
-        final Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int entityId = worldManager.addNewEntity(spell.getId(),
-                startingPoint, Quaternion.IDENTITY, playerId);
+        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        final int entityId = worldManager.addNewEntity(spell.getId(), startingPoint,
+                Quaternion.IDENTITY, playerId);
         final Spatial meteor = worldManager.getEntity(entityId);
 
         final MotionEvent motionControl = new MotionEvent(meteor, path);
         motionControl.setInitialDuration(0.6f);
         motionControl.setSpeed(1f);
 
-        final InfluenceInterfaceControl casterInterface = spatial.getControl(InfluenceInterfaceControl.class);
+        final InfluenceInterfaceControl casterInterface =
+                spatial.getControl(InfluenceInterfaceControl.class);
         meteor.getControl(SpellBuffControl.class).setOwnerInterface(casterInterface);
 
         path.addListener(new MotionPathListener() {
             @Override
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
-                    final Float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
+                    final float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
 
-                    final SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
+                    SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
-                    final SplashAction splash = new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
+                    SplashAction splash = 
+                            new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
+                    splash.setCasterInterface(casterInterface);
                     int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
                     splash.setExcludedTeam(teamId);
                     splash.setSpatial(meteor);
@@ -175,9 +180,9 @@ class CastMeteorAction extends EntityAction {
 class MeteorNodeBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createFireEmitter() {
-        final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-        final Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
+        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -198,30 +203,30 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
-        final Sphere sphere = new Sphere(32, 32, 2.0f);
-        final Geometry meteorGeom = new Geometry("meteor-geom", sphere);
-        final Node node = new Node("meteor");
+        Sphere sphere = new Sphere(32, 32, 2.0f);
+        Geometry meteorGeom = new Geometry("meteor-geom", sphere);
+        Node node = new Node("meteor");
         node.attachChild(meteorGeom);
 
-        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
         node.setUserData(UserDataStrings.DAMAGE, 300f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 25000f);
 
-        final SpellBuffControl spellBuffControl = new SpellBuffControl();
+        SpellBuffControl spellBuffControl = new SpellBuffControl();
         node.addControl(spellBuffControl);
 
         node.addControl(new GenericSyncControl());
 
-        if (AbstractNodeBuilder.worldManager.isClient()) {
+        if (worldManager.isClient()) {
             node.addControl(new SyncInterpolationControl());
             node.addControl(new EntityEventControl());
-            final ParticleEmitter fire = createFireEmitter();
+            ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            final MeteorRemovalAction removalAction = new MeteorRemovalAction(assetManager);
+            MeteorRemovalAction removalAction = new MeteorRemovalAction(assetManager);
             removalAction.setEmitter(fire);
 
             node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
