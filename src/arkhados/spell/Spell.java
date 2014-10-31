@@ -32,6 +32,7 @@ import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.spell.spells.rockgolem.StoneFist;
+import arkhados.spell.spells.rockgolem.Toss;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
 import arkhados.spell.spells.venator.FeralScream;
@@ -104,6 +105,8 @@ public abstract class Spell {
         addSpell(entityFactory, RocketJump.create());
         
         addSpell(entityFactory, StoneFist.create());
+        
+        addSpell(entityFactory, Toss.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

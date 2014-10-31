@@ -16,6 +16,7 @@ package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
+import arkhados.actions.ChargeAction;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
 import arkhados.controls.ActionQueueControl;
@@ -82,7 +83,8 @@ class CastDeepWoundsAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        ChargeAction charge = new ChargeAction(spell);
+        ChargeAction charge = new ChargeAction(spell.getRange());
+        charge.setChargeSpeed(255f);
         spatial.getControl(ActionQueueControl.class).enqueueAction(charge);
 
         BleedBuff bleedBuff = new BleedBuff(-1, 5f);
@@ -94,137 +96,6 @@ class CastDeepWoundsAction extends EntityAction {
 
         spatial.getControl(UserInputControl.class).restoreWalking();
         return false;
-    }
-}
-
-class ChargeAction extends EntityAction implements PhysicsCollisionListener {
-
-    private boolean isCharging = false;
-    private final float chargeSpeed = 255f;
-    private float distanceMoved = 0f;
-    private final float range;
-    private Vector3f direction;
-    private GhostControl ghost;
-    private Node ghostNode;
-    private List<AbstractBuff> buffs = new ArrayList<>();
-    private boolean hasCollided = false;
-    private Spatial collidedWith = null;
-
-    public ChargeAction(final DeepWounds spell) {
-        range = spell.getRange();
-    }
-
-    public void addBuff(AbstractBuff buff) {
-        buffs.add(buff);
-    }
-
-    @Override
-    public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial);
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-        CapsuleCollisionShape shape = physics.getCapsuleShape();
-        shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
-        ghost = new GhostControl(shape);
-        ghost.setCollisionGroup(CollisionGroups.NONE);
-        ghost.setCollideWithGroups(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
-
-        ghostNode = new Node("Ghost Node");
-        ((Node) spatial).attachChild(ghostNode);
-        ghostNode.addControl(ghost);
-
-        physics.getPhysicsSpace().add(ghost);
-        physics.getPhysicsSpace().addCollisionListener(this);
-    }
-
-    @Override
-    public boolean update(float tpf) {
-        if (hasCollided) {
-            if (collidedWith != null) {
-                collided(collidedWith);
-            }
-            return false;
-        }
-
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
-        influenceInterface.setCanControlMovement(false);
-
-        if (!isCharging) {
-            direction = physics.getTargetLocation().subtract(spatial.getLocalTranslation())
-                    .normalizeLocal();
-            physics.setViewDirection(direction);
-            direction.multLocal(chargeSpeed);
-            physics.setDictatedDirection(direction);
-            isCharging = true;
-            influenceInterface.setSpeedConstant(true);
-            return true;
-        }
-
-        physics.setViewDirection(direction);
-
-        distanceMoved += chargeSpeed * tpf;
-        if (distanceMoved >= range) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private void collided(Spatial target) {
-        final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-        final float rawDamage = 100f * damageFactor;
-
-        InfluenceInterfaceControl targetInfluenceControl =
-                target.getControl(InfluenceInterfaceControl.class);
-        CharacterInteraction.harm(spatial.getControl(InfluenceInterfaceControl.class),
-                targetInfluenceControl, rawDamage, buffs, true);
-    }
-
-    @Override
-    public void end() {
-        super.end();
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
-        influenceInterface.setCanControlMovement(true);
-        influenceInterface.setSpeedConstant(false);
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-
-        physics.getDictatedDirection().zero();
-        physics.setWalkDirection(Vector3f.ZERO);
-        physics.enqueueSetLinearVelocity(Vector3f.ZERO);
-
-        ghost.getPhysicsSpace().removeCollisionListener(this);
-
-        ghost.getPhysicsSpace().remove(ghost);
-        ghostNode.removeFromParent();
-        ghostNode.removeControl(ghost);
-    }
-
-    @Override
-    public void collision(PhysicsCollisionEvent event) {
-        if (hasCollided) {
-            return;
-        }
-        if ((event.getObjectA() != ghost && event.getObjectB() != ghost) ||
-                (event.getObjectA().getUserObject() == event.getObjectB().getUserObject())) {
-            return;
-        }
-               
-        PhysicsCollisionObject otherObject = event.getObjectA().getUserObject() == spatial
-                ? event.getObjectB()
-                : event.getObjectA();        
-
-        if (otherObject.getCollisionGroup() != CollisionGroups.CHARACTERS &&
-                otherObject.getCollisionGroup() != CollisionGroups.WALLS) {
-            return;
-        }
-
-        hasCollided = true;
-
-        if (otherObject.getCollisionGroup() == CollisionGroups.CHARACTERS) {
-            collidedWith = (Spatial) otherObject.getUserObject();
-        }
     }
 }
 
