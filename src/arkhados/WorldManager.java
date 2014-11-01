@@ -68,6 +68,9 @@ import java.util.logging.Logger;
 public class WorldManager extends AbstractAppState {
 
     private final static Logger logger = Logger.getLogger(WorldManager.class.getName());
+    static {
+        logger.setLevel(Level.WARNING);
+    }
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
         new Vector3f(-50, 0, -50),

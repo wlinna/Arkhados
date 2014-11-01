@@ -42,22 +42,22 @@ public class CharacterSyncData extends StateData {
 
     public CharacterSyncData(int id, Spatial spatial) {
         super(id);        
-        this.location.set(spatial.getLocalTranslation());
-        this.walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
-        this.velocity.set(spatial.getControl(CharacterPhysicsControl.class).getVelocity());
-        this.viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
-        this.health = (Float) spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        location.set(spatial.getLocalTranslation());
+        walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
+        velocity.set(spatial.getControl(CharacterPhysicsControl.class).getVelocity());
+        viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
+        health = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
     }
 
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(InfluenceInterfaceControl.class).setHealth(this.health);
-        character.getControl(SyncInterpolationControl.class).interpolate(this.location);
-        character.getControl(CharacterPhysicsControl.class).warp(this.location);
-        character.getControl(CharacterPhysicsControl.class).setViewDirection(this.viewDirection);
+        character.getControl(InfluenceInterfaceControl.class).setHealth(health);
+        character.getControl(SyncInterpolationControl.class).interpolate(location);
+        character.getControl(CharacterPhysicsControl.class).warp(location);
+        character.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
         character.getControl(CharacterPhysicsControl.class).enqueueSetLinearVelocity(velocity);
-        character.getControl(CharacterPhysicsControl.class).setWalkDirection(this.walkDirection);
+        character.getControl(CharacterPhysicsControl.class).setWalkDirection(walkDirection);
     }
 
     @Override
