@@ -77,9 +77,11 @@ public class RockGolem extends AbstractNodeBuilder {
 
         Spell stoneFist = Spell.getSpell("StoneFist");
         Spell toss = Spell.getSpell("Toss");
-        
+        Spell quake = Spell.getSpell("EarthQuake");
+
         spellCastControl.putSpell(stoneFist, InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(toss, InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(toss, InputMappingStrings.getId(InputMappingStrings.E));
+        spellCastControl.putSpell(quake, InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
@@ -97,8 +99,11 @@ public class RockGolem extends AbstractNodeBuilder {
         AlternatingAnimation fistAnim = new AlternatingAnimation("Attack1", fistSpeed);
         fistAnim.addAnimation("Attack2");
 
+        AnimationData chargeAnim = new AnimationData("Run", 10f, LoopMode.Loop);
+
         characterAnimControl.addSpellAnimation("StoneFist", fistAnim);
         characterAnimControl.addSpellAnimation("Toss", fistAnim);
+        characterAnimControl.addSpellAnimation("EarthQuake", chargeAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
         entity.addControl(new CharacterSyncControl());

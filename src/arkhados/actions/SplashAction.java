@@ -105,7 +105,7 @@ public class SplashAction extends EntityAction {
             }
             final float damage = baseDamage * damageDistanceFactor;
 
-            List<AbstractBuff> buffsToApply = null;
+            List<AbstractBuff> buffsToApply;
             if (splashBuffsOnly) {
                 buffsToApply = splashBuffs;
             } else {
@@ -115,6 +115,8 @@ public class SplashAction extends EntityAction {
                     if (splashBuffs != null) {
                         buffControl.getBuffs().addAll(splashBuffs);
                     }
+                } else {
+                    buffsToApply = splashBuffs;
                 }
             }
 

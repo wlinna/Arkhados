@@ -31,6 +31,7 @@ import arkhados.spell.spells.embermage.Ignite;
 import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
+import arkhados.spell.spells.rockgolem.EarthQuake;
 import arkhados.spell.spells.rockgolem.StoneFist;
 import arkhados.spell.spells.rockgolem.Toss;
 import arkhados.spell.spells.venator.Dagger;
@@ -104,9 +105,9 @@ public abstract class Spell {
         addSpell(entityFactory, LikeAPro.create());
         addSpell(entityFactory, RocketJump.create());
         
-        addSpell(entityFactory, StoneFist.create());
-        
+        addSpell(entityFactory, StoneFist.create());        
         addSpell(entityFactory, Toss.create());
+        addSpell(entityFactory, EarthQuake.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {
