@@ -76,10 +76,12 @@ public class RockGolem extends AbstractNodeBuilder {
         entity.addControl(spellCastControl);
 
         Spell stoneFist = Spell.getSpell("StoneFist");
+        Spell seal = Spell.getSpell("SealingBoulder");
         Spell toss = Spell.getSpell("Toss");
         Spell quake = Spell.getSpell("EarthQuake");
 
         spellCastControl.putSpell(stoneFist, InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(seal, InputMappingStrings.getId(InputMappingStrings.M2));
         spellCastControl.putSpell(toss, InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(quake, InputMappingStrings.getId(InputMappingStrings.SPACE));
 
@@ -93,15 +95,20 @@ public class RockGolem extends AbstractNodeBuilder {
 
         entity.addControl(characterAnimControl);
 
-//        26f / 85f;
         float fistSpeed = AnimationData.calculateSpeedForAnimation(animControl, "Attack1",
                 27f / 85f, stoneFist.getCastTime());
         AlternatingAnimation fistAnim = new AlternatingAnimation("Attack1", fistSpeed);
         fistAnim.addAnimation("Attack2");
-
+        
         AnimationData chargeAnim = new AnimationData("Run", 10f, LoopMode.Loop);
+        
+        float boulderThrowSpeed = AnimationData.calculateSpeedForAnimation(animControl,
+                "Throw_Rock2", 56f / 130f, seal.getCastTime());
+        AnimationData boulderThrowAnim =
+                new AnimationData("Throw_Rock2", boulderThrowSpeed, LoopMode.Loop);
 
         characterAnimControl.addSpellAnimation("StoneFist", fistAnim);
+        characterAnimControl.addSpellAnimation("SealingBoulder", boulderThrowAnim);
         characterAnimControl.addSpellAnimation("Toss", fistAnim);
         characterAnimControl.addSpellAnimation("EarthQuake", chargeAnim);
 

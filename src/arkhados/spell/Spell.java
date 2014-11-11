@@ -32,6 +32,7 @@ import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.spell.spells.rockgolem.EarthQuake;
+import arkhados.spell.spells.rockgolem.SealingBoulder;
 import arkhados.spell.spells.rockgolem.StoneFist;
 import arkhados.spell.spells.rockgolem.Toss;
 import arkhados.spell.spells.venator.Dagger;
@@ -71,7 +72,8 @@ public abstract class Spell {
      * @param assetManager will be saved to static variable assetManager
      * @param worldManager will be save to static variable worldManager
      */
-    public static void initSpells(EntityFactory entityFactory, AssetManager assetManager, WorldManager worldManager) {
+    public static void initSpells(EntityFactory entityFactory, AssetManager assetManager,
+            WorldManager worldManager) {
         Spell.assetManager = assetManager;
         Spell.worldManager = worldManager;
 
@@ -106,6 +108,7 @@ public abstract class Spell {
         addSpell(entityFactory, RocketJump.create());
         
         addSpell(entityFactory, StoneFist.create());        
+        addSpell(entityFactory, SealingBoulder.create());
         addSpell(entityFactory, Toss.create());
         addSpell(entityFactory, EarthQuake.create());
     }

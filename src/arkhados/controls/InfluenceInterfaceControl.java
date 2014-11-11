@@ -21,6 +21,7 @@ import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.spell.buffs.PetrifyCC;
 import arkhados.spell.influences.Influence;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.FastMath;
@@ -58,13 +59,22 @@ public class InfluenceInterfaceControl extends AbstractControl {
             return 0f;
         }
         Float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        // TODO: Generic damage mitigation by shields
+
+        // TODO: Generic damage mitigation by shields, petrify etc.
+        for (CrowdControlBuff cc : crowdControlBuffs) {
+            if (cc instanceof PetrifyCC) {
+                damage = ((PetrifyCC) cc).damage(damage);
+                break;
+            }
+        }
+
         for (AbstractBuff buff : getBuffs()) {
             if (buff instanceof ArmorBuff) {
                 damage = ((ArmorBuff) buff).mitigate(damage);
                 break;
             }
         }
+
         float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         if (health == 0.0f) {
@@ -123,6 +133,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
         for (CrowdControlBuff crowdControlInfluence : crowdControlBuffs) {
             if (crowdControlInfluence instanceof IncapacitateCC) {
                 return false;
+            } else if (crowdControlInfluence instanceof PetrifyCC) {
+                return false;
             }
         }
         return true;
@@ -147,6 +159,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
             if (crowdControlInfluence instanceof IncapacitateCC) {
                 return false;
             } else if (crowdControlInfluence instanceof FearCC) {
+                return false;
+            } else if (crowdControlInfluence instanceof PetrifyCC) {
                 return false;
             }
         }
@@ -184,7 +198,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         applyBuffs(tpf);
         applyInfluences(tpf);
-        
+
         SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
 
         /**
@@ -228,7 +242,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
     }
-    
+
     private void applyInfluences(float tpf) {
         for (Iterator<Influence> it = influences.iterator(); it.hasNext();) {
             Influence influence = it.next();
@@ -307,7 +321,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     public void addInfluence(Influence influence) {
         influences.add(influence);
     }
-    
+
     public boolean isAbleToCastWhileMoving() {
         return hasBuff(AbleToCastWhileMovingBuff.class);
     }

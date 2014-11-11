@@ -130,13 +130,13 @@ CC0. Original work can be found from [OGA](http://opengameart.org/content/telepo
 which is used for spell Feral Scream (FeralScream.wav). Monster Roar
 is licensed under CC-BY 3.0 and can be found from [freesound](http://freesound.org/people/dingo1/sounds/235259/)
 
-spookymodem for Purifying Flame's and MagmaBash' sound
+spookymodem for Purifying Flame's, MagmaBash's and Sealing Boulder's sound
 (PurifyingFlame.wav and MagmaBash.wav). PurifyingFlame.wav is based on
 spookymodem's Magic Shield -sound which is licensed under CC-BY
 3.0. Original work can be found from
 [OGA](http://opengameart.org/content/magic-shield). MagmaBash.wav is
 based on spookymodem's Magic Smite -sound and was modified a little
-bit by Teemu Salminen. Origian Magic Smite can be found from
+bit by Teemu Salminen. Original Magic Smite can be found from
 [freesound](https://www.freesound.org/people/spookymodem/sounds/249819/)
 
 midimagician for EmberCircle's sound (EmberCircle.wav). Sound is
