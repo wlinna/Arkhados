@@ -72,7 +72,6 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private int killLimit = 15;
     private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
     private Element heroSelectionLayer;
-    
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
 
     @Override
@@ -145,12 +144,12 @@ public class DeathMatch extends GameMode implements CommandHandler {
             return;
         }
         canPickHeroMap.put(playerId, Boolean.FALSE);
-        
+
         long delay = (long) spawnTimers.get(playerId).getTimeLeft() * 1000;
         if (delay < 0) {
             delay = 0;
         }
-        
+
 
         final Callable<Void> callable =
                 new Callable<Void>() {
@@ -191,11 +190,15 @@ public class DeathMatch extends GameMode implements CommandHandler {
     @Override
     public void playerDied(int playerId, int killersPlayerId) {
         canPickHeroMap.put(playerId, Boolean.TRUE);
-        
+
         Sender sender = stateManager.getState(ServerSender.class);
 
-        int killingSpree = killingSprees.get(killersPlayerId) + 1;
-        killingSprees.put(killersPlayerId, killingSpree);
+        int killingSpree = 0;
+        
+        if (killersPlayerId > -1) {
+            killingSpree = killingSprees.get(killersPlayerId) + 1;
+            killingSprees.put(killersPlayerId, killingSpree);
+        }
 
         sender.addCommand(new PlayerKillCommand(playerId, killersPlayerId, killingSpree));
         spawnTimers.get(playerId).setTimeLeft(6f);
