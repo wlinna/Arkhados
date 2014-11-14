@@ -53,6 +53,9 @@ public abstract class BuffInformation {
         
         final BuffInformation likeAPro = new LikeAProInformation();
         addBuff(BuffTypeIds.LIKE_A_PRO, likeAPro);
+        
+        final PetrifyInformation petrify = new PetrifyInformation();
+        addBuff(BuffTypeIds.PETRIFY, petrify);
     }
 
     public static BuffInformation getBuffInformation(int typeId) {

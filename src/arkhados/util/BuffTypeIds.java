@@ -26,4 +26,5 @@ public class BuffTypeIds {
     public static final int PURIFYING_FLAME = 4;
     public static final int DEEP_WOUNDS = 5;
     public static final int SURVIVAL_INSTINCT = 6;
+    public static final int PETRIFY = 7;
 }

@@ -14,12 +14,17 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.util.BuffTypeIds;
+
 /**
  *
  * @author william
  */
 public class PetrifyCC extends CrowdControlBuff {
-
+    {
+        setTypeId(BuffTypeIds.PETRIFY);
+    }
+        
     private final float damageCap = 100;
     private float totalDamageTaken = 0f;
     private final float damageReduction = 0.95f;
