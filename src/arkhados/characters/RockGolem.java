@@ -19,6 +19,7 @@ import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -79,7 +80,7 @@ public class RockGolem extends AbstractNodeBuilder {
         Spell seal = Spell.getSpell("SealingBoulder");
         Spell toss = Spell.getSpell("Toss");
         Spell mineral = Spell.getSpell("MineralArmor");
-        Spell quake = Spell.getSpell("EarthQuake");        
+        Spell quake = Spell.getSpell("EarthQuake");
 
         spellCastControl.putSpell(stoneFist, InputMappingStrings.getId(InputMappingStrings.M1));
         spellCastControl.putSpell(seal, InputMappingStrings.getId(InputMappingStrings.M2));
@@ -101,9 +102,9 @@ public class RockGolem extends AbstractNodeBuilder {
                 27f / 85f, stoneFist.getCastTime());
         AlternatingAnimation fistAnim = new AlternatingAnimation("Attack1", fistSpeed);
         fistAnim.addAnimation("Attack2");
-        
+
         AnimationData chargeAnim = new AnimationData("Run", 10f, LoopMode.Loop);
-        
+
         float boulderThrowSpeed = AnimationData.calculateSpeedForAnimation(animControl,
                 "Throw_Rock2", 56f / 130f, seal.getCastTime());
         AnimationData boulderThrowAnim =
@@ -118,6 +119,9 @@ public class RockGolem extends AbstractNodeBuilder {
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
+            CharacterSoundControl soundControl = new CharacterSoundControl();
+            entity.addControl(soundControl);
+
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 

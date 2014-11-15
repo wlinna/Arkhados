@@ -19,6 +19,7 @@ import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -69,15 +70,14 @@ public class EmberMage extends AbstractNodeBuilder {
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
         /**
-         * By setting physics damping to low value, we can effectively apply
-         * impulses on it.
+         * By setting physics damping to low value, we can effectively apply impulses on it.
          */
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
         /**
-         * To add spells to entity, create SpellCastControl and call its
-         * putSpell-method with name of the spell as argument.
+         * To add spells to entity, create SpellCastControl and call its putSpell-method with name
+         * of the spell as argument.
          */
         SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
@@ -88,7 +88,7 @@ public class EmberMage extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
-                InputMappingStrings.getId( InputMappingStrings.E));
+                InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(Spell.getSpell("Purifying Flame"),
                 InputMappingStrings.getId(InputMappingStrings.R));
         spellCastControl.putSpell(Spell.getSpell("Firewalk"),
@@ -96,11 +96,10 @@ public class EmberMage extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         /**
-         * Map Spell names to casting animation's name. In this case all spells
-         * use same animation.
+         * Map Spell names to casting animation's name. In this case all spells use same animation.
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
-        
+
         CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
         AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
         AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
@@ -119,10 +118,11 @@ public class EmberMage extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Firewalk", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
-
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
+            CharacterSoundControl soundControl = new CharacterSoundControl();
+            entity.addControl(soundControl);
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 

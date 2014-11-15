@@ -77,6 +77,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+
         if (health == 0.0f) {
             death();
         }
@@ -122,10 +123,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void setHealth(float health) {
+        float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-        if (isDead()) {
-        } else if (health == 0.0) {
+        if (health == 0f && !dead) {
             death();
+        } else if (health < healthBefore && !isServer && health > 0f) {
+            spatial.getControl(CharacterSoundControl.class).suffer(healthBefore - health);
         }
     }
 
@@ -172,6 +175,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
         spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
         spatial.getControl(CharacterAnimationControl.class).death();
         spatial.getControl(SpellCastControl.class).setEnabled(false);
+        if (!isServer) {
+            spatial.getControl(CharacterSoundControl.class).death();
+        }
     }
 
     @Override

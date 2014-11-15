@@ -19,6 +19,7 @@ import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -46,7 +47,6 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_RIGHT = 2;
     public static final int ANIM_SWIPE_LEFT = 3;
     public static final int ACTION_FERALSCREAM = 4;
-
     private ClientHudManager clientHudManager;
 
     public Venator(ClientHudManager clientHudManager) {
@@ -54,8 +54,8 @@ public class Venator extends AbstractNodeBuilder {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FERALSCREAM,
                 new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
-    }    
-    
+    }
+
     @Override
     public Node build() {
         Node entity = (Node) assetManager.loadModel("Models/Warwolf.j3o");
@@ -152,6 +152,8 @@ public class Venator extends AbstractNodeBuilder {
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
+            CharacterSoundControl soundControl = new CharacterSoundControl();
+            entity.addControl(soundControl);
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 

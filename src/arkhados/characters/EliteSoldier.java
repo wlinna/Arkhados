@@ -19,6 +19,7 @@ import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
@@ -42,7 +43,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
-
 /**
  * Creates entity with EliteSoldiers's features.
  *
@@ -50,16 +50,17 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class EliteSoldier extends AbstractNodeBuilder {
     public static final int ACTION_ROCKET_JUMP = 0;
-    public static final int ACTION_SHOTGUN = 1;  
-    private ClientHudManager clientHudManager;    
-    
+    public static final int ACTION_SHOTGUN = 1;
+    private ClientHudManager clientHudManager;
+
     public EliteSoldier(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
         setEffectBox(new EffectBox());
-        getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());       
+        getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());
         getEffectBox().addActionEffect(ACTION_SHOTGUN,
                 new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
     }
+
     @Override
     public Node build() {
         Node entity = (Node) assetManager.loadModel("Models/Archer.j3o");
@@ -81,15 +82,14 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
         /**
-         * By setting physics damping to low value, we can effectively apply
-         * impulses on it.
+         * By setting physics damping to low value, we can effectively apply impulses on it.
          */
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
         /**
-         * To add spells to entity, create SpellCastControl and call its
-         * putSpell-method with name of the spell as argument.
+         * To add spells to entity, create SpellCastControl and call its putSpell-method with name
+         * of the spell as argument.
          */
         EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
         entity.addControl(ammunitionControl);
@@ -115,8 +115,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         /**
-         * Map Spell names to casting animation's name. In this case all spells
-         * use same animation.
+         * Map Spell names to casting animation's name. In this case all spells use same animation.
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
         CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
@@ -141,6 +140,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.addControl(new EliteSoldierSyncControl());
 
         if (worldManager.isClient()) {
+            CharacterSoundControl soundControl = new CharacterSoundControl();
+            entity.addControl(soundControl);
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 
