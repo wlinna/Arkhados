@@ -89,6 +89,21 @@ public class CharacterInteraction {
         }
     }
 
+    public static void heal(InfluenceInterfaceControl healer, InfluenceInterfaceControl target,
+            float amount) {
+        if (target == null) {
+            return;
+        } else if (target.isDead()) {
+            return;
+        }
+        
+        
+        float healingDone = target.heal(amount);
+        
+        int healerPlayerId = healer.getSpatial().getUserData(UserDataStrings.PLAYER_ID);        
+        getCurrentRoundStats().addHealthRestorationForPlayer(healerPlayerId, healingDone);
+    }
+
     public static void startNewRound() {
         final RoundStats roundStats = new RoundStats();
         roundStats.initializeRound();

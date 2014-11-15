@@ -33,7 +33,7 @@ public class StoneFist extends Spell {
 
     public static Spell create() {
         final float cooldown = 0.5f;
-        final float range = 15f;
+        final float range = 18f;
         final float castTime = 0.6f;
         
         StoneFist spell = new StoneFist("StoneFist", cooldown, range, castTime);
