@@ -22,6 +22,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
@@ -34,7 +35,6 @@ import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,6 +128,9 @@ public class RockGolem extends AbstractNodeBuilder {
             clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+        } else {
+            RestingControl restingControl = new RestingControl();
+            entity.addControl(restingControl);
         }
         return entity;
     }

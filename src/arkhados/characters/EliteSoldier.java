@@ -22,6 +22,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncControl;
 import arkhados.controls.SyncInterpolationControl;
@@ -148,6 +149,9 @@ public class EliteSoldier extends AbstractNodeBuilder {
             clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+        } else {
+            RestingControl restingControl = new RestingControl();
+            entity.addControl(restingControl);
         }
 
         return entity;

@@ -22,6 +22,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
@@ -42,6 +43,7 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class EmberMage extends AbstractNodeBuilder {
+
     public static final int ACTION_FIREWALK = 0;
     private ClientHudManager clientHudManager;
 
@@ -129,6 +131,9 @@ public class EmberMage extends AbstractNodeBuilder {
             clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+        } else {
+            RestingControl restingControl = new RestingControl();
+            entity.addControl(restingControl);
         }
 
         return entity;

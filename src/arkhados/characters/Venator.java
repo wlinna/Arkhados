@@ -22,6 +22,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
@@ -42,6 +43,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class Venator extends AbstractNodeBuilder {
+
     public static final int ANIM_LAND = 0;
     public static final int ANIM_SWIPE_UP = 1;
     public static final int ANIM_SWIPE_RIGHT = 2;
@@ -160,6 +162,9 @@ public class Venator extends AbstractNodeBuilder {
             clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+        } else {
+            RestingControl restingControl = new RestingControl();
+            entity.addControl(restingControl);
         }
 
         return entity;

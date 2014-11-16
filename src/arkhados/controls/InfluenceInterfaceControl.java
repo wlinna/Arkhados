@@ -58,7 +58,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (isDead()) {
             return 0f;
         }
-        Float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
 
         // TODO: Generic damage mitigation by shields, petrify etc.
         for (CrowdControlBuff cc : crowdControlBuffs) {
@@ -85,6 +85,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (canBreakCC) {
             removeDamageSensitiveBuffs();
         }
+
+        getSpatial().getControl(RestingControl.class).stopRegen();
+
         return healthBefore - health;
     }
 
@@ -105,7 +108,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (crowdControlInfluence == null) {
             return;
         }
+
         crowdControlBuffs.add(crowdControlInfluence);
+
+        getSpatial().getControl(RestingControl.class).stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
         if (crowdControlInfluence instanceof IncapacitateCC) {
@@ -120,6 +126,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
             return;
         }
         otherBuffs.add(buff);
+
+        if (!buff.isFriendly()) {
+            getSpatial().getControl(RestingControl.class).stopRegen();
+        }
     }
 
     public void setHealth(float health) {
