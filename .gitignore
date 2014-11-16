@@ -2,6 +2,7 @@
 *.blend2
 *.log
 *.so
+*.patch
 
 build
 dist
