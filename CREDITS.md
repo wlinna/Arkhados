@@ -108,7 +108,6 @@ CC0. Original model can be found from [OGA](http://opengameart.org/content/wall)
 3.0. Original work can be found from random223's
 [DeviantArt-page](http://random223.deviantart.com).
 
-
 Blender Foundation for Meteor's explosion sound. Explosion sound was
 made for "Yo Frankie!". It is licensed under CC-BY 3.0. Original work
 can be found from [OGA](http://opengameart.org/content/big-explosion)
@@ -151,8 +150,11 @@ Android128 for music ElectricQuake. Music is licensed under CC-BY
 [OGA](http://opengameart.org/content/electric-quake)
 
 [Alexandr Zhelanov](https://soundcloud.com/alexandr-zhelanov) for
-music SteepsOfDestiny. Original work can be found from
-[OGA](http://opengameart.org/content/steeps-of-destiny)
+following music. They are licensed under CC-BY 3.0:
+- [SteepsOfDestiny](http://opengameart.org/content/steeps-of-destiny)
+- [BreathBehindYou](http://opengameart.org/content/north-wind-more-music-inside)
+- [DarkHall](http://opengameart.org/content/north-wind-more-music-inside)
+- [GreyLand](http://opengameart.org/content/post-apocalypse-more-music-inside)
 
 [Matthew Pablo](http://www.matthewpablo.com/) for music The Dark
 Amulet. The Dark Amulet is licensed under CC-BY 3.0. Original work can

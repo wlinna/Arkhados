@@ -47,7 +47,8 @@ See CREDITS.md for attributions.
 - TheDarkAmulet.ogg
 - All DamagingDagger related files
 - All Archer related files
-- All Rock Golem related files
+- All Rock Golem 3D model related files
+- All Venator music
 
 ## CC-BY-SA 3.0 ##
 
