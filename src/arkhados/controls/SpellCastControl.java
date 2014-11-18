@@ -177,6 +177,7 @@ public class SpellCastControl extends AbstractControl {
             awareness.getFogManager().addCommand(spatial,
                     new StartCastingSpellCommand((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID),
                     spell.getId(), direction));
+            getSpatial().getControl(RestingControl.class).stopRegen();
         }
         globalCooldown();
         putOnCooldown(spell);
