@@ -120,11 +120,17 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void update(float tpf) {
+        for (Timer timer : spawnTimers.values()) {
+            timer.update(tpf);
+        }
     }
 
     @Override
     public void playerJoined(int playerId) {
-        spawnTimers.put(playerId, new Timer(0));
+        Timer timer = new Timer(6);
+        timer.setTimeLeft(0.5f);
+        spawnTimers.put(playerId, timer);
+        timer.setActive(true);
 
         ServerFogManager fogManager = stateManager.getState(ServerFogManager.class);
         if (fogManager != null) { // Same as asking for if this is server
@@ -147,9 +153,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
         long delay = (long) spawnTimers.get(playerId).getTimeLeft() * 1000;
         if (delay < 0) {
-            delay = 0;
+            delay = 100;
         }
-
 
         final Callable<Void> callable =
                 new Callable<Void>() {
@@ -302,8 +307,6 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void gameEnded() {
-
-
         final Sender sender = stateManager.getState(Sender.class);
 
         if (sender.isClient()) {
@@ -330,13 +333,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 }
             });
 
-
-
             final Callable<Void> callable =
                     new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-
                     ((ClientSender) sender).getClient().close();
 
                     PlayerData.destroyAllData();
