@@ -19,6 +19,8 @@ See CREDITS.md for attributions.
 - MagmaBash.wav
 - EmberCircle.wav
 - All Wall related files
+- VenatorDeath.wav
+- VenatorPain.wav
 
 ## CC-BY 3.0 ##
 
@@ -54,3 +56,11 @@ See CREDITS.md for attributions.
 
 - All LavaArena related files (except Wall and lava)
 - rocket_jump.jpeg
+- AntiGravity.orgg
+- Olympus.ogg
+- GodsWar.ogg
+- TimeOfBlood.ogg
+
+## GPL 2.0 ##
+- EmberMagePain.wav
+- EmberMageDeath.wav

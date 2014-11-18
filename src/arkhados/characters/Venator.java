@@ -155,6 +155,8 @@ public class Venator extends AbstractNodeBuilder {
 
         if (worldManager.isClient()) {
             CharacterSoundControl soundControl = new CharacterSoundControl();
+            soundControl.setSufferSound("Effects/Sound/VenatorPain.wav");
+            soundControl.setDeathSound("Effects/Sound/VenatorDeath.wav");
             entity.addControl(soundControl);
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());

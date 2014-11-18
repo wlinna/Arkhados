@@ -1,3 +1,6 @@
+Many thanks to all contributors and to others whose work I've used. You
+are all awesome!
+
 # Contributors #
 
 ## Programming ##
@@ -11,7 +14,10 @@
 
 ## Code contributions ##
 
-- Teemu Salminen (added many sound effects)
+- Teemu Salminen
+  - added many sound effects
+  - resting-feature
+  - some music
 
 ## Early phase testing ##
 
@@ -121,9 +127,12 @@ Original work can be found from [freesound](http://www.freesound.org/people/Read
 lensflare8642 for Shotgun sound. Sound is licensed under CC0. Original
 work can be found from [freesound](http://freesound.org/people/lensflare8642/sounds/145209/)
 
-Ogrebane for Firewalk sound (Firewalk.wav). Firewalk's sound is modified
-version of Ogrebane's Teleport spell -sound, which is licensed under
-CC0. Original work can be found from [OGA](http://opengameart.org/content/teleport-spell)
+Ogrebane for multiple sound effects. Currently all Ogrebane's sound effects
+used in Arkhados are CC0-licensed. Here are the Ogrebane's sounds used:
+- [Firewalk](http://opengameart.org/content/teleport-spell) (modified)
+- [Venator sounds](http://opengameart.org/content/monster-sound-effects-pack)
+
+thebardofblashphemy for [male pain sounds](http://opengameart.org/content/grunts-male-death-and-pain). Those pain sounds are licensed under GPL 2.0.
 
 [Marcus Dellicompagni](http://www.redaudiouk.com/) for Monster Roar,
 which is used for spell Feral Scream (FeralScream.wav). Monster Roar
@@ -160,5 +169,15 @@ following music. They are licensed under CC-BY 3.0:
 Amulet. The Dark Amulet is licensed under CC-BY 3.0. Original work can
 be found from
 [OGA](http://opengameart.org/content/the-dark-amulet-dark-mage-theme)
+
+[Grégoire Lourme](https://www.jamendo.com/en/artist/560/gregoire-lourme) for
+multiple musics. All music Grégoire Lourme's music that I use in this project
+are licensed under CC-BY-SA 3.0.
+- [Gods War](https://www.jamendo.com/en/track/989064/gods-war-finale)
+- [Olympus](https://www.jamendo.com/en/track/1063183/olympus)
+- [Anti-gravity](https://www.jamendo.com/en/track/1103297/anti-gravity)
+
+[Kondi](https://www.jamendo.com/en/artist/362508/kondi) for [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood). The Time of Blood
+is licensed under CC-BY-SA 3.0.
 
 NOTE: There will be ingame credits screen when game matures more.

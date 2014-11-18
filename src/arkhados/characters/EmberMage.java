@@ -124,6 +124,8 @@ public class EmberMage extends AbstractNodeBuilder {
 
         if (worldManager.isClient()) {
             CharacterSoundControl soundControl = new CharacterSoundControl();
+            soundControl.setSufferSound("Effects/Sound/EmberMagePain.wav");
+            soundControl.setDeathSound("Effects/Sound/EmberMageDeath.wav");
             entity.addControl(soundControl);
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
