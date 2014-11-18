@@ -50,7 +50,8 @@ See CREDITS.md for attributions.
 - All DamagingDagger related files
 - All Archer related files
 - All Rock Golem 3D model related files
-- All Venator music
+- DarkHall.ogg
+- GreyLand.ogg
 
 ## CC-BY-SA 3.0 ##
 
@@ -60,6 +61,7 @@ See CREDITS.md for attributions.
 - Olympus.ogg
 - GodsWar.ogg
 - TimeOfBlood.ogg
+- PredatorAttack.ogg
 
 ## GPL 2.0 ##
 - EmberMagePain.wav

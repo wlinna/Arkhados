@@ -15,9 +15,9 @@ are all awesome!
 ## Code contributions ##
 
 - Teemu Salminen
-  - added many sound effects
+  - added many sound effects (with edits)
   - resting-feature
-  - some music
+  - some music (with edits)
 
 ## Early phase testing ##
 
@@ -161,7 +161,6 @@ Android128 for music ElectricQuake. Music is licensed under CC-BY
 [Alexandr Zhelanov](https://soundcloud.com/alexandr-zhelanov) for
 following music. They are licensed under CC-BY 3.0:
 - [SteepsOfDestiny](http://opengameart.org/content/steeps-of-destiny)
-- [BreathBehindYou](http://opengameart.org/content/north-wind-more-music-inside)
 - [DarkHall](http://opengameart.org/content/north-wind-more-music-inside)
 - [GreyLand](http://opengameart.org/content/post-apocalypse-more-music-inside)
 
@@ -171,13 +170,14 @@ be found from
 [OGA](http://opengameart.org/content/the-dark-amulet-dark-mage-theme)
 
 [Grégoire Lourme](https://www.jamendo.com/en/artist/560/gregoire-lourme) for
-multiple musics. All music Grégoire Lourme's music that I use in this project
+multiple soundtracks. All music Grégoire Lourme's music that I use in this project
 are licensed under CC-BY-SA 3.0.
 - [Gods War](https://www.jamendo.com/en/track/989064/gods-war-finale)
 - [Olympus](https://www.jamendo.com/en/track/1063183/olympus)
 - [Anti-gravity](https://www.jamendo.com/en/track/1103297/anti-gravity)
 
-[Kondi](https://www.jamendo.com/en/artist/362508/kondi) for [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood). The Time of Blood
-is licensed under CC-BY-SA 3.0.
+[Kondi](https://www.jamendo.com/en/artist/362508/kondi) for multiple soundtracks. All Kondi's music used in Arkhados are licensed under CC-BY-SA 3.0:
+- [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)
+- [Predator Attack](https://www.jamendo.com/en/track/681764/predator-attack) (with cut by Teemu Salminen)
 
 NOTE: There will be ingame credits screen when game matures more.

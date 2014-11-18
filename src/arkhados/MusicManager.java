@@ -126,10 +126,10 @@ public class MusicManager extends AbstractAppState {
                 heroMusic.add(generateHeroMusicPath(heroName, "AntiGravity"));
                 break;
             case "Venator":
-                heroMusic.add(generateHeroMusicPath(heroName, "BreathBehindYou"));
                 heroMusic.add(generateHeroMusicPath(heroName, "DarkHall"));
                 heroMusic.add(generateHeroMusicPath(heroName, "GreyLand"));
                 heroMusic.add(generateHeroMusicPath(heroName, "TimeOfBlood"));
+                heroMusic.add(generateHeroMusicPath(heroName, "PredatorAttack"));
                 break;
             case "RockGolem":
                 heroMusic.add(generateHeroMusicPath(heroName, "GodsWar"));
