@@ -12,6 +12,9 @@
     </screen>
 
     <screen id="main_menu" controller="arkhados.ClientMain">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/background.png"></panel>
+        </layer>
         <layer childLayout="center">
             <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -41,6 +44,9 @@
     </screen>
 
     <screen id="settings" controller="arkhados.ClientMain">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/background.png"></panel>
+        </layer>
         <layer childLayout="center">
             <panel id="root_panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -74,6 +80,9 @@
     </screen>
 
     <screen id="input_settings" controller="arkhados.ui.KeySetter">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/background.png"></panel>
+        </layer>
         <layer childLayout="center">
             <panel height="400px" width="420px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
 
@@ -145,6 +154,9 @@
     </screen>
 
     <screen id="graphics_settings" controller="arkhados.ClientSettings">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/background.png"></panel>
+        </layer>
         <layer childLayout="center">
             <panel height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
 
@@ -170,6 +182,9 @@
     </screen>
 
     <screen id="join_server" controller="arkhados.ClientMain">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/background.png"></panel>
+        </layer>
         <layer childLayout="center">
             <panel height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
@@ -223,6 +238,9 @@
     </screen>
 
     <screen id="lobby" controller="arkhados.ClientMain">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/background.png"></panel>
+        </layer>
         <layer childLayout="vertical">
             <panel childLayout="horizontal" height="50%">
                 <panel id="players_panel" height="100%" width="320px" valign="center" style="nifty-panel" childLayout="vertical">
