@@ -26,6 +26,9 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class StoneFist extends Spell {
+    {
+        iconName = "StoneFist.png";
+    }
 
     public StoneFist(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

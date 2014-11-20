@@ -23,7 +23,7 @@ See CREDITS.md for attributions.
 - VenatorPain.wav
 
 ## CC-BY 3.0 ##
-
+- background.png (Rendered from Rock Golem model)
 - mage.blend and all its derivatives
 - EmberCircle.png and all its derivatives
 - skull.png and all its derivatives
@@ -40,6 +40,7 @@ See CREDITS.md for attributions.
 - railgun.png
 - rocket_launger.png
 - like_a_pro.png
+- StoneFist.png (rendered from Rock Golem)
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav
