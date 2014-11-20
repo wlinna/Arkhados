@@ -27,6 +27,7 @@ are all awesome!
 - Otto Tuominen
 - Iivari Sassi
 - Oskari Saari
+- Ilkka Wirkkala
 
 # Also thanks to #
 

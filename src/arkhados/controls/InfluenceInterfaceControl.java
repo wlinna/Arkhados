@@ -114,7 +114,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
         getSpatial().getControl(RestingControl.class).stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
-        if (crowdControlInfluence instanceof IncapacitateCC) {
+        if (crowdControlInfluence instanceof IncapacitateCC 
+                || crowdControlInfluence instanceof PetrifyCC) {
             spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
