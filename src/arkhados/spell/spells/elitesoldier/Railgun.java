@@ -18,6 +18,7 @@ import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.characters.EliteSoldier;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
@@ -65,7 +66,9 @@ public class Railgun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastProjectileAction(spell, worldManager);
+                CastProjectileAction action = new CastProjectileAction(spell, worldManager);
+                action.setTypeId(EliteSoldier.ACTION_RAILGUN);
+                return action;
             }
         };
 

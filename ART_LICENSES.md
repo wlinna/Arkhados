@@ -43,6 +43,7 @@ See CREDITS.md for attributions.
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav
+- Railgun.wav
 - Carmack.ogg
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg

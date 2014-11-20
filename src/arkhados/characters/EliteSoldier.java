@@ -52,6 +52,7 @@ import com.jme3.scene.control.AbstractControl;
 public class EliteSoldier extends AbstractNodeBuilder {
     public static final int ACTION_ROCKET_JUMP = 0;
     public static final int ACTION_SHOTGUN = 1;
+    public static final int ACTION_RAILGUN = 2;
     private ClientHudManager clientHudManager;
 
     public EliteSoldier(ClientHudManager clientHudManager) {
@@ -60,6 +61,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
         getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());
         getEffectBox().addActionEffect(ACTION_SHOTGUN,
                 new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
+        getEffectBox().addActionEffect(ACTION_RAILGUN,
+                new SimpleSoundEffect("Effects/Sound/Railgun.wav"));
     }
 
     @Override

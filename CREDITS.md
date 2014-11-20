@@ -181,4 +181,6 @@ are licensed under CC-BY-SA 3.0.
 - [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)
 - [Predator Attack](https://www.jamendo.com/en/track/681764/predator-attack) (with cut by Teemu Salminen)
 
+[Michael Baradari](apollo-music.de) for Railgun's sound effect. It is licensed under CC-BY 3.0. Sound effect is hosted on [OGA](http://opengameart.org/content/4-projectile-launches).
+
 NOTE: There will be ingame credits screen when game matures more.
