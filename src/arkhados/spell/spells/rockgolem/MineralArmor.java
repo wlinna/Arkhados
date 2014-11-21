@@ -21,6 +21,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.ArmorBuff;
+import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -31,6 +32,9 @@ import com.jme3.scene.Node;
 
 
 public class MineralArmor extends Spell{
+    {
+        iconName = "MineralArmor.png";
+    }
 
     public MineralArmor(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
@@ -60,10 +64,11 @@ public class MineralArmor extends Spell{
     }
 }
 
-class MineralArmorBuff extends ArmorBuff{    
+class MineralArmorBuff extends ArmorBuff{  
 
     public MineralArmorBuff(float amount, float protectionPercent, int buffGroupId, float duration) {
         super(amount, protectionPercent, buffGroupId, duration);
+        setTypeId(BuffTypeIds.MINERAL_ARMOR);
     }
 
     @Override

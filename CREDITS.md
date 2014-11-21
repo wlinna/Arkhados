@@ -67,6 +67,8 @@ J. W. Bjerk (eleazzaar) for following spell icons:
 - Machinegun (not used anymore)
 - Round of Plasma
 - Rocket Launcher
+- Sealing Boulder
+- Mineral Armor
 
 Icons are licensed under multiple licenses, inluding CC-BY 3.0 which we use for
 this project. Original icons can be found from following sites:

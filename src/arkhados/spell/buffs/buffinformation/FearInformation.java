@@ -30,12 +30,12 @@ import com.jme3.scene.shape.Quad;
  */
 public class FearInformation extends BuffInformation {
     {
-        super.setIconPath("Textures/icons/skull.png");
+        setIconPath("Textures/icons/skull.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
-        final FearEffect effect = new FearEffect(duration);
+        FearEffect effect = new FearEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }
@@ -49,27 +49,27 @@ class FearEffect extends BuffEffect {
     }
 
     public void addToCharacter(CharacterBuffControl buffControl) {
-        final Quad blanket = new Quad(8, 8, true);
-        this.fearIcon = new Geometry("fear-icon", blanket);
-        this.fearIcon.scale(1f);
-        final Material skullMaterial = assetManager.loadMaterial("Materials/FearMaterial.j3m");
-        this.fearIcon.setMaterial(skullMaterial);
-        this.fearIcon.setQueueBucket(RenderQueue.Bucket.Transparent);
+        Quad blanket = new Quad(8, 8, true);
+        fearIcon = new Geometry("fear-icon", blanket);
+        fearIcon.scale(1f);
+        Material skullMaterial = assetManager.loadMaterial("Materials/FearMaterial.j3m");
+        fearIcon.setMaterial(skullMaterial);
+        fearIcon.setQueueBucket(RenderQueue.Bucket.Transparent);
 
 
-        final Node characterNode = (Node) buffControl.getSpatial();
-        characterNode.attachChild(this.fearIcon);
-        this.fearIcon.center();
-        this.fearIcon.setLocalTranslation(0f, 22f, 0f);
+        Node characterNode = (Node) buffControl.getSpatial();
+        characterNode.attachChild(fearIcon);
+        fearIcon.center();
+        fearIcon.setLocalTranslation(0f, 22f, 0f);
 
-        final BillboardControl billBoard = new BillboardControl();
-        this.fearIcon.addControl(billBoard);
+        BillboardControl billBoard = new BillboardControl();
+        fearIcon.addControl(billBoard);
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        assert this.fearIcon != null;
-        this.fearIcon.removeFromParent();
+        assert fearIcon != null;
+        fearIcon.removeFromParent();
     }
 }

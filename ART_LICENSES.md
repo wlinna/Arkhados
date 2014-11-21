@@ -41,6 +41,8 @@ See CREDITS.md for attributions.
 - rocket_launger.png
 - like_a_pro.png
 - StoneFist.png (rendered from Rock Golem)
+- SealingBoulder.png
+- MineralArmor.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav

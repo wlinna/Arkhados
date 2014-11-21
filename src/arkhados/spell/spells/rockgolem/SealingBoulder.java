@@ -41,6 +41,9 @@ import com.jme3.scene.shape.Sphere;
 
 
 public class SealingBoulder extends Spell {
+    {
+        iconName = "SealingBoulder.png";
+    }
 
     public SealingBoulder(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

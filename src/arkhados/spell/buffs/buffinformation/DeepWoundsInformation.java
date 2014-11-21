@@ -30,12 +30,12 @@ import com.jme3.scene.Node;
  */
 public class DeepWoundsInformation extends BuffInformation {
     {
-        this.setIconPath("Interface/Images/SpellIcons/deep_wounds.png");
+        setIconPath("Interface/Images/SpellIcons/deep_wounds.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
-        final DeepWoundsEffect effect = new DeepWoundsEffect(duration);
+        DeepWoundsEffect effect = new DeepWoundsEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }
@@ -54,48 +54,48 @@ class DeepWoundsEffect extends BuffEffect {
     public void addToCharacter(CharacterBuffControl buffControl) {
         emitter = new ParticleEmitter("blood-emitter", ParticleMesh.Type.Triangle, 100);
 
-        final Material bloodMat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        Material bloodMat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         // TODO: Change blood texture!
         bloodMat.setTexture("Texture", assetManager.loadTexture("Effects/debris.png"));
-        this.emitter.setMaterial(bloodMat);
-        this.emitter.setImagesX(3);
-        this.emitter.setImagesY(3);
-        this.emitter.setSelectRandomImage(true);
-        this.emitter.setStartColor(new ColorRGBA(0.3f, 0f, 0f, 1f));
-        this.emitter.setStartColor(new ColorRGBA(0.3f, 0f, 0f, 1f));
-        this.emitter.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(-0.1f));
-        this.emitter.getParticleInfluencer().setVelocityVariation(0.9f);
-        this.emitter.setStartSize(2f);
-        this.emitter.setEndSize(1f);
-        this.emitter.setGravity(0f, 70f, 0f);
-        this.emitter.setLowLife(2f);
-        this.emitter.setHighLife(3f);
-        this.emitter.setParticlesPerSec(10f);
-        this.emitter.setRandomAngle(true);
+        emitter.setMaterial(bloodMat);
+        emitter.setImagesX(3);
+        emitter.setImagesY(3);
+        emitter.setSelectRandomImage(true);
+        emitter.setStartColor(new ColorRGBA(0.3f, 0f, 0f, 1f));
+        emitter.setStartColor(new ColorRGBA(0.3f, 0f, 0f, 1f));
+        emitter.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(-0.1f));
+        emitter.getParticleInfluencer().setVelocityVariation(0.9f);
+        emitter.setStartSize(2f);
+        emitter.setEndSize(1f);
+        emitter.setGravity(0f, 70f, 0f);
+        emitter.setLowLife(2f);
+        emitter.setHighLife(3f);
+        emitter.setParticlesPerSec(10f);
+        emitter.setRandomAngle(true);
 
-        final Node characterNode = (Node) buffControl.getSpatial();
-        characterNode.attachChild(this.emitter);
-        this.emitter.move(0f, 7f, 0f);
+        Node characterNode = (Node) buffControl.getSpatial();
+        characterNode.attachChild(emitter);
+        emitter.move(0f, 7f, 0f);
 
-        this.physics = characterNode.getControl(CharacterPhysicsControl.class);
+        physics = characterNode.getControl(CharacterPhysicsControl.class);
     }
 
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        this.updateTimer += tpf;
+        updateTimer += tpf;
 
-        if (this.updateTimer < 0.5f) {
+        if (updateTimer < 0.5f) {
             return;
         }
 
-        this.updateTimer = 0f;
+        updateTimer = 0f;
 
-        final float speed = this.physics.getWalkDirection().length();
+        float speed = physics.getWalkDirection().length();
         if (speed < 10f) {
-            this.emitter.setParticlesPerSec(3f);
+            emitter.setParticlesPerSec(3f);
         } else {
-            this.emitter.setParticlesPerSec(speed * 0.8f);
+            emitter.setParticlesPerSec(speed * 0.8f);
         }
     }
 

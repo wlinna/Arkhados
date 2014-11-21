@@ -28,13 +28,13 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class IgniteInformation extends BuffInformation {
-    {        
-        super.setIconPath("Interface/Images/BuffIcons/ignite.png");
+    {
+        setIconPath("Interface/Images/BuffIcons/ignite.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
-        final IgniteEffect effect = new IgniteEffect(duration);
+        IgniteEffect effect = new IgniteEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }
@@ -49,34 +49,34 @@ class IgniteEffect extends BuffEffect {
     }
 
     public void addToCharacter(CharacterBuffControl buffControl) {
-        this.fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50);
-        final Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50);
+        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
-        this.fire.setMaterial(materialRed);
-        this.fire.setImagesX(2);
-        this.fire.setImagesY(2);
-        this.fire.setSelectRandomImage(true);
-        this.fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
-        this.fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
-        this.fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y.mult(9f));
-        this.fire.setStartSize(6.5f);
-        this.fire.setEndSize(0.5f);
-        this.fire.setGravity(Vector3f.ZERO);
-        this.fire.setLowLife(0.99f);
-        this.fire.setHighLife(0.99f);
-        this.fire.setParticlesPerSec(10);
-        this.fire.getParticleInfluencer().setVelocityVariation(0.2f);
-        this.fire.setRandomAngle(true);
+        fire.setMaterial(materialRed);
+        fire.setImagesX(2);
+        fire.setImagesY(2);
+        fire.setSelectRandomImage(true);
+        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
+        fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y.mult(9f));
+        fire.setStartSize(6.5f);
+        fire.setEndSize(0.5f);
+        fire.setGravity(Vector3f.ZERO);
+        fire.setLowLife(0.99f);
+        fire.setHighLife(0.99f);
+        fire.setParticlesPerSec(10);
+        fire.getParticleInfluencer().setVelocityVariation(0.2f);
+        fire.setRandomAngle(true);
 
-        final Node characterNode = (Node) buffControl.getSpatial();
-        characterNode.attachChild(this.fire);
-        this.fire.move(0f, 15f, 0);
+        Node characterNode = (Node) buffControl.getSpatial();
+        characterNode.attachChild(fire);
+        fire.move(0f, 15f, 0);
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        assert this.fire != null;
-        this.fire.removeFromParent();
+        assert fire != null;
+        fire.removeFromParent();
     }
 }

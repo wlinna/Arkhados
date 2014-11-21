@@ -24,38 +24,39 @@ import java.util.HashMap;
  *
  * @author william
  */
-public abstract class BuffInformation {
-    private static int runningCounter = 0;
-    
+public abstract class BuffInformation {    
     protected static AssetManager assetManager = null;
     
     private static HashMap<Integer, BuffInformation> Buffs = new HashMap<>();
 
     public static void initBuffs() {
 
-        final BuffInformation purifyingFlame = new PurifyingFlameInformation();
+        BuffInformation purifyingFlame = new PurifyingFlameInformation();
         addBuff(BuffTypeIds.PURIFYING_FLAME, purifyingFlame);
 
-        final BuffInformation ignite = new IgniteInformation();
+        BuffInformation ignite = new IgniteInformation();
         addBuff(BuffTypeIds.IGNITE, ignite);
 
-        final BuffInformation survivalInstinct = new SurvivalInstinctInformation();
+        BuffInformation survivalInstinct = new SurvivalInstinctInformation();
         addBuff(BuffTypeIds.SURVIVAL_INSTINCT, survivalInstinct);
 
-        final BuffInformation deepWounds = new DeepWoundsInformation();
+        BuffInformation deepWounds = new DeepWoundsInformation();
         addBuff(BuffTypeIds.DEEP_WOUNDS, deepWounds);
 
-        final BuffInformation fear = new FearInformation();
+        BuffInformation fear = new FearInformation();
         addBuff(BuffTypeIds.FEAR, fear);
 
-        final BuffInformation incapacitate = new IncapacitateInformation();
+        BuffInformation incapacitate = new IncapacitateInformation();
         addBuff(BuffTypeIds.INCAPACITATE, incapacitate);
         
-        final BuffInformation likeAPro = new LikeAProInformation();
+        BuffInformation likeAPro = new LikeAProInformation();
         addBuff(BuffTypeIds.LIKE_A_PRO, likeAPro);
         
-        final PetrifyInformation petrify = new PetrifyInformation();
+        PetrifyInformation petrify = new PetrifyInformation();
         addBuff(BuffTypeIds.PETRIFY, petrify);
+        
+        MineralArmorInformation mineralArmor = new MineralArmorInformation();
+        addBuff(BuffTypeIds.MINERAL_ARMOR, mineralArmor);
     }
 
     public static BuffInformation getBuffInformation(int typeId) {
@@ -74,11 +75,11 @@ public abstract class BuffInformation {
     public abstract BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration);
 
     public float getDuration() {
-        return this.duration;
+        return duration;
     }
 
     public String getIconPath() {
-        return this.iconPath;
+        return iconPath;
     }
 
     public void setIconPath(String iconPath) {

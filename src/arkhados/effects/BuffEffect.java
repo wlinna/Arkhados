@@ -37,8 +37,8 @@ public class BuffEffect {
         this.timeLeft = timeLeft;
     }
 
-    public void update(final float tpf) {
-        this.timeLeft -= tpf;
+    public void update(float tpf) {
+        timeLeft -= tpf;
     }
 
     public void updateRender(RenderManager rm, ViewPort vp) {
@@ -48,6 +48,6 @@ public class BuffEffect {
     }
 
     public float getTimeLeft() {
-        return this.timeLeft;
+        return timeLeft;
     }
 }
