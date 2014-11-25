@@ -23,7 +23,7 @@ public interface CollisionGroups {
     public static final int TERRAIN = 0x00000001;
     public static final int CHARACTERS = 0x00000002;
     public static final int WALLS = 0x00000004;
-    public static final int COLLISION_GROUP_04 = 0x00000008;
+    public static final int SPIRIT_STONE = 0x00000008;
     public static final int COLLISION_GROUP_05 = 0x00000010;
     public static final int COLLISION_GROUP_06 = 0x00000020;
     public static final int COLLISION_GROUP_07 = 0x00000040;
