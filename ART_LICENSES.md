@@ -19,6 +19,7 @@ See CREDITS.md for attributions.
 - MagmaBash.wav
 - EmberCircle.wav
 - All Wall related files
+- All SpiritStone related files
 - VenatorDeath.wav
 - VenatorPain.wav
 

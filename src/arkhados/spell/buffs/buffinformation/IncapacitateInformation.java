@@ -15,14 +15,12 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.RotationControl;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
 
 /**
@@ -68,10 +66,8 @@ class IncapacitateEffect extends BuffEffect {
         Node characterNode = (Node) buffControl.getSpatial();
         characterNode.attachChild(centralNode);
 
-        centralNode.setLocalTranslation(0f, 20f, 0f);
-        RotationControl rotationControl = new RotationControl();
-        rotationControl.setRotationAmount(0f, 2f, 0f);
-        centralNode.addControl(rotationControl);
+        centralNode.setLocalTranslation(0f, 20f, 0f);        
+        centralNode.addControl(new RotationControl(0f, 2f, 0f));
     }
 
     @Override
@@ -79,27 +75,5 @@ class IncapacitateEffect extends BuffEffect {
         super.destroy();
         assert centralNode != null;
         centralNode.removeFromParent();
-    }
-}
-
-class RotationControl extends AbstractControl {
-
-    private float x = 0f;
-    private float y = 0f;
-    private float z = 0f;
-
-    @Override
-    protected void controlUpdate(float tpf) {
-        spatial.rotate(x * tpf, y * tpf, z * tpf);
-    }
-
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public void setRotationAmount(final float x, final float y, final float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 }

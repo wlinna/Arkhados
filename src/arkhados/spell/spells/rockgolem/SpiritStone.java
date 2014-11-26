@@ -18,6 +18,7 @@ import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.ProjectileControl;
+import arkhados.controls.RotationControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.spell.CastSpellActionBuilder;
@@ -43,38 +44,38 @@ import com.jme3.scene.shape.Sphere;
  * @author william
  */
 public class SpiritStone extends Spell {
-    
+
     public SpiritStone(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
     }
-    
+
     public static Spell create() {
         final float cooldown = 8f;
         final float range = 80f;
         final float castTime = 0.2f;
-        
+
         final SpiritStone spell = new SpiritStone("SpiritStone", cooldown, range, castTime);
-        
+
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 return new SpiritStoneCastAction(spell, worldManager);
             }
         };
-        
+
         spell.nodeBuilder = new SpiritStoneBuilder();
-        
+
         return spell;
     }
 }
 
 /**
- * SpiritStoneCastAction.
- * NOTE: This is very much like CastOnGroundAction. Consider reusing that one
+ * SpiritStoneCastAction. NOTE: This is very much like CastOnGroundAction. Consider reusing that one
+ *
  * @author william
  */
 class SpiritStoneCastAction extends EntityAction {
-    
+
     private Spell spell;
     private WorldManager worldManager;
 
@@ -82,46 +83,42 @@ class SpiritStoneCastAction extends EntityAction {
         this.spell = spell;
         this.worldManager = worldManager;
     }
-    
+
     @Override
     public boolean update(float tpf) {
         SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
-        Vector3f target = castControl.getClosestPointToTarget(spell).setY(4f);
+        Vector3f target = castControl.getClosestPointToTarget(spell).setY(10f);
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
-        int entityId = worldManager.addNewEntity(spell.getId(), target,
-                Quaternion.IDENTITY, playerId);
+        worldManager.addNewEntity(spell.getId(), target, Quaternion.IDENTITY, playerId);
         return false;
     }
 }
 
 class SpiritStoneBuilder extends AbstractNodeBuilder {
-    
+
     @Override
     public Node build() {
-        Sphere sphere = new Sphere(32, 32, 4.0f);
-        Geometry projectileGeom = new Geometry("stone-geom", sphere);
-        Node node = new Node("stone");
-        node.attachChild(projectileGeom);
+        Node node = (Node) assetManager.loadModel("Models/SpiritStone.j3o");
+        for (Spatial childToScale : node.getChildren()) {
+            childToScale.scale(3f);
+        }
 
-        // TODO: Give at least bit better material
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.LightGray);
-        node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
         node.setUserData(UserDataStrings.MASS, 0f);
         node.setUserData(UserDataStrings.DAMAGE, 0f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
         node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0f);
-        
-        if (worldManager.isClient()) {
-            AudioNode sound = new AudioNode(assetManager, "Effects/Sound/MagmaBash.wav");
-            node.attachChild(sound);
-            sound.setPositional(true);
-            sound.setReverbEnabled(false);
-            sound.setVolume(1f);
-            sound.play();
-        }
-        
+
+        // TODO: Put sound effect that's different
+//        if (worldManager.isClient()) {
+//            AudioNode sound = new AudioNode(assetManager, "Effects/Sound/MagmaBash.wav");
+//            node.attachChild(sound);
+//            sound.setPositional(true);
+//            sound.setReverbEnabled(false);
+//            sound.setVolume(1f);
+//            sound.play();
+//        }
+
         SphereCollisionShape collisionShape = new SphereCollisionShape(4);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (Float) node.getUserData(UserDataStrings.MASS));
@@ -129,18 +126,20 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.PROJECTILES);
         node.addControl(physicsBody);
-        
+
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         node.addControl(new TimedExistenceControl(8f, true));
-        
+
+        node.addControl(new RotationControl(0f, 2f, 0f));
+
         return node;
     }
 }
 
 class SpiritStoneCollisionListener implements PhysicsCollisionListener {
-    
+
     private Node myStone;
-    
+
     @Override
     public void collision(PhysicsCollisionEvent event) {
         boolean isA = myStone == event.getNodeA();
@@ -148,19 +147,18 @@ class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         if (!isA && !isB) {
             return;
         }
-        
+
         Spatial other = isA ? event.getNodeB() : event.getNodeA();
-        
+
         int otherTeamId = other.getUserData(UserDataStrings.TEAM_ID);
         int myTeamId = myStone.getUserData(UserDataStrings.TEAM_ID);
-        
+
         if (otherTeamId != myTeamId) {
             return;
         }
-        
+
         ProjectileControl projectile = other.getControl(ProjectileControl.class);
         if (projectile != null) {
-            
         }
     }
 }
