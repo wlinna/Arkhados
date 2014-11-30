@@ -134,6 +134,7 @@ public class MusicManager extends AbstractAppState {
             case "RockGolem":
                 heroMusic.add(generateHeroMusicPath(heroName, "GodsWar"));
                 heroMusic.add(generateHeroMusicPath(heroName, "Olympus"));
+                heroMusic.add(generateHeroMusicPath(heroName, "DwarvesGathering"));
                 break;
             default:
                 break;

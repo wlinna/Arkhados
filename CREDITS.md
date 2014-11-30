@@ -186,6 +186,13 @@ are licensed under CC-BY-SA 3.0.
 - [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)
 - [Predator Attack](https://www.jamendo.com/en/track/681764/predator-attack) (with cut by Teemu Salminen)
 
-[Michael Baradari](apollo-music.de) for Railgun's sound effect. It is licensed under CC-BY 3.0. Sound effect is hosted on [OGA](http://opengameart.org/content/4-projectile-launches).
+[Michael Baradari](apollo-music.de) for Railgun's sound effect. It is licensed
+under CC-BY 3.0. Sound effect is hosted on [OGA](http://opengameart.org/content/4-projectile-launches).
+
+[Olivier Girardot](https://www.jamendo.com/en/artist/351384/olivier-girardot)
+for Dwarves Gathering. RockGolem uses Dwarves Gathering (with small
+modifications by Teemu Salminen) as soundtrack. Dwarves Gathering  is licensed
+under CC-BY 3.0 and original version can be found from
+[Jamendo](https://www.jamendo.com/en/track/1059744/dwarves-gathering).
 
 NOTE: There will be ingame credits screen when game matures more.

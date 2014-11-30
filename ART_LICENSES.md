@@ -57,6 +57,7 @@ See CREDITS.md for attributions.
 - All Rock Golem 3D model related files
 - DarkHall.ogg
 - GreyLand.ogg
+- DwarvesGathering.ogg
 
 ## CC-BY-SA 3.0 ##
 
