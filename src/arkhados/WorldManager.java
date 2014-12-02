@@ -235,14 +235,14 @@ public class WorldManager extends AbstractAppState {
         entities.put(id, entity);
         syncManager.addObject(id, entity);
         space.addAll(entity);
-
+        
         // We need to add GhostControl separately
         final GhostControl ghostControl = entity.getControl(GhostControl.class);
         if (ghostControl != null) {
             space.add(ghostControl);
-        }
-
-        worldRoot.attachChild(entity);
+        }         
+        
+        worldRoot.attachChild(entity);                       
         EntityVariableControl variableControl = new EntityVariableControl(this, sender);
         entity.addControl(variableControl);
 
@@ -287,7 +287,7 @@ public class WorldManager extends AbstractAppState {
                 app.getStateManager().getState(ClientFogManager.class).setPlayerNode(entity);
                 userCommandManager.followSpatial(entity);
             }
-        }
+        }               
     }
 
     public void temporarilyRemoveEntity(int id) {
@@ -323,18 +323,19 @@ public class WorldManager extends AbstractAppState {
         setEntityTranslation(spatial, location, rotation);
     }
 
-    private void setEntityTranslation(Spatial entityModel, Vector3f location, Quaternion rotation) {
-        if (entityModel.getControl(RigidBodyControl.class) != null) {
-            entityModel.getControl(RigidBodyControl.class).setPhysicsLocation(location);
-            entityModel.getControl(RigidBodyControl.class).setPhysicsRotation(rotation.toRotationMatrix());
-        } else if (entityModel.getControl(CharacterPhysicsControl.class) != null) {
-            entityModel.getControl(CharacterPhysicsControl.class).warp(location);
-            entityModel.setLocalTranslation(location);
-            entityModel.getControl(CharacterPhysicsControl.class)
+    private void setEntityTranslation(Spatial entity, Vector3f location, Quaternion rotation) {
+        RigidBodyControl rigid = entity.getControl(RigidBodyControl.class);
+        if (rigid != null && !rigid.isKinematic()) {
+            rigid.setPhysicsLocation(location);
+            rigid.setPhysicsRotation(rotation.toRotationMatrix());
+        } else if (entity.getControl(CharacterPhysicsControl.class) != null) {
+            entity.getControl(CharacterPhysicsControl.class).warp(location);
+            entity.setLocalTranslation(location);
+            entity.getControl(CharacterPhysicsControl.class)
                     .setViewDirection(rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
         } else {
-            entityModel.setLocalTranslation(location);
-            entityModel.setLocalRotation(rotation);
+            entity.setLocalTranslation(location);
+            entity.setLocalRotation(rotation);
         }
     }
 
