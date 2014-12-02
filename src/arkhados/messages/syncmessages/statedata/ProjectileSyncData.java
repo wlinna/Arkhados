@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages.statedata;
 
-import arkhados.controls.ProjectileControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -35,11 +34,11 @@ public class ProjectileSyncData extends StateData {
     public ProjectileSyncData() {
     }
 
-    public ProjectileSyncData(int syncId, ProjectileControl control) {
+    public ProjectileSyncData(int syncId, RigidBodyControl control) {
         super(syncId);
-        control.getRigidBodyControl().getPhysicsLocation(this.location);
-        control.getRigidBodyControl().getLinearVelocity(this.velocity);
-        control.getRigidBodyControl().getPhysicsRotation(this.rotation);
+        control.getPhysicsLocation(this.location);
+        control.getLinearVelocity(this.velocity);
+        control.getPhysicsRotation(this.rotation);
     }
 
     @Override

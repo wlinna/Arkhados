@@ -28,9 +28,7 @@ import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -109,14 +107,15 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
             }
             
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            ProjectileControl.worldManager.removeEntity(entityId , RemovalReasons.EXPIRED);
+            worldManager.removeEntity(entityId , RemovalReasons.EXPIRED);
         }
 
         if (age > ProjectileControl.timeToLive) {
             if (splashAction != null) {
                 splashAction.update(tpf);
             }
-            ProjectileControl.worldManager.removeEntity((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
+            worldManager.removeEntity((int) spatial.getUserData(UserDataStrings.ENTITY_ID),
+                    RemovalReasons.EXPIRED);
         }
     }
 
@@ -152,7 +151,8 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     public StateData getSyncableData(StateData stateData) {
         if (needsSync) {
             needsSync = true;
-            return new ProjectileSyncData((int) getSpatial().getUserData(UserDataStrings.ENTITY_ID), this);
+            return new ProjectileSyncData(
+                    (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID), rigidBodyControl);
         }
 
         return null;
