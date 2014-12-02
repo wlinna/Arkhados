@@ -63,19 +63,16 @@ effect. And it would be nice if characters would scream (or something
 like that) when they die.
 
 **Find or create good music** In Arkhados every hero uses different
-  set of music. I also plan on adding generic music list that any hero
-  can use so that they don't need to listen to same music over and
-  over. Currently Venator has no music at all and other two heroes
-  have only 2 soundtracks. Can you find more?
+  set of music. Currently Embermage has only 2 soundtracks.
 
 Menu music would be nice too.
 
 You can find good music with good licenses from opengameart.org and
-jamendo.com . And remember to convert music to ogg-format because mp3
-is patent encumbered.
+jamendo.com . And remember to use ogg-format because mp3 is patent
+encumbered and not supported
 
 **Create nice portraits for heroes** It would be nice to select hero
-by clicking on nice portait instead of button with text like
+by clicking on nice portrait instead of button with text like
 "Embermage" or "Venator". Portraits could be used on user guides too.
 
 
@@ -92,12 +89,12 @@ Rocket Jump or Firewalk.
   that.
 
 **Add nice trail effects**
-Shotgun and machinegun bullets would look lot nicer if they had some
+Shotgun and machine gun bullets would look lot nicer if they had some
 kind of trails. Another nice use for trails would be to show nice red
 trails when Venator swipes. I will add Pudge-like hook spell later so
 trail system could be useful for that too. Maybe.
 
-**Ingame menu**
+**In-game menu**
 Very basic feature. Allow players to access menu during game so that
 player can configure keys, graphic settings etc. and immediately see
 how it affects.
