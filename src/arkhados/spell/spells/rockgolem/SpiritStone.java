@@ -17,7 +17,6 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.controls.ProjectileControl;
 import arkhados.controls.RotationControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.TimedExistenceControl;
@@ -25,19 +24,11 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
-import com.jme3.audio.AudioNode;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
 
 /**
  *
@@ -104,7 +95,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         }
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
-        node.setUserData(UserDataStrings.MASS, 0f);
+        node.setUserData(UserDataStrings.MASS, 600f);
         node.setUserData(UserDataStrings.DAMAGE, 0f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
         node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0f);
@@ -119,46 +110,18 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 //            sound.play();
 //        }
 
-        SphereCollisionShape collisionShape = new SphereCollisionShape(4);
-        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (Float) node.getUserData(UserDataStrings.MASS));
+        SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
+        SpiritStonePhysicsControl physicsBody = new SpiritStonePhysicsControl(collisionShape,
+                (Float) node.getUserData(UserDataStrings.MASS), worldManager);
+        node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.PROJECTILES);
-        node.addControl(physicsBody);
-
-        node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
+        physicsBody.setAngularDamping(1f);
+        
         node.addControl(new TimedExistenceControl(8f, true));
-
         node.addControl(new RotationControl(0f, 2f, 0f));
 
         return node;
-    }
-}
-
-class SpiritStoneCollisionListener implements PhysicsCollisionListener {
-
-    private Node myStone;
-
-    @Override
-    public void collision(PhysicsCollisionEvent event) {
-        boolean isA = myStone == event.getNodeA();
-        boolean isB = myStone == event.getNodeB();
-        if (!isA && !isB) {
-            return;
-        }
-
-        Spatial other = isA ? event.getNodeB() : event.getNodeA();
-
-        int otherTeamId = other.getUserData(UserDataStrings.TEAM_ID);
-        int myTeamId = myStone.getUserData(UserDataStrings.TEAM_ID);
-
-        if (otherTeamId != myTeamId) {
-            return;
-        }
-
-        ProjectileControl projectile = other.getControl(ProjectileControl.class);
-        if (projectile != null) {
-        }
     }
 }
