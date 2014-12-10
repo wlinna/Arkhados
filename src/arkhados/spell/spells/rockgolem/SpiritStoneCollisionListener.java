@@ -14,14 +14,17 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.rockgolem;
 
+import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
+import arkhados.PlayerData;
 import arkhados.WorldManager;
+import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -33,10 +36,12 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
 
     private Node myStone;
     private WorldManager worldManager;
+    
+    private static final float M1_COMBINATION_DAMAGE = 220f;
 
     public SpiritStoneCollisionListener(Node myStone, WorldManager worldManager) {
-        this.myStone = myStone;
-        this.worldManager = worldManager;
+        this.myStone = myStone;        
+        this.worldManager = worldManager;                
     }
 
     @Override
@@ -61,16 +66,24 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
             if (stonePhysics.isPunched()) {
                 worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
             } else {
-                System.out.println("Spirit stone collided with something that doesn't have team id");
             }
             return;
         }
         int myTeamId = myStone.getUserData(UserDataStrings.TEAM_ID);
 
-
-
-        BetterCharacterControl characterControl = other.getControl(BetterCharacterControl.class);
-        if (characterControl != null && stonePhysics.isPunched() && !otherTeamId.equals(myTeamId)) {
+        InfluenceInterfaceControl influenceInterface =
+                other.getControl(InfluenceInterfaceControl.class);
+        if (influenceInterface != null && stonePhysics.isPunched()
+                && !otherTeamId.equals(myTeamId)) {
+            
+            int ownerId = myStone.getUserData(UserDataStrings.PLAYER_ID);
+            int playerEntityId = PlayerData.getIntData(ownerId, PlayerDataStrings.ENTITY_ID);
+            Spatial playerEntity = worldManager.getEntity(playerEntityId);
+            InfluenceInterfaceControl playerInterface =
+                    playerEntity.getControl(InfluenceInterfaceControl.class);
+            
+            CharacterInteraction.harm(playerInterface, influenceInterface,
+                    M1_COMBINATION_DAMAGE, null, true);
             worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
         } else if (stonePhysics.isPunched() && otherCollisionGroup == CollisionGroups.WALLS) {
             worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
