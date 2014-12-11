@@ -24,6 +24,7 @@ import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.PlayerDataStrings;
+import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
@@ -71,7 +72,8 @@ public class SplashAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         List<SpatialDistancePair> spatialsOnDistance =
-                WorldManager.getSpatialsWithinDistance(spatial, radius);
+                Selector.getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
+                spatial, radius);
 
         if (spatialsOnDistance == null) {
             return false;

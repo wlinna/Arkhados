@@ -15,7 +15,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
-import arkhados.actions.ChargeAction;
+import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.controls.ActionQueueControl;
@@ -25,10 +25,8 @@ import arkhados.controls.SpellCastControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
-import arkhados.util.UserDataStrings;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.PhysicsRayTestResult;
+import arkhados.util.Predicate;
+import arkhados.util.Selector;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -36,6 +34,7 @@ import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,11 +78,7 @@ class CastTossAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-//        ChargeAction charge = new ChargeAction(range);
-//        charge.setChargeSpeed(255f);
-//
         ActionQueueControl actionQueue = spatial.getControl(ActionQueueControl.class);
-//        actionQueue.enqueueAction(charge);
 
         TossAction tossAction = new TossAction(spell, range);
         actionQueue.enqueueAction(tossAction);
@@ -110,30 +105,41 @@ class TossAction extends EntityAction {
                 .multLocal(range);
 
         physicsControl.setViewDirection(hitDirection);
-        PhysicsSpace space = physicsControl.getPhysicsSpace();
-        Vector3f to = spatial.getLocalTranslation().add(hitDirection);
 
-        List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().clone()
-                .setY(3f), to.setY(3f));
-        for (PhysicsRayTestResult result : results) {
-            PhysicsCollisionObject collisionObject = result.getCollisionObject();
-            Object userObject = collisionObject.getUserObject();
-            if (!(userObject instanceof Node)) {
-                continue;
-            }
-            Node node = (Node) userObject;
-            if (node == spatial) {
-                continue;
-            }
-            InfluenceInterfaceControl targetInfluenceControl = node
-                    .getControl(InfluenceInterfaceControl.class);
-            if (targetInfluenceControl == null) {
-                continue;
-            }
+        Predicate<SpatialDistancePair> predicate =
+                new Predicate<SpatialDistancePair>() {
+            @Override
+            public boolean test(SpatialDistancePair value) {
+                InfluenceInterfaceControl targetInfluenceControl = value.spatial
+                        .getControl(InfluenceInterfaceControl.class);
+                if (targetInfluenceControl == null) {
+                    return false;
+                }
 
-            toss(node);
+                if (value.spatial == spatial) {
+                    return false;
+                }
 
-            break;
+                return true;
+            }
+        };
+
+        List<SpatialDistancePair> targets = Selector.coneSelect(
+                new ArrayList<SpatialDistancePair>(), predicate,
+                spatial.getLocalTranslation(), hitDirection, range, 45f);
+        
+        Spatial closest = null;
+        float smallestDistance = 9999f;
+        
+        for (SpatialDistancePair target : targets) {
+            if (target.distance < smallestDistance) {
+                smallestDistance = target.distance;
+                closest = target.spatial;
+            }
+        }
+        
+        if (closest != null) {
+            toss(closest);
         }
 
         return false;
@@ -156,9 +162,8 @@ class TossAction extends EntityAction {
         MotionEvent motionControl = new MotionEvent(target, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / forwardSpeed);
         motionControl.setSpeed(1.6f);
-        
-        MotionPathListener motionPathListener = new MotionPathListener() {
 
+        MotionPathListener motionPathListener = new MotionPathListener() {
             @Override
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex == path.getNbWayPoints() - 1) {
@@ -172,16 +177,16 @@ class TossAction extends EntityAction {
                         new SplashAction(20, 250, 0, DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
+                splashAction.excludeSpatial(target);
                 splashAction.setCasterInterface(spatial.getControl(InfluenceInterfaceControl.class));
                 splashAction.update(0f);
                 InfluenceInterfaceControl targetInterface =
                         target.getControl(InfluenceInterfaceControl.class);
                 InfluenceInterfaceControl myInterface =
                         spatial.getControl(InfluenceInterfaceControl.class);
-                
+
                 CharacterInteraction.harm(myInterface, targetInterface, 150f, null, true);
             }
-
         };
 
         path.addListener(motionPathListener);

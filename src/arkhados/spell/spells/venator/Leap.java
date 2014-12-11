@@ -27,6 +27,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
@@ -109,8 +110,8 @@ class CastLeapAction extends EntityAction {
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
-                List<SpatialDistancePair> spatialsOnDistance =
-                        WorldManager.getSpatialsWithinDistance(spatial, 15f);
+                List<SpatialDistancePair> spatialsOnDistance = Selector.getSpatialsWithinDistance(
+                        new ArrayList<SpatialDistancePair>(), spatial, 15f);
                 if (spatialsOnDistance == null) {
                     return;
                 }
@@ -120,6 +121,10 @@ class CastLeapAction extends EntityAction {
                     // Check if spatial is character
                     if (spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class)
                             == null) {
+                        continue;
+                    }
+                    
+                    if (spatialDistancePair.spatial == spatial) {
                         continue;
                     }
 

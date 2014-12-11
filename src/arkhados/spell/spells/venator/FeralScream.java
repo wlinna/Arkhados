@@ -23,12 +23,14 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.FearCC;
+import arkhados.util.Selector;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,7 +80,7 @@ class FeralScreamAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-
+        // TODO: Replace with Selector.coneSelect
         CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
@@ -99,14 +101,19 @@ class FeralScreamAction extends EntityAction {
         Plane rightPlane = new Plane(rightNormal, spatial.getLocalTranslation().dot(rightNormal));
 
         List<SpatialDistancePair> spatialDistances =
-                WorldManager.getSpatialsWithinDistance(spatial, range);
+                Selector.getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
+                spatial, range);
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
             InfluenceInterfaceControl influenceInterface =
                     spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class);
             if (influenceInterface == null) {
                 continue;
             }
-            if (!isInCone(leftPlane, rightPlane, spatialDistancePair.spatial)) {
+            if (spatialDistancePair.spatial == spatial) {
+                continue;
+            }
+            
+            if (!Selector.isInCone(leftPlane, rightPlane, spatialDistancePair.spatial)) {
                 continue;
             }
             final float duration = 2f;
@@ -120,14 +127,4 @@ class FeralScreamAction extends EntityAction {
         return false;
     }
 
-    public boolean isInCone(Plane left, Plane right, Spatial spatial) {
-        final Vector3f location = spatial.getLocalTranslation();
-        if (left.whichSide(location) == Plane.Side.Negative) {
-            return false;
-        }
-        if (right.whichSide(location) == Plane.Side.Negative) {
-            return false;
-        }
-        return true;
-    }
 }

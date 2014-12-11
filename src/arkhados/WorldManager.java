@@ -48,6 +48,7 @@ import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
+import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -106,6 +107,7 @@ public class WorldManager extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         TimedExistenceControl.setWorldManager(this);
+        Selector.setWorldManager(this);
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
         rootNode = this.app.getRootNode();
@@ -394,29 +396,7 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public static List<SpatialDistancePair> getSpatialsWithinDistance(Spatial spatial, float distance) {
-        Node worldRoot = spatial.getParent();
-        while (!"world-root".equals(worldRoot.getName())) {
-            worldRoot = worldRoot.getParent();
-            if (worldRoot == null) {
-                // Consider throwing exception here
-                return null;
-            }
-        }
-
-        List<SpatialDistancePair> spatialDistancePairs = new LinkedList<>();
-        for (Spatial child : worldRoot.getChildren()) {
-            float distanceBetween = child.getWorldTranslation().distance(spatial.getWorldTranslation());
-            if (distanceBetween > distance) {
-                continue;
-            }
-            if (child == spatial) {
-                continue;
-            }
-            spatialDistancePairs.add(new SpatialDistancePair(child, distanceBetween));
-        }
-        return spatialDistancePairs;
-    }
+    
 
     @Override
     public void update(float tpf) {
