@@ -76,6 +76,6 @@ class MineralArmorBuff extends ArmorBuff{
         super.update(time);
         
         // Healing amount is based on assumption that duration is 4s.
-        CharacterInteraction.heal(getOwnerInterface(), targetInterface, 0.7f * getAmount() * time);
+        CharacterInteraction.heal(getOwnerInterface(), targetInterface, 0.4f * getAmount() * time);
     }        
 }
