@@ -118,7 +118,7 @@ class StoneFistAction extends EntityAction {
             
             if (collisionObject.getCollisionGroup() == CollisionGroups.SPIRIT_STONE) {
                 if (targetPlayerId == myPlayerId) {
-                    pushSpiritStone(node);
+                    pushSpiritStone(node, hitDirection);
                     break;
                 } else {
                     continue;
@@ -144,11 +144,10 @@ class StoneFistAction extends EntityAction {
         return false;
     }
     
-    private void pushSpiritStone(Node stone) {                
+    private void pushSpiritStone(Node stone, Vector3f hitDirection) {                
         SpiritStonePhysicsControl physics = stone.getControl(SpiritStonePhysicsControl.class);
         
-        Vector3f direction = physics.getLocation().subtract(spatial.getLocalTranslation())
-                .setY(0f).normalizeLocal();
+        Vector3f direction = hitDirection.normalize();
         physics.punch(direction.multLocal(80f));
         physics.addCollideWithGroup(CollisionGroups.WALLS);
     }

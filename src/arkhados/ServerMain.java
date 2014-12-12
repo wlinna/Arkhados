@@ -51,7 +51,6 @@ public class ServerMain extends SimpleApplication {
         }
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(60);
-//        settings.setRenderer(null);
 
         ServerMain app = new ServerMain();
         app.setShowSettings(false);

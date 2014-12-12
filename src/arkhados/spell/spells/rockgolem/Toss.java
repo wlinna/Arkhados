@@ -27,6 +27,7 @@ import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
+import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -113,6 +114,14 @@ class TossAction extends EntityAction {
                 InfluenceInterfaceControl targetInfluenceControl = value.spatial
                         .getControl(InfluenceInterfaceControl.class);
                 if (targetInfluenceControl == null) {
+                    SpiritStonePhysicsControl stone =
+                            value.spatial.getControl(SpiritStonePhysicsControl.class);
+                    if (stone != null) {
+                        int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+                        if (value.spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeamId)) {
+                            return true;
+                        }
+                    }
                     return false;
                 }
 
@@ -127,17 +136,17 @@ class TossAction extends EntityAction {
         List<SpatialDistancePair> targets = Selector.coneSelect(
                 new ArrayList<SpatialDistancePair>(), predicate,
                 spatial.getLocalTranslation(), hitDirection, range, 45f);
-        
+
         Spatial closest = null;
         float smallestDistance = 9999f;
-        
+
         for (SpatialDistancePair target : targets) {
             if (target.distance < smallestDistance) {
                 smallestDistance = target.distance;
                 closest = target.spatial;
             }
         }
-        
+
         if (closest != null) {
             toss(closest);
         }
@@ -163,12 +172,19 @@ class TossAction extends EntityAction {
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / forwardSpeed);
         motionControl.setSpeed(1.6f);
 
+        final SpiritStonePhysicsControl stonePhysics =
+                target.getControl(SpiritStonePhysicsControl.class);
+
         MotionPathListener motionPathListener = new MotionPathListener() {
             @Override
             public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
                 if (wayPointIndex == path.getNbWayPoints() - 1) {
-                    target.getControl(CharacterPhysicsControl.class).switchToNormalPhysicsMode();
+                    if (stonePhysics == null) {
+                        target.getControl(CharacterPhysicsControl.class)
+                                .switchToNormalPhysicsMode();
+                    }
                     landingEffect();
+                    motionControl.setEnabled(false);
                 }
             }
 
@@ -180,12 +196,16 @@ class TossAction extends EntityAction {
                 splashAction.excludeSpatial(target);
                 splashAction.setCasterInterface(spatial.getControl(InfluenceInterfaceControl.class));
                 splashAction.update(0f);
-                InfluenceInterfaceControl targetInterface =
-                        target.getControl(InfluenceInterfaceControl.class);
-                InfluenceInterfaceControl myInterface =
-                        spatial.getControl(InfluenceInterfaceControl.class);
+                if (stonePhysics == null) {
+                    InfluenceInterfaceControl targetInterface =
+                            target.getControl(InfluenceInterfaceControl.class);
+                    InfluenceInterfaceControl myInterface =
+                            spatial.getControl(InfluenceInterfaceControl.class);
 
-                CharacterInteraction.harm(myInterface, targetInterface, 150f, null, true);
+                    CharacterInteraction.harm(myInterface, targetInterface, 150f, null, true);
+                } else {
+                    target.getLocalTranslation().setY(10f);
+                }
             }
         };
 
@@ -193,6 +213,8 @@ class TossAction extends EntityAction {
 
         motionControl.play();
 
-        target.getControl(CharacterPhysicsControl.class).switchToMotionCollisionMode();
+        if (stonePhysics == null) {
+            target.getControl(CharacterPhysicsControl.class).switchToMotionCollisionMode();
+        }
     }
 }

@@ -15,15 +15,12 @@
 package arkhados.actions;
 
 import arkhados.CharacterInteraction;
-import arkhados.PlayerData;
 import arkhados.SpatialDistancePair;
-import arkhados.WorldManager;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -75,18 +72,10 @@ public class SplashAction extends EntityAction {
                 Selector.getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, radius);
 
-        if (spatialsOnDistance == null) {
-            return false;
-        }
-
         for (SpatialDistancePair pair : spatialsOnDistance) {
             InfluenceInterfaceControl targetInterface =
                     pair.spatial.getControl(InfluenceInterfaceControl.class);
-            if (targetInterface == null) {
-                continue;
-            }
-
-            if (excluded.contains(pair.spatial)) {
+            if (targetInterface == null || excluded.contains(pair.spatial)) {
                 continue;
             }
 
@@ -136,7 +125,7 @@ public class SplashAction extends EntityAction {
 
             RigidBodyControl colliderPhysics = spatial.getControl(RigidBodyControl.class);
 
-            if (colliderPhysics != null) {
+            if (colliderPhysics != null && !colliderPhysics.isKinematic()) {
                 impulse = pair.spatial.getLocalTranslation()
                         .subtract(colliderPhysics.getPhysicsLocation().setY(0)).normalizeLocal()
                         .multLocal(impulseFactor);

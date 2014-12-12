@@ -112,9 +112,6 @@ class CastLeapAction extends EntityAction {
             private void landingEffect() {
                 List<SpatialDistancePair> spatialsOnDistance = Selector.getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(), spatial, 15f);
-                if (spatialsOnDistance == null) {
-                    return;
-                }
 
                 SpatialDistancePair pairWithSmallestDistance = null;
                 for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
