@@ -152,13 +152,14 @@ public class ClientFogManager extends AbstractAppState implements SceneProcessor
         // Indices
         VertexBuffer oldIndexVertexBuffer = mesh.getBuffer(VertexBuffer.Type.Index);
         VertexBuffer.Format indexFormat = oldIndexVertexBuffer.getFormat();
+        int oldIndexCount = oldIndexVertexBuffer.getNumElements();
 
         List<Short> connectionIndices = new ArrayList<>();
 
         int skipCounter = 0;
 
         boolean skipNext = false;
-        for (int i = 0; i < oldVertexCount; i++) {
+        for (int i = 0; i < oldIndexCount - 1; i++) {
             if (skipNext) {
                 skipCounter = 0;
                 skipNext = false;
