@@ -71,6 +71,7 @@ public class CharacterInteraction {
         if (target.isDead()) {
             Integer latestDamagerId = latestDamager.get(targetPlayerId);
             if (latestDamagerId != null) {
+                latestDamager.remove(latestDamagerId);
                 getCurrentRoundStats().addKill(latestDamagerId);
             } else {
                 latestDamagerId = -1;
@@ -96,11 +97,10 @@ public class CharacterInteraction {
         } else if (target.isDead()) {
             return;
         }
-        
-        
+
         float healingDone = target.heal(amount);
-        
-        int healerPlayerId = healer.getSpatial().getUserData(UserDataStrings.PLAYER_ID);        
+
+        int healerPlayerId = healer.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
         getCurrentRoundStats().addHealthRestorationForPlayer(healerPlayerId, healingDone);
     }
 
