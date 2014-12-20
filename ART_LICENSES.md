@@ -53,8 +53,8 @@ See CREDITS.md for attributions.
 - SteepsOfDestiny.ogg
 - TheDarkAmulet.ogg
 - All DamagingDagger related files
-- All Archer related files
 - All Rock Golem 3D model related files
+- All EliteSoldier 3D model related files (includes textures and Weapon)
 - DarkHall.ogg
 - GreyLand.ogg
 - DwarvesGathering.ogg

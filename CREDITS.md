@@ -37,11 +37,10 @@ MonkeyZone developers for providing example multiplayer
 game. I copied two source files from it and made small changes. I
 retained their original license of course.
 
-Clement Wu, Nikolaus & Botanic for Mage and Archer -models. They are
-licensed under multiple licenses , one of them is CC-BY 3.0 which I use for this.
-I've made slight changes to model. See following links for original models:
-http://opengameart.org/content/animated-mage
-http://opengameart.org/content/animated-archer
+Clement Wu, Nikolaus & Botanic for Mage -model. Mage is licensed under
+multiple licenses , one of them is CC-BY 3.0 which I use for
+this. I've made slight changes to model. Original model can be found
+from [OGA](http://opengameart.org/content/animated-mage).
 
 Dennis Rodriguez (ThetankOmeter) for Warwolf. William Linna (the main programmer)
 created animations. Original model (without animations) can be found from [Blendswap](http://www.blendswap.com/blends/view/56015)
@@ -51,6 +50,8 @@ hendori-sama for
 [umask007 who improved rigging and did uv-work](http://opengameart.org/content/fireicestone-golem) and Dm3d for improved
 texture and additional animations. Rock Golem is licensed under CC-BY
 3.0. Final work can be found from [OGA](http://opengameart.org/content/rock-golem)
+
+wopr2012 for [Low poly game character](http://www.blendswap.com/blends/view/69441). The model has been modified little bit and is used for Elite Soldier. Model is licensed under CC-BY 3.0.
 
 izuzf for [LowPoly Rock!](http://www.blendswap.com/blends/view/61071). LowPoly
 Rock is used for SpiritStone and it's licensed under CC0.

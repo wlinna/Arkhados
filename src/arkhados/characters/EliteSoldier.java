@@ -38,10 +38,13 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.animation.SkeletonControl;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 /**
@@ -50,6 +53,7 @@ import com.jme3.scene.control.AbstractControl;
  * @author william
  */
 public class EliteSoldier extends AbstractNodeBuilder {
+
     public static final int ACTION_ROCKET_JUMP = 0;
     public static final int ACTION_SHOTGUN = 1;
     public static final int ACTION_RAILGUN = 2;
@@ -58,7 +62,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
     public EliteSoldier(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
         setEffectBox(new EffectBox());
-        getEffectBox().addActionEffect(ACTION_ROCKET_JUMP, new RocketExplosionEffect());
+        getEffectBox().addActionEffect(ACTION_ROCKET_JUMP,
+                new RocketExplosionEffect());
         getEffectBox().addActionEffect(ACTION_SHOTGUN,
                 new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
         getEffectBox().addActionEffect(ACTION_RAILGUN,
@@ -67,7 +72,25 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
-        Node entity = (Node) assetManager.loadModel("Models/Archer.j3o");
+        Node entity = (Node) assetManager.loadModel("Models/EliteSoldier.j3o");
+
+        Node attachmentsNode = entity.getControl(SkeletonControl.class)
+                .getAttachmentsNode("Central_Bone.001_R.004");
+
+        Node weapon = (Node) assetManager.loadModel("Models/Weapon.j3o");
+
+        attachmentsNode.attachChild(weapon);
+        weapon.setLocalTranslation(0, 0, 0);                
+        
+        // Thanks for Allexit for helping set weapons rotation correctly
+        Quaternion zQuat = new Quaternion();
+        zQuat.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Z);
+        Quaternion yQuat = new Quaternion();
+        yQuat.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y);
+        weapon.setLocalRotation(yQuat.add(zQuat));
+        
+        entity.scale(11f);
+
         float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
@@ -80,22 +103,21 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
-        for (Spatial childToScale : entity.getChildren()) {
-            childToScale.scale(1.2f);
-        }
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
         /**
-         * By setting physics damping to low value, we can effectively apply impulses on it.
+         * By setting physics damping to low value, we can effectively apply
+         * impulses on it.
          */
-        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
+        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
         entity.addControl(new ActionQueueControl());
 
         /**
-         * To add spells to entity, create SpellCastControl and call its putSpell-method with name
-         * of the spell as argument.
+         * To add spells to entity, create SpellCastControl and call its
+         * putSpell-method with name of the spell as argument.
          */
-        EliteSoldierAmmunitionControl ammunitionControl = new EliteSoldierAmmunitionControl();
+        EliteSoldierAmmunitionControl ammunitionControl =
+                new EliteSoldierAmmunitionControl();
         entity.addControl(ammunitionControl);
 
         SpellCastControl spellCastControl = new SpellCastControl();
@@ -105,8 +127,6 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
-
-//        spellCastControl.putSpell(Spell.getSpell("Machinegun"), InputMappingStrings.getId(InputMappingStrings.M2));
         spellCastControl.putSpell(Spell.getSpell("Railgun"),
                 InputMappingStrings.getId(InputMappingStrings.M2));
         spellCastControl.putSpell(Spell.getSpell("Plasmagun"),
@@ -119,21 +139,25 @@ public class EliteSoldier extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         /**
-         * Map Spell names to casting animation's name. In this case all spells use same animation.
+         * Map Spell names to casting animation's name. In this case all spells
+         * use same animation.
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
-        CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
-        AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
-        AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
+        CharacterAnimationControl characterAnimControl =
+                new CharacterAnimationControl(animControl);
+
+        AnimationData deathAnim =
+                new AnimationData("Die", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim = new AnimationData("Run", 1f, LoopMode.Cycle);
 
         characterAnimControl.setDeathAnimation(deathAnim);
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-        AnimationData animationData = new AnimationData("Attack", 1f, LoopMode.DontLoop);
+        AnimationData animationData = 
+                new AnimationData("Shoot", 1f, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation("Shotgun", animationData);
-//        animControl.addSpellAnimation("Machinegun", animationData);
         characterAnimControl.addSpellAnimation("Railgun", animationData);
         characterAnimControl.addSpellAnimation("Plasmagun", animationData);
         characterAnimControl.addSpellAnimation("Rocket Launcher", animationData);
@@ -151,7 +175,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
             clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
-            entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+            entity.getControl(InfluenceInterfaceControl.class)
+                    .setIsServer(false);
         } else {
             RestingControl restingControl = new RestingControl();
             entity.addControl(restingControl);
@@ -165,7 +190,8 @@ class EliteSoldierSyncControl extends AbstractControl implements SyncControl {
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        return new EliteSoldierSyncData((int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
+        return new EliteSoldierSyncData(
+                (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
                 getSpatial());
     }
 

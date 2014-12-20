@@ -14,18 +14,18 @@ material _missing_material_
     }
 }
 
-// Material.001 genrated by blender2ogre 0.5.8
+// Material genrated by blender2ogre 0.5.8
 
-material Material.001 
+material Material 
 {
     receive_shadows on 
 
     technique
     {
-        pass Material.001
+        pass Material
         {
-            ambient 0.800000011920929 0.800000011920929 0.800000011920929 1.0
-            diffuse 0.6400000190734865 0.6400000190734865 0.6400000190734865 1.0
+            ambient 0.5382136106491089 0.5382136106491089 0.5382136106491089 1.0
+            diffuse 0.4305708949352933 0.4305708949352933 0.4305708949352933 1.0
             specular 0.0 0.0 0.0 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
@@ -48,7 +48,7 @@ material Material.001
 
             texture_unit 
             {
-                texture Archer.png
+                texture puska_1_color_mapa.png
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate
