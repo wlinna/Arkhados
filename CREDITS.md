@@ -194,6 +194,10 @@ are licensed under CC-BY-SA 3.0.
 
 Both projectile launches and pain and death sounds are licensed  under CC-BY 3.0.
 
+[uagadugu](https://www.freesound.org/people/uagadugu/) for
+[Cracking Earthquake](https://www.freesound.org/people/uagadugu/sounds/222521/). Part
+of the sound with some modifications is used for RockGolemPain sound. Sound is licensed
+under CC0.
 
 [Olivier Girardot](https://www.jamendo.com/en/artist/351384/olivier-girardot)
 for Dwarves Gathering. RockGolem uses Dwarves Gathering (with small

@@ -127,6 +127,7 @@ public class RockGolem extends AbstractNodeBuilder {
         if (worldManager.isClient()) {
             CharacterSoundControl soundControl = new CharacterSoundControl();
             entity.addControl(soundControl);
+            soundControl.setSufferSound("Effects/Sound/RockGolemPain.wav");
 
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());

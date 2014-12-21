@@ -22,6 +22,7 @@ See CREDITS.md for attributions.
 - All SpiritStone related files
 - VenatorDeath.wav
 - VenatorPain.wav
+- RockGolemPain.wav
 
 ## CC-BY 3.0 ##
 - background.png (Rendered from Rock Golem model)
