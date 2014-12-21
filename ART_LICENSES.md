@@ -55,6 +55,8 @@ See CREDITS.md for attributions.
 - All DamagingDagger related files
 - All Rock Golem 3D model related files
 - All EliteSoldier 3D model related files (includes textures and Weapon)
+- EliteSoldierPain.wav
+- EliteSoldierDeath.wav
 - DarkHall.ogg
 - GreyLand.ogg
 - DwarvesGathering.ogg

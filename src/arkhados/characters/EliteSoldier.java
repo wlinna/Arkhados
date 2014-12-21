@@ -80,15 +80,15 @@ public class EliteSoldier extends AbstractNodeBuilder {
         Node weapon = (Node) assetManager.loadModel("Models/Weapon.j3o");
 
         attachmentsNode.attachChild(weapon);
-        weapon.setLocalTranslation(0, 0, 0);                
-        
+        weapon.setLocalTranslation(0, 0, 0);
+
         // Thanks for Allexit for helping set weapons rotation correctly
         Quaternion zQuat = new Quaternion();
         zQuat.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Z);
         Quaternion yQuat = new Quaternion();
         yQuat.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y);
         weapon.setLocalRotation(yQuat.add(zQuat));
-        
+
         entity.scale(11f);
 
         float movementSpeed = 36f;
@@ -154,7 +154,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-        AnimationData animationData = 
+        AnimationData animationData =
                 new AnimationData("Shoot", 1f, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation("Shotgun", animationData);
@@ -170,6 +170,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
         if (worldManager.isClient()) {
             CharacterSoundControl soundControl = new CharacterSoundControl();
             entity.addControl(soundControl);
+            soundControl.setSufferSound("Effects/Sound/EliteSoldierPain.wav");
+            soundControl.setDeathSound("Effects/Sound/EliteSoldierDeath.wav");
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 
