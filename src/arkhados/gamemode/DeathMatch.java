@@ -52,7 +52,6 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -62,7 +61,8 @@ import java.util.logging.Logger;
  */
 public class DeathMatch extends GameMode implements CommandHandler {
 
-    private static final Logger logger = Logger.getLogger(DeathMatch.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(DeathMatch.class.getName());
     private WorldManager worldManager;
     private AppStateManager stateManager;
     private SyncManager syncManager;
@@ -108,7 +108,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 if (sender.isClient()) {
                     nifty.gotoScreen("default_hud");
                     heroSelectionLayer.show();
-                    sender.addCommand(new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
+                    sender.addCommand(
+                            new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
                 } else if (sender.isServer()) {
                     syncManager.setEnabled(true);
                     syncManager.startListening();
@@ -132,9 +133,11 @@ public class DeathMatch extends GameMode implements CommandHandler {
         spawnTimers.put(playerId, timer);
         timer.setActive(true);
 
-        ServerFogManager fogManager = stateManager.getState(ServerFogManager.class);
+        ServerFogManager fogManager =
+                stateManager.getState(ServerFogManager.class);
         if (fogManager != null) { // Same as asking for if this is server
-            PlayerEntityAwareness awareness = fogManager.createAwarenessForPlayer(playerId);
+            PlayerEntityAwareness awareness =
+                    fogManager.createAwarenessForPlayer(playerId);
             fogManager.teachAboutPrecedingEntities(awareness);
 
             canPickHeroMap.put(playerId, Boolean.TRUE);
@@ -160,21 +163,25 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                int oldEntityId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
+                int oldEntityId = PlayerData
+                        .getIntData(playerId, PlayerDataStrings.ENTITY_ID);
                 worldManager.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
                 Vector3f startingLocation = getNewSpawnLocation();
                 PlayerData playerData = PlayerData.getPlayerId(playerId);
 
-                int nodeBuilderId = NodeBuilderIdHeroNameMatcherSingleton.get().getId(heroName);
-                int entityId = worldManager.addNewEntity(nodeBuilderId, startingLocation,
+                int nodeBuilderId = NodeBuilderIdHeroNameMatcherSingleton
+                        .get().getId(heroName);
+                int entityId = worldManager
+                        .addNewEntity(nodeBuilderId, startingLocation,
                         new Quaternion(), playerId);
                 playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
 
                 SetPlayersCharacterCommand playersCharacterCommand =
                         new SetPlayersCharacterCommand(entityId, playerId);
 
-                stateManager.getState(ServerSender.class).addCommand(playersCharacterCommand);
+                stateManager.getState(ServerSender.class)
+                        .addCommand(playersCharacterCommand);
                 return null;
             }
         };
@@ -188,8 +195,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     private Vector3f getNewSpawnLocation() {
-        spawnLocationIndex = (spawnLocationIndex + 1) % WorldManager.STARTING_LOCATIONS.length;
-        return WorldManager.STARTING_LOCATIONS[spawnLocationIndex].clone().setY(1f);
+        spawnLocationIndex = (spawnLocationIndex + 1)
+                % WorldManager.STARTING_LOCATIONS.length;
+        return WorldManager.STARTING_LOCATIONS[spawnLocationIndex].clone()
+                .setY(1f);
     }
 
     @Override
@@ -199,25 +208,29 @@ public class DeathMatch extends GameMode implements CommandHandler {
         Sender sender = stateManager.getState(ServerSender.class);
 
         int killingSpree = 0;
-        
+
         if (killersPlayerId > -1) {
             killingSpree = killingSprees.get(killersPlayerId) + 1;
             killingSprees.put(killersPlayerId, killingSpree);
         }
 
-        sender.addCommand(new PlayerKillCommand(playerId, killersPlayerId, killingSpree));
+        sender.addCommand(
+                new PlayerKillCommand(playerId, killersPlayerId, killingSpree));
         spawnTimers.get(playerId).setTimeLeft(6f);
-        int kills = CharacterInteraction.getCurrentRoundStats().getKills(killersPlayerId);
+        int kills = CharacterInteraction.getCurrentRoundStats()
+                .getKills(killersPlayerId);
 
         if (kills >= killLimit) {
             sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
         }
     }
 
-    private void clientPlayerDied(int playerId, int killersId, int killingSpree) {
+    private void clientPlayerDied(int playerId, int killersId,
+            int killingSpree) {
         killingSprees.put(playerId, 0);
         killingSprees.put(killersId, killingSpree);
-        int myPlayerId = stateManager.getState(UserCommandManager.class).getPlayerId();
+        int myPlayerId =
+                stateManager.getState(UserCommandManager.class).getPlayerId();
 
         if (playerId == myPlayerId) {
             handleOwnDeath();
@@ -233,7 +246,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 int characterId = userCommandManager.getCharacterId();
                 worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
                 userCommandManager.nullifyCharacter();
-                ClientHudManager hudManager = stateManager.getState(ClientHudManager.class);
+                ClientHudManager hudManager =
+                        stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButHpBars();
                 hudManager.showRoundStatistics();
                 heroSelectionLayer.showWithoutEffects();
@@ -243,7 +257,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(Object source, List<Command> guaranteed) {
+    public void readGuaranteed(Object source, Command guaranteed) {
         if (source instanceof HostedConnection) {
             serverReadGuaranteed((HostedConnection) source, guaranteed);
         } else {
@@ -251,29 +265,29 @@ public class DeathMatch extends GameMode implements CommandHandler {
         }
     }
 
-    private void serverReadGuaranteed(HostedConnection source, List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command instanceof ClientSelectHeroCommand) {
-                int playerId = source.getAttribute(ServerClientDataStrings.PLAYER_ID);
-                playerChoseHero(playerId, ((ClientSelectHeroCommand) command).getHeroName());
-            }
+    private void serverReadGuaranteed(HostedConnection source,
+            Command command) {
+        if (command instanceof ClientSelectHeroCommand) {
+            int playerId =
+                    source.getAttribute(ServerClientDataStrings.PLAYER_ID);
+            playerChoseHero(playerId,
+                    ((ClientSelectHeroCommand) command).getHeroName());
         }
     }
 
-    private void clientReadGuaranteed(List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command instanceof PlayerKillCommand) {
-                PlayerKillCommand pkCommand = (PlayerKillCommand) command;
-                clientPlayerDied(pkCommand.getDiedPlayerId(), pkCommand.getKillerPlayerId(),
-                        pkCommand.getKillingSpree());
-            } else if (command instanceof TopicOnlyCommand) {
-                clientHandleTopicOnlyCommand((TopicOnlyCommand) command);
-            }
+    private void clientReadGuaranteed(Command command) {
+        if (command instanceof PlayerKillCommand) {
+            PlayerKillCommand pkCommand = (PlayerKillCommand) command;
+            clientPlayerDied(pkCommand.getDiedPlayerId(),
+                    pkCommand.getKillerPlayerId(), pkCommand.getKillingSpree());
+        } else if (command instanceof TopicOnlyCommand) {
+            clientHandleTopicOnlyCommand((TopicOnlyCommand) command);
         }
+
     }
 
     @Override
-    public void readUnreliable(Object source, List<Command> unreliables) {
+    public void readUnreliable(Object source, Command unreliable) {
     }
 
     public void setNifty(Nifty nifty) {
@@ -284,10 +298,11 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
         Screen screen = nifty.getScreen("default_hud");
 
-        heroSelectionLayer = layerBuilder.build(nifty, screen, screen.getRootElement());
+        heroSelectionLayer =
+                layerBuilder.build(nifty, screen, screen.getRootElement());
 
-        DeathMatchHeroSelectionLayerController control =
-                heroSelectionLayer.getControl(DeathMatchHeroSelectionLayerController.class);
+        DeathMatchHeroSelectionLayerController control = heroSelectionLayer
+                .getControl(DeathMatchHeroSelectionLayerController.class);
         control.setStateManager(stateManager);
     }
 
@@ -311,13 +326,15 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
         if (sender.isClient()) {
 
-            final ClientHudManager hudManager = stateManager.getState(ClientHudManager.class);
+            final ClientHudManager hudManager =
+                    stateManager.getState(ClientHudManager.class);
             getApp().enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
                     hudManager.clear();
                     hudManager.showRoundStatistics();
-                    nifty.removeElement(nifty.getScreen("default_hud"), heroSelectionLayer);
+                    nifty.removeElement(nifty.getScreen("default_hud"),
+                            heroSelectionLayer);
                     return null;
                 }
             });
@@ -327,8 +344,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 public Void call() throws Exception {
                     stateManager.getState(SyncManager.class).clear();
                     // TODO: Find out why following line causes statistics to not appear
-//                    stateManager.getState(UserCommandManager.class).nullifyCharacter();
-                    stateManager.getState(ClientHudManager.class).disableCharacterHudControl();
+                    //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
+                    stateManager.getState(ClientHudManager.class)
+                            .disableCharacterHudControl();
                     return null;
                 }
             });
@@ -342,7 +360,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     PlayerData.destroyAllData();
                     hudManager.endGame();
                     stateManager.getState(WorldManager.class).clear();
-                    stateManager.getState(UserCommandManager.class).nullifyCharacter();
+                    stateManager.getState(UserCommandManager.class)
+                            .nullifyCharacter();
                     ((ClientMain) getApp()).gameEnded();
                     killingSprees.clear();
                     return null;

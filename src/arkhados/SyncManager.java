@@ -60,7 +60,8 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
         Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isClient()) {
 
-            for (Iterator<StateData> it = stateDataQueue.iterator(); it.hasNext();) {
+            for (Iterator<StateData> it = stateDataQueue.iterator();
+                    it.hasNext();) {
                 StateData stateData = it.next();
                 Object object = syncObjects.get(stateData.getSyncId());
                 if (object != null) {
@@ -79,11 +80,13 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     private void sendSyncData() {
-        ServerFogManager fogManager = app.getStateManager().getState(ServerFogManager.class);
+        ServerFogManager fogManager =
+                app.getStateManager().getState(ServerFogManager.class);
 
         Set<Entry<Integer, Object>> entrySet = syncObjects.entrySet();
 
-        for (Iterator<Entry<Integer, Object>> it = entrySet.iterator(); it.hasNext();) {
+        for (Iterator<Entry<Integer, Object>> it = entrySet.iterator();
+                it.hasNext();) {
             Entry<Integer, Object> entry = it.next();
             if (!(entry.getValue() instanceof Spatial)) {
                 continue;
@@ -101,17 +104,15 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
         }
     }
 
-    private void doMessage(int syncId, List<Command> m) {
+    private void doMessage(int syncId, Command command) {
         Object object = syncObjects.get(syncId);
-        
+
         if (object == null) {
             return;
         }
-        
-        for (Command command : m) {
-            if (command instanceof StateData) {
-                ((StateData) command).applyData(object);
-            }
+
+        if (command instanceof StateData) {
+            ((StateData) command).applyData(object);
         }
     }
 
@@ -137,7 +138,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(Object source, List<Command> guaranteed) {
+    public void readGuaranteed(Object source, Command guaranteed) {
         Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isClient()) {
             clientHandleCommands(guaranteed);
@@ -147,30 +148,30 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     @Override
-    public void readUnreliable(Object source, List<Command> unreliables) {
+    public void readUnreliable(Object source, Command unreliable) {
         Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isClient()) {
-            clientHandleCommands(unreliables);
+            clientHandleCommands(unreliable);
         } else {
-            serverHandleCommands((HostedConnection) source, unreliables);
+            serverHandleCommands((HostedConnection) source, unreliable);
         }
     }
 
-    private void clientHandleCommands(final List<Command> stateDataList) {
+    private void clientHandleCommands(final Command command) {
         app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                for (Command command : stateDataList) {
-                    if (command instanceof StateData) {
-                        stateDataQueue.add((StateData) command);
-                    }
+
+                if (command instanceof StateData) {
+                    stateDataQueue.add((StateData) command);
                 }
                 return null;
             }
         });
     }
 
-    private void serverHandleCommands(HostedConnection source, final List<Command> commands) {
+    private void serverHandleCommands(HostedConnection source,
+            final Command command) {
         if (!listening) {
             return;
         }
@@ -180,7 +181,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
         if (syncId != -1) {
             app.enqueue(new Callable<Void>() {
                 public Void call() throws Exception {
-                    doMessage(syncId, commands);
+                    doMessage(syncId, command);
                     return null;
                 }
             });

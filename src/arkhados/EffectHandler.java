@@ -40,26 +40,28 @@ public class EffectHandler implements CommandHandler {
     }
 
     public void addEffectBox(int id, EffectBox effectBox) {
-        this.actionEffects.put(id, effectBox);
+        actionEffects.put(id, effectBox);
     }
 
     private void handleAction(final ActionCommand actionCommand) {
-        final Spatial entity = this.worldManager.getEntity(actionCommand.getSyncId());
+        final Spatial entity = 
+                worldManager.getEntity(actionCommand.getSyncId());
         if (entity == null) {
             return;
         }
-        
-        int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);         
-        
-        final EffectBox box = this.actionEffects.get(nodeBuilderId);
+
+        int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
+
+        final EffectBox box = actionEffects.get(nodeBuilderId);
         if (box == null) {
             return;
         }
 
-        this.app.enqueue(new Callable<Void>() {
+        app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                box.executeActionEffect(actionCommand.getActionId(), worldManager.getWorldRoot(),
+                box.executeActionEffect(actionCommand.getActionId(),
+                        worldManager.getWorldRoot(),
                         entity.getLocalTranslation());
                 return null;
             }
@@ -71,15 +73,13 @@ public class EffectHandler implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(Object source, List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command instanceof ActionCommand) {
-                this.handleAction((ActionCommand) command);
-            }
+    public void readGuaranteed(Object source, Command guaranteed) {
+        if (guaranteed instanceof ActionCommand) {
+            handleAction((ActionCommand) guaranteed);
         }
     }
 
     @Override
-    public void readUnreliable(Object source, List<Command> unreliables) {
+    public void readUnreliable(Object source, Command unreliable) {
     }
 }

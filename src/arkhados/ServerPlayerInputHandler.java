@@ -36,7 +36,8 @@ import java.util.concurrent.Callable;
 public class ServerPlayerInputHandler implements CommandHandler {
 
     private static ServerPlayerInputHandler instance = null;
-    private Map<Integer, ServerPlayerInputState> playerInputStates = new HashMap<>();
+    private Map<Integer, ServerPlayerInputState> playerInputStates =
+            new HashMap<>();
     private Application app;
 
     private ServerPlayerInputHandler() {
@@ -59,16 +60,17 @@ public class ServerPlayerInputHandler implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(Object source, List<Command> guaranteed) {
+    public void readGuaranteed(Object source, Command guaranteed) {
         handleCommands((HostedConnection) source, guaranteed);
     }
 
     @Override
-    public void readUnreliable(Object source, List<Command> unreliables) {
+    public void readUnreliable(Object source, Command unreliables) {
         handleCommands((HostedConnection) source, unreliables);
     }
 
-    private void handleCommands(HostedConnection source, final List<Command> commands) {
+    private void handleCommands(HostedConnection source,
+            final Command command) {
         final int playerId = ServerClientData.getPlayerId(source.getId());
 
         if (playerId != -1) {
@@ -76,35 +78,36 @@ public class ServerPlayerInputHandler implements CommandHandler {
             app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    doMessage(playerId, commands);
+                    doMessage(playerId, command);
                     return null;
                 }
             });
         } else {
-            System.out.println("There is no playerId for sourceId " + source.getId());
+            System.out.println("There is no playerId for sourceId "
+                    + source.getId());
         }
     }
 
-    private void doMessage(int playerId, List<Command> commands) {
+    private void doMessage(int playerId, Command command) {
         ServerPlayerInputState inputState = playerInputStates.get(playerId);
 
         if (inputState == null) {
             return;
         }
 
-        for (Command command : commands) {
-            if (command instanceof UcWalkDirection) {
-                UcWalkDirection uc = (UcWalkDirection) command;
-                inputState.previousDown = uc.getDown();
-                inputState.previousRight = uc.getRight();
-                if (inputState.currentActiveSpatial != null) {
-                    inputState.currentActiveSpatial.getControl(UserInputControl.class).updateDirection();
-                }
-            } else if (command instanceof UcMouseTargetCommand) {
-                UcMouseTargetCommand uc = (UcMouseTargetCommand) command;
-                inputState.mouseTarget = uc.getLocation();
+        if (command instanceof UcWalkDirection) {
+            UcWalkDirection uc = (UcWalkDirection) command;
+            inputState.previousDown = uc.getDown();
+            inputState.previousRight = uc.getRight();
+            if (inputState.currentActiveSpatial != null) {
+                inputState.currentActiveSpatial.getControl(
+                        UserInputControl.class).updateDirection();
             }
+        } else if (command instanceof UcMouseTargetCommand) {
+            UcMouseTargetCommand uc = (UcMouseTargetCommand) command;
+            inputState.mouseTarget = uc.getLocation();
         }
+
     }
 
     public void setApp(Application app) {

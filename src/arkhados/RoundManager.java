@@ -44,12 +44,13 @@ import java.util.List;
 
 /**
  *
- * @author william TODO: I think that current Round-protocol is very confusing and hard to
- * understand. It might need rework
+ * @author william TODO: I think that current Round-protocol is very confusing
+ * and hard to understand. It might need rework
  */
 public class RoundManager implements CommandHandler {
 
-    private static final Logger logger = Logger.getLogger(RoundManager.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(RoundManager.class.getName());
     private WorldManager worldManager;
     private SyncManager syncManager;
     private AppStateManager stateManager;
@@ -278,7 +279,7 @@ public class RoundManager implements CommandHandler {
     }
 
     @Override
-    public void readGuaranteed(Object source, List<Command> guaranteed) {
+    public void readGuaranteed(Object source, Command guaranteed) {
         Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isServer()) {
             serverReadGuaranteed((HostedConnection) source, guaranteed);
@@ -288,28 +289,24 @@ public class RoundManager implements CommandHandler {
 
     }
 
-    private void serverReadGuaranteed(HostedConnection source, List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command instanceof TopicOnlyCommand) {
-                serverHandleTopicOnly(source, (TopicOnlyCommand) command);
-            }
+    private void serverReadGuaranteed(HostedConnection source, Command command) {
+        if (command instanceof TopicOnlyCommand) {
+            serverHandleTopicOnly(source, (TopicOnlyCommand) command);
         }
     }
 
-    private void clientReadGuaranteed(List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command instanceof TopicOnlyCommand) {
-                clientHandleTopicOnly((TopicOnlyCommand) command);
-            } else if (command instanceof RoundStartCountdownCommand) {
-                RoundStartCountdownCommand countDownCommand = (RoundStartCountdownCommand) command;
-                roundStartTimer.setTimeLeft(countDownCommand.getTime());
-                roundStartTimer.setActive(true);
-            }
+    private void clientReadGuaranteed(Command command) {
+        if (command instanceof TopicOnlyCommand) {
+            clientHandleTopicOnly((TopicOnlyCommand) command);
+        } else if (command instanceof RoundStartCountdownCommand) {
+            RoundStartCountdownCommand countDownCommand = (RoundStartCountdownCommand) command;
+            roundStartTimer.setTimeLeft(countDownCommand.getTime());
+            roundStartTimer.setActive(true);
         }
     }
 
     @Override
-    public void readUnreliable(Object source, List<Command> unreliables) {
+    public void readUnreliable(Object source, Command command) {
     }
 
     private void clientHandleTopicOnly(TopicOnlyCommand command) {

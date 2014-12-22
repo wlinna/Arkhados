@@ -95,34 +95,31 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
     }
 
     @Override
-    public void readGuaranteed(Object source, List<Command> guaranteed) {
-        for (Command command : guaranteed) {
-            if (command instanceof TopicOnlyCommand) {
-                handleTopicCommand((TopicOnlyCommand) command);
-            } else if (command instanceof PlayerDataTableCommand) {
-                PlayerDataTableCommand dataTable = (PlayerDataTableCommand) command;
-                app.refreshPlayerData(dataTable.getPlayerData());
-            } else if (command instanceof ChatMessage) {
-                ChatMessage chat = (ChatMessage) command;
-                app.addChat(chat.getName(), chat.getMessage());
-            } else if (command instanceof ServerLoginCommand) {
-                handleLoginCommand((ServerLoginCommand) command);
-            } else if (command instanceof BattleStatisticsResponse) {
-                BattleStatisticsResponse response = (BattleStatisticsResponse) command;
-                app.getStateManager().getState(ClientHudManager.class)
-                        .setLatestRoundStatsList(response.getPlayerRoundStatsList());
-            } else if (command instanceof SetPlayersCharacterCommand) {
-                handleSetPlayersCharacter((SetPlayersCharacterCommand) command);
-            }
+    public void readGuaranteed(Object source, Command command) {
+        if (command instanceof TopicOnlyCommand) {
+            handleTopicCommand((TopicOnlyCommand) command);
+        } else if (command instanceof PlayerDataTableCommand) {
+            PlayerDataTableCommand dataTable = (PlayerDataTableCommand) command;
+            app.refreshPlayerData(dataTable.getPlayerData());
+        } else if (command instanceof ChatMessage) {
+            ChatMessage chat = (ChatMessage) command;
+            app.addChat(chat.getName(), chat.getMessage());
+        } else if (command instanceof ServerLoginCommand) {
+            handleLoginCommand((ServerLoginCommand) command);
+        } else if (command instanceof BattleStatisticsResponse) {
+            BattleStatisticsResponse response = (BattleStatisticsResponse) command;
+            app.getStateManager().getState(ClientHudManager.class)
+                    .setLatestRoundStatsList(response.getPlayerRoundStatsList());
+        } else if (command instanceof SetPlayersCharacterCommand) {
+            handleSetPlayersCharacter((SetPlayersCharacterCommand) command);
         }
+
     }
 
     @Override
-    public void readUnreliable(Object source, List<Command> unreliables) {
-        for (Command command : unreliables) {
-            if (command instanceof TopicOnlyCommand) {
-                handleTopicCommand((TopicOnlyCommand) command);
-            }
+    public void readUnreliable(Object source, Command command) {
+        if (command instanceof TopicOnlyCommand) {
+            handleTopicCommand((TopicOnlyCommand) command);
         }
     }
 
@@ -154,7 +151,7 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
             ClientSettingsCommand clientSettingsCommand = new ClientSettingsCommand(movingInterrupts);
             Sender sender = app.getStateManager().getState(Sender.class);
             sender.addCommand(clientSettingsCommand);
-            
+
             app.setupGameMode(loginCommand.getGameMode());
         }
     }
