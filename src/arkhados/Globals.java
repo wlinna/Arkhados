@@ -15,6 +15,7 @@
 
 package arkhados;
 
+import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
 
 /**
@@ -31,7 +32,8 @@ public class Globals {
     }
     
     public static AssetManager assetManager = null;
-
+    public static Application app = null;
+    
     // FIXME: Make own class for variables that describe world state
     public static boolean worldRunning = false;
 }

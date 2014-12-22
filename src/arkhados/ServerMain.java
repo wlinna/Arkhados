@@ -71,6 +71,7 @@ public class ServerMain extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
+        Globals.app = this;
         worldManager = new WorldManager();
         gameManager = new ServerGameManager(new DeathMatch());
         physicsState = new BulletAppState();

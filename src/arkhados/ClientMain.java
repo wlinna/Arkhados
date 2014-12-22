@@ -133,6 +133,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     @Override
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
+        Globals.app = this;
         setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);

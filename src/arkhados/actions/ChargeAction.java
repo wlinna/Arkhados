@@ -16,6 +16,7 @@ package arkhados.actions;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.buffs.AbstractBuff;
@@ -30,12 +31,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  *
  * @author william
  */
-
 public class ChargeAction extends EntityAction implements PhysicsCollisionListener {
 
     private boolean isCharging = false;
@@ -124,6 +125,18 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
     @Override
     public void end() {
         super.end();
+
+        Globals.app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                ghost.getPhysicsSpace()
+                        .removeCollisionListener(ChargeAction.this);
+                ghost.getPhysicsSpace().remove(ghost);
+                ghostNode.removeFromParent();
+                ghostNode.removeControl(ghost);
+                return null;
+            }
+        });
         InfluenceInterfaceControl influenceInterface =
                 spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(true);
@@ -133,12 +146,6 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
         physics.getDictatedDirection().zero();
         physics.setWalkDirection(Vector3f.ZERO);
         physics.enqueueSetLinearVelocity(Vector3f.ZERO);
-
-        ghost.getPhysicsSpace().removeCollisionListener(this);
-
-        ghost.getPhysicsSpace().remove(ghost);
-        ghostNode.removeFromParent();
-        ghostNode.removeControl(ghost);
     }
 
     @Override
@@ -146,17 +153,17 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
         if (hasCollided) {
             return;
         }
-        if ((event.getObjectA() != ghost && event.getObjectB() != ghost) ||
-                (event.getObjectA().getUserObject() == event.getObjectB().getUserObject())) {
+        if ((event.getObjectA() != ghost && event.getObjectB() != ghost)
+                || (event.getObjectA().getUserObject() == event.getObjectB().getUserObject())) {
             return;
         }
-               
+
         PhysicsCollisionObject otherObject = event.getObjectA().getUserObject() == spatial
                 ? event.getObjectB()
-                : event.getObjectA();        
+                : event.getObjectA();
 
-        if (otherObject.getCollisionGroup() != CollisionGroups.CHARACTERS &&
-                otherObject.getCollisionGroup() != CollisionGroups.WALLS) {
+        if (otherObject.getCollisionGroup() != CollisionGroups.CHARACTERS
+                && otherObject.getCollisionGroup() != CollisionGroups.WALLS) {
             return;
         }
 
