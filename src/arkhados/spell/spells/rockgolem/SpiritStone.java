@@ -19,6 +19,7 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.RotationControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -121,6 +122,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         
         node.addControl(new TimedExistenceControl(8f, true));
         node.addControl(new RotationControl(0f, 2f, 0f));
+        node.addControl(new SyncInterpolationControl());
 
         return node;
     }
