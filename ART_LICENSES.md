@@ -23,6 +23,7 @@ See CREDITS.md for attributions.
 - VenatorDeath.wav
 - VenatorPain.wav
 - RockGolemPain.wav
+- All Rend-sounds
 
 ## CC-BY 3.0 ##
 - background.png (Rendered from Rock Golem model)

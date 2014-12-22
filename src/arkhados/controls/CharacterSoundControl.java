@@ -15,11 +15,14 @@
 package arkhados.controls;
 
 import arkhados.Globals;
+import arkhados.effects.WorldEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +33,8 @@ public class CharacterSoundControl extends AbstractControl {
     private float suffering = 0;
     private String sufferPath;
     private String deathPath;
+    
+    private Map<Integer, WorldEffect> castSounds = new HashMap<>();
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -63,6 +68,17 @@ public class CharacterSoundControl extends AbstractControl {
         Node playerNode = (Node) getSpatial();
         playerNode.attachChild(sound);
         sound.play();
+    }
+    
+    public void addCastSound(int spellId, WorldEffect effect) {
+        castSounds.put(spellId, effect);
+    }
+    
+    public void castSound(int spellId) {
+        WorldEffect effect = castSounds.get(spellId);
+        if (effect != null) {
+            effect.execute((Node) spatial, spatial.getLocalTranslation(), null);
+        }
     }
 
     @Override

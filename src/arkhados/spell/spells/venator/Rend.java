@@ -34,7 +34,7 @@ public class Rend extends Spell {
 
     {
         iconName = "rend.png";
-        multipart = true;
+        multipart = true;        
     }
     public Rend(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
@@ -51,7 +51,10 @@ public class Rend extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new DoubleMeleeAttackAction(spell);
+                DoubleMeleeAttackAction action =
+                        new DoubleMeleeAttackAction(spell);
+                action.setTypeId(Venator.ANIM_SWIPE_LEFT);
+                return action;
             }
         };
 

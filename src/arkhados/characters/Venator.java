@@ -26,7 +26,9 @@ import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
+import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
+import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
@@ -50,12 +52,22 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_LEFT = 3;
     public static final int ACTION_FERALSCREAM = 4;
     private ClientHudManager clientHudManager;
+    private WorldEffect rendEffect;
 
     public Venator(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FERALSCREAM,
                 new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
+                
+        RandomChoiceEffect randomChoiceEffect = new RandomChoiceEffect();
+        randomChoiceEffect.add(
+                new SimpleSoundEffect("Effects/Sound/Rend1.wav"));
+        randomChoiceEffect.add(
+                new SimpleSoundEffect("Effects/Sound/Rend2.wav"));
+        randomChoiceEffect.add(
+                new SimpleSoundEffect("Effects/Sound/Rend3.wav"));
+        rendEffect = randomChoiceEffect;
     }
 
     @Override
@@ -81,7 +93,7 @@ public class Venator extends AbstractNodeBuilder {
 
         entity.addControl(new CharacterPhysicsControl(radius, 22f, 100f));
 
-        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
+        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
         entity.addControl(new ActionQueueControl());
 
         SpellCastControl spellCastControl = new SpellCastControl();
@@ -93,41 +105,58 @@ public class Venator extends AbstractNodeBuilder {
         Spell deepWounds = Spell.getSpell("Deep Wounds");
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
 
-        spellCastControl.putSpell(rend, InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(dagger, InputMappingStrings.getId(InputMappingStrings.M2));
-        spellCastControl.putSpell(leap, InputMappingStrings.getId(InputMappingStrings.SPACE));
-        spellCastControl.putSpell(scream, InputMappingStrings.getId(InputMappingStrings.Q));
-        spellCastControl.putSpell(deepWounds, InputMappingStrings.getId(InputMappingStrings.E));
+        spellCastControl.putSpell(rend,
+                InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(dagger,
+                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(leap,
+                InputMappingStrings.getId(InputMappingStrings.SPACE));
+        spellCastControl.putSpell(scream,
+                InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(deepWounds,
+                InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(survivalInstinct,
                 InputMappingStrings.getId(InputMappingStrings.R));
 
         AnimControl animControl = entity.getControl(AnimControl.class);
-        CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
+        CharacterAnimationControl characterAnimControl =
+                new CharacterAnimationControl(animControl);
 
-        AnimationData deathAnim = new AnimationData("Die-1", 1f, LoopMode.DontLoop);
-        AnimationData walkAnim = new AnimationData("Run", 0.8f, LoopMode.DontLoop);
+        AnimationData deathAnim = 
+                new AnimationData("Die-1", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim =
+                new AnimationData("Run", 0.8f, LoopMode.DontLoop);
         characterAnimControl.setDeathAnimation(deathAnim);
         characterAnimControl.setWalkAnimation(walkAnim);
 
         entity.addControl(characterAnimControl);
 
-        float swipeSpeed = AnimationData.calculateSpeedForAnimation(characterAnimControl
-                .getAnimControl(), "Swipe-Left", 2f / 5f, rend.getCastTime());
-        float throwSpeed = AnimationData.calculateSpeedForAnimation(characterAnimControl
-                .getAnimControl(), "Throw", 4f / 9f, dagger.getCastTime());
-        float jumpSpeed = AnimationData.calculateSpeedForAnimation(characterAnimControl
-                .getAnimControl(), "Jump", 9f / 17f, leap.getCastTime());
-        float roarSpeed = AnimationData.calculateSpeedForAnimation(characterAnimControl
-                .getAnimControl(), "Roar", 4f / 9f, scream.getCastTime());
-        float chargeSpeed = AnimationData.calculateSpeedForAnimation(characterAnimControl
-                .getAnimControl(), "Charge", 2f / 5f, deepWounds.getCastTime());
+        float swipeSpeed = AnimationData.calculateSpeedForAnimation(
+                characterAnimControl.getAnimControl(), "Swipe-Left", 2f / 5f,
+                rend.getCastTime());
+        float throwSpeed = AnimationData.calculateSpeedForAnimation(
+                characterAnimControl.getAnimControl(), "Throw", 4f / 9f,
+                dagger.getCastTime());
+        float jumpSpeed = AnimationData.calculateSpeedForAnimation(
+                characterAnimControl.getAnimControl(), "Jump", 9f / 17f,
+                leap.getCastTime());
+        float roarSpeed = AnimationData.calculateSpeedForAnimation(
+                characterAnimControl.getAnimControl(), "Roar", 4f / 9f,
+                scream.getCastTime());
+        float chargeSpeed = AnimationData.calculateSpeedForAnimation(
+                characterAnimControl.getAnimControl(), "Charge", 2f / 5f,
+                deepWounds.getCastTime());
 
-        AnimationData swipeLeftAnim = new AnimationData("Swipe-Left", swipeSpeed,
-                LoopMode.DontLoop);
-        AnimationData throwAnim = new AnimationData("Throw", throwSpeed, LoopMode.DontLoop);
-        AnimationData jumpAnim = new AnimationData("Jump", jumpSpeed, LoopMode.DontLoop);
-        AnimationData roarAnim = new AnimationData("Roar", roarSpeed, LoopMode.DontLoop);
-        AnimationData chargeAnim = new AnimationData("Charge", chargeSpeed, LoopMode.DontLoop);
+        AnimationData swipeLeftAnim =
+                new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
+        AnimationData throwAnim =
+                new AnimationData("Throw", throwSpeed, LoopMode.DontLoop);
+        AnimationData jumpAnim =
+                new AnimationData("Jump", jumpSpeed, LoopMode.DontLoop);
+        AnimationData roarAnim =
+                new AnimationData("Roar", roarSpeed, LoopMode.DontLoop);
+        AnimationData chargeAnim =
+                new AnimationData("Charge", chargeSpeed, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation("Rend", swipeLeftAnim);
         characterAnimControl.addSpellAnimation("Damaging Dagger", throwAnim);
@@ -136,12 +165,15 @@ public class Venator extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Deep Wounds", chargeAnim);
         characterAnimControl.addSpellAnimation("Survival Instinct", null);
 
-        AnimationData landAnim = new AnimationData("Land", 1f, LoopMode.DontLoop);
+        AnimationData landAnim =
+                new AnimationData("Land", 1f, LoopMode.DontLoop);
         characterAnimControl.addActionAnimation(landAnim);
 
         float swipeUpSpeed = AnimationData.calculateSpeedForAnimation(
-                characterAnimControl.getAnimControl(), "Swipe-Up", 3f / 5f, 0.2f);
-        AnimationData swipeUpAnim = new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
+                characterAnimControl.getAnimControl(), "Swipe-Up", 3f / 5f,
+                0.2f);
+        AnimationData swipeUpAnim =
+                new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
         characterAnimControl.addActionAnimation(swipeUpAnim);
 
         AnimationData swipeRightAnim = new AnimationData("Swipe-Right",
@@ -157,13 +189,15 @@ public class Venator extends AbstractNodeBuilder {
             CharacterSoundControl soundControl = new CharacterSoundControl();
             soundControl.setSufferSound("Effects/Sound/VenatorPain.wav");
             soundControl.setDeathSound("Effects/Sound/VenatorDeath.wav");
+            soundControl.addCastSound(rend.getId(), rendEffect);
             entity.addControl(soundControl);
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 
             clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
-            entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+            entity.getControl(InfluenceInterfaceControl.class)
+                    .setIsServer(false);
         } else {
             RestingControl restingControl = new RestingControl();
             entity.addControl(restingControl);

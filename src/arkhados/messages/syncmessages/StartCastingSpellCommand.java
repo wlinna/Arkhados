@@ -21,6 +21,7 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
@@ -35,7 +36,6 @@ public class StartCastingSpellCommand extends StateData {
     private Vector3f direction = new Vector3f();
 
     public StartCastingSpellCommand() {
-
     }
 
     public StartCastingSpellCommand(int id, int spellId, Vector3f direction) {
@@ -47,8 +47,12 @@ public class StartCastingSpellCommand extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        Spell spell = character.getControl(SpellCastControl.class).getSpell(this.spellId);
+        Spell spell =
+                character.getControl(SpellCastControl.class).getSpell(spellId);
         character.getControl(CharacterAnimationControl.class).castSpell(spell);
-        character.getControl(CharacterPhysicsControl.class).setViewDirection(this.direction);
+        character.getControl(CharacterPhysicsControl.class)
+                .setViewDirection(direction);
+        
+        character.getControl(CharacterSoundControl.class).castSound(spellId);
     }
 }

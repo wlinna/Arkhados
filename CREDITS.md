@@ -5,7 +5,11 @@ are all awesome!
 
 ## Programming ##
 
-- William Linna – Lead programmer and designer
+- William Linna - Lead programmer and designer
+
+## Sound effects ##
+
+- William Linna - Rend sounds
 
 ## Designs ##
 
