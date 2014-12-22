@@ -74,7 +74,7 @@ class CastEarthQuakeAction extends EntityAction {
         charge.setChargeSpeed(150f);
         charge.setHitDamage(100f);
 
-        IncapacitateCC incapacitate = new IncapacitateCC(1.5f, -1);
+        IncapacitateCC incapacitate = new IncapacitateCC(1.2f, -1);
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
         buffs.add(incapacitate);
 
