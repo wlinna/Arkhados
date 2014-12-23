@@ -72,9 +72,12 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
-        Node entity = (Node) assetManager.loadModel("Models/EliteSoldier.j3o");
+        Node entity = new Node("elite-soldier");
+        Node real = (Node) assetManager.loadModel("Models/EliteSoldier.j3o");
+        entity.attachChild(real);
+        real.scale(11f);
 
-        Node attachmentsNode = entity.getControl(SkeletonControl.class)
+        Node attachmentsNode = real.getControl(SkeletonControl.class)
                 .getAttachmentsNode("Central_Bone.001_R.004");
 
         Node weapon = (Node) assetManager.loadModel("Models/Weapon.j3o");
@@ -88,8 +91,6 @@ public class EliteSoldier extends AbstractNodeBuilder {
         Quaternion yQuat = new Quaternion();
         yQuat.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y);
         weapon.setLocalRotation(yQuat.add(zQuat));
-
-        entity.scale(11f);
 
         float movementSpeed = 36f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
@@ -142,7 +143,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
          * Map Spell names to casting animation's name. In this case all spells
          * use same animation.
          */
-        AnimControl animControl = entity.getControl(AnimControl.class);
+        AnimControl animControl = real.getControl(AnimControl.class);
         CharacterAnimationControl characterAnimControl =
                 new CharacterAnimationControl(animControl);
 
