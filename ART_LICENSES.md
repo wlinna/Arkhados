@@ -18,6 +18,7 @@ See CREDITS.md for attributions.
 - Firewalk.wav
 - MagmaBash.wav
 - EmberCircle.wav
+- Petrify.wav
 - All Wall related files
 - All SpiritStone related files
 - VenatorDeath.wav

@@ -14,8 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
+import arkhados.Globals;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.effects.BuffEffect;
+import com.jme3.audio.AudioNode;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -33,7 +35,8 @@ import java.util.List;
 public class PetrifyInformation extends BuffInformation {
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(
+            CharacterBuffControl buffControl, float duration) {
         PetrifyEffect effect = new PetrifyEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
@@ -64,8 +67,16 @@ class PetrifyEffect extends BuffEffect {
                 }
             }
         };
-        
+
         characterNode.depthFirstTraversal(visitor);
+
+        AudioNode sound = new AudioNode(Globals.assetManager,
+                "Effects/Sound/Petrify.wav");
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
+        characterNode.attachChild(sound);
+        sound.play();
     }
 
     @Override

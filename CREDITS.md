@@ -209,4 +209,9 @@ modifications by Teemu Salminen) as soundtrack. Dwarves Gathering  is licensed
 under CC-BY 3.0 and original version can be found from
 [Jamendo](https://www.jamendo.com/en/track/1059744/dwarves-gathering).
 
+[lolamadeus](http://freesound.org/people/lolamadeus/) for
+[Small Rock and Stone Hits](http://freesound.org/people/lolamadeus/sounds/179365/). Part
+of that sound is used (with small modifications) for Petrify.wav. Sound is licensed under CC0.
+
+
 NOTE: There will be ingame credits screen when game matures more.
