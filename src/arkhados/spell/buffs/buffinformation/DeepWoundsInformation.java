@@ -14,9 +14,11 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
+import arkhados.Globals;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.effects.BuffEffect;
+import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
@@ -29,6 +31,7 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class DeepWoundsInformation extends BuffInformation {
+
     {
         setIconPath("Interface/Images/SpellIcons/deep_wounds.png");
     }
@@ -78,6 +81,14 @@ class DeepWoundsEffect extends BuffEffect {
         emitter.move(0f, 7f, 0f);
 
         physics = characterNode.getControl(CharacterPhysicsControl.class);
+
+        AudioNode sound = new AudioNode(Globals.assetManager,
+                "Effects/Sound/DeepWounds.wav");
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
+        characterNode.attachChild(sound);
+        sound.play();
     }
 
     @Override

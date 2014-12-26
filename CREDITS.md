@@ -213,5 +213,8 @@ under CC-BY 3.0 and original version can be found from
 [Small Rock and Stone Hits](http://freesound.org/people/lolamadeus/sounds/179365/). Part
 of that sound is used (with small modifications) for Petrify.wav. Sound is licensed under CC0.
 
+Independent.nu for DeepWounds sound effect. DeepWounds.wav is based on
+Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). Sound is licensed under CC0
+
 
 NOTE: There will be ingame credits screen when game matures more.
