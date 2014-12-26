@@ -125,8 +125,6 @@ class CastEarthQuakeAction extends EntityAction {
 }
 
 /**
- * Currently UNUSED
- *
  * @author william
  */
 class KnockupAction extends EntityAction {
