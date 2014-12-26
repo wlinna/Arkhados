@@ -16,18 +16,20 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
+import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.util.Predicate;
+import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,7 @@ import java.util.List;
  * @author william
  */
 public class StoneFist extends Spell {
+
     {
         iconName = "StoneFist.png";
     }
@@ -46,23 +49,22 @@ public class StoneFist extends Spell {
 
     public static Spell create() {
         final float cooldown = 0.5f;
-        final float range = 18f;
+        final float range = 25f;
         final float castTime = 0.6f;
-        
+
         StoneFist spell = new StoneFist("StoneFist", cooldown, range, castTime);
-        
+
         spell.setCanMoveWhileCasting(true);
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 StoneFistAction action = new StoneFistAction(130, range);
                 return action;
             }
         };
-        
+
         spell.nodeBuilder = null;
-        
+
         return spell;
     }
 }
@@ -84,69 +86,78 @@ class StoneFistAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physicsControl =
+                spatial.getControl(CharacterPhysicsControl.class);
+        final int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         int myPlayerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
-        Vector3f hitDirection = physicsControl.calculateTargetDirection().normalize()
-                .multLocal(range);
+        Vector3f hitDirection = physicsControl.calculateTargetDirection()
+                .normalize().multLocal(range);
 
         physicsControl.setViewDirection(hitDirection);
         PhysicsSpace space = physicsControl.getPhysicsSpace();
         Vector3f to = spatial.getLocalTranslation().add(hitDirection);
 
-        List<PhysicsRayTestResult> results = space.rayTest(spatial.getLocalTranslation().clone()
-                .setY(3f), to.setY(3f));
-        for (PhysicsRayTestResult result : results) {
-            PhysicsCollisionObject collisionObject = result.getCollisionObject();
-            
-            Object userObject = collisionObject.getUserObject();
-            if (!(userObject instanceof Node)) {
-                continue;
-            }
-            
-            Node node = (Node) userObject;
-            if (node == spatial) {
-                continue;
-            }
-            
-
-            Integer nullableTargetPlayerId = node.getUserData(UserDataStrings.PLAYER_ID);
-            if (nullableTargetPlayerId == null) {
-                continue;
-            }
-            
-            int targetPlayerId = nullableTargetPlayerId.intValue();
-            
-            if (collisionObject.getCollisionGroup() == CollisionGroups.SPIRIT_STONE) {
-                if (targetPlayerId == myPlayerId) {
-                    pushSpiritStone(node, hitDirection);
-                    break;
-                } else {
-                    continue;
+        Predicate<SpatialDistancePair> pred =
+                new Predicate<SpatialDistancePair>() {
+            @Override
+            public boolean test(SpatialDistancePair value) {
+                if (value.spatial == spatial) {
+                    return false;
                 }
-            }
-            
-            InfluenceInterfaceControl targetInfluenceControl =
-                    node.getControl(InfluenceInterfaceControl.class);
-            if (targetInfluenceControl == null) {
-                continue;
-            }
 
-            final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                Integer nullableTeamId =
+                        value.spatial.getUserData(UserDataStrings.TEAM_ID);
+                if (nullableTeamId == null) {
+                    return false;
+                }
+
+                InfluenceInterfaceControl influenceInterface = value.spatial
+                        .getControl(InfluenceInterfaceControl.class);
+
+                if (influenceInterface != null &&
+                        !nullableTeamId.equals(myTeamId)) {                    
+                    return true;
+                }
+
+                SpiritStonePhysicsControl stonePhysics = value.spatial
+                        .getControl(SpiritStonePhysicsControl.class);
+
+                if (stonePhysics != null && nullableTeamId.equals(myTeamId)) {
+                    return true;
+                }
+
+                return false;
+
+            }
+        };
+        SpatialDistancePair closest = Selector.giveClosest(
+                Selector.coneSelect(new ArrayList<SpatialDistancePair>(), pred,
+                spatial.getLocalTranslation(), hitDirection, range, 30f));
+        
+        if (closest == null) {
+            return false;
+        }
+
+        InfluenceInterfaceControl targetInterface =
+                closest.spatial.getControl(InfluenceInterfaceControl.class);
+        if (targetInterface != null) {
+            final float damageFactor =
+                    spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             final float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
-            CharacterInteraction.harm(spatial.getControl(InfluenceInterfaceControl.class),
-                    targetInfluenceControl, rawDamage, buffs, true);
+            CharacterInteraction.harm(
+                    spatial.getControl(InfluenceInterfaceControl.class),
+                    targetInterface, rawDamage, buffs, true);
+        } else {
+            pushSpiritStone(closest.spatial, hitDirection);
+        }
 
-            // TODO: Add mechanism that allows melee attack to knock enemy back
-            break;
-        }        
-        
         return false;
     }
-    
-    private void pushSpiritStone(Node stone, Vector3f hitDirection) {                
+
+    private void pushSpiritStone(Spatial stone, Vector3f hitDirection) {
         SpiritStonePhysicsControl physics = stone.getControl(SpiritStonePhysicsControl.class);
-        
+
         Vector3f direction = hitDirection.normalize();
         physics.punch(direction.multLocal(80f));
         physics.addCollideWithGroup(CollisionGroups.WALLS);

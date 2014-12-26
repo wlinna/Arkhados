@@ -14,20 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-import arkhados.Globals;
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
-import arkhados.controls.InfluenceInterfaceControl;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.Arrow;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -50,19 +43,19 @@ public class Selector {
         if (coneAngle > 90f) {
             throw new InvalidParameterException("coneAngle higher than 90 degrees");
         }
-        
-        coneAngle = (float)Math.toRadians(coneAngle);        
+
+        coneAngle = (float) Math.toRadians(coneAngle);
 
         Quaternion yaw = new Quaternion();
         yaw.fromAngleAxis(coneAngle, Vector3f.UNIT_Y);
         final Vector3f leftNormal = yaw.mult(forward);
         leftNormal.set(-leftNormal.z, 0, leftNormal.x);
-        Plane leftPlane = new Plane(leftNormal, location.dot(leftNormal));                
+        Plane leftPlane = new Plane(leftNormal, location.dot(leftNormal));
 
         yaw.fromAngleAxis(-coneAngle, Vector3f.UNIT_Y);
         final Vector3f rightNormal = yaw.mult(forward);
         rightNormal.set(rightNormal.z, 0, -rightNormal.x);
-        Plane rightPlane = new Plane(rightNormal, location.dot(rightNormal));        
+        Plane rightPlane = new Plane(rightNormal, location.dot(rightNormal));
 
         T spatialDistances = getSpatialsWithinDistance(collection, location, range);
 
@@ -99,7 +92,8 @@ public class Selector {
             Spatial spatial,
             float distance) {
 
-        return getSpatialsWithinDistance(collection, spatial.getWorldTranslation(), distance);
+        return getSpatialsWithinDistance(collection,
+                spatial.getWorldTranslation(), distance);
     }
 
     public static <T extends Collection<SpatialDistancePair>> T getSpatialsWithinDistance(
@@ -118,6 +112,20 @@ public class Selector {
             collection.add(new SpatialDistancePair(child, distanceBetween));
         }
         return collection;
+    }
+
+    public static <T extends Collection<SpatialDistancePair>> SpatialDistancePair giveClosest(T collection) {
+        SpatialDistancePair smallest = null;
+        for (SpatialDistancePair target : collection) {
+            if (smallest == null) {
+                smallest = target;
+                continue;
+            } else if (target.distance < smallest.distance) {
+                smallest = target;
+            }
+        }
+
+        return smallest;
     }
 
     public static void setWorldManager(WorldManager world) {
