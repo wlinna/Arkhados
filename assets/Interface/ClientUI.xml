@@ -357,7 +357,12 @@
                                margin="20px,20px,0px,0px">
                     </panel>
                 </panel>
-                <panel id="panel_bottom" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom">
+                <panel id="panel_bottom" childLayout="vertical" width="500px"  height="140px" align="center" valign="bottom">
+                    <panel id="panel_buffs" childLayout="horizontal" width="500px"  height="60px" align="center" valign="top">
+                    </panel>
+                    <panel id="panel_spells" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom"
+                    margin="12px,0px,0px,0px">
+                    </panel>
                 </panel>
             </panel>
         </layer>

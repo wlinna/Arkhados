@@ -161,12 +161,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         currentSeconds = -1;
         playerCharacter = null;
 
-        for (Iterator<Element> it = screen.findElementByName("panel_bottom")
-                .getElements().iterator(); it.hasNext();) {
-
-            Element element = it.next();
-            nifty.removeElement(screen, element);
-        }
+        removeChildren("panel_buffs");
+        removeChildren("panel_spells");
 
         for (Iterator<Element> it = statisticsPanels.iterator(); it.hasNext();) {
             Element element = it.next();
@@ -312,7 +308,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     private void addSpellIcon(int key) {
-        Element bottomPanel = screen.findElementByName("panel_bottom");
+        Element bottomPanel = screen.findElementByName("panel_spells");
         SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
         Spell spell = castControl.getKeySpellNameMapping(key);
 
@@ -362,7 +358,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     }
 
     public void clearBuffIcons() {
-        Element buffIcons = screen.findElementByName("panel_right");
+        Element buffIcons = screen.findElementByName("panel_buffs");
         Iterator<Element> it = buffIcons.getElements().iterator();
         for (; it.hasNext();) {
             Element element = it.next();
@@ -393,5 +389,18 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
 
         playerCharacter.getControl(CharacterHudControl.class).setEnabled(false);
+    }
+
+    private void removeChildren(Element element) {
+        for (Iterator<Element> it = element
+                .getElements().iterator(); it.hasNext();) {
+
+            Element child = it.next();
+            nifty.removeElement(screen, child);
+        }
+    }
+    
+    private void removeChildren(String elementName) {
+        removeChildren(screen.findElementByName(elementName));
     }
 }
