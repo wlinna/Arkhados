@@ -24,6 +24,7 @@ import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
+import arkhados.util.PlayerDataStrings;
 import arkhados.util.PlayerRoundStats;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
@@ -63,6 +64,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private BitmapFont guiFont;
     private List<Node> characters = new ArrayList<>();
     private List<BitmapText> hpBars = new ArrayList<>();
+    private List<BitmapText> playerNames = new ArrayList<>();
     private int currentSeconds = -1;
     private Map<String, Element> spellIcons = new HashMap<>(6);
     private Spatial playerCharacter = null;
@@ -112,6 +114,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
         for (int i = 0; i < characters.size(); ++i) {
             updateHpBar(i);
+            updateText(i);
         }
     }
 
@@ -119,6 +122,12 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         // TODO: Add some checks
         characters.add((Node) character);
         createHpBar();
+
+        int playerId = character.getUserData(UserDataStrings.PLAYER_ID);
+        String name =
+                PlayerData.getStringData(playerId, PlayerDataStrings.NAME);
+
+        createPlayerName(name);
     }
 
     public void startRound() {
@@ -192,6 +201,20 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         hpBars.add(hpBar);
     }
 
+    private void createPlayerName(String name) {
+        BitmapText text = new BitmapText(guiFont);
+
+        text.setSize(guiFont.getCharSet().getRenderedSize() * 0.8f);
+        text.setBox(new Rectangle(0, 0, 80, 10));
+        text.setText(name);
+        text.setColor(ColorRGBA.Cyan);
+        text.setAlignment(BitmapFont.Align.Center);
+        text.center();
+        guiNode.attachChild(text);
+        text.setQueueBucket(RenderQueue.Bucket.Gui);
+        playerNames.add(text);
+    }
+
     private void updateHpBar(int index) {
         Node character = characters.get(index);
         BitmapText hpBar = hpBars.get(index);
@@ -205,6 +228,16 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 character.getLocalTranslation().add(0, 20, 0)).add(-15, 40, 0);
         hpBar.setLocalTranslation(hpBarLocation);
         hpBar.setText(String.format("%.0f", health));
+    }
+
+    private void updateText(int index) {
+        Node character = characters.get(index);
+        BitmapText name = playerNames.get(index);
+        float height = name.getHeight();
+        Vector3f textLocation = cam.getScreenCoordinates(
+                character.getLocalTranslation().add(0, 20, 0))
+                .add(-40, 40 + height, 0);
+        name.setLocalTranslation(textLocation);
     }
 
     public void entityDisappeared(Spatial spatial) {
@@ -399,7 +432,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             nifty.removeElement(screen, child);
         }
     }
-    
+
     private void removeChildren(String elementName) {
         removeChildren(screen.findElementByName(elementName));
     }

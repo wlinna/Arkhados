@@ -194,7 +194,6 @@ public class Venator extends AbstractNodeBuilder {
             entity.addControl(new CharacterBuffControl());
             entity.addControl(new CharacterHudControl());
 
-            clientHudManager.addCharacter(entity);
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class)
                     .setIsServer(false);

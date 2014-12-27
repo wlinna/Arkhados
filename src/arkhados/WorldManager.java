@@ -57,8 +57,6 @@ import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
 import com.jme3.scene.control.LodControl;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -260,6 +258,10 @@ public class WorldManager extends AbstractAppState {
                         .getPlayerInputState(playerId);
                 inputState.currentActiveSpatial = entity;
                 userInputControl.setInputState(inputState);
+            } else {
+                ClientHudManager hudManager =
+                        app.getStateManager().getState(ClientHudManager.class);
+                hudManager.addCharacter(entity);
             }
             entity.addControl(userInputControl);
         }
