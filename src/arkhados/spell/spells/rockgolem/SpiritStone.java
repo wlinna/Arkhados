@@ -36,6 +36,9 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SpiritStone extends Spell {
+    {
+        iconName = "SpiritStone.png";
+    }
 
     public SpiritStone(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
