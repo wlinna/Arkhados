@@ -60,6 +60,8 @@ wopr2012 for [Low poly game character](http://www.blendswap.com/blends/view/6944
 izuzf for [LowPoly Rock!](http://www.blendswap.com/blends/view/61071). LowPoly
 Rock is used for SpiritStone and it's licensed under CC0.
 
+[OliverHM](http://www.blendswap.com/users/view/OliverMH) for [Low Poly Rocks #2](http://www.blendswap.com/blends/view/71209). Low Poly Rocks #2 has been modified slightly and is used for SealingBoulder. Work is licensed under CC-BY 3.0.
+
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)

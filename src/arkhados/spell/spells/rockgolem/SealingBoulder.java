@@ -27,73 +27,65 @@ import arkhados.util.UserDataStrings;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
 
 /**
  *
  * @author william
  */
-
-
 public class SealingBoulder extends Spell {
+
     {
         iconName = "SealingBoulder.png";
     }
 
-    public SealingBoulder(String name, float cooldown, float range, float castTime) {
+    public SealingBoulder(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
-    
+
     public static Spell create() {
         final float cooldown = 7f;
         final float range = 120f;
         final float castTime = 0.4f;
 
-        final SealingBoulder spell = new SealingBoulder("SealingBoulder", cooldown, range, castTime);
+        final SealingBoulder spell =
+                new SealingBoulder("SealingBoulder", cooldown, range, castTime);
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastProjectileAction action = new CastProjectileAction(spell, worldManager);
+                final CastProjectileAction action =
+                        new CastProjectileAction(spell, worldManager);
                 return action;
             }
         };
-        
+
         spell.nodeBuilder = new SealingBoulderBuilder();
 
         return spell;
-    }        
+    }
 }
 
 class SealingBoulderBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build() {
-        Sphere sphere = new Sphere(32, 32, 2.0f);
-        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
-        Node node = new Node("projectile");
-        node.attachChild(projectileGeom);
+        Node node = (Node) assetManager.loadModel("Models/SealingBoulder.j3o");
 
-        // TODO: Give at least bit better material
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Gray);
-        node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
         node.setUserData(UserDataStrings.MASS, 10f);
         node.setUserData(UserDataStrings.DAMAGE, 80f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
         node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 7.4f);
 
-        if (worldManager.isClient()) {                        
-            AudioNode sound = new AudioNode(assetManager, "Effects/Sound/MagmaBash.wav");
+        if (worldManager.isClient()) {
+            AudioNode sound = new AudioNode(assetManager,
+                    "Effects/Sound/MagmaBash.wav");
             node.attachChild(sound);
             sound.setPositional(true);
             sound.setReverbEnabled(false);
-            sound.setVolume(1f);            
+            sound.setVolume(1f);
             sound.play();
         }
 
@@ -102,7 +94,8 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
                 (Float) node.getUserData(UserDataStrings.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
+                | CollisionGroups.WALLS);
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());
