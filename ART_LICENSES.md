@@ -30,6 +30,7 @@ See CREDITS.md for attributions.
 
 ## CC-BY 3.0 ##
 - background.png (Rendered from Rock Golem model)
+- SpellBar.png
 - mage.blend and all its derivatives
 - EmberCircle.png and all its derivatives
 - skull.png and all its derivatives

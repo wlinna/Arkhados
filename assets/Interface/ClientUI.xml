@@ -357,11 +357,12 @@
                                margin="20px,20px,0px,0px">
                     </panel>
                 </panel>
-                <panel id="panel_bottom" childLayout="vertical" width="500px"  height="140px" align="center" valign="bottom">
-                    <panel id="panel_buffs" childLayout="horizontal" width="500px"  height="60px" align="center" valign="top">
+                <panel id="panel_bottom" childLayout="vertical" width="512px"  height="140px" align="center" valign="bottom">
+                    <panel id="panel_buffs" childLayout="horizontal" width="512px"  height="60px" align="center" valign="top"
+                    paddingLeft="10px">
                     </panel>
-                    <panel id="panel_spells" childLayout="horizontal" width="500px"  height="60px" align="center" valign="bottom"
-                    margin="12px,0px,0px,0px">
+                    <panel id="panel_spells" childLayout="horizontal" width="512px"  height="90px" align="center" valign="bottom"
+                    margin="6px,0px,0px,12px" paddingLeft="10px" backgroundImage="Interface/Images/SpellBar.png">                        
                     </panel>
                 </panel>
             </panel>
