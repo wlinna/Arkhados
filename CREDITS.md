@@ -55,6 +55,11 @@ hendori-sama for
 texture and additional animations. Rock Golem is licensed under CC-BY
 3.0. Final work can be found from [OGA](http://opengameart.org/content/rock-golem)
 
+Rock Golem model has also been used in following
+- StoneFist icon
+- EarthQuake icon
+- Menu background image
+
 wopr2012 for [Low poly game character](http://www.blendswap.com/blends/view/69441). The model has been modified little bit and is used for Elite Soldier. Model is licensed under CC-BY 3.0.
 
 izuzf for [LowPoly Rock!](http://www.blendswap.com/blends/view/61071). LowPoly

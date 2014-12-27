@@ -47,6 +47,7 @@ See CREDITS.md for attributions.
 - rocket_launger.png
 - like_a_pro.png
 - StoneFist.png (rendered from Rock Golem and Elite Soldier)
+- EarthQuake.png (rendered from RockGolem)
 - SealingBoulder.png
 - MineralArmor.png
 - MeteorBoom.wav

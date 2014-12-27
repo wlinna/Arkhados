@@ -40,6 +40,9 @@ import java.util.ArrayList;
  * @author william
  */
 public class EarthQuake extends Spell {
+    {
+        iconName = "EarthQuake.png";
+    }
 
     public EarthQuake(String name, float cooldown, float range,
             float castTime) {
