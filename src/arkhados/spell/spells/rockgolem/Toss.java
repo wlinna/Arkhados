@@ -43,6 +43,9 @@ import java.util.List;
  * @author william
  */
 public class Toss extends Spell {
+    {
+        iconName = "Toss.png";
+    }
 
     public Toss(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);

@@ -13,6 +13,7 @@ See CREDITS.md for attributions.
 - deep_wounds.png
 - feral_scream.png
 - rend.png
+- Toss.png
 - FireballExplosion.wav
 - Shotgun.wav
 - Firewalk.wav
