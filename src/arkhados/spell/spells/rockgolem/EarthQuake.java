@@ -86,7 +86,9 @@ class CastEarthQuakeAction extends EntityAction {
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
         buffs.add(incapacitate);
 
-        SplashAction splash = new SplashAction(20f, 100f, 0f,
+        final float splashRadius = 20f;
+        
+        SplashAction splash = new SplashAction(splashRadius, 100f, 0f,
                 DistanceScaling.CONSTANT, buffs);
         final int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         splash.setExcludedTeam(teamId);
@@ -104,7 +106,7 @@ class CastEarthQuakeAction extends EntityAction {
                 ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
                         .getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(),
-                        spatial.getLocalTranslation(), 100f);
+                        spatial.getLocalTranslation(), splashRadius);
 
                 for (SpatialDistancePair pair : spatialsWithinDistance) {
                     if (pair.spatial.getControl(InfluenceInterfaceControl.class)
