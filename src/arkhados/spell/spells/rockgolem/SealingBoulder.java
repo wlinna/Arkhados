@@ -70,8 +70,9 @@ public class SealingBoulder extends Spell {
 class SealingBoulderBuilder extends AbstractNodeBuilder {
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Node node = (Node) assetManager.loadModel("Models/SealingBoulder.j3o");
+        node.setLocalTranslation((Vector3f) location);
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
         node.setUserData(UserDataStrings.MASS, 10f);

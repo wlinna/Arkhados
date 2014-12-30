@@ -89,9 +89,12 @@ public class Fireball extends Spell {
 class FireballBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createSmokeEmitter() {
-        final ParticleEmitter smoke = new ParticleEmitter("smoke-emitter", ParticleMesh.Type.Triangle, 300);
-        Material materialGray = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter smoke = new ParticleEmitter("smoke-emitter",
+                ParticleMesh.Type.Triangle, 300);
+        Material materialGray = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
         smoke.setMaterial(materialGray);
         smoke.setImagesX(2);
         smoke.setImagesY(2);
@@ -113,9 +116,12 @@ class FireballBuilder extends AbstractNodeBuilder {
     }
 
     private ParticleEmitter createFireEmitter() {
-        final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter fire = new ParticleEmitter("fire-emitter",
+                ParticleMesh.Type.Triangle, 200);
+        Material materialRed = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -137,17 +143,19 @@ class FireballBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
-        final Sphere sphere = new Sphere(32, 32, 1.0f);
+    public Node build(Object location) {
+        Sphere sphere = new Sphere(32, 32, 1.0f);
 
-        final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
-        final Node node = new Node("projectile");
+        Node node = new Node("projectile");
+        node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        final Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material =
+                new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -156,11 +164,11 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, 150f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
-        if (AbstractNodeBuilder.worldManager.isClient()) {
-            final ParticleEmitter fire = createFireEmitter();
+        if (worldManager.isClient()) {
+            ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            final ParticleEmitter smoke = createSmokeEmitter();
+            ParticleEmitter smoke = createSmokeEmitter();
             node.attachChild(smoke);
 
             node.addControl(new EntityEventControl());
@@ -168,16 +176,19 @@ class FireballBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            final FireballRemovalAction removalAction = new FireballRemovalAction(assetManager);
+            FireballRemovalAction removalAction =
+                    new FireballRemovalAction(assetManager);
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smoke);
 
 
-            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
+            node.getControl(EntityEventControl.class)
+                    .setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(3);
-        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        SphereCollisionShape collisionShape = new SphereCollisionShape(3);
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
+                (float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -189,7 +200,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         /**
          * Add collision group of characters
          */
-        final GhostControl characterCollision = new GhostControl(collisionShape);
+        GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
         node.addControl(characterCollision);
@@ -197,7 +208,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.addControl(physicsBody);
 
         node.addControl(new ProjectileControl());
-        final SpellBuffControl buffControl = new SpellBuffControl();
+        SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
         buffControl.addBuff(new BrimstoneBuff(-1, 8f));
 
@@ -214,7 +225,8 @@ class FireballRemovalAction implements RemovalEventAction {
 
     public FireballRemovalAction(AssetManager assetManager) {
         this.assetManager = assetManager;
-        sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
+        sound = new AudioNode(assetManager,
+                "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
@@ -224,17 +236,20 @@ class FireballRemovalAction implements RemovalEventAction {
         this.fire = fire;
     }
 
-    private void leaveSmokeTrail(final Node worldRoot, Vector3f worldTranslation) {
+    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
         smokeTrail.setParticlesPerSec(0);
         worldRoot.attachChild(smokeTrail);
         smokeTrail.setLocalTranslation(worldTranslation);
         smokeTrail.addControl(new TimedExistenceControl(5f));
     }
 
-    private void createSmokePuff(final Node worldRoot, Vector3f worldTranslation) {
-        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
+    private void createSmokePuff( Node worldRoot, Vector3f worldTranslation) {
+        ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
+                ParticleMesh.Type.Triangle, 20);
+        Material materialGray = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
         smokePuff.setMaterial(materialGray);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
@@ -242,7 +257,8 @@ class FireballRemovalAction implements RemovalEventAction {
         smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.2f));
         smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
 
-        smokePuff.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
+        smokePuff.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
         smokePuff.getParticleInfluencer().setVelocityVariation(1f);
 
         smokePuff.setStartSize(2.0f);
@@ -265,6 +281,7 @@ class FireballRemovalAction implements RemovalEventAction {
         if (reason == RemovalReasons.DISAPPEARED) {
             return;
         }
+        
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
         leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
         createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
@@ -281,7 +298,8 @@ class FireballRemovalAction implements RemovalEventAction {
         fire.setNumParticles(100);
         fire.setStartSize(0.50f);
         fire.setEndSize(3.0f);
-        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(15.0f));
+        fire.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(15.0f));
         fire.getParticleInfluencer().setVelocityVariation(1f);
 
         fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));

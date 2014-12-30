@@ -67,6 +67,7 @@ import java.util.logging.Logger;
 public class WorldManager extends AbstractAppState {
 
     private final static Logger logger = Logger.getLogger(WorldManager.class.getName());
+
     static {
         logger.setLevel(Level.WARNING);
     }
@@ -192,14 +193,17 @@ public class WorldManager extends AbstractAppState {
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         if (isServer()) {
-            app.getStateManager().getState(ServerFogManager.class).setWalls((Node) worldRoot.getChild("Walls"));
+            app.getStateManager().getState(ServerFogManager.class)
+                    .setWalls((Node) worldRoot.getChild("Walls"));
         } else {
-            ClientFogManager clientFogManager = app.getStateManager().getState(ClientFogManager.class);
+            ClientFogManager clientFogManager =
+                    app.getStateManager().getState(ClientFogManager.class);
             app.getViewPort().addProcessor(clientFogManager);
             clientFogManager.createFog(worldRoot);
         }
 
-        UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
+        UserCommandManager userCommandManager = 
+                app.getStateManager().getState(UserCommandManager.class);
         if (userCommandManager != null) {
             userCommandManager.createCameraControl();
         }
@@ -223,7 +227,8 @@ public class WorldManager extends AbstractAppState {
     public void addEntity(int id, int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
         Sender sender = app.getStateManager().getState(Sender.class);
 
-        Spatial entity = entityFactory.createEntityById(nodeBuilderId);
+        Spatial entity =
+                entityFactory.createEntityById(nodeBuilderId, location);
         setEntityTranslation(entity, location, rotation);
         entity.setUserData(UserDataStrings.PLAYER_ID, playerId);
         entity.setUserData(UserDataStrings.ENTITY_ID, id);
@@ -235,27 +240,29 @@ public class WorldManager extends AbstractAppState {
         entities.put(id, entity);
         syncManager.addObject(id, entity);
         space.addAll(entity);
-        
+
         // We need to add GhostControl separately
         final GhostControl ghostControl = entity.getControl(GhostControl.class);
         if (ghostControl != null) {
             space.add(ghostControl);
-        }         
-        
-        worldRoot.attachChild(entity);                       
+        }
+
+        worldRoot.attachChild(entity);
         EntityVariableControl variableControl = new EntityVariableControl(this, sender);
         entity.addControl(variableControl);
 
-        boolean isCharacter = entity.getControl(CharacterPhysicsControl.class) != null;
+        boolean isCharacter =
+                entity.getControl(CharacterPhysicsControl.class) != null;
 
         if (isCharacter && PlayerData.isHuman(playerId)) {
-            logger.log(Level.INFO, "Adding entity {0} for player {1}", new Object[]{id, playerId});
+            logger.log(Level.INFO, "Adding entity {0} for player {1}",
+                    new Object[]{id, playerId});
             entity.setUserData(UserDataStrings.FOLLOW_ME, true);
 
             UserInputControl userInputControl = new UserInputControl();
             if (isServer()) {
-                ServerPlayerInputState inputState = ServerPlayerInputHandler.get()
-                        .getPlayerInputState(playerId);
+                ServerPlayerInputState inputState = ServerPlayerInputHandler
+                        .get().getPlayerInputState(playerId);
                 inputState.currentActiveSpatial = entity;
                 userInputControl.setInputState(inputState);
             } else {
@@ -265,33 +272,41 @@ public class WorldManager extends AbstractAppState {
             }
             entity.addControl(userInputControl);
         }
-        
-        boolean followMe = entity.getUserDataKeys().contains(UserDataStrings.FOLLOW_ME);        
 
-        ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
+        boolean followMe = entity.getUserDataKeys()
+                .contains(UserDataStrings.FOLLOW_ME);
+
+        ServerFogManager serverFogManager =
+                app.getStateManager().getState(ServerFogManager.class);
         if (serverFogManager != null) {
             if (isCharacter) {
                 serverFogManager.registerCharacterForPlayer(playerId, entity);
             }
 
             serverFogManager.createNewEntity(entity,
-                    new AddEntityCommand(id, nodeBuilderId, location, rotation, playerId));
+                    new AddEntityCommand(id, nodeBuilderId,
+                    location, rotation, playerId));
         }
 
         if (isClient()) {
-            UserCommandManager userCommandManager =
-                    app.getStateManager().getState(UserCommandManager.class);
-            boolean ownedByMe = userCommandManager.trySetPlayersCharacter(entity);
+            UserCommandManager userCommandManager = app.getStateManager()
+                    .getState(UserCommandManager.class);
+            boolean ownedByMe =
+                    userCommandManager.trySetPlayersCharacter(entity);
 
             if (ownedByMe) {
-                app.getStateManager().getState(ClientFogManager.class).setPlayerNode(entity);
-                logger.log(Level.INFO, "Setting player''s node. Id {0}, playerId {1}",
+                app.getStateManager().getState(ClientFogManager.class)
+                        .setPlayerNode(entity);
+                logger.log(Level.INFO,
+                        "Setting player''s node. Id {0}, playerId {1}",
                         new Object[]{id, playerId});
-            } else if (playerId == userCommandManager.getPlayerId() && followMe) {
-                app.getStateManager().getState(ClientFogManager.class).setPlayerNode(entity);
+            } else if (playerId == userCommandManager.getPlayerId()
+                    && followMe) {
+                app.getStateManager().getState(ClientFogManager.class)
+                        .setPlayerNode(entity);
                 userCommandManager.followSpatial(entity);
             }
-        }               
+        }
     }
 
     public void temporarilyRemoveEntity(int id) {
@@ -301,25 +316,29 @@ public class WorldManager extends AbstractAppState {
         spatial.removeFromParent();
         syncManager.removeEntity(id);
 
-        CharacterPhysicsControl characterPhysics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl characterPhysics =
+                spatial.getControl(CharacterPhysicsControl.class);
         if (characterPhysics != null) {
             characterPhysics.setEnabled(false);
         }
     }
 
     public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
-        logger.log(Level.FINE, "Restoring temporarily removed entity. Id {0}", id);
+        logger.log(Level.FINE,
+                "Restoring temporarily removed entity. Id {0}", id);
         Spatial spatial = getEntity(id);
         spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
         worldRoot.attachChild(spatial);
         syncManager.addObject(id, spatial);
 
-        CharacterPhysicsControl characterPhysics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl characterPhysics =
+                spatial.getControl(CharacterPhysicsControl.class);
         if (characterPhysics != null) {
             characterPhysics.setEnabled(true);
         }
 
-        SyncInterpolationControl interpolationControl = spatial.getControl(SyncInterpolationControl.class);
+        SyncInterpolationControl interpolationControl =
+                spatial.getControl(SyncInterpolationControl.class);
         if (interpolationControl != null) {
             interpolationControl.ignoreNext();
         }
@@ -335,8 +354,8 @@ public class WorldManager extends AbstractAppState {
         } else if (entity.getControl(CharacterPhysicsControl.class) != null) {
             entity.getControl(CharacterPhysicsControl.class).warp(location);
             entity.setLocalTranslation(location);
-            entity.getControl(CharacterPhysicsControl.class)
-                    .setViewDirection(rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
+            entity.getControl(CharacterPhysicsControl.class).setViewDirection(
+                    rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
         } else {
             entity.setLocalTranslation(location);
             entity.setLocalRotation(rotation);
@@ -351,34 +370,40 @@ public class WorldManager extends AbstractAppState {
             return;
         }
 
-        ServerFogManager serverFogManager = app.getStateManager().getState(ServerFogManager.class);
+        ServerFogManager serverFogManager =
+                app.getStateManager().getState(ServerFogManager.class);
 
         syncManager.removeEntity(id);
 
         if (serverFogManager != null) {
-            serverFogManager.removeEntity(spatial, new RemoveEntityCommand(id, reason));
+            serverFogManager
+                    .removeEntity(spatial, new RemoveEntityCommand(id, reason));
         }
 
         if (isClient()) {
             if (reason != -1) {
-                EntityEventControl eventControl = spatial.getControl(EntityEventControl.class);
+                EntityEventControl eventControl =
+                        spatial.getControl(EntityEventControl.class);
                 if (eventControl != null) {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
 
                 if (reason == RemovalReasons.DISAPPEARED) {
                     logger.log(Level.INFO, "Entity {0} disappeared", id);
-                    UserCommandManager userCommandManager = app.getStateManager().getState(UserCommandManager.class);
+                    UserCommandManager userCommandManager = app.
+                            getStateManager().getState(UserCommandManager.class);
                     if (id == userCommandManager.getCharacterId()) {
                         userCommandManager.nullifyCharacter();
                     }
                 }
             }
 
-            app.getStateManager().getState(ClientHudManager.class).entityDisappeared(spatial);
+            app.getStateManager().getState(ClientHudManager.class)
+                    .entityDisappeared(spatial);
 
             // TODO: Consider doing this to all controls to generalize destruction
-            CharacterBuffControl buffControl = spatial.getControl(CharacterBuffControl.class);
+            CharacterBuffControl buffControl =
+                    spatial.getControl(CharacterBuffControl.class);
             spatial.removeControl(buffControl);
         }
 
@@ -397,8 +422,6 @@ public class WorldManager extends AbstractAppState {
             space.remove(ghostControl);
         }
     }
-
-    
 
     @Override
     public void update(float tpf) {
@@ -434,7 +457,8 @@ public class WorldManager extends AbstractAppState {
         worldRoot = null;
 
         if (isClient()) {
-            ClientFogManager clientFogManager = app.getStateManager().getState(ClientFogManager.class);
+            ClientFogManager clientFogManager =
+                    app.getStateManager().getState(ClientFogManager.class);
             app.getViewPort().removeProcessor(clientFogManager);
         }
     }

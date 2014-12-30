@@ -202,10 +202,11 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Sphere sphere = new Sphere(32, 32, 2.0f);
         Geometry meteorGeom = new Geometry("meteor-geom", sphere);
         Node node = new Node("meteor");
+        node.setLocalTranslation((Vector3f) location);
         node.attachChild(meteorGeom);
 
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

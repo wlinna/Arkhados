@@ -35,6 +35,7 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -55,7 +56,7 @@ public class EmberMage extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Node entity = (Node) assetManager.loadModel("Models/Mage.j3o");
         float movementSpeed = 35f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);

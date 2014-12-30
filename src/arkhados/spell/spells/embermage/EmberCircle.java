@@ -83,8 +83,9 @@ public class EmberCircle extends Spell {
 class EmberCircleBuilder extends AbstractNodeBuilder {
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
+        node.setLocalTranslation((Vector3f) location);
         final float radius = 15f;
         node.scale(radius, 1f, radius);
 

@@ -188,10 +188,11 @@ public class Firewalk extends Spell {
         }
 
         @Override
-        public Node build() {
+        public Node build(Object location) {
             Sphere sphere = new Sphere(16, 16, 0.2f);
             Geometry projectileGeom = new Geometry("projectile-geom", sphere);
             Node node = new Node("firewalk");
+            node.setLocalTranslation((Vector3f) location);
             node.attachChild(projectileGeom);
 
             node.addControl(new SyncInterpolationControl());

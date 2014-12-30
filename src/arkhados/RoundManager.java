@@ -98,7 +98,8 @@ public class RoundManager implements CommandHandler {
 
                 Sender sender = app.getStateManager().getState(Sender.class);
                 if (worldManager.isClient()) {
-                    sender.addCommand(new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
+                    sender.addCommand(
+                            new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
                 }
 
                 if (sender.isServer()) {
@@ -113,36 +114,44 @@ public class RoundManager implements CommandHandler {
     }
 
     private void createCharacters() {
-        final ServerSender sender = app.getStateManager().getState(ServerSender.class);
+        final ServerSender sender =
+                app.getStateManager().getState(ServerSender.class);
         logger.log(Level.INFO, "Creating characters");
         if (sender.isServer()) {
             app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    ServerFogManager fogManager = app.getStateManager().getState(ServerFogManager.class);
+                    ServerFogManager fogManager = app.getStateManager()
+                            .getState(ServerFogManager.class);
 
                     int i = 0;
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         fogManager.createAwarenessForPlayer(playerData.getId());
                         Vector3f startingLocation = new Vector3f(WorldManager.STARTING_LOCATIONS[i++]);
                         startingLocation.setY(7.0f);
-                        String heroName = playerData.getStringData(PlayerDataStrings.HERO);
-                        int nodeBuilderId =
-                                NodeBuilderIdHeroNameMatcherSingleton.get().getId(heroName);
+                        String heroName = playerData.getStringData(
+                                PlayerDataStrings.HERO);
+                        int nodeBuilderId = NodeBuilderIdHeroNameMatcherSingleton
+                                .get().getId(heroName);
                         int entityId = worldManager.addNewEntity(nodeBuilderId,
-                                startingLocation, new Quaternion(), playerData.getId());
-                        playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
+                                startingLocation, new Quaternion(),
+                                playerData.getId());
+                        playerData.setData(PlayerDataStrings.ENTITY_ID,
+                                entityId);
                     }
 
                     logger.log(Level.INFO, "Created characters");
 
                     for (PlayerData playerData : PlayerData.getPlayers()) {
-                        int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
-                        sender.addCommand(new SetPlayersCharacterCommand(entityId, playerData.getId()));
+                        int entityId = playerData.getIntData(
+                                PlayerDataStrings.ENTITY_ID);
+                        sender.addCommand(new SetPlayersCharacterCommand(
+                                entityId, playerData.getId()));
                     }
 
                     fogManager.addPlayerListToPlayers();
-                    logger.log(Level.INFO, "Informing players of their characters");
+                    logger.log(Level.INFO,
+                            "Informing players of their characters");
                     return null;
                 }
             });
@@ -196,7 +205,8 @@ public class RoundManager implements CommandHandler {
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
             logger.log(Level.INFO, "Disabling syncManager");
 
-            app.getStateManager().getState(ServerFogManager.class).clearAwarenesses();
+            app.getStateManager().getState(ServerFogManager.class)
+                    .clearAwarenesses();
             syncManager.stopListening();
         }
         roundRunning = false;
@@ -245,20 +255,24 @@ public class RoundManager implements CommandHandler {
         if (sender.isServer()) {
             int aliveAmount = 0;
             for (PlayerData playerData : PlayerData.getPlayers()) {
-                int entityId = playerData.getIntData(PlayerDataStrings.ENTITY_ID);
+                int entityId =
+                        playerData.getIntData(PlayerDataStrings.ENTITY_ID);
                 Node character = (Node) worldManager.getEntity(entityId);
                 if (character != null) {
-                    Float healthCurrent = character.getUserData(UserDataStrings.HEALTH_CURRENT);
+                    Float healthCurrent = character.getUserData(
+                            UserDataStrings.HEALTH_CURRENT);
                     if (healthCurrent != null && healthCurrent > 0f) {
                         ++aliveAmount;
                         if (aliveAmount > 1) {
                             break;
                         }
                     } else if (healthCurrent == null) {
-                        logger.log(Level.WARNING, "Current health of id {0} is null", entityId);
+                        logger.log(Level.WARNING,
+                                "Current health of id {0} is null", entityId);
                     }
                 } else {
-                    logger.log(Level.WARNING, "Character of id {0} is null!", entityId);
+                    logger.log(Level.WARNING,
+                            "Character of id {0} is null!", entityId);
                 }
             }
             if (aliveAmount == 1) {
@@ -299,7 +313,8 @@ public class RoundManager implements CommandHandler {
         if (command instanceof TopicOnlyCommand) {
             clientHandleTopicOnly((TopicOnlyCommand) command);
         } else if (command instanceof RoundStartCountdownCommand) {
-            RoundStartCountdownCommand countDownCommand = (RoundStartCountdownCommand) command;
+            RoundStartCountdownCommand countDownCommand =
+                    (RoundStartCountdownCommand) command;
             roundStartTimer.setTimeLeft(countDownCommand.getTime());
             roundStartTimer.setActive(true);
         }
@@ -313,7 +328,8 @@ public class RoundManager implements CommandHandler {
         switch (command.getTopicId()) {
             case Topic.CREATE_WORLD:
                 createWorld();
-                stateManager.getState(ClientHudManager.class).hideRoundStatistics();
+                stateManager.getState(ClientHudManager.class)
+                        .hideRoundStatistics();
                 break;
             case Topic.NEW_ROUND:
                 startNewRound();

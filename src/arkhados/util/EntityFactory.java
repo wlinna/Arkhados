@@ -23,6 +23,7 @@ import arkhados.characters.RockGolem;
 import arkhados.characters.Venator;
 import arkhados.effects.EffectBox;
 import com.jme3.asset.AssetManager;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 
@@ -68,11 +69,11 @@ public class EntityFactory {
         addNodeBuilders();
     }
 
-    public Node createEntityById(int id) {
+    public Node createEntityById(int id, Object parameter) {
         if (nodeBuilders.size() <= id) {
             return null;
         }
-        Node node = nodeBuilders.get(id).build();
+        Node node = nodeBuilders.get(id).build(parameter);
         node.setUserData(UserDataStrings.NODE_BUILDER_ID, id);
         return node;
     }

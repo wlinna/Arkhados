@@ -15,6 +15,7 @@
 package arkhados.util;
 
 import arkhados.effects.EffectBox;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -22,6 +23,6 @@ import com.jme3.scene.Node;
  * @author william
  */
 public interface NodeBuilder {
-    public Node build();
+    public Node build(Object parameter);
     public EffectBox getEffectBox();
 }

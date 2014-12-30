@@ -36,7 +36,7 @@ public class CastOnGroundAction extends EntityAction {
 
     private WorldManager worldManager;
     private Spell spell;
-    private final List<AbstractBuff> additionalEnterBuffs = new ArrayList<AbstractBuff>();
+    private final List<AbstractBuff> additionalEnterBuffs = new ArrayList<>();
     // NOTE: Add additionalExitBuffs -list if needed
 
     public CastOnGroundAction(WorldManager worldManager, Spell spell) {
@@ -46,14 +46,19 @@ public class CastOnGroundAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final SpellCastControl castControl = super.spatial.getControl(SpellCastControl.class);
-        final Vector3f adjustedTarget = castControl.getClosestPointToTarget(spell).setY(0.1f);
-        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final int entityId = worldManager.addNewEntity(spell.getId(), adjustedTarget, Quaternion.IDENTITY, playerId);
+        SpellCastControl castControl = 
+                spatial.getControl(SpellCastControl.class);
+        Vector3f adjustedTarget =
+                castControl.getClosestPointToTarget(spell).setY(0.1f);
+        Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int entityId = worldManager.addNewEntity(spell.getId(),
+                adjustedTarget, Quaternion.IDENTITY, playerId);
 
-        final Spatial entity = worldManager.getEntity(entityId);
-        final AreaEffectControl aoeControl = entity.getControl(AreaEffectControl.class);
-        aoeControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+        Spatial entity = worldManager.getEntity(entityId);
+        AreaEffectControl aoeControl =
+                entity.getControl(AreaEffectControl.class);
+        aoeControl.setOwnerInterface(spatial.getControl(
+                InfluenceInterfaceControl.class));
         for (AbstractBuff buff : additionalEnterBuffs) {
             aoeControl.addEnterBuff(buff);
         }
@@ -62,7 +67,8 @@ public class CastOnGroundAction extends EntityAction {
 
     public void addEnterBuff(final AbstractBuff buff) {
         if (buff == null) {
-            throw new IllegalArgumentException("Nulls not allowed in containers");
+            throw new IllegalArgumentException(
+                    "Nulls not allowed in containers");
         }
         additionalEnterBuffs.add(buff);
     }

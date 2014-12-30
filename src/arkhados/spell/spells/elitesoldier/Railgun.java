@@ -106,12 +106,13 @@ class RailgunBuilder extends AbstractNodeBuilder {
     }    
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Sphere sphere = new Sphere(32, 32, 0.5f);
 
         Geometry projectileGeom = new Geometry("rail-geom", sphere);
 
         Node node = new Node("rail");
+        node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material

@@ -71,8 +71,9 @@ public class EliteSoldier extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Node entity = new Node("elite-soldier");
+        entity.setLocalTranslation((Vector3f) location);
         Node real = (Node) assetManager.loadModel("Models/EliteSoldier.j3o");
         entity.attachChild(real);
         real.scale(11f);

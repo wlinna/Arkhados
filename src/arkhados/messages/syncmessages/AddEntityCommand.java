@@ -48,7 +48,7 @@ public class AddEntityCommand extends StateData {
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
-        worldManager.addEntity(this.entityId, this.nodeBuilderId, this.location,
-                this.rotation, playerId);
+        worldManager.addEntity(entityId, nodeBuilderId, location,
+                rotation, playerId);
     }
 }

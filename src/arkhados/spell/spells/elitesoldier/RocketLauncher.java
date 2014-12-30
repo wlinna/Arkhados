@@ -132,13 +132,14 @@ class RocketBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Sphere sphere = new Sphere(32, 32, 1);
 
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
         Node node = new Node("projectile");
+        node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material

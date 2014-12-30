@@ -47,9 +47,11 @@ public class Dagger extends Spell {
         final float range = 100f;
         final float castTime = 0.4f;
 
-        final Dagger spell = new Dagger("Damaging Dagger", cooldown, range, castTime);
+        final Dagger spell = new Dagger("Damaging Dagger", cooldown,
+                range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 return new CastProjectileAction(spell, worldManager);
             }
@@ -63,8 +65,10 @@ public class Dagger extends Spell {
     private static class DaggerBuilder extends AbstractNodeBuilder {
 
         @Override
-        public Node build() {
-            Node node = (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
+        public Node build(Object location) {
+            Node node =
+                    (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
+            node.setLocalTranslation((Vector3f) location);
 
             node.setUserData(UserDataStrings.SPEED_MOVEMENT, 170f);
             node.setUserData(UserDataStrings.MASS, 30f);
@@ -73,7 +77,7 @@ public class Dagger extends Spell {
 
             SphereCollisionShape collisionShape = new SphereCollisionShape(4);
             RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                    (Float) node.getUserData(UserDataStrings.MASS));
+                    (float) node.getUserData(UserDataStrings.MASS));
 
             physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
             physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);

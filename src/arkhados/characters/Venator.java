@@ -37,6 +37,7 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -71,7 +72,7 @@ public class Venator extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
+    public Node build(Object irrelevant) {
         Node entity = (Node) assetManager.loadModel("Models/Warwolf.j3o");
         float movementSpeed = 37f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);

@@ -45,13 +45,15 @@ public class PelletBuilder extends AbstractNodeBuilder {
     }            
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         final Sphere sphere = new Sphere(8, 8, 0.3f);
         
         final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         final Node node = new Node("projectile");
+        node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
-        final Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        final Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 220f);
@@ -69,8 +71,9 @@ public class PelletBuilder extends AbstractNodeBuilder {
             //            removalAction.setSmokeTrail(trail);
             //            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
         }
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
-        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
+                (Float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -102,24 +105,28 @@ class PelletRemovalAction implements RemovalEventAction {
         this.assetManager = assetManager;
     }
 
-    private void leaveSmokeTrail(final Node worldRoot, Vector3f worldTranslation) {
+    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
         this.whiteTrail.setParticlesPerSec(0);
         worldRoot.attachChild(this.whiteTrail);
         this.whiteTrail.setLocalTranslation(worldTranslation);
         this.whiteTrail.addControl(new TimedExistenceControl(0.5F));
     }
 
-    private void createSmokePuff(final Node worldRoot, Vector3f worldTranslation) {
-        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(this.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", this.assetManager.loadTexture("Effects/flame.png"));
+    private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
+        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
+                ParticleMesh.Type.Triangle, 20);
+        Material materialGray = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture", 
+                assetManager.loadTexture("Effects/flame.png"));
         smokePuff.setMaterial(materialGray);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
         smokePuff.setSelectRandomImage(true);
         smokePuff.setStartColor(new ColorRGBA(0.5F, 0.5F, 0.5F, 0.2F));
         smokePuff.setStartColor(new ColorRGBA(0.5F, 0.5F, 0.5F, 0.1F));
-        smokePuff.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(5.0F));
+        smokePuff.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(5.0F));
         smokePuff.getParticleInfluencer().setVelocityVariation(1.0F);
         smokePuff.setStartSize(2.0F);
         smokePuff.setEndSize(6.0F);
@@ -134,6 +141,7 @@ class PelletRemovalAction implements RemovalEventAction {
         smokePuff.emitAllParticles();
     }
 
+    @Override
     public void exec(WorldManager worldManager, int reason) {
         //        this.leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
         //        this.createSmokePuff(worldManager.getWorldRoot(), worldTranslation);

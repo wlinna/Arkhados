@@ -196,8 +196,8 @@ public abstract class Spell {
         return this.castSpellActionBuilder.newAction(caster, vec);
     }
 
-    public Node buildNode() {
-        return this.nodeBuilder.build();
+    public Node buildNode(Vector3f location) {
+        return this.nodeBuilder.build(location);
     }
 
     public boolean canMoveWhileCasting() {

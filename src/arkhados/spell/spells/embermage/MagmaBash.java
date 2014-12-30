@@ -76,10 +76,11 @@ public class MagmaBash extends Spell {
 
 class MagmaBashBuilder extends AbstractNodeBuilder {
 
-    public Node build() {
+    public Node build(Object location) {
         Sphere sphere = new Sphere(32, 32, 1.0f);
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         Node node = new Node("projectile");
+        node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material

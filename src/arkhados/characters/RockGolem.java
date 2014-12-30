@@ -34,6 +34,7 @@ import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class RockGolem extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build() {
+    public Node build(Object irrelevant) {
         Node entity = (Node) assetManager.loadModel("Models/RockGolem.j3o");
         float movementSpeed = 33f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);

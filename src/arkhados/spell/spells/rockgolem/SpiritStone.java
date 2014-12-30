@@ -92,8 +92,10 @@ class SpiritStoneCastAction extends EntityAction {
 class SpiritStoneBuilder extends AbstractNodeBuilder {
 
     @Override
-    public Node build() {
+    public Node build(Object location) {
         Node node = (Node) assetManager.loadModel("Models/SpiritStone.j3o");
+        node.setLocalTranslation((Vector3f) location);
+        
         for (Spatial childToScale : node.getChildren()) {
             childToScale.scale(3f);
         }
