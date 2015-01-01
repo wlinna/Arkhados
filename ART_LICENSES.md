@@ -55,6 +55,7 @@ See CREDITS.md for attributions.
 - PurifyingFlame.wav
 - FeralScream.wav
 - Railgun.wav
+- LikeAPro.wav
 - Carmack.ogg
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg

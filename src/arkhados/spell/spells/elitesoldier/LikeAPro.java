@@ -16,6 +16,7 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.characters.EliteSoldier;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -35,7 +36,7 @@ import com.jme3.scene.Node;
 public class LikeAPro extends Spell {
 
     {
-        this.iconName = "like_a_pro.png";
+        iconName = "like_a_pro.png";        
     }
 
     public LikeAPro(String name, float cooldown, float range, float castTime) {
@@ -47,19 +48,24 @@ public class LikeAPro extends Spell {
         final float range = 0f;
         final float castTime = 0f;
 
-        final LikeAPro spell = new LikeAPro("Like a Pro", cooldown, range, castTime);
+        final LikeAPro spell =
+                new LikeAPro("Like a Pro", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
+            @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 CastSelfBuffAction buffAction = new CastSelfBuffAction();
-                AbleToCastWhileMovingBuff likeAPro = new AbleToCastWhileMovingBuff(-1, 5);
+                buffAction.setTypeId(EliteSoldier.ACTION_LIKE_A_PRO);
+                AbleToCastWhileMovingBuff likeAPro =
+                        new AbleToCastWhileMovingBuff(-1, 5);
                 likeAPro.setName("Like a Pro");
                 likeAPro.setTypeId(BuffTypeIds.LIKE_A_PRO);
                 buffAction.addBuff(likeAPro);
                 buffAction.addBuff(new SpeedBuff(false, 6, -1, 5));
                 buffAction.addBuff(new ArmorBuff(50, 0.6f, -1, 999999999));
                 
-                EliteSoldierAmmunitionControl ammunitionControl = caster.getControl(EliteSoldierAmmunitionControl.class);
+                EliteSoldierAmmunitionControl ammunitionControl =
+                        caster.getControl(EliteSoldierAmmunitionControl.class);
                 ammunitionControl.likeAPro();
                 return buffAction;
             }

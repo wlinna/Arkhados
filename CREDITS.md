@@ -170,6 +170,9 @@ bit by Teemu Salminen. Original Magic Smite can be found from
 midimagician for EmberCircle's sound (EmberCircle.wav). Sound is
 licensed under CC0. Original work can be found from [freesound](http://freesound.org/people/midimagician/sounds/249418/)
 
+
+[Mike Koenig (SoundBible)](http://soundbible.com/tags-game.html) for [Shotgun reload sound](http://opengameart.org/content/shotgun-shoot-reload). One shotgun reload sound (with small modifications) is used for Elite Soldier's LikeAPro spell sound. Sound is licensed under CC-BY 3.0.
+
 [Joe Reynolds – Professorlamp](jrtheories.webs.com) for music
 Carmack. Music is licensed under CC-BY 3.0. Original work can be found
 from [OGA](http://opengameart.org/content/carmack)
