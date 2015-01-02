@@ -37,7 +37,8 @@ import java.util.concurrent.Callable;
  *
  * @author william
  */
-public class ChargeAction extends EntityAction implements PhysicsCollisionListener {
+public class ChargeAction extends EntityAction
+        implements PhysicsCollisionListener {
 
     private boolean isCharging = false;
     private float chargeSpeed;
@@ -62,17 +63,20 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
         CapsuleCollisionShape shape = physics.getCapsuleShape();
         shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
         ghost = new GhostControl(shape);
         ghost.setCollisionGroup(CollisionGroups.NONE);
-        ghost.setCollideWithGroups(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
+        ghost.setCollideWithGroups(CollisionGroups.CHARACTERS
+                | CollisionGroups.WALLS | CollisionGroups.SPIRIT_STONE);
 
         ghostNode = new Node("Ghost Node");
         ((Node) spatial).attachChild(ghostNode);
         ghostNode.addControl(ghost);
-
+        ghost.setUserObject(spatial);
+        
         physics.getPhysicsSpace().add(ghost);
         physics.getPhysicsSpace().addCollisionListener(this);
     }
@@ -86,14 +90,15 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
             return false;
         }
 
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
         InfluenceInterfaceControl influenceInterface =
                 spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(false);
 
         if (!isCharging) {
-            direction = physics.getTargetLocation().subtract(spatial.getLocalTranslation())
-                    .normalizeLocal();
+            direction = physics.getTargetLocation()
+                    .subtract(spatial.getLocalTranslation()).normalizeLocal();
             physics.setViewDirection(direction);
             direction.multLocal(chargeSpeed);
             physics.setDictatedDirection(direction);
@@ -118,7 +123,8 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
 
         InfluenceInterfaceControl targetInfluenceControl =
                 target.getControl(InfluenceInterfaceControl.class);
-        CharacterInteraction.harm(spatial.getControl(InfluenceInterfaceControl.class),
+        CharacterInteraction
+                .harm(spatial.getControl(InfluenceInterfaceControl.class),
                 targetInfluenceControl, rawDamage, buffs, true);
     }
 
@@ -141,7 +147,8 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
                 spatial.getControl(InfluenceInterfaceControl.class);
         influenceInterface.setCanControlMovement(true);
         influenceInterface.setSpeedConstant(false);
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
 
         physics.getDictatedDirection().zero();
         physics.setWalkDirection(Vector3f.ZERO);
@@ -154,16 +161,20 @@ public class ChargeAction extends EntityAction implements PhysicsCollisionListen
             return;
         }
         if ((event.getObjectA() != ghost && event.getObjectB() != ghost)
-                || (event.getObjectA().getUserObject() == event.getObjectB().getUserObject())) {
+                || (event.getObjectA().getUserObject()
+                == event.getObjectB().getUserObject())) {
             return;
         }
 
-        PhysicsCollisionObject otherObject = event.getObjectA().getUserObject() == spatial
+        PhysicsCollisionObject otherObject =
+                event.getObjectA().getUserObject() == spatial
                 ? event.getObjectB()
                 : event.getObjectA();
 
-        if (otherObject.getCollisionGroup() != CollisionGroups.CHARACTERS
-                && otherObject.getCollisionGroup() != CollisionGroups.WALLS) {
+        int otherCollisionGroup = otherObject.getCollisionGroup();
+        if (otherCollisionGroup != CollisionGroups.CHARACTERS
+                && otherCollisionGroup != CollisionGroups.WALLS
+                && otherCollisionGroup != CollisionGroups.SPIRIT_STONE) {
             return;
         }
 

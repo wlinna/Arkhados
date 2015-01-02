@@ -53,6 +53,11 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         }
 
         Spatial other = isA ? event.getNodeB() : event.getNodeA();
+        
+        if (other == null) {
+            return;
+        }
+        
         PhysicsCollisionObject otherPhysics = isA ? event.getObjectB() : event.getObjectA();
         int otherCollisionGroup = otherPhysics.getCollisionGroup();
 
