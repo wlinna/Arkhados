@@ -21,6 +21,7 @@ See CREDITS.md for attributions.
 - EmberCircle.wav
 - Petrify.wav
 - DeepWounds.wav
+- EarthQuake.wav
 - All Wall related files
 - All SpiritStone related files
 - VenatorDeath.wav

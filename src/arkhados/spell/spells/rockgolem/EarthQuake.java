@@ -18,6 +18,7 @@ import arkhados.SpatialDistancePair;
 import arkhados.actions.ChargeAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
+import arkhados.characters.RockGolem;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
@@ -99,6 +100,7 @@ class CastEarthQuakeAction extends EntityAction {
         ActionQueueControl queue = spatial.getControl(ActionQueueControl.class);
         queue.enqueueAction(charge);
         queue.enqueueAction(splash);
+        splash.setTypeId(RockGolem.ACTION_EARTHQUAKE);
 
         queue.enqueueAction(new EntityAction() {
             @Override

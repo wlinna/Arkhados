@@ -26,6 +26,7 @@ import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
+import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AbstractNodeBuilder;
@@ -34,7 +35,6 @@ import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +44,15 @@ import java.util.List;
  * @author william
  */
 public class RockGolem extends AbstractNodeBuilder {
+    public static final int ACTION_EARTHQUAKE = 0;
 
     private final ClientHudManager clientHudManager;
 
     public RockGolem(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
         setEffectBox(new EffectBox());
+        getEffectBox().addActionEffect(ACTION_EARTHQUAKE, 
+                new SimpleSoundEffect("Effects/Sound/EarthQuake.wav"));
     }
 
     @Override
