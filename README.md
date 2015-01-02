@@ -44,23 +44,13 @@ that prohibit commercial use or derivation will not accepted in Arkhados.
 
 **Replace one of the character models with better model** Currently
 I'm using very low poly models for characters for various reasons. For
-mage I couldn't find 3D model with armature animations ready.
+mage I couldn't find more detailed 3D model with armature animations ready.
 
 I animated Venator myself because there was no other choice but the
 quality of my animations is pretty bad. It would be nice if they were
 replaced, perhaps one by one.
 
-Elite Soldier resembles Quake-like soldier but currently he has low
-poly Archer model because I couldn't get one of the more suitable
-model to work correctly in jMonkeyEngine. See [this thread](http://hub.jmonkeyengine.org/forum/topic/animation-working-in-blender-2-63-but-badly-distorted-in-jme/).
-
-**Make nicer lava material** Current lava material is quite boring. I'm
-using Bloom effect to compensate for it but better material would be better
-solution.
-
-**Find or create good sound effect** Currently many spells lack sound
-effect. And it would be nice if characters would scream (or something
-like that) when they die.
+**Make nicer lava material**
 
 **Find or create good music** In Arkhados every hero uses different
   set of music. Currently Embermage has only 2 soundtracks.
@@ -78,18 +68,13 @@ by clicking on nice portrait instead of button with text like
 
 ### Code ###
 
-**Make map that has walls and handle collisions with them** This is my
-next task. It involves creating map with walls and making sure that
-player can't end up inside or on top of wall with movement spells like
-Rocket Jump or Firewalk.
-
 **Improve fog of war** Arkhados has fog of war but it should be
   improved visually and perhaps optimized. One way to optimize it
   would be to make framebuffer smaller but so far I've failed to do
   that.
 
 **Add nice trail effects**
-Shotgun and machine gun bullets would look lot nicer if they had some
+Shotgun bullets would look lot nicer if they had some
 kind of trails. Another nice use for trails would be to show nice red
 trails when Venator swipes. I will add Pudge-like hook spell later so
 trail system could be useful for that too. Maybe.
@@ -98,10 +83,6 @@ trail system could be useful for that too. Maybe.
 Very basic feature. Allow players to access menu during game so that
 player can configure keys, graphic settings etc. and immediately see
 how it affects.
-
-**Commenting code**
-Most of the Arkhados' code is uncommented. Commenting it is nice way
-to make it more understandable for everyone.
 
 **Refactor code**
 
