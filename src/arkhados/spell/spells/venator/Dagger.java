@@ -35,7 +35,7 @@ import com.jme3.scene.Node;
  */
 public class Dagger extends Spell {
     {
-        super.iconName = "damaging_dagger.png";
+        iconName = "damaging_dagger.png";
     }
 
     public Dagger(String name, float cooldown, float range, float castTime) {
@@ -45,7 +45,7 @@ public class Dagger extends Spell {
     public static Spell create() {
         final float cooldown = 6f;
         final float range = 100f;
-        final float castTime = 0.4f;
+        final float castTime = 0.35f;
 
         final Dagger spell = new Dagger("Damaging Dagger", cooldown,
                 range, castTime);

@@ -64,15 +64,17 @@ public class Plasmagun extends Spell {
     public static Spell create() {
         final float cooldown = 1.5f;
         final float range = 80f;
-        final float castTime = 0.3f;
+        final float castTime = 0.4f;
 
-        final Plasmagun spell = new Plasmagun("Plasmagun", cooldown, range, castTime);
+        final Plasmagun spell =
+                new Plasmagun("Plasmagun", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                ChannelingSpellAction channel = new ChannelingSpellAction(spell, 3, 0.12f, 
-                        new CastProjectileAction(spell, worldManager), true);                
+                ChannelingSpellAction channel =
+                        new ChannelingSpellAction(spell, 3, 0.12f,
+                        new CastProjectileAction(spell, worldManager), true);
                 return channel;
             }
         };
@@ -86,16 +88,18 @@ public class Plasmagun extends Spell {
 class PlasmaBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createPlasmaEmitter() {
-        ParticleEmitter plasma =
-                new ParticleEmitter("plasma-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", assetManager.loadTexture("Effects/plasma-particle.png"));
+        ParticleEmitter plasma = new ParticleEmitter("plasma-emitter",
+                ParticleMesh.Type.Triangle, 200);
+        Material materialRed = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                assetManager.loadTexture("Effects/plasma-particle.png"));
         plasma.setMaterial(materialRed);
         plasma.setImagesX(2);
         plasma.setImagesY(2);
         plasma.setSelectRandomImage(true);
         plasma.setStartColor(new ColorRGBA(0.8f, 0.350f, 0.9f, 1.0f));
-        plasma.setEndColor(new ColorRGBA(0.80f, 0.30f, 0.9f, 0.95f));        
+        plasma.setEndColor(new ColorRGBA(0.80f, 0.30f, 0.9f, 0.95f));
         plasma.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         plasma.setStartSize(5.5f);
         plasma.setEndSize(4.5f);
@@ -119,7 +123,8 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
 
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -132,21 +137,21 @@ class PlasmaBuilder extends AbstractNodeBuilder {
             ParticleEmitter plasma = createPlasmaEmitter();
             node.attachChild(plasma);
 
-
             node.addControl(new EntityEventControl());
             /**
              * Here we specify what happens on client side when plasmaball is
              * removed. In this case we want explosion effect.
              */
-            PlasmaRemovalAction removalAction = new PlasmaRemovalAction(assetManager);
+            PlasmaRemovalAction removalAction =
+                    new PlasmaRemovalAction(assetManager);
             removalAction.setPlasmaEmitter(plasma);
 
-
-            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
+            node.getControl(EntityEventControl.class)
+                    .setOnRemoval(removalAction);
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(5);
-        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, 
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
@@ -163,25 +168,27 @@ class PlasmaBuilder extends AbstractNodeBuilder {
 
         node.addControl(physicsBody);
 
-        ProjectileControl projectileControl = new ProjectileControl();        
-        SplashAction splash = new SplashAction(23f, 23f, DistanceScaling.CONSTANT, null);
+        ProjectileControl projectileControl = new ProjectileControl();
+        SplashAction splash = new SplashAction(23f, 23f,
+                DistanceScaling.CONSTANT, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
         node.addControl(projectileControl);
         SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
-        
+
         buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
         return node;
     }
 }
 
 class PlasmaRemovalAction implements RemovalEventAction {
-    private ParticleEmitter plasma;    
+    private ParticleEmitter plasma;
     private AudioNode sound;
 
     public PlasmaRemovalAction(AssetManager assetManager) {
-        this.sound = new AudioNode(assetManager, "Effects/Sound/FireballExplosion.wav");
+        sound = new AudioNode(assetManager,
+                "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
@@ -189,8 +196,8 @@ class PlasmaRemovalAction implements RemovalEventAction {
 
     public void setPlasmaEmitter(ParticleEmitter plasma) {
         this.plasma = plasma;
-    }   
-    
+    }
+
     @Override
     public void exec(WorldManager worldManager, int reason) {
         Vector3f worldTranslation = plasma.getParent().getLocalTranslation();
@@ -206,7 +213,8 @@ class PlasmaRemovalAction implements RemovalEventAction {
         plasma.setNumParticles(15);
         plasma.setStartSize(5.5f);
         plasma.setEndSize(10.0f);
-        plasma.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(.0f));
+        plasma.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(.0f));
         plasma.getParticleInfluencer().setVelocityVariation(1f);
 
         plasma.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));

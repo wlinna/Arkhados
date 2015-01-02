@@ -36,6 +36,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SpiritStone extends Spell {
+
     {
         iconName = "SpiritStone.png";
     }
@@ -47,9 +48,10 @@ public class SpiritStone extends Spell {
     public static Spell create() {
         final float cooldown = 8f;
         final float range = 80f;
-        final float castTime = 0.2f;
+        final float castTime = 0.3f;
 
-        final SpiritStone spell = new SpiritStone("SpiritStone", cooldown, range, castTime);
+        final SpiritStone spell =
+                new SpiritStone("SpiritStone", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -65,7 +67,8 @@ public class SpiritStone extends Spell {
 }
 
 /**
- * SpiritStoneCastAction. NOTE: This is very much like CastOnGroundAction. Consider reusing that one
+ * SpiritStoneCastAction. NOTE: This is very much like CastOnGroundAction.
+ * Consider reusing that one
  *
  * @author william
  */
@@ -81,10 +84,12 @@ class SpiritStoneCastAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
+        SpellCastControl castControl =
+                spatial.getControl(SpellCastControl.class);
         Vector3f target = castControl.getClosestPointToTarget(spell).setY(10f);
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
-        worldManager.addNewEntity(spell.getId(), target, Quaternion.IDENTITY, playerId);
+        worldManager.addNewEntity(spell.getId(),
+                target, Quaternion.IDENTITY, playerId);
         return false;
     }
 }
@@ -95,7 +100,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
     public Node build(Object location) {
         Node node = (Node) assetManager.loadModel("Models/SpiritStone.j3o");
         node.setLocalTranslation((Vector3f) location);
-        
+
         for (Spatial childToScale : node.getChildren()) {
             childToScale.scale(3f);
         }
@@ -117,14 +122,16 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 //        }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
-        SpiritStonePhysicsControl physicsBody = new SpiritStonePhysicsControl(collisionShape,
-                (Float) node.getUserData(UserDataStrings.MASS), worldManager);
+        SpiritStonePhysicsControl physicsBody =
+                new SpiritStonePhysicsControl(collisionShape,
+                (float) node.getUserData(UserDataStrings.MASS), worldManager);
         node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.PROJECTILES);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
+                | CollisionGroups.PROJECTILES);
         physicsBody.setAngularDamping(1f);
-        
+
         node.addControl(new TimedExistenceControl(8f, true));
         node.addControl(new RotationControl(0f, 2f, 0f));
         node.addControl(new SyncInterpolationControl());

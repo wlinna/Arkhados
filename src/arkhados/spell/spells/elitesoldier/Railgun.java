@@ -59,7 +59,7 @@ public class Railgun extends Spell {
     public static Spell create() {
         final float cooldown = 9f;
         final float range = 130f;
-        final float castTime = 0.6f;
+        final float castTime = 0.7f;
 
         final Railgun spell = new Railgun("Railgun", cooldown, range, castTime);
 
@@ -83,8 +83,10 @@ class RailgunBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createTrailEmitter() {
         final ParticleEmitter trail = new ParticleEmitter("trail-emitter",
                 ParticleMesh.Type.Triangle, 600);
-        Material materialGray = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
+        Material materialGray =
+                new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        materialGray.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
         trail.setMaterial(materialGray);
         trail.setImagesX(2);
         trail.setImagesY(2);
@@ -103,7 +105,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
 
         trail.setRandomAngle(true);
         return trail;
-    }    
+    }
 
     @Override
     public Node build(Object location) {
@@ -116,7 +118,8 @@ class RailgunBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Cyan);
         node.setMaterial(material);
 
@@ -131,21 +134,25 @@ class RailgunBuilder extends AbstractNodeBuilder {
 
             node.addControl(new EntityEventControl());
             /**
-             * Here we specify what happens on client side when fireball is removed. In this case we
-             * want explosion effect.
+             * Here we specify what happens on client side when fireball is
+             * removed. In this case we want explosion effect.
              */
-            final RailgunRemovalAction removalAction = new RailgunRemovalAction(assetManager);
+            final RailgunRemovalAction removalAction =
+                    new RailgunRemovalAction(assetManager);
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
-            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
+            node.getControl(EntityEventControl.class)
+                    .setOnRemoval(removalAction);
         }
 
-        final SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);
-        final RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
+                (float) node.getUserData(UserDataStrings.MASS));
         /**
-         * We don't want projectiles to collide with each other so we give them their own collision
-         * group and prevent them from colliding with that group.
+         * We don't want projectiles to collide with each other so we give them
+         * their own collision group and prevent them from colliding with that
+         * group.
          */
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
@@ -153,7 +160,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
         /**
          * Add collision group of characters
          */
-        final GhostControl characterCollision = new GhostControl(collisionShape);
+        GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
         node.addControl(characterCollision);
@@ -189,7 +196,7 @@ class RailgunRemovalAction implements RemovalEventAction {
         smokeTrail.setLocalTranslation(worldTranslation);
         smokeTrail.addControl(new TimedExistenceControl(5f));
     }
-    
+
     @Override
     public void exec(WorldManager worldManager, int reason) {
         Vector3f worldTranslation = bullet.getLocalTranslation();

@@ -48,14 +48,14 @@ public class SealingBoulder extends Spell {
     public static Spell create() {
         final float cooldown = 7f;
         final float range = 120f;
-        final float castTime = 0.4f;
+        final float castTime = 0.6f;
 
         final SealingBoulder spell =
                 new SealingBoulder("SealingBoulder", cooldown, range, castTime);
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastProjectileAction action =
+                CastProjectileAction action =
                         new CastProjectileAction(spell, worldManager);
                 return action;
             }
@@ -92,7 +92,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(4);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (Float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserDataStrings.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS

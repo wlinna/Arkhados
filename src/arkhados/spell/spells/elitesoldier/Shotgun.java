@@ -47,7 +47,7 @@ public class Shotgun extends Spell {
     public static Spell create() {
         final float cooldown = 0.8f;
         final float range = 80f;
-        final float castTime = 0.3f;
+        final float castTime = 0.35f;
 
         final Shotgun spell = new Shotgun("Shotgun", cooldown, range, castTime);
 
