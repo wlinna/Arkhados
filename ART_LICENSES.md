@@ -22,6 +22,7 @@ See CREDITS.md for attributions.
 - Petrify.wav
 - DeepWounds.wav
 - EarthQuake.wav
+- SurvivalInstinct.wav
 - All Wall related files
 - All SpiritStone related files
 - VenatorDeath.wav

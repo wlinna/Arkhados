@@ -14,8 +14,11 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
+import arkhados.Globals;
 import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.TimedExistenceControl;
 import arkhados.effects.BuffEffect;
+import com.jme3.audio.AudioNode;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -28,13 +31,15 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SurvivalInstinctInformation extends BuffInformation {
+
     {
-        super.setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
+        setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
-        final SurvivalInstinctEffect effect = new SurvivalInstinctEffect(duration);
+    public BuffEffect createBuffEffect(CharacterBuffControl buffControl,
+            float duration) {
+        SurvivalInstinctEffect effect = new SurvivalInstinctEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
     }
@@ -50,8 +55,8 @@ class SurvivalInstinctEffect extends BuffEffect {
     }
 
     public void addToCharacter(CharacterBuffControl buffControl) {
-        this.characterNode = (Node) buffControl.getSpatial();
-        for (Spatial childSpatial : this.characterNode.getChildren()) {
+        characterNode = (Node) buffControl.getSpatial();
+        for (Spatial childSpatial : characterNode.getChildren()) {
             if (!(childSpatial instanceof Geometry)) {
                 continue;
             }
@@ -64,6 +69,17 @@ class SurvivalInstinctEffect extends BuffEffect {
                 material.setColor("Diffuse", color);
             }
         }
+
+        AudioNode sound = new AudioNode(Globals.assetManager,
+                "Effects/Sound/SurvivalInstinct.wav");
+        
+        characterNode.attachChild(sound);
+        sound.setPositional(true);
+        sound.addControl(
+                new TimedExistenceControl(sound.getAudioData().getDuration()));
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);        
+        sound.play();
     }
 
     @Override
