@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.ServerFogManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -93,18 +92,21 @@ public class ActionQueueControl extends AbstractControl {
         return current;
     }
 
-    private void simulateAction(EntityAction action) {
+    public void simulateAction(EntityAction action) {
         if (action.getTypeId() == -1) {
             return;
         }
-        CharacterAnimationControl animationControl = spatial.getControl(CharacterAnimationControl.class);
+        CharacterAnimationControl animationControl = 
+                spatial.getControl(CharacterAnimationControl.class);
         if (animationControl != null) {
             animationControl.animateAction(action.getTypeId());
         }
-        PlayerEntityAwareness awareness = spatial.getControl(EntityVariableControl.class).getAwareness();
+        PlayerEntityAwareness awareness =
+                spatial.getControl(EntityVariableControl.class).getAwareness();
         if (awareness != null) {
-            final Integer id = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            awareness.getFogManager().addCommand(spatial, new ActionCommand(id, action.getTypeId()));
+            int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            awareness.getFogManager().addCommand(spatial,
+                    new ActionCommand(id, action.getTypeId()));
         }
     }
 }

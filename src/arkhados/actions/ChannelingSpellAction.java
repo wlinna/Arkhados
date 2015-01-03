@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions;
 
+import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.Spell;
@@ -33,57 +34,60 @@ public class ChannelingSpellAction extends EntityAction {
     private EntityAction action;
     private CharacterPhysicsControl physics;
     private InfluenceInterfaceControl inluenceControl;
+    private ActionQueueControl actionQueue;
 
     public ChannelingSpellAction(Spell spell, float maxTime, float actionFrequency, EntityAction action) {
-        this.timeLeft = maxTime;
+        timeLeft = maxTime;
         this.actionFrequency = actionFrequency;
-        this.timer = this.actionFrequency; // Do first action immediately
+        timer = actionFrequency; // Do first action immediately
         this.action = action;
         this.spell = spell;
-        this.repeatsLeft = 0;
+        repeatsLeft = 0;
     }
 
     public ChannelingSpellAction(Spell spell, int repeatCount, float actionFrequency, EntityAction action, boolean whatever) {
         this.spell = spell;
-        this.repeatsLeft = repeatCount;
+        repeatsLeft = repeatCount;
         this.actionFrequency = actionFrequency;
         this.action = action;
-        this.timeLeft = -1000;
+        timeLeft = -1000;
     }
 
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial); //To change body of generated methods, choose Tools | Templates.
-        this.action.setSpatial(spatial);
-        this.physics = spatial.getControl(CharacterPhysicsControl.class);
-        this.inluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
+        action.setSpatial(spatial);
+        physics = spatial.getControl(CharacterPhysicsControl.class);
+        inluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
+        actionQueue = spatial.getControl(ActionQueueControl.class);
     }
 
     @Override
     public boolean update(float tpf) {
-        this.timeLeft -= tpf;
-        this.timer += tpf;
-        if (this.timer >= this.actionFrequency) {
-            this.timer = 0;
+        timeLeft -= tpf;
+        timer += tpf;
+        if (timer >= actionFrequency) {
+            timer = 0;
             action.update(tpf); // tpf should not matter for action
-            --this.repeatsLeft;
+            actionQueue.simulateAction(action);
+            --repeatsLeft;
         }
 
-        if (this.repeatsLeft <= 0 && this.timeLeft <= 0) {
+        if (repeatsLeft <= 0 && timeLeft <= 0) {
             return false;
         }
-        if (!this.inluenceControl.isAbleToCastWhileMoving()) {
-            this.physics.setWalkDirection(Vector3f.ZERO);
+        if (!inluenceControl.isAbleToCastWhileMoving()) {
+            physics.setWalkDirection(Vector3f.ZERO);
         }
         return true;
     }
     
     public void signalEnd() {
-        this.repeatsLeft = 0;
-        this.timeLeft = 0;
+        repeatsLeft = 0;
+        timeLeft = 0;
     }
 
     public Spell getSpell() {
-        return this.spell;
+        return spell;
     }
 }

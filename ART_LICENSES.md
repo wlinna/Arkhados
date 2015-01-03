@@ -57,6 +57,7 @@ See CREDITS.md for attributions.
 - FeralScream.wav
 - Railgun.wav
 - LikeAPro.wav
+- PlasmagunLaunch.wav
 - Carmack.ogg
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg

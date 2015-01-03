@@ -207,7 +207,7 @@ are licensed under CC-BY-SA 3.0.
 
 
 [Michael Baradari](apollo-music.de) for following sound effects:
-- [Projectile launches](http://opengameart.org/content/4-projectile-launches) (Railgun)
+- [Projectile launches](http://opengameart.org/content/4-projectile-launches) (Railgun and Plasmagun)
 - [Pain and death sounds](http://opengameart.org/content/11-male-human-paindeath-sounds) (Used for EliteSoldier)
 
 Both projectile launches and pain and death sounds are licensed  under CC-BY 3.0.

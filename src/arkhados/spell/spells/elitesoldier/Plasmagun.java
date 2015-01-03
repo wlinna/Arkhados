@@ -20,6 +20,7 @@ import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.characters.EliteSoldier;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
@@ -72,9 +73,11 @@ public class Plasmagun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                ChannelingSpellAction channel =
-                        new ChannelingSpellAction(spell, 3, 0.12f,
-                        new CastProjectileAction(spell, worldManager), true);
+                CastProjectileAction projectileAction = 
+                        new CastProjectileAction(spell, worldManager);
+                projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
+                ChannelingSpellAction channel = new ChannelingSpellAction(spell,
+                        3, 0.12f, projectileAction, true);
                 return channel;
             }
         };
