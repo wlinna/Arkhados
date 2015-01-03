@@ -15,13 +15,17 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
+import arkhados.ServerFogManager;
 import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
+import arkhados.characters.RockGolem;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
+import arkhados.messages.WorldEffectCommand;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
@@ -43,6 +47,7 @@ import java.util.List;
  * @author william
  */
 public class Toss extends Spell {
+
     {
         iconName = "Toss.png";
     }
@@ -105,8 +110,8 @@ class TossAction extends EntityAction {
     public boolean update(float tpf) {
         final CharacterPhysicsControl physicsControl =
                 spatial.getControl(CharacterPhysicsControl.class);
-        Vector3f hitDirection = physicsControl.calculateTargetDirection().normalize()
-                .multLocal(range);
+        Vector3f hitDirection = physicsControl.calculateTargetDirection()
+                .normalize().multLocal(range);
 
         physicsControl.setViewDirection(hitDirection);
 
@@ -118,10 +123,13 @@ class TossAction extends EntityAction {
                         .getControl(InfluenceInterfaceControl.class);
                 if (targetInfluenceControl == null) {
                     SpiritStonePhysicsControl stone =
-                            value.spatial.getControl(SpiritStonePhysicsControl.class);
+                            value.spatial
+                            .getControl(SpiritStonePhysicsControl.class);
                     if (stone != null) {
-                        int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
-                        if (value.spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeamId)) {
+                        int myTeamId = spatial
+                                .getUserData(UserDataStrings.TEAM_ID);
+                        if (value.spatial.getUserData(UserDataStrings.TEAM_ID)
+                                .equals(myTeamId)) {
                             return true;
                         }
                     }
@@ -165,14 +173,16 @@ class TossAction extends EntityAction {
         final MotionPath path = new MotionPath();
         path.addWayPoint(startLocation);
         path.addWayPoint(spatial.getLocalTranslation().add(finalLocation)
-                .divideLocal(2).setY(finalLocation.distance(startLocation) / 2f));
+                .divideLocal(2)
+                .setY(finalLocation.distance(startLocation) / 2f));
         path.addWayPoint(finalLocation);
 
         path.setPathSplineType(Spline.SplineType.CatmullRom);
         path.setCurveTension(0.75f);
 
         MotionEvent motionControl = new MotionEvent(target, path);
-        motionControl.setInitialDuration(finalLocation.distance(startLocation) / forwardSpeed);
+        motionControl.setInitialDuration(finalLocation
+                .distance(startLocation) / forwardSpeed);
         motionControl.setSpeed(1.6f);
 
         final SpiritStonePhysicsControl stonePhysics =
@@ -180,7 +190,8 @@ class TossAction extends EntityAction {
 
         MotionPathListener motionPathListener = new MotionPathListener() {
             @Override
-            public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+            public void onWayPointReach(MotionEvent motionControl,
+                    int wayPointIndex) {
                 if (wayPointIndex == path.getNbWayPoints() - 1) {
                     if (stonePhysics == null) {
                         target.getControl(CharacterPhysicsControl.class)
@@ -192,12 +203,13 @@ class TossAction extends EntityAction {
             }
 
             private void landingEffect() {
-                SplashAction splashAction =
-                        new SplashAction(20, 250, 0, DistanceScaling.CONSTANT, null);
+                SplashAction splashAction = new SplashAction(20, 250, 0,
+                        DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
                 splashAction.excludeSpatial(target);
-                splashAction.setCasterInterface(spatial.getControl(InfluenceInterfaceControl.class));
+                splashAction.setCasterInterface(spatial
+                        .getControl(InfluenceInterfaceControl.class));
                 splashAction.update(0f);
                 if (stonePhysics == null) {
                     InfluenceInterfaceControl targetInterface =
@@ -205,10 +217,19 @@ class TossAction extends EntityAction {
                     InfluenceInterfaceControl myInterface =
                             spatial.getControl(InfluenceInterfaceControl.class);
 
-                    CharacterInteraction.harm(myInterface, targetInterface, 150f, null, true);
+                    CharacterInteraction.harm(myInterface, targetInterface,
+                            150f, null, true);
                 } else {
                     target.getLocalTranslation().setY(10f);
                 }
+
+                ServerFogManager fogManager = spatial
+                        .getControl(EntityVariableControl.class).getAwareness()
+                        .getFogManager();
+
+                fogManager.addCommand(target,
+                        new WorldEffectCommand(RockGolem.WORLDEFFECT_EARTHQUAKE,
+                        target.getLocalTranslation()));
             }
         };
 
@@ -217,7 +238,8 @@ class TossAction extends EntityAction {
         motionControl.play();
 
         if (stonePhysics == null) {
-            target.getControl(CharacterPhysicsControl.class).switchToMotionCollisionMode();
+            target.getControl(CharacterPhysicsControl.class)
+                    .switchToMotionCollisionMode();
         }
     }
 }

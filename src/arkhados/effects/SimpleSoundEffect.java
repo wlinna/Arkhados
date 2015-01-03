@@ -26,6 +26,7 @@ import com.jme3.scene.Node;
  */
 public class SimpleSoundEffect implements WorldEffect {
     private final String path;
+    private float volume = 1f;
 
     public SimpleSoundEffect(String path) {
         this.path = path;
@@ -38,7 +39,11 @@ public class SimpleSoundEffect implements WorldEffect {
         sound.setLocalTranslation(location);
         sound.addControl(new TimedExistenceControl(sound.getAudioData().getDuration()));
         sound.setReverbEnabled(false);
-        sound.setVolume(1f);
+        sound.setVolume(volume);
         sound.play();
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
     }
 }

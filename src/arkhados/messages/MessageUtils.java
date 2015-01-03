@@ -89,6 +89,7 @@ public class MessageUtils {
         Serializer.registerClass(SetPlayersCharacterCommand.class);
         Serializer.registerClass(BattleStatisticsResponse.class);
         Serializer.registerClass(PlayerKillCommand.class);
+        Serializer.registerClass(WorldEffectCommand.class);        
         // </Other>
     }
 }

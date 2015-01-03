@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.EffectHandler;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
@@ -45,14 +46,20 @@ import java.util.List;
  */
 public class RockGolem extends AbstractNodeBuilder {
     public static final int ACTION_EARTHQUAKE = 0;
+    
+    public static int WORLDEFFECT_EARTHQUAKE;
 
     private final ClientHudManager clientHudManager;
 
     public RockGolem(ClientHudManager clientHudManager) {
         this.clientHudManager = clientHudManager;
         setEffectBox(new EffectBox());
-        getEffectBox().addActionEffect(ACTION_EARTHQUAKE, 
-                new SimpleSoundEffect("Effects/Sound/EarthQuake.wav"));
+        SimpleSoundEffect earthQuake =
+                new SimpleSoundEffect("Effects/Sound/EarthQuake.wav");
+        earthQuake.setVolume(1.5f);
+        getEffectBox().addActionEffect(ACTION_EARTHQUAKE, earthQuake);
+        
+        WORLDEFFECT_EARTHQUAKE = EffectHandler.addWorldEffect(earthQuake);
     }
 
     @Override

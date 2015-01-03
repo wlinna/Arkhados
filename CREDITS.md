@@ -173,7 +173,7 @@ licensed under CC0. Original work can be found from [freesound](http://freesound
 
 [Mike Koenig (SoundBible)](http://soundbible.com/tags-game.html) for [Shotgun reload sound](http://opengameart.org/content/shotgun-shoot-reload). One shotgun reload sound (with small modifications) is used for Elite Soldier's LikeAPro spell sound. Sound is licensed under CC-BY 3.0.
 
-[nthompson](http://freesound.org/people/nthompson/) for [bad explosion](http://freesound.org/people/nthompson/sounds/47252/). Bad explosion has been modified and is used as EarthQuake's sound effect. Bad explosion is licensed under CC0.
+[nthompson](http://freesound.org/people/nthompson/) for [bad explosion](http://freesound.org/people/nthompson/sounds/47252/). Bad explosion has been modified and is used as EarthQuake's and sound effect. Bad explosion is licensed under CC0.
 
 [Joe Reynolds – Professorlamp](jrtheories.webs.com) for music
 Carmack. Music is licensed under CC-BY 3.0. Original work can be found
