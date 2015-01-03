@@ -197,7 +197,7 @@
                     </effect>
                 </text>
                 <text style="nifty-label" text=""/>
-                <image align="center" valign="center" filename="Interface/Images/logo.gif" >
+                 <image align="center" valign="center" filename="Interface/Images/JoinIcon.png" >
                     <effect>
                         <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
                     </effect>

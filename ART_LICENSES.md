@@ -32,6 +32,7 @@ See CREDITS.md for attributions.
 ## CC-BY 3.0 ##
 - Background.png (Rendered from Rock Golem model and Elite Soldier)
 - Splash.png (Modification of Background)
+- JoinIcon.png
 - SpellBar.png
 - mage.blend and all its derivatives
 - EmberCircle.png and all its derivatives
