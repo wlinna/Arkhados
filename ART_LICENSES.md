@@ -30,7 +30,8 @@ See CREDITS.md for attributions.
 - All Rend-sounds
 
 ## CC-BY 3.0 ##
-- background.png (Rendered from Rock Golem model)
+- Background.png (Rendered from Rock Golem model and Elite Soldier)
+- Splash.png (Modification of Background)
 - SpellBar.png
 - mage.blend and all its derivatives
 - EmberCircle.png and all its derivatives

@@ -114,6 +114,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setInputDefaultSettings(settings);
         settings.setFrameRate(60);
         settings.setTitle("Arkhados Client");
+        settings.setSettingsDialogImage("Interface/Images/Splash.png");
         ClientMain app = new ClientMain();
         app.setSettings(settings);
         ClientSettings.setAppSettings(settings);
@@ -376,11 +377,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                                 "Firewalk.wav", "MagmaBash.wav",
                                 "MeteorBoom.wav", "PurifyingFlame.wav",
                                 "Shotgun.wav", "Rend1.wav", "Rend2.wav",
-                            "Rend3.wav", "RockGolemPain.wav", 
-                            "VenatorDeath.wav", "VenatorPain.wav",
-                            "EmberMageDeath.wav", "EmberMagePain.wav",
-                            "EliteSoldierDeath.wav", "EliteSoldierPain.wav",
-                            "DeepWounds.wav", "Petrify.wav", "Railgun.wav"});
+                                "Rend3.wav", "RockGolemPain.wav",
+                                "VenatorDeath.wav", "VenatorPain.wav",
+                                "EmberMageDeath.wav", "EmberMagePain.wav",
+                                "EliteSoldierDeath.wav", "EliteSoldierPain.wav",
+                                "DeepWounds.wav", "Petrify.wav", "Railgun.wav"});
                             nifty.gotoScreen("default_hud");
                             return null;
                         }
