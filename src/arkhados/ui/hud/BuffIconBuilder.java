@@ -23,20 +23,21 @@ import de.lessvoid.nifty.builder.TextBuilder;
  */
 public class BuffIconBuilder extends ImageBuilder {
 
-    public BuffIconBuilder(final String id, final String path) {
+    public BuffIconBuilder(final String id, String path) {
         super(id);
-        super.valignCenter();
-        super.alignCenter();
-        super.height("64px");
-        super.width("64px");
-        super.marginLeft("12px");
-        super.filename(path);
-        super.childLayoutOverlay();
-        super.text(new TextBuilder() {
+        valignCenter();
+        alignCenter();
+        height("64px");
+        width("64px");
+        marginLeft("12px");
+        filename(path);
+        childLayoutOverlay();
+        text(new TextBuilder() {
             {
                 super.id(id + "-counter");
-                super.text("");
-                super.style("nifty-label");
+                text("");
+                font("Interface/Fonts/Default.fnt");
+                color("#fff");
             }
         });
     }
