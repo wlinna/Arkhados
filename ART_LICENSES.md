@@ -14,6 +14,7 @@ See CREDITS.md for attributions.
 - feral_scream.png
 - rend.png
 - Toss.png
+- Incapacitate.png
 - FireballExplosion.wav
 - Shotgun.wav
 - Firewalk.wav

@@ -27,7 +27,11 @@ import com.jme3.scene.shape.Sphere;
  *
  * @author william
  */
-public class IncapacitateInformation extends BuffInformation {
+public class IncapacitateInformation extends BuffInformation 
+{
+    {
+        setIconPath("Interface/Images/BuffIcons/Incapacitate.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
