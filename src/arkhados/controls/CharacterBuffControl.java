@@ -25,6 +25,7 @@ import com.jme3.scene.control.AbstractControl;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,8 @@ import java.util.logging.Logger;
  */
 public class CharacterBuffControl extends AbstractControl {
 
-    private static final Logger logger = Logger.getLogger(CharacterBuffControl.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(CharacterBuffControl.class.getName());
     private HashMap<Integer, BuffEffect> buffs = new HashMap<>();
     private HashMap<Integer, Element> buffIcons = new HashMap<>();
     private ClientHudManager hudManager = null;
@@ -44,18 +46,21 @@ public class CharacterBuffControl extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        
+
         if (spatial == null) {
             for (BuffEffect buffEffect : buffs.values()) {
                 buffEffect.destroy();
             }
         }
     }
-  
+
     public void addBuff(int buffId, int buffTypeId, float duration) {
-        final BuffInformation buffInfo = BuffInformation.getBuffInformation(buffTypeId);
+        final BuffInformation buffInfo =
+                BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
-            logger.log(Level.WARNING, "No buffinfo for type {0} . BuffId is {1}", new Object[]{buffTypeId, buffId});
+            logger.log(Level.WARNING,
+                    "No buffinfo for type {0} . BuffId is {1}",
+                    new Object[]{buffTypeId, buffId});
             return;
         }
         final BuffEffect buff = buffInfo.createBuffEffect(this, duration);
@@ -73,8 +78,8 @@ public class CharacterBuffControl extends AbstractControl {
             iconPath = "Interface/Images/SpellIcons/placeholder.png";
         }
 
-        final Element icon = new BuffIconBuilder("buff-" + buffId, iconPath)
-                .build(hudManager.getNifty(), hudManager.getScreen(), buffPanel);
+        Element icon = new BuffIconBuilder("buff-" + buffId, iconPath).build(
+                hudManager.getNifty(), hudManager.getScreen(), buffPanel);
 
         buffIcons.put(buffId, icon);
     }
@@ -87,7 +92,8 @@ public class CharacterBuffControl extends AbstractControl {
             buffEffect.destroy();
         } else {
             // FIXME: This seems to happen often!
-            logger.log(Level.WARNING, "buffEffect with id {0} NOT IN buffs or IS null!", buffId);
+            logger.log(Level.WARNING,
+                    "buffEffect with id {0} NOT IN buffs or IS null!", buffId);
         }
 
         if (hudManager == null) {
@@ -97,7 +103,8 @@ public class CharacterBuffControl extends AbstractControl {
         Element buffIcon = buffIcons.get(buffId);
         // FIXME: NullPointerException here. This is only workaround.
         if (buffIcon != null) {
-            hudManager.getNifty().removeElement(hudManager.getScreen(), buffIcon);
+            hudManager.getNifty()
+                    .removeElement(hudManager.getScreen(), buffIcon);
         }
 
         buffIcons.remove(buffId);
@@ -114,7 +121,21 @@ public class CharacterBuffControl extends AbstractControl {
             buffEffect.update(tpf);
 
             float cooldown = buffEffect.getTimeLeft();
-            Element cooldownText = buffIcons.get(entry.getKey()).getElements().get(0);
+            // FIXME: java.lang.IndexOutOfBoundsException
+            // Workaroud:
+            if (entry.getKey() >= buffIcons.size()) {
+                logger.warning("entry.getKey >= buffIcons.size()");
+                continue;
+            }
+
+            List<Element> cooldownChildren =
+                    buffIcons.get(entry.getKey()).getElements();
+            if (cooldownChildren.isEmpty()) {
+                logger.warning("cooldown element is empty");
+                continue;
+            }
+
+            Element cooldownText = cooldownChildren.get(0);
             if (cooldown > 99) {
             } else if (cooldown > 3) {
                 cooldownText.getRenderer(TextRenderer.class)
@@ -134,6 +155,6 @@ public class CharacterBuffControl extends AbstractControl {
 
     void setHudManager(ClientHudManager hudManager) {
         this.hudManager = hudManager;
-        buffPanel = hudManager.getScreen().findElementByName("panel_buffs");      
-    }        
+        buffPanel = hudManager.getScreen().findElementByName("panel_buffs");
+    }
 }
