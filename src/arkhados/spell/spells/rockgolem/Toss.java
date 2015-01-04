@@ -80,9 +80,9 @@ class CastTossAction extends EntityAction {
     private Spell spell;
     private float range;
 
-    public CastTossAction(Spell spell, float chargeRange) {
+    public CastTossAction(Spell spell, float throwRange) {
         this.spell = spell;
-        this.range = chargeRange;
+        this.range = throwRange;
     }
 
     @Override
@@ -146,7 +146,7 @@ class TossAction extends EntityAction {
 
         List<SpatialDistancePair> targets = Selector.coneSelect(
                 new ArrayList<SpatialDistancePair>(), predicate,
-                spatial.getLocalTranslation(), hitDirection, range, 45f);
+                spatial.getLocalTranslation(), hitDirection, range, 90f);
 
         Spatial closest = null;
         float smallestDistance = 9999f;
