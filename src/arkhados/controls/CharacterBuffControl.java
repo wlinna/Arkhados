@@ -122,11 +122,6 @@ public class CharacterBuffControl extends AbstractControl {
             float cooldown = buffEffect.getTimeLeft();
             // FIXME: java.lang.IndexOutOfBoundsException
             // Workaroud:
-            if (entry.getKey() >= buffIcons.size()) {
-                logger.warning("entry.getKey >= buffIcons.size()");
-                continue;
-            }
-
             List<Element> cooldownChildren =
                     buffIcons.get(entry.getKey()).getElements();
             if (cooldownChildren.isEmpty()) {
