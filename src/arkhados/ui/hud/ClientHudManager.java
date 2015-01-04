@@ -192,7 +192,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         for (Iterator<Element> it = statisticsPanels.iterator(); it.hasNext();) {
             Element element = it.next();
             // TODO: Unregister element ids here
-            nifty.removeElement(screen, element);
+            element.markForRemoval();
         }
 
         statisticsPanels.clear();
@@ -417,7 +417,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         Iterator<Element> it = buffIcons.getElements().iterator();
         for (; it.hasNext();) {
             Element element = it.next();
-            nifty.removeElement(screen, element);
+            element.markForRemoval();
         }
     }
 
@@ -456,7 +456,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                 .getElements().iterator(); it.hasNext();) {
 
             Element child = it.next();
-            nifty.removeElement(screen, child);
+            child.markForRemoval();
         }
     }
 

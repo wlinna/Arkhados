@@ -103,8 +103,7 @@ public class CharacterBuffControl extends AbstractControl {
         Element buffIcon = buffIcons.get(buffId);
         // FIXME: NullPointerException here. This is only workaround.
         if (buffIcon != null) {
-            hudManager.getNifty()
-                    .removeElement(hudManager.getScreen(), buffIcon);
+            buffIcon.markForRemoval();            
         }
 
         buffIcons.remove(buffId);
