@@ -121,8 +121,13 @@ following Spell icon collection pages:
 - [3](http://opengameart.org/content/spell-icon-collection-part-3)
 - [4](http://opengameart.org/content/spell-icon-collection-part-4)
 
-[Lorc](http://lorcblog.blogspot.com/) for [Crossed axes icon](http://game-icons.net/lorc/originals/crossed-axes.html).
-Crossed axes icon is used in Join Game -menu. Icon is licensed under CC-BY 3.0
+[Lorc](http://lorcblog.blogspot.com/) for
+- [Crossed axes](http://game-icons.net/lorc/originals/crossed-axes.html).
+Crossed axes icon is used in Join Game -menu.
+- [Snail](http://game-icons.net/lorc/originals/snail.html)
+Snail is used as slow buff icon
+
+These Lorc's icons are licensed under CC-BY 3.0.
 
 Skorpio for LavaArena's tileset. LavaArena's tileset uses Skorpio's 3D
 Dungeon Tileset that is made for OpenDungeons. 3D Dungeon Tileset is

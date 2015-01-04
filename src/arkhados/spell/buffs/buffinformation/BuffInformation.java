@@ -24,12 +24,14 @@ import java.util.HashMap;
  *
  * @author william
  */
-public abstract class BuffInformation {    
+public abstract class BuffInformation {
+
     protected static AssetManager assetManager = null;
-    
     private static HashMap<Integer, BuffInformation> Buffs = new HashMap<>();
 
     public static void initBuffs() {
+        BuffInformation slow = new SlowInformation();
+        addBuff(BuffTypeIds.SLOW, slow);
 
         BuffInformation purifyingFlame = new PurifyingFlameInformation();
         addBuff(BuffTypeIds.PURIFYING_FLAME, purifyingFlame);
@@ -48,13 +50,13 @@ public abstract class BuffInformation {
 
         BuffInformation incapacitate = new IncapacitateInformation();
         addBuff(BuffTypeIds.INCAPACITATE, incapacitate);
-        
+
         BuffInformation likeAPro = new LikeAProInformation();
         addBuff(BuffTypeIds.LIKE_A_PRO, likeAPro);
-        
+
         PetrifyInformation petrify = new PetrifyInformation();
         addBuff(BuffTypeIds.PETRIFY, petrify);
-        
+
         MineralArmorInformation mineralArmor = new MineralArmorInformation();
         addBuff(BuffTypeIds.MINERAL_ARMOR, mineralArmor);
     }
@@ -63,7 +65,7 @@ public abstract class BuffInformation {
         final BuffInformation buffInformation = Buffs.get(typeId);
         return buffInformation;
     }
-    
+
     private static void addBuff(int id, BuffInformation buffInfo) {
         Buffs.put(id, buffInfo);
     }
@@ -72,7 +74,8 @@ public abstract class BuffInformation {
     private float duration;
     private String iconPath = null;
 
-    public abstract BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration);
+    public abstract BuffEffect createBuffEffect(
+            CharacterBuffControl buffControl, float duration);
 
     public float getDuration() {
         return duration;

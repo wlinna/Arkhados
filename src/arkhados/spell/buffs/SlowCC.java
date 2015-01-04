@@ -15,6 +15,7 @@
 package arkhados.spell.buffs;
 
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
 
@@ -23,6 +24,9 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SlowCC extends CrowdControlBuff {
+    {
+        setTypeId(BuffTypeIds.SLOW);
+    }
 
     private float slowFactor;
     private Spatial spatial;

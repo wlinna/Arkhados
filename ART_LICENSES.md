@@ -56,6 +56,7 @@ See CREDITS.md for attributions.
 - EarthQuake.png (rendered from RockGolem)
 - SealingBoulder.png
 - MineralArmor.png
+- Slow.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav
