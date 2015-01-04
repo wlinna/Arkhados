@@ -172,6 +172,13 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
 
         hpBars.clear();
+        
+        for (BitmapText playerName : playerNames) {
+            playerName.removeFromParent();
+        }
+        
+        playerNames.clear();
+        
         clearAllButHpBars();
     }
 
@@ -262,6 +269,10 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             BitmapText hpBar = hpBars.get(index);
             hpBar.removeFromParent();
             hpBars.remove(index);
+            
+            BitmapText playerName = playerNames.get(index);
+            playerName.removeFromParent();
+            playerNames.remove(index);
 
             characters.remove(index);
         }
