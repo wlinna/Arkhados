@@ -40,10 +40,12 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -76,6 +78,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private boolean hudCreated = false;
     private HashMap<Integer, Float> cooldowns = null;
     private List<PlayerRoundStats> latestRoundStatsList = null;
+    private GameMessageHandler messageHandler = new GameMessageHandler();
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -94,19 +97,24 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         super.initialize(stateManager, app);
         cam = app.getCamera();
         this.stateManager = stateManager;
+        messageHandler.initialize(nifty);
+        messageHandler.createRows(10);
     }
 
     @Override
     public void update(float tpf) {
         if (playerCharacter == null) {
-            UserCommandManager userCommandManager = stateManager.getState(UserCommandManager.class);
+            UserCommandManager userCommandManager =
+                    stateManager.getState(UserCommandManager.class);
             playerCharacter = userCommandManager.getCharacter();
             if (playerCharacter != null && !hudCreated) {
                 loadSpellIcons();
                 hudCreated = true;
-                cooldowns = playerCharacter.getControl(SpellCastControl.class).getCooldowns();
+                cooldowns = playerCharacter.getControl(SpellCastControl.class)
+                        .getCooldowns();
             } else if (playerCharacter != null && hudCreated) {
-                playerCharacter.getControl(SpellCastControl.class).setCooldowns(cooldowns);
+                playerCharacter.getControl(SpellCastControl.class)
+                        .setCooldowns(cooldowns);
             }
         } else {
             updateSpellIcons();
@@ -152,7 +160,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         if (seconds != currentSeconds) {
             currentSeconds = seconds;
             Element textElement = screen.findElementByName("text_countdown");
-            textElement.getRenderer(TextRenderer.class).setText(Integer.toString(seconds));
+            textElement.getRenderer(TextRenderer.class)
+                    .setText(Integer.toString(seconds));
         }
     }
 
@@ -258,7 +267,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
 
         if (spatial == playerCharacter) {
-            SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
+            SpellCastControl castControl =
+                    playerCharacter.getControl(SpellCastControl.class);
             playerCharacter.removeControl(castControl);
             playerCharacter = null;
         }
@@ -342,7 +352,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
     private void addSpellIcon(int key) {
         Element bottomPanel = screen.findElementByName("panel_spells");
-        SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
+        SpellCastControl castControl =
+                playerCharacter.getControl(SpellCastControl.class);
         Spell spell = castControl.getKeySpellNameMapping(key);
 
         if (spell == null) {
@@ -407,7 +418,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         return screen;
     }
 
-    public void setLatestRoundStatsList(List<PlayerRoundStats> latestRoundStatsList) {
+    public void setLatestRoundStatsList(
+            List<PlayerRoundStats> latestRoundStatsList) {
         this.latestRoundStatsList = latestRoundStatsList;
         Element statisticsLayer = screen.findElementByName("layer_statistics");
 
@@ -422,6 +434,10 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
 
         playerCharacter.getControl(CharacterHudControl.class).setEnabled(false);
+    }
+    
+    public void addMessage(String message) {
+        messageHandler.addMessage(message, Color.WHITE);
     }
 
     private void removeChildren(Element element) {

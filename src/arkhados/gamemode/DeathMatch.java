@@ -52,6 +52,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -60,6 +61,16 @@ import java.util.logging.Logger;
  * @author william
  */
 public class DeathMatch extends GameMode implements CommandHandler {
+    private static final Map<Integer, String> spreeMessages = new HashMap<>();
+    static {
+        spreeMessages.put(3, "%s is on killing spree!");
+        spreeMessages.put(4, "%s scored Mega Kill!");
+        spreeMessages.put(5, "%s is Dominating!");
+        spreeMessages.put(6, "%s is Owning!");
+        spreeMessages.put(7, "%s is causing major Mayhem!");
+        spreeMessages.put(8, "%s just isn't going to stop! CARNAGE");
+        spreeMessages.put(9, "%s is GODLIKE!");
+    }
 
     private static final Logger logger =
             Logger.getLogger(DeathMatch.class.getName());
@@ -212,6 +223,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         if (killersPlayerId > -1) {
             killingSpree = killingSprees.get(killersPlayerId) + 1;
             killingSprees.put(killersPlayerId, killingSpree);
+            killingSprees.put(playerId, 0);
         }
 
         sender.addCommand(
@@ -231,10 +243,43 @@ public class DeathMatch extends GameMode implements CommandHandler {
         killingSprees.put(killersId, killingSpree);
         int myPlayerId =
                 stateManager.getState(UserCommandManager.class).getPlayerId();
+        
+        String playerName = getPlayerName(playerId);
+        String killerName = getPlayerName(killersId);
+        
+        killedMessage(playerName, killerName);
+        killingSpreeMessage(killerName, killingSpree);        
 
         if (playerId == myPlayerId) {
             handleOwnDeath();
         }
+    }
+    
+    private void killedMessage(String playerName, String killerName) {
+        String genetive = playerName.endsWith("s")
+                ? playerName + "'"
+                : playerName + "'s";
+        String message = String.format("%s just pwned %s head",
+                killerName, genetive);
+        stateManager.getState(ClientHudManager.class).addMessage(message);
+    }
+    
+    private void killingSpreeMessage(String playerName, int spree) {
+        if (spree < 3) {
+            return;
+        } else if (spree > 9) {
+            spree = 9;
+        }
+        
+        String message = String.format(spreeMessages.get(spree), playerName);
+        stateManager.getState(ClientHudManager.class).addMessage(message);
+
+    }
+    
+    private String getPlayerName(int id) {
+        return id < 0
+                ? "Environment" 
+                : PlayerData.getStringData(id, PlayerDataStrings.NAME);        
     }
 
     private void handleOwnDeath() {
@@ -250,7 +295,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                         stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButHpBars();
                 hudManager.showRoundStatistics();
-                heroSelectionLayer.showWithoutEffects();
+                heroSelectionLayer.showWithoutEffects();                
                 return null;
             }
         });

@@ -351,7 +351,12 @@
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
                 <panel id="panel_top" height="0px" valign="top"></panel>
                 <panel id="middle" height="*" valign="top" childLayout="horizontal">
-                    <panel id="panel_left" width="45px" height="*" align="left"></panel>
+                    <panel id="panel_left" width="450px" height="*" align="left" childLayout="vertical">
+                        <panel height="40%" align="left"></panel>
+                        <panel id="messages" marginLeft="5px" width="450px" height="*" align="left" childLayout="vertical">                            
+                        </panel>
+                        
+                    </panel>
                     <panel id="game_area" width="*" height="*" align="center"></panel>
                     <panel id="panel_right" width="100px" height="*" childLayout="vertical"
                                margin="20px,20px,0px,0px">
