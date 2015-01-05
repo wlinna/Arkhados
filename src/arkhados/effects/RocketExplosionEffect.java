@@ -30,15 +30,18 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class RocketExplosionEffect implements WorldEffect{
+public class RocketExplosionEffect implements WorldEffect {
 
-    public RocketExplosionEffect() {        
+    public RocketExplosionEffect() {
     }
 
     private ParticleEmitter createSmokePuff() {
-        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material material = new Material(Globals.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        material.setTexture("Texture", Globals.assetManager.loadTexture("Effects/flame_alpha.png"));
+        ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
+                ParticleMesh.Type.Triangle, 20);
+        Material material = new Material(Globals.assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        material.setTexture("Texture",
+                Globals.assetManager.loadTexture("Effects/flame_alpha.png"));
         material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         smokePuff.setMaterial(material);
         smokePuff.setImagesX(2);
@@ -47,7 +50,8 @@ public class RocketExplosionEffect implements WorldEffect{
         smokePuff.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.3f, 0.3f));
         smokePuff.setEndColor(new ColorRGBA(0.3f, 0.3f, 0.3f, 0.1f));
 
-        smokePuff.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
+        smokePuff.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
         smokePuff.getParticleInfluencer().setVelocityVariation(1f);
 
         smokePuff.setStartSize(8.0f);
@@ -65,10 +69,13 @@ public class RocketExplosionEffect implements WorldEffect{
     }
 
     private ParticleEmitter createFire() {
-        final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(Globals.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", Globals.assetManager.loadTexture("Effects/flame.png"));
-        fire.setMaterial(materialRed);
+        ParticleEmitter fire = new ParticleEmitter("fire-emitter",
+                ParticleMesh.Type.Triangle, 200);
+        Material material = new Material(Globals.assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        material.setTexture("Texture",
+                Globals.assetManager.loadTexture("Effects/flame.png"));
+        fire.setMaterial(material);
         fire.setImagesX(2);
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
@@ -82,37 +89,39 @@ public class RocketExplosionEffect implements WorldEffect{
         fire.setNumParticles(120);
         fire.setStartSize(7.50f);
         fire.setEndSize(25f);
-        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(45.0f));
+        fire.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(45.0f));
         fire.getParticleInfluencer().setVelocityVariation(1f);
         return fire;
     }
 
     @Override
     public void execute(Node root, Vector3f location, String parameter) {
-        final ParticleEmitter fire = this.createFire();
-        final ParticleEmitter smoke = this.createSmokePuff();
-        final Node explosion = new Node("explosion");
-        
-        AudioNode sound = new AudioNode(Globals.assetManager, "Effects/Sound/FireballExplosion.wav");
+        ParticleEmitter fire = this.createFire();
+        ParticleEmitter smoke = this.createSmokePuff();
+        Node explosion = new Node("explosion");
+
+        AudioNode sound = new AudioNode(Globals.assetManager,
+                "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
 
         explosion.attachChild(fire);
         explosion.attachChild(smoke);
-        explosion.attachChild(sound);        
-        
+        explosion.attachChild(sound);
+
         root.attachChild(explosion);
         explosion.setLocalTranslation(location);
-        
+
         explosion.addControl(new TimedExistenceControl(5f));
-        
+
         fire.emitAllParticles();
         smoke.emitAllParticles();
-        
+
         fire.setParticlesPerSec(0);
         smoke.setParticlesPerSec(0);
-        
+
         sound.setVolume(5f);
         sound.play();
     }

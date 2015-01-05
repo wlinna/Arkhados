@@ -16,6 +16,7 @@ package arkhados.spell;
 
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
+import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
 import arkhados.controls.TimedExistenceControl;
@@ -30,50 +31,53 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
-
 public class PelletBuilder extends AbstractNodeBuilder {
+
     private float damage;
 
     public PelletBuilder(float damage) {
         this.damage = damage;
-    }            
-
+    }
+    
     @Override
     public Node build(Object location) {
-        final Sphere sphere = new Sphere(8, 8, 0.3f);
-        
-        final Geometry projectileGeom = new Geometry("projectile-geom", sphere);
-        final Node node = new Node("projectile");
+        Sphere sphere = new Sphere(8, 8, 0.3f);
+
+        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+        Node node = new Node("projectile");
         node.setLocalTranslation((Vector3f) location);
         node.attachChild(projectileGeom);
-        final Material material = new Material(assetManager,
+        Material material = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 220f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, this.damage);
+        node.setUserData(UserDataStrings.DAMAGE, damage);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-        if (AbstractNodeBuilder.worldManager.isClient()) {
-            // TODO: Enable these later to add removalAction
-            //            node.addControl(new EntityEventControl());
+        if (worldManager.isClient()) {
+            node.addControl(new EntityEventControl());
             /**
              * Here we specify what happens on client side when pellet is
              * removed. In this case we want explosion effect.
              */
-            //            final PelletRemovalAction removalAction = new PelletRemovalAction(assetManager);
-            //            removalAction.setSmokeTrail(trail);
-            //            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
+            PelletRemovalAction removalAction =
+                    new PelletRemovalAction(assetManager);
+            removalAction.setPellet(node);
+            node.getControl(EntityEventControl.class)
+                    .setOnRemoval(removalAction);
         }
         SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (Float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -84,70 +88,111 @@ public class PelletBuilder extends AbstractNodeBuilder {
         /**
          * Add collision with characters
          */
-        final GhostControl collision = new GhostControl(collisionShape);
+        GhostControl collision = new GhostControl(collisionShape);
         collision.setCollisionGroup(CollisionGroups.PROJECTILES);
         collision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         node.addControl(collision);
         node.addControl(physicsBody);
         node.addControl(new ProjectileControl());
-        final SpellBuffControl buffControl = new SpellBuffControl();
+        SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
         return node;
     }
 }
+
 class PelletRemovalAction implements RemovalEventAction {
 
-    private ParticleEmitter whiteTrail;
     private AssetManager assetManager;
+    private Spatial pellet;
 
     public PelletRemovalAction(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
     }
 
-    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
-        this.whiteTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(this.whiteTrail);
-        this.whiteTrail.setLocalTranslation(worldTranslation);
-        this.whiteTrail.addControl(new TimedExistenceControl(0.5F));
+//    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
+//        whiteTrail.setParticlesPerSec(0);
+//        worldRoot.attachChild(this.whiteTrail);
+//        whiteTrail.setLocalTranslation(worldTranslation);
+//        whiteTrail.addControl(new TimedExistenceControl(0.5F));
+//    }
+    private void createSmallExplosion(Node root, Vector3f location) {
+        ParticleEmitter fire = new ParticleEmitter("shotgun-explosion",
+                ParticleMesh.Type.Triangle, 20);
+
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        material.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
+        fire.setMaterial(material);
+        fire.setImagesX(2);
+        fire.setImagesY(2);
+        fire.setSelectRandomImage(true);
+        fire.setGravity(Vector3f.ZERO);
+
+        fire.setRandomAngle(true);
+
+        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
+        fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
+        fire.setLowLife(0.1f);
+        fire.setHighLife(0.3f);
+        fire.setNumParticles(100);
+        fire.setStartSize(0.50f);
+        fire.setEndSize(1.0f);
+        fire.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_X.mult(1.0f));
+        fire.getParticleInfluencer().setVelocityVariation(6f);
+
+        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 0.2f));
+        fire.setParticlesPerSec(0f);
+
+        root.attachChild(fire);
+        fire.setLocalTranslation(location);
+        fire.emitAllParticles();
+        fire.addControl(new TimedExistenceControl(1f));
     }
 
-    private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
-        final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
+    private void createSmokePuff(Node root, Vector3f location) {
+        ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(assetManager,
+        Material material = new Material(assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", 
-                assetManager.loadTexture("Effects/flame.png"));
-        smokePuff.setMaterial(materialGray);
+        material.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame_alpha.png"));
+        material.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
+        smokePuff.setMaterial(material);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
         smokePuff.setSelectRandomImage(true);
-        smokePuff.setStartColor(new ColorRGBA(0.5F, 0.5F, 0.5F, 0.2F));
-        smokePuff.setStartColor(new ColorRGBA(0.5F, 0.5F, 0.5F, 0.1F));
+        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.2f));
+        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
         smokePuff.getParticleInfluencer()
-                .setInitialVelocity(Vector3f.UNIT_X.mult(5.0F));
-        smokePuff.getParticleInfluencer().setVelocityVariation(1.0F);
-        smokePuff.setStartSize(2.0F);
-        smokePuff.setEndSize(6.0F);
+                .setInitialVelocity(Vector3f.UNIT_X.mult(5f));
+        smokePuff.getParticleInfluencer().setVelocityVariation(1f);
+        smokePuff.setStartSize(2f);
+        smokePuff.setEndSize(6f);
         smokePuff.setGravity(Vector3f.ZERO);
-        smokePuff.setLowLife(0.75F);
-        smokePuff.setHighLife(1.0F);
-        smokePuff.setParticlesPerSec(0);
+        smokePuff.setLowLife(0.75f);
+        smokePuff.setHighLife(1f);
+        smokePuff.setParticlesPerSec(0f);
         smokePuff.setRandomAngle(true);
-        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4.0F));
-        worldRoot.attachChild(smokePuff);
-        smokePuff.setLocalTranslation(worldTranslation);
+        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4f));
+
+        root.attachChild(smokePuff);
+        smokePuff.setLocalTranslation(location);
         smokePuff.emitAllParticles();
+        smokePuff.addControl(new TimedExistenceControl(1f));
     }
 
     @Override
     public void exec(WorldManager worldManager, int reason) {
-        //        this.leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-        //        this.createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
+        Vector3f worldTranslation = pellet.getWorldTranslation();
+        createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
+        createSmallExplosion(worldManager.getWorldRoot(), worldTranslation);
     }
 
-    public void setSmokeTrail(ParticleEmitter smoke) {
-        this.whiteTrail = smoke;
+    public void setPellet(Spatial pellet) {
+        this.pellet = pellet;
     }
 }
