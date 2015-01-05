@@ -19,6 +19,7 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.characters.EliteSoldier;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SpellBuffControl;
@@ -73,6 +74,7 @@ public class RocketLauncher extends Spell {
             public EntityAction newAction(Node caster, Vector3f location) {
                 CastProjectileAction castProjectile =
                         new CastProjectileAction(spell, worldManager);
+                castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
                 return castProjectile;
             }
         };

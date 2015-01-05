@@ -3,7 +3,7 @@
 Note: Most of the assets are done by artists that are not part of the project.
 See CREDITS.md for attributions.
 
-## CC0 (Public Domain) ##
+## CC0 or Public Domain ##
 
 - circle.blend and all its derivatives
 - EmberCircleAlphaMap.png
@@ -24,6 +24,7 @@ See CREDITS.md for attributions.
 - DeepWounds.wav
 - EarthQuake.wav
 - SurvivalInstinct.wav
+- RocketLauncher.wav
 - All Wall related files
 - All SpiritStone related files
 - VenatorDeath.wav

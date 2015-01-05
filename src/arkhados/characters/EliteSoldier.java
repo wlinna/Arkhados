@@ -59,6 +59,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
     public static final int ACTION_RAILGUN = 2;
     public static final int ACTION_LIKE_A_PRO = 3;
     public static final int ACTION_PLASMAGUN = 4;
+    public static final int ACTION_ROCKET_LAUNCHER = 5;
     private ClientHudManager clientHudManager;
 
     public EliteSoldier(ClientHudManager clientHudManager) {
@@ -74,6 +75,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
                 new SimpleSoundEffect("Effects/Sound/LikeAPro.wav"));
         getEffectBox().addActionEffect(ACTION_PLASMAGUN,
                 new SimpleSoundEffect("Effects/Sound/PlasmagunLaunch.wav"));
+        getEffectBox().addActionEffect(ACTION_ROCKET_LAUNCHER,
+                new SimpleSoundEffect("Effects/Sound/RocketLauncher.wav"));
     }
 
     @Override

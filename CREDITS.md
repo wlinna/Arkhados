@@ -187,6 +187,8 @@ licensed under CC0. Original work can be found from [freesound](http://freesound
 Awake The Beast is used as Venator's SurvivalInstinct spell sound. Awake The Beast
 is licensed under CC0.
 
+KibblesBob for [Missle Launch](http://soundbible.com/1794-Missle-Launch.html). Missle Launch was modified little bit and used as RocketLauncher sound. Missle Launch is in Public Domain.
+
 [Joe Reynolds – Professorlamp](jrtheories.webs.com) for music
 Carmack. Music is licensed under CC-BY 3.0. Original work can be found
 from [OGA](http://opengameart.org/content/carmack)
