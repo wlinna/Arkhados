@@ -87,7 +87,7 @@ class CastEarthQuakeAction extends EntityAction {
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
         buffs.add(incapacitate);
 
-        final float splashRadius = 20f;
+        final float splashRadius = 25f;
         
         SplashAction splash = new SplashAction(splashRadius, 100f, 0f,
                 DistanceScaling.CONSTANT, buffs);
