@@ -12,7 +12,6 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
@@ -38,6 +37,7 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -46,10 +46,11 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
 /**
- * EliteSoldiers's RocketLauncher (E) spell. Projectile has moderate speed and deals
- * high damage and small splash damage. Has big knockback effect on hit.
+ * EliteSoldiers's RocketLauncher (E) spell. Projectile has moderate speed and
+ * deals high damage and small splash damage. Has big knockback effect on hit.
  */
 public class RocketLauncher extends Spell {
+
     {
         iconName = "rocket_launcher.png";
         setMoveTowardsTarget(false);
@@ -67,10 +68,10 @@ public class RocketLauncher extends Spell {
         final RocketLauncher spell = new RocketLauncher("Rocket Launcher",
                 cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {            
+        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                CastProjectileAction castProjectile = 
+                CastProjectileAction castProjectile =
                         new CastProjectileAction(spell, worldManager);
                 return castProjectile;
             }
@@ -87,16 +88,18 @@ class RocketBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createSmokeEmitter() {
         ParticleEmitter smoke = new ParticleEmitter("smoke-emitter",
                 ParticleMesh.Type.Triangle, 300);
-        Material materialGray = new Material(assetManager,
+        Material material = new Material(assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
-        smoke.setMaterial(materialGray);
+        material.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame_alpha.png"));
+        material.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
+        smoke.setMaterial(material);
         smoke.setImagesX(2);
         smoke.setImagesY(2);
         smoke.setSelectRandomImage(true);
-        smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
-        smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
+        smoke.setStartColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 1.0f));
+        smoke.setStartColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 0.1f));
         smoke.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
 //        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
 //        fire.getParticleInfluencer().setVelocityVariation(0.5f);
@@ -109,6 +112,19 @@ class RocketBuilder extends AbstractNodeBuilder {
 
         smoke.setRandomAngle(true);
         return smoke;
+    }
+
+    private ParticleEmitter createSmokePuff() {
+        ParticleEmitter smokePuff = createSmokeEmitter();
+        smokePuff.setParticlesPerSec(0);
+
+        smokePuff.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_Y.mult(15f));
+        smokePuff.getParticleInfluencer().setVelocityVariation(0.6f);
+        
+        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 3f));
+        
+        return smokePuff;
     }
 
     private ParticleEmitter createFireEmitter() {
@@ -164,8 +180,14 @@ class RocketBuilder extends AbstractNodeBuilder {
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            final ParticleEmitter smoke = createSmokeEmitter();
-            node.attachChild(smoke);
+            ParticleEmitter smokeTrail = createSmokeEmitter();
+            node.attachChild(smokeTrail);
+
+            ParticleEmitter smokePuff = createSmokePuff();
+            worldManager.getWorldRoot().attachChild(smokePuff);
+            smokePuff.setLocalTranslation((Vector3f) location);
+            smokePuff.addControl(new TimedExistenceControl(5f));
+            smokePuff.emitAllParticles();
 
             node.addControl(new EntityEventControl());
             /**
@@ -175,7 +197,7 @@ class RocketBuilder extends AbstractNodeBuilder {
             RocketRemovalAction removalAction =
                     new RocketRemovalAction(assetManager);
             removalAction.setFireEmitter(fire);
-            removalAction.setSmokeTrail(smoke);
+            removalAction.setSmokeTrail(smokeTrail);
 
 
             node.getControl(EntityEventControl.class)
@@ -183,7 +205,7 @@ class RocketBuilder extends AbstractNodeBuilder {
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(6f);
-        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, 
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserDataStrings.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
@@ -201,12 +223,12 @@ class RocketBuilder extends AbstractNodeBuilder {
         node.addControl(physicsBody);
 
         ProjectileControl projectileControl = new ProjectileControl();
-        
+
         SplashAction splash =
                 new SplashAction(30f, 100f, DistanceScaling.LINEAR, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
-        
+
         node.addControl(projectileControl);
         final SpellBuffControl buffControl = new SpellBuffControl();
         node.addControl(buffControl);
@@ -244,23 +266,25 @@ class RocketRemovalAction implements RemovalEventAction {
     private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(assetManager,
+        Material material = new Material(assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
-        smokePuff.setMaterial(materialGray);
+        material.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame_alpha.png"));
+        material.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
+        smokePuff.setMaterial(material);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
         smokePuff.setSelectRandomImage(true);
-        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.2f));
-        smokePuff.setEndColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
+        smokePuff.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.3f, 0.3f));
+        smokePuff.setEndColor(new ColorRGBA(0.3f, 0.3f, 0.3f, 0.1f));
 
         smokePuff.getParticleInfluencer()
                 .setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
         smokePuff.getParticleInfluencer().setVelocityVariation(1f);
 
-        smokePuff.setStartSize(8.0f);
-        smokePuff.setEndSize(30.0f);
+        smokePuff.setStartSize(8f);
+        smokePuff.setEndSize(30f);
         smokePuff.setGravity(Vector3f.ZERO);
         smokePuff.setLowLife(1.75f);
         smokePuff.setHighLife(6f);
@@ -287,7 +311,7 @@ class RocketRemovalAction implements RemovalEventAction {
         node.setLocalTranslation(worldTranslation);
         fire.setLocalTranslation(Vector3f.ZERO);
         worldManager.getWorldRoot().attachChild(node);
-        node.addControl(new TimedExistenceControl(1f));
+        node.addControl(new TimedExistenceControl(6f));
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
@@ -313,4 +337,3 @@ class RocketRemovalAction implements RemovalEventAction {
         this.smokeTrail = smoke;
     }
 }
-

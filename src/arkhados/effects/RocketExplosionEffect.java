@@ -21,6 +21,7 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -36,14 +37,15 @@ public class RocketExplosionEffect implements WorldEffect{
 
     private ParticleEmitter createSmokePuff() {
         final ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff", ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(Globals.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture", Globals.assetManager.loadTexture("Effects/flame.png"));
-        smokePuff.setMaterial(materialGray);
+        Material material = new Material(Globals.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        material.setTexture("Texture", Globals.assetManager.loadTexture("Effects/flame_alpha.png"));
+        material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        smokePuff.setMaterial(material);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
         smokePuff.setSelectRandomImage(true);
-        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.2f));
-        smokePuff.setEndColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
+        smokePuff.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.3f, 0.3f));
+        smokePuff.setEndColor(new ColorRGBA(0.3f, 0.3f, 0.3f, 0.1f));
 
         smokePuff.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
         smokePuff.getParticleInfluencer().setVelocityVariation(1f);
