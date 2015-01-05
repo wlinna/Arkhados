@@ -97,19 +97,22 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         FileHandler fileHandler;
         try {
-            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0, 10);
+            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0, 1,
+                    false);
             fileHandler.setLevel(Level.FINE);
             fileHandler.setFormatter(new SimpleFormatter());
 
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException | SecurityException ex) {
-            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientMain.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
 
         try {
             settings.load(ClientMain.PREFERENCES_KEY);
         } catch (BackingStoreException ex) {
-            Logger.getLogger("").log(Level.WARNING, "Could not load preferences: {0}", ex.getMessage());
+            Logger.getLogger("").log(Level.WARNING,
+                    "Could not load preferences: {0}", ex.getMessage());
         }
         setInputDefaultSettings(settings);
         settings.setFrameRate(60);
@@ -165,7 +168,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
 
-        ClientNetListener listenerManager = new ClientNetListener(clientWrapper);
+        ClientNetListener listenerManager =
+                new ClientNetListener(clientWrapper);
         stateManager.attach(listenerManager);
 
         stateManager.attach(worldManager);
@@ -174,7 +178,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         Receiver receiver = new Receiver();
         receiver.registerCommandHandler(effectHandler);
 
-        UserCommandManager userCommandManager = new UserCommandManager(sender, inputManager);
+        UserCommandManager userCommandManager =
+                new UserCommandManager(sender, inputManager);
 
         stateManager.attach(userCommandManager);
 
@@ -185,7 +190,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.registerCommandHandler(syncManager);
         receiver.registerCommandHandler(listenerManager);
 
-        MusicManager musicManager = new MusicManager(this, getInputManager(), getAssetManager());
+        MusicManager musicManager =
+                new MusicManager(this, getInputManager(), getAssetManager());
         musicManager.setHero("EmberMage");
         stateManager.attach(musicManager);
     }
@@ -231,16 +237,19 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void connect() {
         Screen joinScreen = nifty.getScreen("join_server");
-        String username = joinScreen.findNiftyControl("username_text", TextField.class)
+        String username =
+                joinScreen.findNiftyControl("username_text", TextField.class)
                 .getDisplayedText();
 
-        int port = Integer.parseInt(joinScreen.findNiftyControl("server_port", TextField.class)
-                .getDisplayedText());
-        String ip = joinScreen.findNiftyControl("server_ip", TextField.class).getDisplayedText();
+        int port = Integer.parseInt(joinScreen.findNiftyControl("server_port",
+                TextField.class).getDisplayedText());
+        String ip = joinScreen.findNiftyControl("server_ip", TextField.class)
+                .getDisplayedText();
 
         clientWrapper.set(Network.createClient());
 
-        ClientNetListener listenerManager = stateManager.getState(ClientNetListener.class);
+        ClientNetListener listenerManager =
+                stateManager.getState(ClientNetListener.class);
         listenerManager.reset();
         clientWrapper.get().addClientStateListener(listenerManager);
 
@@ -263,7 +272,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             clientWrapper.get().start();
         } catch (IOException ex) {
             setStatusText(ex.getMessage());
-            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientMain.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
     }
 
@@ -305,11 +315,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                 if (screen == null) {
                     System.out.println("Screen is null");
                 }
-                ListBox listBox = screen.findNiftyControl("players_list", ListBox.class);
+                ListBox listBox =
+                        screen.findNiftyControl("players_list", ListBox.class);
                 assert listBox != null;
                 listBox.clear();
                 for (PlayerData playerData : playerDataList) {
-                    listBox.addItem(playerData.getStringData(PlayerDataStrings.NAME));
+                    listBox.addItem(playerData
+                            .getStringData(PlayerDataStrings.NAME));
                 }
 
                 return null;
@@ -322,7 +334,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             @Override
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
-                ListBox listBox = screen.findNiftyControl("chat_list", ListBox.class);
+                ListBox listBox =
+                        screen.findNiftyControl("chat_list", ListBox.class);
                 listBox.addItem(String.format("<%s> %s", name, message));
                 return null;
             }
@@ -334,10 +347,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             @Override
             public Void call() throws Exception {
                 Screen screen = nifty.getScreen("lobby");
-                TextField textField = screen.findNiftyControl("chat_text", TextField.class);
-                String name = stateManager.getState(ClientNetListener.class).getName();
+                TextField textField =
+                        screen.findNiftyControl("chat_text", TextField.class);
+                String name = stateManager
+                        .getState(ClientNetListener.class).getName();
 
-                sender.addCommand(new ChatMessage(name, textField.getDisplayedText()));
+                sender.addCommand(
+                        new ChatMessage(name, textField.getDisplayedText()));
                 textField.setText("");
                 return null;
             }
@@ -364,7 +380,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                         @Override
                         public Void call() throws Exception {
                             gameMode.setRunning(true);
-                            WorldManager worldManager = stateManager.getState(WorldManager.class);
+                            WorldManager worldManager =
+                                    stateManager.getState(WorldManager.class);
                             worldManager.preloadModels(new String[]{
                                 "Models/EliteSoldier.j3o",
                                 "Models/Mage.j3o", "Models/Warwolf.j3o",
@@ -387,7 +404,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
                         }
                     }).get();
                 } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ClientMain.class.getName())
+                            .log(Level.SEVERE, null, ex);
                 }
             }
         }).start();
