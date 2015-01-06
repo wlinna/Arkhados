@@ -156,10 +156,11 @@ class StoneFistAction extends EntityAction {
     }
 
     private void pushSpiritStone(Spatial stone, Vector3f hitDirection) {
-        SpiritStonePhysicsControl physics = stone.getControl(SpiritStonePhysicsControl.class);
+        SpiritStonePhysicsControl physics =
+                stone.getControl(SpiritStonePhysicsControl.class);
 
         Vector3f direction = hitDirection.normalize();
-        physics.punch(direction.multLocal(80f));
+        physics.punch(direction.multLocal(110f));
         physics.addCollideWithGroup(CollisionGroups.WALLS);
     }
 }
