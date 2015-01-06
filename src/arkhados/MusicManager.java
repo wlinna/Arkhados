@@ -37,26 +37,29 @@ import java.util.concurrent.Callable;
  */
 public class MusicManager extends AbstractAppState {
 
-    private final List<String> heroMusic = new ArrayList<>(2);
+    private final List<String> music = new ArrayList<>(2);
     private AudioNode musicPlayer = null;
     private AssetManager assetManager;
     private int heroMusicIndex = 0;
-    private float volume = 0.2f;
+    private float volume = 0.5f;
     private boolean playing = false;
     private final Application app;
     private final InputManager inputManager;
-    private String currentHero = "";
+    private String currentMusicCategory = "";
 
-    public MusicManager(Application app, InputManager inputManager, AssetManager assetManager) {
+    public MusicManager(Application app, InputManager inputManager, 
+            AssetManager assetManager) {
         this.assetManager = assetManager;
         this.app = app;
         this.inputManager = inputManager;
 
-        inputManager.addMapping(InputMappingStrings.VOLUME_UP, new KeyTrigger(KeyInput.KEY_F10));
-        inputManager.addMapping(InputMappingStrings.VOLUME_DOWN, new KeyTrigger(KeyInput.KEY_F9));
+        inputManager.addMapping(InputMappingStrings.VOLUME_UP,
+                new KeyTrigger(KeyInput.KEY_F10));
+        inputManager.addMapping(InputMappingStrings.VOLUME_DOWN,
+                new KeyTrigger(KeyInput.KEY_F9));
 
-        inputManager.addListener(changeVolumeActionListener, InputMappingStrings.VOLUME_UP,
-                InputMappingStrings.VOLUME_DOWN);
+        inputManager.addListener(changeVolumeActionListener,
+                InputMappingStrings.VOLUME_UP, InputMappingStrings.VOLUME_DOWN);
     }
     private ActionListener changeVolumeActionListener = new ActionListener() {
         @Override
@@ -89,12 +92,12 @@ public class MusicManager extends AbstractAppState {
     };
 
     private void playNext() {
-        if (heroMusic.isEmpty()) {
+        if (music.isEmpty()) {
             playing = false;
             return;
         }
-        heroMusicIndex = (++heroMusicIndex) % heroMusic.size();
-        String path = heroMusic.get(heroMusicIndex);
+        heroMusicIndex = (++heroMusicIndex) % music.size();
+        String path = music.get(heroMusicIndex);
 
         musicPlayer = new AudioNode(assetManager, path, true);
         musicPlayer.setPositional(false);
@@ -102,8 +105,8 @@ public class MusicManager extends AbstractAppState {
         musicPlayer.play();
     }
 
-    public void setHero(String heroName) {
-        if (currentHero.equals(heroName)) {
+    public void setMusicCategory(String category) {
+        if (currentMusicCategory.equals(category)) {
             return;
         }
 
@@ -111,42 +114,45 @@ public class MusicManager extends AbstractAppState {
             musicPlayer.stop();
         }
 
-        heroMusic.clear();
+        music.clear();
 
-        currentHero = heroName;
+        currentMusicCategory = category;
 
-        switch (heroName) {
+        switch (category) {
+            case "Menu":
+                music.add("Music/Menu.ogg");
+                break;
             case "EmberMage":
-                heroMusic.add(generateHeroMusicPath(heroName, "TheDarkAmulet"));
-                heroMusic.add(generateHeroMusicPath(heroName, "SteepsOfDestiny"));
+                music.add(generateHeroMusicPath(category, "TheDarkAmulet"));
+                music.add(generateHeroMusicPath(category,  "SteepsOfDestiny"));
                 break;
             case "EliteSoldier":
-                heroMusic.add(generateHeroMusicPath(heroName, "Carmack"));
-                heroMusic.add(generateHeroMusicPath(heroName, "ElectricQuake"));
-                heroMusic.add(generateHeroMusicPath(heroName, "AntiGravity"));
+                music.add(generateHeroMusicPath(category, "Carmack"));
+                music.add(generateHeroMusicPath(category, "ElectricQuake"));
+                music.add(generateHeroMusicPath(category, "AntiGravity"));
                 break;
             case "Venator":
-                heroMusic.add(generateHeroMusicPath(heroName, "DarkHall"));
-                heroMusic.add(generateHeroMusicPath(heroName, "GreyLand"));
-                heroMusic.add(generateHeroMusicPath(heroName, "TimeOfBlood"));
-                heroMusic.add(generateHeroMusicPath(heroName, "PredatorAttack"));
+                music.add(generateHeroMusicPath(category, "DarkHall"));
+                music.add(generateHeroMusicPath(category, "GreyLand"));
+                music.add(generateHeroMusicPath(category, "TimeOfBlood"));
+                music.add(generateHeroMusicPath(category, "PredatorAttack"));
                 break;
             case "RockGolem":
-                heroMusic.add(generateHeroMusicPath(heroName, "GodsWar"));
-                heroMusic.add(generateHeroMusicPath(heroName, "Olympus"));
-                heroMusic.add(generateHeroMusicPath(heroName, "DwarvesGathering"));
+                music.add(generateHeroMusicPath(category, "GodsWar"));
+                music.add(generateHeroMusicPath(category, "Olympus"));
+                music.add(generateHeroMusicPath(category,  "DwarvesGathering"));
                 break;
             default:
                 break;
         }
-        if (heroMusic.size() > 0) {
-            heroMusicIndex = new Random().nextInt(heroMusic.size());
+        if (music.size() > 0) {
+            heroMusicIndex = new Random().nextInt(music.size());
         }
     }
 
     public void clearHeroMusic() {
-        heroMusic.clear();
-        currentHero = "";
+        music.clear();
+        currentMusicCategory = "";
     }
 
     private static String generateHeroMusicPath(String heroName, String name) {
@@ -160,7 +166,8 @@ public class MusicManager extends AbstractAppState {
             return;
         }
 
-        if (musicPlayer == null || musicPlayer.getStatus() == AudioSource.Status.Stopped) {
+        if (musicPlayer == null 
+                || musicPlayer.getStatus() == AudioSource.Status.Stopped) {
             playNext();
         }
     }
@@ -188,7 +195,7 @@ public class MusicManager extends AbstractAppState {
     @Override
     public void stateDetached(AppStateManager stateManager) {
         super.stateDetached(stateManager);
-        currentHero = "";
+        currentMusicCategory = "";
         if (musicPlayer != null) {
             musicPlayer.stop();
         }

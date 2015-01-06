@@ -61,7 +61,7 @@ public class DeathMatchHeroSelectionLayerController implements Controller {
     }
 
     public void selectHero(String heroName) {
-        stateManager.getState(MusicManager.class).setHero(heroName);
+        stateManager.getState(MusicManager.class).setMusicCategory(heroName);
         stateManager.getState(MusicManager.class).setPlaying(true);
         stateManager.getState(Sender.class).addCommand(new ClientSelectHeroCommand(heroName));
         element.hide();

@@ -54,7 +54,7 @@ public class DeathMatchHeroSelectionScreenController implements ScreenController
     }
 
     public void selectHero(String heroName) {
-        stateManager.getState(MusicManager.class).setHero(heroName);
+        stateManager.getState(MusicManager.class).setMusicCategory(heroName);
         stateManager.getState(MusicManager.class).setPlaying(true);
         stateManager.getState(Sender.class).addCommand(new ClientSelectHeroCommand(heroName));
         nifty.gotoScreen("default_hud");

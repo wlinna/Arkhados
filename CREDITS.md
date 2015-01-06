@@ -214,6 +214,7 @@ are licensed under CC-BY-SA 3.0.
 - [Gods War](https://www.jamendo.com/en/track/989064/gods-war-finale)
 - [Olympus](https://www.jamendo.com/en/track/1063183/olympus)
 - [Anti-gravity](https://www.jamendo.com/en/track/1103297/anti-gravity)
+- [Mutant rises](https://www.jamendo.com/en/list/a116374/cinematic-volume-2)
 
 [Kondi](https://www.jamendo.com/en/artist/362508/kondi) for multiple soundtracks. All Kondi's music used in Arkhados are licensed under CC-BY-SA 3.0:
 - [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)

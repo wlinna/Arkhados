@@ -84,6 +84,7 @@ See CREDITS.md for attributions.
 - rocket_jump.jpeg
 - AntiGravity.orgg
 - Olympus.ogg
+- Menu.ogg
 - GodsWar.ogg
 - TimeOfBlood.ogg
 - PredatorAttack.ogg

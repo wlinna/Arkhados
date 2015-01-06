@@ -60,7 +60,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public static void setInputDefaultSettings(AppSettings settings) {
         setKey(settings, InputMappingStrings.M1, false, MouseInput.BUTTON_LEFT);
-        setKey(settings, InputMappingStrings.M2, false, MouseInput.BUTTON_RIGHT);
+        setKey(settings, InputMappingStrings.M2, false,
+                MouseInput.BUTTON_RIGHT);
 
         setKey(settings, InputMappingStrings.MOVE_UP, true, KeyInput.KEY_W);
         setKey(settings, InputMappingStrings.MOVE_DOWN, true, KeyInput.KEY_S);
@@ -73,11 +74,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
 
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
-            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, false);
+            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, 
+                    false);
         }
     }
 
-    public static void setKey(AppSettings settings, final String inputMapping, boolean isKeyboard, int code) {
+    public static void setKey(AppSettings settings, String inputMapping,
+            boolean isKeyboard, int code) {
         if (settings.containsKey(inputMapping)) {
             return;
         }
@@ -192,7 +195,8 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
         MusicManager musicManager =
                 new MusicManager(this, getInputManager(), getAssetManager());
-        musicManager.setHero("EmberMage");
+        musicManager.setMusicCategory("Menu");
+        musicManager.setPlaying(true);
         stateManager.attach(musicManager);
     }
 
@@ -361,7 +365,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void selectHero(String heroName) {
-        stateManager.getState(MusicManager.class).setHero(heroName);
+        stateManager.getState(MusicManager.class).setMusicCategory(heroName);
         sender.addCommand(new ClientSelectHeroCommand(heroName));
     }
 
