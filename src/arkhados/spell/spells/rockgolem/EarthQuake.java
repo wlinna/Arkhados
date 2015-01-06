@@ -41,6 +41,8 @@ import java.util.ArrayList;
  * @author william
  */
 public class EarthQuake extends Spell {
+    public static final float RADIUS = 22f;
+    
     {
         iconName = "EarthQuake.png";
     }
@@ -87,7 +89,7 @@ class CastEarthQuakeAction extends EntityAction {
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
         buffs.add(incapacitate);
 
-        final float splashRadius = 25f;
+        final float splashRadius = EarthQuake.RADIUS;
         
         SplashAction splash = new SplashAction(splashRadius, 100f, 0f,
                 DistanceScaling.CONSTANT, buffs);

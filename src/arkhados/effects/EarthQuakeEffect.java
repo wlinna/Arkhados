@@ -1,4 +1,4 @@
-/*    This file is part of Arkhados.
+ /*    This file is part of Arkhados.
 
  Arkhados is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@ package arkhados.effects;
 
 import arkhados.Globals;
 import arkhados.controls.TimedExistenceControl;
+import arkhados.spell.spells.rockgolem.EarthQuake;
 import arkhados.spell.spells.rockgolem.Toss;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.influencers.ParticleInfluencer;
 import com.jme3.effect.influencers.RadialParticleInfluencer;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
@@ -32,11 +32,11 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class TossHitEffect implements WorldEffect {
+public class EarthQuakeEffect implements WorldEffect {
 
     private ParticleEmitter createParticleEffect() {
         ParticleEmitter dust = new ParticleEmitter("smoke-puff",
-                ParticleMesh.Type.Triangle, 80);
+                ParticleMesh.Type.Triangle, (int)(10 * EarthQuake.RADIUS));
         Material material = new Material(Globals.assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
@@ -47,26 +47,23 @@ public class TossHitEffect implements WorldEffect {
         dust.setImagesX(2);
         dust.setImagesY(2);
         dust.setSelectRandomImage(true);
-        dust.setStartColor(new ColorRGBA(0.3f, 0.15f, 0.03f, 0.3f));
-        dust.setEndColor(new ColorRGBA(0.3f, 0.15f, 0.03f, 0.01f));
+        dust.setStartColor(new ColorRGBA(0.26f, 0.16f, 0.07f, 0.2f));
+        dust.setEndColor(new ColorRGBA(0.26f, 0.16f, 0.07f, 0.01f));
 
-        RadialParticleInfluencer influencer = new RadialParticleInfluencer();
-        influencer.setOrigin(Vector3f.ZERO);
-        influencer.setHorizontal(false);
-        influencer.setRadialVelocity(Toss.SPLASH_RADIUS / 0.5f);
-        
-        dust.setParticleInfluencer(influencer);
+        dust.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_Y.mult(110f));
+        dust.getParticleInfluencer().setVelocityVariation(0.1f);
 
-        dust.setStartSize(15.0f);
-        dust.setEndSize(30.0f);
-        dust.setGravity(Vector3f.ZERO);
-        dust.setLowLife(0.5f);
-        dust.setHighLife(0.5f);
+        dust.setStartSize(4.0f);
+        dust.setEndSize(8f);
+        dust.setGravity(Vector3f.UNIT_Y.mult(80));
+        dust.setLowLife(2f);
+        dust.setHighLife(3f);
         dust.setParticlesPerSec(0);
 
         dust.setRandomAngle(true);
 
-        dust.setShape(new EmitterCircleShape(Vector3f.ZERO, 2.0f));
+        dust.setShape(new EmitterCircleShape(Vector3f.ZERO, EarthQuake.RADIUS));
 
         return dust;
     }
@@ -80,8 +77,8 @@ public class TossHitEffect implements WorldEffect {
 
         ParticleEmitter emitter = createParticleEffect();
         root.attachChild(emitter);
-        emitter.setLocalTranslation(location.add(0, 1f, 0));
+        emitter.setLocalTranslation(location);
         emitter.emitAllParticles();
-        emitter.addControl(new TimedExistenceControl(1f));
+        emitter.addControl(new TimedExistenceControl(14f));
     }
 }

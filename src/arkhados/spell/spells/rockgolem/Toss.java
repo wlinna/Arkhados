@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class Toss extends Spell {
 
-    public static final float TOSS_SPLASH_RADIUS = 20f;
+    public static final float SPLASH_RADIUS = 20f;
 
     {
         iconName = "Toss.png";
@@ -208,7 +208,7 @@ class TossAction extends EntityAction {
 
             private void landingEffect() {
                 SplashAction splashAction =
-                        new SplashAction(Toss.TOSS_SPLASH_RADIUS, 250, 0,
+                        new SplashAction(Toss.SPLASH_RADIUS, 250, 0,
                         DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
