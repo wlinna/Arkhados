@@ -48,6 +48,8 @@ import java.util.List;
  */
 public class Toss extends Spell {
 
+    public static final float TOSS_SPLASH_RADIUS = 20f;
+
     {
         iconName = "Toss.png";
     }
@@ -72,6 +74,8 @@ public class Toss extends Spell {
 
         toss.nodeBuilder = null;
         return toss;
+
+
     }
 }
 
@@ -203,7 +207,8 @@ class TossAction extends EntityAction {
             }
 
             private void landingEffect() {
-                SplashAction splashAction = new SplashAction(20, 250, 0,
+                SplashAction splashAction =
+                        new SplashAction(Toss.TOSS_SPLASH_RADIUS, 250, 0,
                         DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
@@ -228,7 +233,7 @@ class TossAction extends EntityAction {
                         .getFogManager();
 
                 fogManager.addCommand(target,
-                        new WorldEffectCommand(RockGolem.WORLDEFFECT_EARTHQUAKE,
+                        new WorldEffectCommand(RockGolem.WORLDEFFECT_TOSS_HIT,
                         target.getLocalTranslation()));
             }
         };

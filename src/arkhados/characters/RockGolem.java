@@ -28,6 +28,7 @@ import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
+import arkhados.effects.TossHitEffect;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AbstractNodeBuilder;
@@ -47,7 +48,7 @@ import java.util.List;
 public class RockGolem extends AbstractNodeBuilder {
     public static final int ACTION_EARTHQUAKE = 0;
     
-    public static int WORLDEFFECT_EARTHQUAKE;
+    public static int WORLDEFFECT_TOSS_HIT;
 
     private final ClientHudManager clientHudManager;
 
@@ -59,7 +60,8 @@ public class RockGolem extends AbstractNodeBuilder {
         earthQuake.setVolume(1.5f);
         getEffectBox().addActionEffect(ACTION_EARTHQUAKE, earthQuake);
         
-        WORLDEFFECT_EARTHQUAKE = EffectHandler.addWorldEffect(earthQuake);
+        TossHitEffect tossHitEffect = new TossHitEffect();        
+        WORLDEFFECT_TOSS_HIT = EffectHandler.addWorldEffect(tossHitEffect);
     }
 
     @Override
