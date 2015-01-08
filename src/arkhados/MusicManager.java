@@ -41,7 +41,7 @@ public class MusicManager extends AbstractAppState {
     private AudioNode musicPlayer = null;
     private AssetManager assetManager;
     private int heroMusicIndex = 0;
-    private float volume = 0.5f;
+    private float volume = 0.4f;
     private boolean playing = false;
     private final Application app;
     private final InputManager inputManager;
