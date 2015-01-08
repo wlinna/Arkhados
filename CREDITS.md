@@ -23,6 +23,10 @@ are all awesome!
   - resting-feature
   - some music (with edits)
 
+## Announcer ##
+
+Antti Saari
+
 ## Early phase testing ##
 
 - William Linna

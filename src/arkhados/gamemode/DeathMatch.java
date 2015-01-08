@@ -45,6 +45,7 @@ import arkhados.util.RemovalReasons;
 import arkhados.util.Timer;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
@@ -61,7 +62,11 @@ import java.util.logging.Logger;
  * @author william
  */
 public class DeathMatch extends GameMode implements CommandHandler {
+
     private static final Map<Integer, String> spreeMessages = new HashMap<>();
+    private static final Map<Integer, String> spreeAnnouncements =
+            new HashMap<>();
+
     static {
         spreeMessages.put(3, "%s is on killing spree!");
         spreeMessages.put(4, "%s scored Mega Kill!");
@@ -70,8 +75,15 @@ public class DeathMatch extends GameMode implements CommandHandler {
         spreeMessages.put(7, "%s is causing major Mayhem!");
         spreeMessages.put(8, "%s just isn't going to stop! CARNAGE");
         spreeMessages.put(9, "%s is GODLIKE!");
-    }
 
+        spreeAnnouncements.put(3, "Interface/Sound/Announcer/KillingSpree.wav");
+        spreeAnnouncements.put(4, "Interface/Sound/Announcer/MegaKill.wav");
+        spreeAnnouncements.put(5, "Interface/Sound/Announcer/Dominating.wav");
+        spreeAnnouncements.put(6, "Interface/Sound/Announcer/Ownage.wav");
+        spreeAnnouncements.put(7, "Interface/Sound/Announcer/Godlike.wav");
+        spreeAnnouncements.put(8, "Interface/Sound/Announcer/Godlike.wav");
+        spreeAnnouncements.put(9, "Interface/Sound/Announcer/Godlike.wav");
+    }
     private static final Logger logger =
             Logger.getLogger(DeathMatch.class.getName());
     private WorldManager worldManager;
@@ -84,6 +96,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
     private Element heroSelectionLayer;
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
+    private boolean announcerLoaded = true;
 
     @Override
     public void initialize(Application app) {
@@ -102,6 +115,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
             Globals.worldRunning = true;
         } else {
             stateManager.getState(UserCommandManager.class).setEnabled(true);
+
+            preloadAnnouncer();
         }
     }
 
@@ -243,18 +258,18 @@ public class DeathMatch extends GameMode implements CommandHandler {
         killingSprees.put(killersId, killingSpree);
         int myPlayerId =
                 stateManager.getState(UserCommandManager.class).getPlayerId();
-        
+
         String playerName = getPlayerName(playerId);
         String killerName = getPlayerName(killersId);
-        
+
         killedMessage(playerName, killerName);
-        killingSpreeMessage(killerName, killingSpree);        
+        killingSpreeMessage(killerName, killingSpree);
 
         if (playerId == myPlayerId) {
             handleOwnDeath();
         }
     }
-    
+
     private void killedMessage(String playerName, String killerName) {
         String genetive = playerName.endsWith("s")
                 ? playerName + "'"
@@ -263,23 +278,26 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 killerName, genetive);
         stateManager.getState(ClientHudManager.class).addMessage(message);
     }
-    
+
     private void killingSpreeMessage(String playerName, int spree) {
         if (spree < 3) {
             return;
         } else if (spree > 9) {
             spree = 9;
         }
-        
+
         String message = String.format(spreeMessages.get(spree), playerName);
         stateManager.getState(ClientHudManager.class).addMessage(message);
 
+        String audioPath = spreeAnnouncements.get(spree);
+        playAnnouncerSound(audioPath);
+
     }
-    
+
     private String getPlayerName(int id) {
         return id < 0
-                ? "Environment" 
-                : PlayerData.getStringData(id, PlayerDataStrings.NAME);        
+                ? "Environment"
+                : PlayerData.getStringData(id, PlayerDataStrings.NAME);
     }
 
     private void handleOwnDeath() {
@@ -295,7 +313,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                         stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButHpBars();
                 hudManager.showRoundStatistics();
-                heroSelectionLayer.showWithoutEffects();                
+                heroSelectionLayer.showWithoutEffects();
                 return null;
             }
         });
@@ -420,5 +438,34 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 }
             }, 15000);
         }
+    }
+
+    private void preloadAnnouncer() {
+        for (String path : spreeAnnouncements.values()) {
+            try {
+                Globals.assetManager.loadAudio(path);
+            } catch (Exception ex) {
+                announcerLoaded = false;
+                break;
+            }
+        }
+    }
+
+    private void playAnnouncerSound(final String path) {
+        if (!announcerLoaded) {
+            return;
+        }
+
+        getApp().enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                AudioNode audio = new AudioNode(Globals.assetManager, path);
+                audio.setVolume(1.2f);
+                audio.setPositional(false);
+                audio.play();
+                return null;
+            }
+        });
+
     }
 }

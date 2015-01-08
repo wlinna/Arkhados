@@ -77,6 +77,7 @@ See CREDITS.md for attributions.
 - DarkHall.ogg
 - GreyLand.ogg
 - DwarvesGathering.ogg
+- All announcer sounds
 
 ## CC-BY-SA 3.0 ##
 
