@@ -86,7 +86,7 @@ public class Venator extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
         // Note: This works now but later life steal is set by buffs.
-        entity.setUserData(UserDataStrings.LIFE_STEAL, 0.2f);
+        entity.setUserData(UserDataStrings.LIFE_STEAL, 0.33f);
 
         for (Spatial childToScale : entity.getChildren()) {
             childToScale.scale(3f);

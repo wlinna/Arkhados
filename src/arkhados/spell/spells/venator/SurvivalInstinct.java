@@ -50,7 +50,7 @@ public class SurvivalInstinct extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 CastSelfBuffAction buffAction = new CastSelfBuffAction();
-                buffAction.addBuff(new DamagePerHealthPercentBuff(-1, 5f));
+                buffAction.addBuff(new DamagePerHealthPercentBuff(-1, 6f));
                 buffAction.addBuff(new MovementSpeedPerHealthMissingBuff(-1, 5f));
                 return buffAction;
             }

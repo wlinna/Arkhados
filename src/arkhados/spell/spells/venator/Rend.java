@@ -73,11 +73,11 @@ class DoubleMeleeAttackAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         // TODO: Make an attack start with different animation than previous one
-        final float range = spell.getRange();
-        final ActionQueueControl queue = spatial.getControl(ActionQueueControl.class);
-        final MeleeAttackAction action1 = new MeleeAttackAction(50f, range);
-        final CastingSpellAction action2Anim = new CastingSpellAction(spell, true);
-        final MeleeAttackAction action2 = new MeleeAttackAction(60f, range);
+        float range = spell.getRange();
+        ActionQueueControl queue = spatial.getControl(ActionQueueControl.class);
+        final MeleeAttackAction action1 = new MeleeAttackAction(75f, range);
+        CastingSpellAction action2Anim = new CastingSpellAction(spell, true);
+        MeleeAttackAction action2 = new MeleeAttackAction(85f, range);
         
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);

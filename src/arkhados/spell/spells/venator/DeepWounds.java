@@ -15,7 +15,6 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
-import arkhados.CollisionGroups;
 import arkhados.actions.ChargeAction;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
@@ -28,17 +27,9 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -84,11 +75,13 @@ class CastDeepWoundsAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         ChargeAction charge = new ChargeAction(spell.getRange());
+        charge.setHitDamage(100f);
         charge.setChargeSpeed(255f);
         spatial.getControl(ActionQueueControl.class).enqueueAction(charge);
 
         BleedBuff bleedBuff = new BleedBuff(-1, 5f);
-        bleedBuff.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+        bleedBuff.setOwnerInterface(spatial
+                .getControl(InfluenceInterfaceControl.class));
 
         float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         bleedBuff.setDamagePerUnit(2f * damageFactor);
