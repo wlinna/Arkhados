@@ -44,7 +44,7 @@ public class RestingControl extends AbstractControl {
             idleTime = 0;
         }
         idleTime += tpf;
-        if (idleTime >= 5f) {
+        if (idleTime >= 3.5f) {
             regenerate(tpf);
         }
         location.set(newLocation);
