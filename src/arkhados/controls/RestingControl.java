@@ -34,7 +34,7 @@ public class RestingControl extends AbstractControl {
 
     private void regenerate(float tpf) {
         InfluenceInterfaceControl control = getSpatial().getControl(InfluenceInterfaceControl.class);
-        control.heal(2f * idleTime * tpf);
+        control.heal(2.1f * idleTime * tpf);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RestingControl extends AbstractControl {
             idleTime = 0;
         }
         idleTime += tpf;
-        if (idleTime >= 3.5f) {
+        if (idleTime >= 2.5f) {
             regenerate(tpf);
         }
         location.set(newLocation);
