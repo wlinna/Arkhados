@@ -74,25 +74,25 @@ public class Venator extends AbstractNodeBuilder {
     @Override
     public Node build(Object irrelevant) {
         Node entity = (Node) assetManager.loadModel("Models/Warwolf.j3o");
-        float movementSpeed = 37f;
+        float movementSpeed = 36.5f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
         float radius = 4f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        float health = 2100f;
+        float health = 1900f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
         // Note: This works now but later life steal is set by buffs.
-        entity.setUserData(UserDataStrings.LIFE_STEAL, 0.33f);
+        entity.setUserData(UserDataStrings.LIFE_STEAL, 0.25f);
 
         for (Spatial childToScale : entity.getChildren()) {
             childToScale.scale(3f);
         }
 
-        entity.addControl(new CharacterPhysicsControl(radius, 22f, 100f));
+        entity.addControl(new CharacterPhysicsControl(radius, 22f, 80f));
 
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
         entity.addControl(new ActionQueueControl());

@@ -48,7 +48,7 @@ public class SealingBoulder extends Spell {
     public static Spell create() {
         final float cooldown = 7f;
         final float range = 120f;
-        final float castTime = 0.6f;
+        final float castTime = 0.5f;
 
         final SealingBoulder spell =
                 new SealingBoulder("SealingBoulder", cooldown, range, castTime);
@@ -76,7 +76,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
         node.setUserData(UserDataStrings.MASS, 10f);
-        node.setUserData(UserDataStrings.DAMAGE, 80f);
+        node.setUserData(UserDataStrings.DAMAGE, 120f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
         node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 7.4f);
 

@@ -208,7 +208,7 @@ class TossAction extends EntityAction {
 
             private void landingEffect() {
                 SplashAction splashAction =
-                        new SplashAction(Toss.SPLASH_RADIUS, 250, 0,
+                        new SplashAction(Toss.SPLASH_RADIUS, 350, 0,
                         DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
@@ -223,7 +223,7 @@ class TossAction extends EntityAction {
                             spatial.getControl(InfluenceInterfaceControl.class);
 
                     CharacterInteraction.harm(myInterface, targetInterface,
-                            150f, null, true);
+                            200f, null, true);
                 } else {
                     target.getLocalTranslation().setY(10f);
                 }

@@ -79,7 +79,7 @@ class CastDeepWoundsAction extends EntityAction {
         charge.setChargeSpeed(255f);
         spatial.getControl(ActionQueueControl.class).enqueueAction(charge);
 
-        BleedBuff bleedBuff = new BleedBuff(-1, 5f);
+        BleedBuff bleedBuff = new BleedBuff(-1, 4.2f);
         bleedBuff.setOwnerInterface(spatial
                 .getControl(InfluenceInterfaceControl.class));
 

@@ -37,7 +37,7 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
     private Node myStone;
     private WorldManager worldManager;
     
-    private static final float M1_COMBINATION_DAMAGE = 220f;
+    private static final float M1_COMBINATION_DAMAGE = 300f;
 
     public SpiritStoneCollisionListener(Node myStone, WorldManager worldManager) {
         this.myStone = myStone;        

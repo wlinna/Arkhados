@@ -182,7 +182,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     areaEffectControl
                             .addInfluence(new DamageOverTimeInfluence(dps));
                     SlowInfluence slowInfluence = new SlowInfluence();
-                    slowInfluence.setSlowFactor(0.8f);
+                    slowInfluence.setSlowFactor(0.67f);
                     areaEffectControl.addInfluence(slowInfluence);
                     
                     node.addControl(new TimedExistenceControl(5f, true));

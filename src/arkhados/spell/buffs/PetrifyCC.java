@@ -27,7 +27,7 @@ public class PetrifyCC extends CrowdControlBuff {
         
     private final float damageCap = 100;
     private float totalDamageTaken = 0f;
-    private final float damageReduction = 0.95f;
+    private final float damageReduction = 0.85f;
 
     public PetrifyCC(int id, float duration) {
         super(id, duration);

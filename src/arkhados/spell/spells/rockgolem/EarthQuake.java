@@ -53,7 +53,7 @@ public class EarthQuake extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 9f;
+        final float cooldown = 7f;
         final float range = 90f;
         final float castTime = 0.3f;
 
@@ -83,7 +83,7 @@ class CastEarthQuakeAction extends EntityAction {
     public boolean update(float tpf) {
         ChargeAction charge = new ChargeAction(chargeRange);
         charge.setChargeSpeed(150f);
-        charge.setHitDamage(100f);
+        charge.setHitDamage(250f);
 
         IncapacitateCC incapacitate = new IncapacitateCC(1.2f, -1);
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
@@ -91,7 +91,7 @@ class CastEarthQuakeAction extends EntityAction {
 
         final float splashRadius = EarthQuake.RADIUS;
         
-        SplashAction splash = new SplashAction(splashRadius, 100f, 0f,
+        SplashAction splash = new SplashAction(splashRadius, 180f, 0f,
                 DistanceScaling.CONSTANT, buffs);
         final int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         splash.setExcludedTeam(teamId);
