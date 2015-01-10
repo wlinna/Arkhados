@@ -80,8 +80,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
         spreeAnnouncements.put(4, "Interface/Sound/Announcer/MegaKill.wav");
         spreeAnnouncements.put(5, "Interface/Sound/Announcer/Dominating.wav");
         spreeAnnouncements.put(6, "Interface/Sound/Announcer/Ownage.wav");
-        spreeAnnouncements.put(7, "Interface/Sound/Announcer/Godlike.wav");
-        spreeAnnouncements.put(8, "Interface/Sound/Announcer/Godlike.wav");
+        spreeAnnouncements.put(7, "Interface/Sound/Announcer/Mayhem.wav");
+        spreeAnnouncements.put(8, "Interface/Sound/Announcer/Carnage.wav");
         spreeAnnouncements.put(9, "Interface/Sound/Announcer/Godlike.wav");
     }
     private static final Logger logger =
@@ -92,7 +92,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private int spawnLocationIndex = 0;
     private final HashMap<Integer, Timer> spawnTimers = new HashMap<>();
     private Nifty nifty;
-    private int killLimit = 15;
+    private int killLimit = 25;
     private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
     private Element heroSelectionLayer;
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
