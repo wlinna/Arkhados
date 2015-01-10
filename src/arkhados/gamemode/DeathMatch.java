@@ -290,6 +290,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
             return;
         }
 
+        firstBloodHappened = true;
+        
         String name = getPlayerName(killersId);
 
         String message = String.format("%s just drew First Blood!", name);
