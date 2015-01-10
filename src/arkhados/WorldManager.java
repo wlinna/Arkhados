@@ -66,7 +66,8 @@ import java.util.logging.Logger;
  */
 public class WorldManager extends AbstractAppState {
 
-    private final static Logger logger = Logger.getLogger(WorldManager.class.getName());
+    private final static Logger logger =
+            Logger.getLogger(WorldManager.class.getName());
 
     static {
         logger.setLevel(Level.WARNING);
@@ -111,7 +112,8 @@ public class WorldManager extends AbstractAppState {
         this.app = (SimpleApplication) app;
         rootNode = this.app.getRootNode();
         assetManager = app.getAssetManager();
-        space = app.getStateManager().getState(BulletAppState.class).getPhysicsSpace();
+        space = app.getStateManager().getState(BulletAppState.class)
+                .getPhysicsSpace();
 
         cam = app.getCamera();
 
@@ -120,7 +122,8 @@ public class WorldManager extends AbstractAppState {
         Sender sender = stateManager.getState(Sender.class);
 
         if (sender.isServer()) {
-            serverCollisionListener = new ServerWorldCollisionListener(this, syncManager);
+            serverCollisionListener =
+                    new ServerWorldCollisionListener(this, syncManager);
             space.addCollisionListener(serverCollisionListener);
             entityFactory = new EntityFactory(assetManager, this);
         } else if (isClient()) {
@@ -156,7 +159,8 @@ public class WorldManager extends AbstractAppState {
     }
 
     public void loadLevel() {
-        worldRoot = (Node) assetManager.loadModel("Scenes/LavaArenaWithFogWalls.j3o");
+        worldRoot = (Node) assetManager.loadModel(
+                "Scenes/LavaArenaWithFogWalls.j3o");
 
         RigidBodyControl physics = new RigidBodyControl(
                 new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0)), 0);
@@ -202,7 +206,7 @@ public class WorldManager extends AbstractAppState {
             clientFogManager.createFog(worldRoot);
         }
 
-        UserCommandManager userCommandManager = 
+        UserCommandManager userCommandManager =
                 app.getStateManager().getState(UserCommandManager.class);
         if (userCommandManager != null) {
             userCommandManager.createCameraControl();
@@ -218,13 +222,15 @@ public class WorldManager extends AbstractAppState {
      * @param playerId id of owning player. -1, if server owns
      * @return entity id
      */
-    public int addNewEntity(int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
+    public int addNewEntity(int nodeBuilderId, Vector3f location,
+            Quaternion rotation, int playerId) {
         ++idCounter;
         addEntity(idCounter, nodeBuilderId, location, rotation, playerId);
         return idCounter;
     }
 
-    public void addEntity(int id, int nodeBuilderId, Vector3f location, Quaternion rotation, int playerId) {
+    public void addEntity(int id, int nodeBuilderId, Vector3f location,
+            Quaternion rotation, int playerId) {
         Sender sender = app.getStateManager().getState(Sender.class);
 
         Spatial entity =
@@ -248,7 +254,8 @@ public class WorldManager extends AbstractAppState {
         }
 
         worldRoot.attachChild(entity);
-        EntityVariableControl variableControl = new EntityVariableControl(this, sender);
+        EntityVariableControl variableControl =
+                new EntityVariableControl(this, sender);
         entity.addControl(variableControl);
 
         boolean isCharacter =
@@ -323,7 +330,8 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    public void restoreTemporarilyRemovedEntity(int id, Vector3f location, Quaternion rotation) {
+    public void restoreTemporarilyRemovedEntity(int id, Vector3f location,
+            Quaternion rotation) {
         logger.log(Level.FINE,
                 "Restoring temporarily removed entity. Id {0}", id);
         Spatial spatial = getEntity(id);
@@ -346,7 +354,8 @@ public class WorldManager extends AbstractAppState {
         setEntityTranslation(spatial, location, rotation);
     }
 
-    private void setEntityTranslation(Spatial entity, Vector3f location, Quaternion rotation) {
+    private void setEntityTranslation(Spatial entity, Vector3f location,
+            Quaternion rotation) {
         RigidBodyControl rigid = entity.getControl(RigidBodyControl.class);
         if (rigid != null && !rigid.isKinematic()) {
             rigid.setPhysicsLocation(location);

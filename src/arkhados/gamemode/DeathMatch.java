@@ -464,7 +464,6 @@ public class DeathMatch extends GameMode implements CommandHandler {
         
         for (String path : spreeAnnouncements.values()) {
             Globals.assetManager.loadAudio(path);
-            announcerLoaded = false;
         }
     }
 
