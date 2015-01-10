@@ -66,6 +66,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private static final Map<Integer, String> spreeMessages = new HashMap<>();
     private static final Map<Integer, String> spreeAnnouncements =
             new HashMap<>();
+    private static final String FIRST_BLOOD_PATH =
+            "Interface/Sound/Announcer/FirstBlood.wav";
 
     static {
         spreeMessages.put(3, "%s is on killing spree!");
@@ -96,7 +98,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
     private Element heroSelectionLayer;
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
-    private boolean announcerLoaded = true;
+    private boolean firstBloodHappened;
 
     @Override
     public void initialize(Application app) {
@@ -109,6 +111,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
         CharacterInteraction.startNewRound();
 
         syncManager.addObject(-1, worldManager);
+
+        firstBloodHappened = false;
+
         if (stateManager.getState(Sender.class).isServer()) {
             syncManager.setEnabled(true);
             syncManager.startListening();
@@ -262,6 +267,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         String playerName = getPlayerName(playerId);
         String killerName = getPlayerName(killersId);
 
+        firstBloodMessage(killersId);
         killedMessage(playerName, killerName);
         killingSpreeMessage(killerName, killingSpree);
 
@@ -277,6 +283,19 @@ public class DeathMatch extends GameMode implements CommandHandler {
         String message = String.format("%s just pwned %s head",
                 killerName, genetive);
         stateManager.getState(ClientHudManager.class).addMessage(message);
+    }
+
+    private void firstBloodMessage(int killersId) {
+        if (firstBloodHappened || killersId < 0) {
+            return;
+        }
+
+        String name = getPlayerName(killersId);
+
+        String message = String.format("%s just drew First Blood!", name);
+        stateManager.getState(ClientHudManager.class).addMessage(message);
+
+        playAnnouncerSound(FIRST_BLOOD_PATH);
     }
 
     private void killingSpreeMessage(String playerName, int spree) {
@@ -441,21 +460,15 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     private void preloadAnnouncer() {
+        Globals.assetManager.loadAudio(FIRST_BLOOD_PATH);
+        
         for (String path : spreeAnnouncements.values()) {
-            try {
-                Globals.assetManager.loadAudio(path);
-            } catch (Exception ex) {
-                announcerLoaded = false;
-                break;
-            }
+            Globals.assetManager.loadAudio(path);
+            announcerLoaded = false;
         }
     }
 
     private void playAnnouncerSound(final String path) {
-        if (!announcerLoaded) {
-            return;
-        }
-
         getApp().enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
