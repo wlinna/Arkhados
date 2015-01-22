@@ -40,7 +40,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
@@ -172,13 +171,13 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         }
 
         hpBars.clear();
-        
+
         for (BitmapText playerName : playerNames) {
             playerName.removeFromParent();
         }
-        
+
         playerNames.clear();
-        
+
         clearAllButHpBars();
     }
 
@@ -189,7 +188,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         removeChildren("panel_buffs");
         removeChildren("panel_spells");
 
-        for (Iterator<Element> it = statisticsPanels.iterator(); it.hasNext();) {
+        for (Iterator<Element> it = statisticsPanels.iterator();
+                it.hasNext();) {
             Element element = it.next();
             // TODO: Unregister element ids here
             element.markForRemoval();
@@ -269,7 +269,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             BitmapText hpBar = hpBars.get(index);
             hpBar.removeFromParent();
             hpBars.remove(index);
-            
+
             BitmapText playerName = playerNames.get(index);
             playerName.removeFromParent();
             playerNames.remove(index);
@@ -385,11 +385,14 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         if (playerCharacter == null) {
             return;
         }
-        final SpellCastControl castControl = playerCharacter.getControl(SpellCastControl.class);
+        final SpellCastControl castControl =
+                playerCharacter.getControl(SpellCastControl.class);
 
         for (Map.Entry<String, Element> entry : spellIcons.entrySet()) {
-            float cooldown = castControl.getCooldown(Spell.getSpell(entry.getKey()).getId());
-            Element overlay = entry.getValue().findElementByName(entry.getKey() + "-overlay");
+            float cooldown = castControl.getCooldown(Spell
+                    .getSpell(entry.getKey()).getId());
+            Element overlay = entry.getValue()
+                    .findElementByName(entry.getKey() + "-overlay");
             if (cooldown <= 0) {
                 if (overlay.isVisible()) {
                     overlay.hide();
@@ -399,7 +402,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                     overlay.show();
                 }
 
-                Element cooldownText = overlay.findElementByName(entry.getKey() + "-counter");
+                Element cooldownText = overlay
+                        .findElementByName(entry.getKey() + "-counter");
 
                 if (cooldown > 3) {
                     cooldownText.getRenderer(TextRenderer.class)
@@ -446,7 +450,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
         playerCharacter.getControl(CharacterHudControl.class).setEnabled(false);
     }
-    
+
     public void addMessage(String message) {
         messageHandler.addMessage(message, Color.WHITE);
     }
@@ -462,5 +466,12 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
     private void removeChildren(String elementName) {
         removeChildren(screen.findElementByName(elementName));
+    }
+
+    /**
+     * TODO: This is dirty temporary solution to clear messages.
+     */
+    public void clearMessages() {
+        messageHandler.cleanup();
     }
 }

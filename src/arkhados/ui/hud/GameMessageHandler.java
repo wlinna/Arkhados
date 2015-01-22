@@ -86,4 +86,12 @@ public class GameMessageHandler {
             }
         });
     }
+    
+    public void cleanup() {
+        messages.clear();
+        
+        for (Element row : rows) {
+            row.getRenderer(TextRenderer.class).setText("");
+        }
+    }
 }

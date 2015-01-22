@@ -120,7 +120,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
             Globals.worldRunning = true;
         } else {
             stateManager.getState(UserCommandManager.class).setEnabled(true);
-
+            stateManager.getState(ClientHudManager.class).clearMessages();
+           
             preloadAnnouncer();
         }
     }
@@ -393,6 +394,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     @Override
     public void cleanup() {
         super.cleanup();
+        stateManager.getState(Receiver.class).removeCommandHandler(this);
         stateManager.getState(MusicManager.class).setPlaying(false);
     }
 
@@ -481,5 +483,5 @@ public class DeathMatch extends GameMode implements CommandHandler {
             }
         });
 
-    }
+    }            
 }
