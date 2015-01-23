@@ -121,7 +121,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         } else {
             stateManager.getState(UserCommandManager.class).setEnabled(true);
             stateManager.getState(ClientHudManager.class).clearMessages();
-           
+
             preloadAnnouncer();
         }
     }
@@ -253,6 +253,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
         int kills = CharacterInteraction.getCurrentRoundStats()
                 .getKills(killersPlayerId);
 
+        firstBloodHappened = true;
+
         if (kills >= killLimit) {
             sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
         }
@@ -292,7 +294,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         }
 
         firstBloodHappened = true;
-        
+
         String name = getPlayerName(killersId);
 
         String message = String.format("%s just drew First Blood!", name);
@@ -357,6 +359,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     source.getAttribute(ServerClientDataStrings.PLAYER_ID);
             playerChoseHero(playerId,
                     ((ClientSelectHeroCommand) command).getHeroName());
+        } else if (command instanceof TopicOnlyCommand) {
+            serverHandleTopicOnlyCommand(source, (TopicOnlyCommand) command);
         }
     }
 
@@ -402,6 +406,24 @@ public class DeathMatch extends GameMode implements CommandHandler {
         switch (command.getTopicId()) {
             case Topic.GAME_ENDED:
                 gameEnded();
+                break;
+            case Topic.FIRST_BLOOD_HAPPENED:
+                firstBloodHappened = true;
+                break;
+        }
+    }
+
+    private void serverHandleTopicOnlyCommand(HostedConnection source,
+            TopicOnlyCommand command) {
+        switch (command.getTopicId()) {
+            case Topic.CLIENT_WORLD_CREATED:
+                if (firstBloodHappened) {
+                    ServerSender sender =
+                            stateManager.getState(ServerSender.class);                    
+                    sender.addCommandForSingle(
+                            new TopicOnlyCommand(Topic.FIRST_BLOOD_HAPPENED),
+                            source);
+                }
                 break;
         }
     }
@@ -465,7 +487,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     private void preloadAnnouncer() {
         Globals.assetManager.loadAudio(FIRST_BLOOD_PATH);
-        
+
         for (String path : spreeAnnouncements.values()) {
             Globals.assetManager.loadAudio(path);
         }
@@ -483,5 +505,5 @@ public class DeathMatch extends GameMode implements CommandHandler {
             }
         });
 
-    }            
+    }
 }

@@ -30,4 +30,5 @@ public class Topic {
     public static final int ROUND_FINISHED = 7;
     public static final int GAME_ENDED = 8;
     public static final int CLIENT_WORLD_CREATED = 9;
+    public static final int FIRST_BLOOD_HAPPENED = 10;
 }
