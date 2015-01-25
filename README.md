@@ -55,8 +55,6 @@ replaced, perhaps one by one.
 **Find or create good music** In Arkhados every hero uses different
   set of music. Currently Embermage has only 2 soundtracks.
 
-Menu music would be nice too.
-
 You can find good music with good licenses from opengameart.org and
 jamendo.com . And remember to use ogg-format because mp3 is patent
 encumbered and not supported
