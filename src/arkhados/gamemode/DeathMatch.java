@@ -42,7 +42,6 @@ import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
-import arkhados.util.Timer;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
@@ -63,21 +62,12 @@ import java.util.logging.Logger;
  */
 public class DeathMatch extends GameMode implements CommandHandler {
 
-    private static final Map<Integer, String> spreeMessages = new HashMap<>();
     private static final Map<Integer, String> spreeAnnouncements =
             new HashMap<>();
     private static final String FIRST_BLOOD_PATH =
             "Interface/Sound/Announcer/FirstBlood.wav";
 
     static {
-        spreeMessages.put(3, "%s is on killing spree!");
-        spreeMessages.put(4, "%s scored Mega Kill!");
-        spreeMessages.put(5, "%s is Dominating!");
-        spreeMessages.put(6, "%s is Owning!");
-        spreeMessages.put(7, "%s is causing major Mayhem!");
-        spreeMessages.put(8, "%s just isn't going to stop! CARNAGE");
-        spreeMessages.put(9, "%s is GODLIKE!");
-
         spreeAnnouncements.put(3, "Interface/Sound/Announcer/KillingSpree.wav");
         spreeAnnouncements.put(4, "Interface/Sound/Announcer/MegaKill.wav");
         spreeAnnouncements.put(5, "Interface/Sound/Announcer/Dominating.wav");
@@ -92,10 +82,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private AppStateManager stateManager;
     private SyncManager syncManager;
     private int spawnLocationIndex = 0;
-    private final HashMap<Integer, Timer> spawnTimers = new HashMap<>();
     private Nifty nifty;
     private int killLimit = 25;
-    private final HashMap<Integer, Integer> killingSprees = new HashMap<>();
+    private final HashMap<Integer, DeathMatchPlayerTracker> trackers =
+            new HashMap<>();
     private Element heroSelectionLayer;
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
     private boolean firstBloodHappened;
@@ -153,17 +143,15 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void update(float tpf) {
-        for (Timer timer : spawnTimers.values()) {
-            timer.update(tpf);
+        for (DeathMatchPlayerTracker tracker : trackers.values()) {
+            tracker.update(tpf);
         }
     }
 
     @Override
     public void playerJoined(int playerId) {
-        Timer timer = new Timer(6);
-        timer.setTimeLeft(0.5f);
-        spawnTimers.put(playerId, timer);
-        timer.setActive(true);
+        DeathMatchPlayerTracker tracker = new DeathMatchPlayerTracker(0.5f);
+        trackers.put(playerId, tracker);
 
         ServerFogManager fogManager =
                 stateManager.getState(ServerFogManager.class);
@@ -175,8 +163,6 @@ public class DeathMatch extends GameMode implements CommandHandler {
             canPickHeroMap.put(playerId, Boolean.TRUE);
             CharacterInteraction.addPlayer(playerId);
         }
-
-        killingSprees.put(playerId, 0);
     }
 
     private void playerChoseHero(final int playerId, final String heroName) {
@@ -186,7 +172,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         }
         canPickHeroMap.put(playerId, Boolean.FALSE);
 
-        long delay = (long) spawnTimers.get(playerId).getTimeLeft() * 1000;
+        long delay = (long) trackers.get(playerId).getSpawnTimeLeft() * 1000;
         if (delay < 0) {
             delay = 100;
         }
@@ -235,21 +221,31 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void playerDied(int playerId, int killersPlayerId) {
+        boolean deathByEnvironment = playerId < 0;
+
+        DeathMatchPlayerTracker dead = trackers.get(playerId);
+        int endedSpree = dead.getKillingSpree();
+        
+        dead.death(6f, deathByEnvironment);
+
         canPickHeroMap.put(playerId, Boolean.TRUE);
 
         Sender sender = stateManager.getState(ServerSender.class);
 
         int killingSpree = 0;
+        int combo = 0;
 
-        if (killersPlayerId > -1) {
-            killingSpree = killingSprees.get(killersPlayerId) + 1;
-            killingSprees.put(killersPlayerId, killingSpree);
-            killingSprees.put(playerId, 0);
+        if (!deathByEnvironment) {
+            DeathMatchPlayerTracker killer = trackers.get(killersPlayerId);
+            killer.addKill();
+
+            killingSpree = killer.getKillingSpree();
+            combo = killer.getCombo();
         }
 
-        sender.addCommand(
-                new PlayerKillCommand(playerId, killersPlayerId, killingSpree));
-        spawnTimers.get(playerId).setTimeLeft(6f);
+        sender.addCommand(new PlayerKillCommand(playerId, killersPlayerId,
+                killingSpree, combo, endedSpree));
+
         int kills = CharacterInteraction.getCurrentRoundStats()
                 .getKills(killersPlayerId);
 
@@ -261,17 +257,16 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     private void clientPlayerDied(int playerId, int killersId,
-            int killingSpree) {
-        killingSprees.put(playerId, 0);
-        killingSprees.put(killersId, killingSpree);
+            int killingSpree, int combo, int endedSpree) {
         int myPlayerId =
                 stateManager.getState(UserCommandManager.class).getPlayerId();
 
         String playerName = getPlayerName(playerId);
         String killerName = getPlayerName(killersId);
 
+        killedMessage(playerName, killerName, endedSpree);
         firstBloodMessage(killersId);
-        killedMessage(playerName, killerName);
+        comboMessage(killerName, combo);
         killingSpreeMessage(killerName, killingSpree);
 
         if (playerId == myPlayerId) {
@@ -279,12 +274,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
         }
     }
 
-    private void killedMessage(String playerName, String killerName) {
-        String genetive = playerName.endsWith("s")
-                ? playerName + "'"
-                : playerName + "'s";
-        String message = String.format("%s just pwned %s head",
-                killerName, genetive);
+    private void killedMessage(String playerName, String killerName,
+            int endedSpree) {
+        String message = DeathMatchMessageMaker
+                .killed(playerName, killerName, endedSpree);
         stateManager.getState(ClientHudManager.class).addMessage(message);
     }
 
@@ -310,12 +303,22 @@ public class DeathMatch extends GameMode implements CommandHandler {
             spree = 9;
         }
 
-        String message = String.format(spreeMessages.get(spree), playerName);
+        String message = DeathMatchMessageMaker.spree(playerName, spree);
         stateManager.getState(ClientHudManager.class).addMessage(message);
 
         String audioPath = spreeAnnouncements.get(spree);
         playAnnouncerSound(audioPath);
+    }
 
+    private void comboMessage(String playerName, int combo) {
+        if (combo < 2) {
+            return;
+        } else if (combo > 5) {
+            combo = 5;
+        }
+
+        String message = DeathMatchMessageMaker.combo(playerName, combo);
+        stateManager.getState(ClientHudManager.class).addMessage(message);
     }
 
     private String getPlayerName(int id) {
@@ -368,7 +371,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
         if (command instanceof PlayerKillCommand) {
             PlayerKillCommand pkCommand = (PlayerKillCommand) command;
             clientPlayerDied(pkCommand.getDiedPlayerId(),
-                    pkCommand.getKillerPlayerId(), pkCommand.getKillingSpree());
+                    pkCommand.getKillerPlayerId(), pkCommand.getKillingSpree(),
+                    pkCommand.getCombo(), pkCommand.getEndedSpree());
         } else if (command instanceof TopicOnlyCommand) {
             clientHandleTopicOnlyCommand((TopicOnlyCommand) command);
         }
@@ -419,7 +423,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
             case Topic.CLIENT_WORLD_CREATED:
                 if (firstBloodHappened) {
                     ServerSender sender =
-                            stateManager.getState(ServerSender.class);                    
+                            stateManager.getState(ServerSender.class);
                     sender.addCommandForSingle(
                             new TopicOnlyCommand(Topic.FIRST_BLOOD_HAPPENED),
                             source);
@@ -471,7 +475,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     stateManager.getState(UserCommandManager.class)
                             .nullifyCharacter();
                     ((ClientMain) getApp()).gameEnded();
-                    killingSprees.clear();
+                    trackers.clear();
                     return null;
                 }
             };

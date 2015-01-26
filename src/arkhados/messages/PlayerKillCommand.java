@@ -25,17 +25,22 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public class PlayerKillCommand implements Command {
-    private int diedPlayerId;
-    private int killerPlayerId;
-    private int killingSpree;
+    private byte diedPlayerId;
+    private byte killerPlayerId;
+    private byte killingSpree;
+    private byte combo;
+    private byte endedSpree;
 
     public PlayerKillCommand() {
     }
 
-    public PlayerKillCommand(int diedPlayerId, int killerPlayerId, int killingSpree) {
-        this.diedPlayerId = diedPlayerId;
-        this.killerPlayerId = killerPlayerId;
-        this.killingSpree = killingSpree;
+    public PlayerKillCommand(int diedPlayerId, int killerPlayerId,
+            int killingSpree, int combo, int endedSpree) {
+        this.diedPlayerId = (byte) diedPlayerId;
+        this.killerPlayerId = (byte) killerPlayerId;
+        this.killingSpree = (byte) killingSpree;
+        this.combo = (byte) combo;
+        this.endedSpree = (byte) endedSpree;
     }
 
     @Override
@@ -53,5 +58,13 @@ public class PlayerKillCommand implements Command {
 
     public int getKillingSpree() {
         return killingSpree;
+    }
+    
+    public int getCombo() {
+        return combo;
+    }
+
+    public int getEndedSpree() {
+        return endedSpree;
     }
 }
