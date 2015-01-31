@@ -39,6 +39,7 @@ import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerBuilder;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerController;
 import arkhados.ui.hud.ServerClientDataStrings;
+import arkhados.util.AudioQueue;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
@@ -89,6 +90,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private Element heroSelectionLayer;
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
     private boolean firstBloodHappened;
+    private AudioQueue audioQueue = new AudioQueue();
 
     @Override
     public void initialize(Application app) {
@@ -143,6 +145,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void update(float tpf) {
+        audioQueue.update();
+
         for (DeathMatchPlayerTracker tracker : trackers.values()) {
             tracker.update(tpf);
         }
@@ -225,7 +229,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
         DeathMatchPlayerTracker dead = trackers.get(playerId);
         int endedSpree = dead.getKillingSpree();
-        
+
         dead.death(6f, deathByEnvironment);
 
         canPickHeroMap.put(playerId, Boolean.TRUE);
@@ -498,16 +502,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     private void playAnnouncerSound(final String path) {
-        getApp().enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                AudioNode audio = new AudioNode(Globals.assetManager, path);
-                audio.setVolume(1.2f);
-                audio.setPositional(false);
-                audio.play();
-                return null;
-            }
-        });
-
+        AudioNode audio = new AudioNode(Globals.assetManager, path);
+        audio.setVolume(1.2f);
+        audio.setPositional(false);
+        
+        audioQueue.enqueueAudio(audio);
     }
 }
