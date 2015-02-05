@@ -65,6 +65,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     private static final Map<Integer, String> spreeAnnouncements =
             new HashMap<>();
+    private static final Map<Integer, String> comboAnnouncements =
+            new HashMap<>();
+    
     private static final String FIRST_BLOOD_PATH =
             "Interface/Sound/Announcer/FirstBlood.wav";
 
@@ -76,7 +79,13 @@ public class DeathMatch extends GameMode implements CommandHandler {
         spreeAnnouncements.put(7, "Interface/Sound/Announcer/Mayhem.wav");
         spreeAnnouncements.put(8, "Interface/Sound/Announcer/Carnage.wav");
         spreeAnnouncements.put(9, "Interface/Sound/Announcer/Godlike.wav");
+        
+        comboAnnouncements.put(2, "Interface/Sound/Announcer/DoubleKill.wav");
+        comboAnnouncements.put(3, "Interface/Sound/Announcer/TripleKill.wav");
+        comboAnnouncements.put(4, "Interface/Sound/Announcer/Rampage.wav");
+        comboAnnouncements.put(5, "Interface/Sound/Announcer/Massacre.wav");
     }
+    
     private static final Logger logger =
             Logger.getLogger(DeathMatch.class.getName());
     private WorldManager worldManager;
@@ -323,6 +332,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
         String message = DeathMatchMessageMaker.combo(playerName, combo);
         stateManager.getState(ClientHudManager.class).addMessage(message);
+        
+        String audioPath = comboAnnouncements.get(combo);
+        playAnnouncerSound(audioPath);
     }
 
     private String getPlayerName(int id) {
