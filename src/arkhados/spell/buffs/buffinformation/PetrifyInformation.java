@@ -33,6 +33,10 @@ import java.util.List;
  * @author william
  */
 public class PetrifyInformation extends BuffInformation {
+    {
+        // TODO: Find / make unique icon for Petrify
+        setIconPath("Interface/Images/SpellIcons/SealingBoulder.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(
