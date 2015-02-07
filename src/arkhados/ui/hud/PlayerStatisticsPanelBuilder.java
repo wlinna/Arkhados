@@ -27,20 +27,21 @@ public class PlayerStatisticsPanelBuilder extends PanelBuilder {
 
     public PlayerStatisticsPanelBuilder(int playerId) {
         super(String.valueOf(playerId) + "-statistics");
-        super.alignLeft();
-        super.valignTop();
-        super.childLayoutHorizontal();
-        super.style("nifty-panel");
-        System.out.println("Created PSPB for player: " + playerId);
-        super.height("100px");
-        super.width("100%");
-        
-        final StatisticsTextBuilder nameBuilder = new StatisticsTextBuilder(playerId + "-name");
-        nameBuilder.text(PlayerData.getStringData(playerId, PlayerDataStrings.NAME));
-        super.text(nameBuilder);
-        super.text(new StatisticsTextBuilder(playerId + "-damage"));
-        super.text(new StatisticsTextBuilder(playerId + "-restoration"));
-        super.text(new StatisticsTextBuilder(playerId + "-kills"));
+        alignLeft();
+        valignTop();
+        childLayoutHorizontal();
+        style("nifty-panel");
+        height("70px");
+        width("100%");
+
+        StatisticsTextBuilder nameBuilder =
+                new StatisticsTextBuilder(playerId + "-name");
+        nameBuilder.text(PlayerData.getStringData(playerId,
+                PlayerDataStrings.NAME));
+        text(nameBuilder);
+        text(new StatisticsTextBuilder(playerId + "-damage"));
+        text(new StatisticsTextBuilder(playerId + "-restoration"));
+        text(new StatisticsTextBuilder(playerId + "-kills"));
     }
 }
 
@@ -48,13 +49,12 @@ class StatisticsTextBuilder extends TextBuilder {
 
     public StatisticsTextBuilder(String id) {
         super(id);
-        super.alignLeft();
-        super.valignCenter();
-        super.style("nifty-label");
-//        super.height("100px");
-        super.width("70px");
-        super.marginLeft("80px");
-        super.textHAlignLeft();
-        super.color("#f00f");
+        alignLeft();
+        valignCenter();
+        style("nifty-label");
+        width("70px");
+        marginLeft("80px");
+        textHAlignLeft();
+        color("#f00f");
     }
 }
