@@ -29,44 +29,47 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
+public class MineralArmor extends Spell {
 
-
-public class MineralArmor extends Spell{
     {
         iconName = "MineralArmor.png";
     }
 
-    public MineralArmor(String name, float cooldown, float range, float castTime) {
+    public MineralArmor(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
-    
+
     public static Spell create() {
         final float cooldown = 13f;
         final float range = 100f;
         final float castTime = 0f;
-        
-        final MineralArmor spell = new MineralArmor("MineralArmor", cooldown, range, castTime);
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
 
+        final MineralArmor spell = new MineralArmor("MineralArmor", cooldown,
+                range, castTime);
+        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 CastSelfBuffAction action = new CastSelfBuffAction();
-                MineralArmorBuff armor = new MineralArmorBuff(150f, 0.5f, -1, 4f);
-                armor.setOwnerInterface(caster.getControl(InfluenceInterfaceControl.class));
+                MineralArmorBuff armor =
+                        new MineralArmorBuff(200f, 0.75f, -1, 4f);
+                armor.setOwnerInterface(caster
+                        .getControl(InfluenceInterfaceControl.class));
                 action.addBuff(armor);
                 return action;
             }
         };
-        
+
         spell.nodeBuilder = null;
-        
+
         return spell;
     }
 }
 
-class MineralArmorBuff extends ArmorBuff{  
+class MineralArmorBuff extends ArmorBuff {
 
-    public MineralArmorBuff(float amount, float protectionPercent, int buffGroupId, float duration) {
+    public MineralArmorBuff(float amount, float protectionPercent,
+            int buffGroupId, float duration) {
         super(amount, protectionPercent, buffGroupId, duration);
         setTypeId(BuffTypeIds.MINERAL_ARMOR);
     }
@@ -74,8 +77,9 @@ class MineralArmorBuff extends ArmorBuff{
     @Override
     public void update(float time) {
         super.update(time);
-        
+
         // Healing amount is based on assumption that duration is 4s.
-        CharacterInteraction.heal(getOwnerInterface(), targetInterface, 0.4f * getAmount() * time);
-    }        
+        CharacterInteraction.heal(getOwnerInterface(), targetInterface,
+                0.2f * getAmount() * time);
+    }
 }
