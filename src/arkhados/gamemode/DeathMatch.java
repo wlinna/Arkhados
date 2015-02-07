@@ -234,7 +234,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void playerDied(int playerId, int killersPlayerId) {
-        boolean deathByEnvironment = playerId < 0;
+        boolean deathByEnvironment = killersPlayerId < 0;
 
         DeathMatchPlayerTracker dead = trackers.get(playerId);
         int endedSpree = dead.getKillingSpree();
