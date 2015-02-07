@@ -7,6 +7,10 @@ are all awesome!
 
 - William Linna - Lead programmer and designer
 
+## Graphics ##
+
+- Kimmo Näveri – Logo
+
 ## Sound effects ##
 
 - William Linna - Rend sounds

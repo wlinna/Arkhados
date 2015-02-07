@@ -44,6 +44,8 @@ import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -53,6 +55,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.prefs.BackingStoreException;
+import javax.imageio.ImageIO;
 
 public class ClientMain extends SimpleApplication implements ScreenController {
 
@@ -74,7 +77,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
 
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
-            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS, 
+            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
                     false);
         }
     }
@@ -93,22 +96,23 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.INFO);
         Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
-        Logger.getLogger("com.jme3.system.lwjgl.LwjglContext").setLevel(Level.SEVERE);
+        Logger.getLogger("com.jme3.system.lwjgl.LwjglContext")
+                .setLevel(Level.SEVERE);
         Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
 
         AppSettings settings = new AppSettings(true);
 
         FileHandler fileHandler;
         try {
-            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0, 1,
-                    false);
+            fileHandler = new FileHandler("./Arkhados_Client_%u_gen_%g.log", 0,
+                    1, false);
             fileHandler.setLevel(Level.FINE);
             fileHandler.setFormatter(new SimpleFormatter());
 
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException | SecurityException ex) {
             Logger.getLogger(ClientMain.class.getName())
-                    .log(Level.SEVERE, null, ex);
+                    .log(Level.WARNING, null, ex);
         }
 
         try {
@@ -120,6 +124,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         setInputDefaultSettings(settings);
         settings.setFrameRate(60);
         settings.setTitle("Arkhados Client");
+        try {
+            settings.setIcons(new BufferedImage[]{
+                ImageIO.read(new File("icon32.png"))});
+        } catch (IOException ex) {
+            Logger.getLogger(ClientMain.class.getName())
+                    .log(Level.WARNING, null, ex);
+        }
         settings.setSettingsDialogImage("Interface/Images/Splash.png");
         ClientMain app = new ClientMain();
         app.setSettings(settings);
