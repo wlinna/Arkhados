@@ -114,9 +114,14 @@ public class InfluenceInterfaceControl extends AbstractControl {
         getSpatial().getControl(RestingControl.class).stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
-        if (crowdControlInfluence instanceof IncapacitateCC 
+        // TODO: Remove this ugly repetition
+        if (crowdControlInfluence instanceof IncapacitateCC
                 || crowdControlInfluence instanceof PetrifyCC) {
-            spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+            spatial.getControl(CharacterPhysicsControl.class)
+                    .setWalkDirection(Vector3f.ZERO);
+            spatial.getControl(SpellCastControl.class).setCasting(false);
+            spatial.getControl(ActionQueueControl.class).clear();
+        } else if (crowdControlInfluence instanceof FearCC) { 
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
         }
@@ -199,14 +204,15 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         // TODO: Refactor InfluenceInterfaceControl's controlUpdate. It is very hard to understand.
         /**
-         * First set entity's attributes to their defaults like damagefactor and movement speed.
+         * First set entity's attributes to their defaults like damagefactor and
+         * movement speed.
          */
         spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         immuneToProjectiles = false;
 
         /**
-         * Some buff or action might require entity's speed to remain constant until the end (for
-         * example, Venator's ChargeAction).
+         * Some buff or action might require entity's speed to remain constant
+         * until the end (for example, Venator's ChargeAction).
          */
         if (!isSpeedConstant()) {
             float msBase = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);

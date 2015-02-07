@@ -15,7 +15,6 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.SpatialDistancePair;
-import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
 import arkhados.controls.CharacterPhysicsControl;
@@ -28,7 +27,6 @@ import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +36,13 @@ import java.util.List;
  * @author william
  */
 public class FeralScream extends Spell {
+
     {
         iconName = "feral_scream.png";
     }
 
-    public FeralScream(String name, float cooldown, float range, float castTime) {
+    public FeralScream(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -51,7 +51,8 @@ public class FeralScream extends Spell {
         final float range = 45f;
         final float castTime = 0.3f;
 
-        FeralScream spell = new FeralScream("Feral Scream", cooldown, range, castTime);
+        FeralScream spell = new FeralScream("Feral Scream", cooldown,
+                range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -71,60 +72,70 @@ class FeralScreamAction extends EntityAction {
     public FeralScreamAction(float range, float maxRotationalDifference) {
         this.range = range;
         if (maxRotationalDifference > 90f) {
-            throw new InvalidParameterException("Does not support higher rotational differences than 90 degrees");
+            throw new InvalidParameterException("Does not support "
+                    + "higher rotational differences than 90 degrees");
         }
-        
-        this.maxRotationalDifference = (float) Math.toRadians(maxRotationalDifference);
+
+        this.maxRotationalDifference =
+                (float) Math.toRadians(maxRotationalDifference);
         setTypeId(Venator.ACTION_FERALSCREAM);
     }
 
     @Override
     public boolean update(float tpf) {
         // TODO: Replace with Selector.coneSelect
-        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physicsControl =
+                spatial.getControl(CharacterPhysicsControl.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation())
-                .normalizeLocal();
-        spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        final Vector3f viewDirection = targetLocation
+                .subtract(spatial.getLocalTranslation()).normalizeLocal();
+        spatial.getControl(CharacterPhysicsControl.class)
+                .setViewDirection(viewDirection);
         final Vector3f forward = viewDirection.mult(range);
 
         Quaternion yaw = new Quaternion();
         yaw.fromAngleAxis(maxRotationalDifference, Vector3f.UNIT_Y);
         final Vector3f leftNormal = yaw.mult(forward);
         leftNormal.set(-leftNormal.z, 0, leftNormal.x);
-        Plane leftPlane = new Plane(leftNormal, spatial.getLocalTranslation().dot(leftNormal));
+        Plane leftPlane = new Plane(leftNormal,
+                spatial.getLocalTranslation().dot(leftNormal));
 
         yaw.fromAngleAxis(-maxRotationalDifference, Vector3f.UNIT_Y);
         final Vector3f rightNormal = yaw.mult(forward);
         rightNormal.set(rightNormal.z, 0, -rightNormal.x);
-        Plane rightPlane = new Plane(rightNormal, spatial.getLocalTranslation().dot(rightNormal));
+        Plane rightPlane = new Plane(rightNormal,
+                spatial.getLocalTranslation().dot(rightNormal));
 
-        List<SpatialDistancePair> spatialDistances =
-                Selector.getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
+        List<SpatialDistancePair> spatialDistances = Selector
+                .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, range);
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
             InfluenceInterfaceControl influenceInterface =
-                    spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class);
+                    spatialDistancePair.spatial
+                    .getControl(InfluenceInterfaceControl.class);
+
             if (influenceInterface == null) {
                 continue;
             }
             if (spatialDistancePair.spatial == spatial) {
                 continue;
             }
-            
-            if (!Selector.isInCone(leftPlane, rightPlane, spatialDistancePair.spatial)) {
+
+            if (!Selector.isInCone(leftPlane, rightPlane,
+                    spatialDistancePair.spatial)) {
                 continue;
             }
             final float duration = 2f;
             FearCC fear = new FearCC(-1, duration);
-            final Vector3f initialDirection = spatialDistancePair.spatial.getLocalTranslation().
-                    subtract(spatial.getLocalTranslation());
-            
+
+            final Vector3f initialDirection = spatialDistancePair.spatial
+                    .getLocalTranslation()
+                    .subtract(spatial.getLocalTranslation()).setY(0f);
+
             fear.setInitialDirection(initialDirection);
             fear.attachToCharacter(influenceInterface);
         }
         return false;
     }
-
 }
