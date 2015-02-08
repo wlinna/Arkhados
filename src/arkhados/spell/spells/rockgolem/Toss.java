@@ -245,6 +245,7 @@ class TossAction extends EntityAction {
         if (stonePhysics == null) {
             target.getControl(CharacterPhysicsControl.class)
                     .switchToMotionCollisionMode();
+            target.getControl(ActionQueueControl.class).clear();
         }
     }
 }
