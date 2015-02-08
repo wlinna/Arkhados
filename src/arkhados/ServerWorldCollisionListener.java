@@ -19,6 +19,9 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.ProjectileControl;
 import arkhados.controls.SkyDropControl;
 import arkhados.controls.SpellBuffControl;
+import arkhados.spell.buffs.AbsorbingShieldBuff;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
@@ -99,7 +102,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private void projectileCharacterCollision(ProjectileControl projectile,
             InfluenceInterfaceControl target) {
-        
+
         int projectileTeamId = projectile.getSpatial().getUserData(UserDataStrings.TEAM_ID);
         int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
         int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
@@ -107,16 +110,18 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         if (targetTeamId == projectileTeamId) {
             return;
         }
-        
+
         if (projectile.getHurted().contains(target.getSpatial())) {
             return;
         }
-
+        
+        final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
         int removalReason = RemovalReasons.COLLISION;
         if (target.isImmuneToProjectiles() && projectile.isProjectile()) {
+            reducePurifyingFlame(target, damage);
             removalReason = RemovalReasons.ABSORBED;
         } else {
-            final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
+
             final SpellBuffControl buffControl = projectile.getSpatial()
                     .getControl(SpellBuffControl.class);
 
@@ -158,5 +163,14 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
         int entityId = projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
         worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
+    }
+
+    private void reducePurifyingFlame(InfluenceInterfaceControl target, float dmg) {
+        for (AbstractBuff abstractBuff : target.getBuffs()) {
+            if (abstractBuff instanceof AbsorbingShieldBuff) {
+                ((AbsorbingShieldBuff) abstractBuff).reduce(dmg);
+                return;
+            }
+        }
     }
 }

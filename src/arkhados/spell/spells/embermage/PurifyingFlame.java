@@ -23,10 +23,9 @@ import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbsorbingShieldBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamageOverTimeInfluence;
-import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -43,7 +42,8 @@ public class PurifyingFlame extends Spell {
         iconName = "purifying_flame.png";
     }
 
-    public PurifyingFlame(String name, float cooldown, float range, float castTime) {
+    public PurifyingFlame(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -52,7 +52,8 @@ public class PurifyingFlame extends Spell {
         final float range = 200f;
         final float castTime = 0f;
 
-        final PurifyingFlame spell = new PurifyingFlame("Purifying Flame", cooldown, range, castTime);
+        final PurifyingFlame spell = new PurifyingFlame("Purifying Flame",
+                cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -62,35 +63,46 @@ public class PurifyingFlame extends Spell {
                 final float duration = 3f;
                 final CastSelfBuffAction action = new CastSelfBuffAction();
                 final Node aoeContainer = new Node("purifying-flame");
+
                 if (worldManager.isServer()) {
-                    final Integer playerId = caster.getUserData(UserDataStrings.PLAYER_ID);                                        
-                    aoeContainer.setUserData(UserDataStrings.PLAYER_ID, playerId);
-                    
+                    int playerId =
+                            caster.getUserData(UserDataStrings.PLAYER_ID);
+                    aoeContainer
+                            .setUserData(UserDataStrings.PLAYER_ID, playerId);
+
                     int teamId = caster.getUserData(UserDataStrings.TEAM_ID);
                     aoeContainer.setUserData(UserDataStrings.TEAM_ID, teamId);
 
-                    final GhostControl ghost = new GhostControl(new SphereCollisionShape(8f));
+                    GhostControl ghost =
+                            new GhostControl(new SphereCollisionShape(8f));
                     ghost.setCollisionGroup(CollisionGroups.CHARACTERS);
                     ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
                     aoeContainer.addControl(ghost);
 
-                    final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
-                    areaEffectControl.setOwnerInterface(caster.getControl(InfluenceInterfaceControl.class));
-                    DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                    AreaEffectControl areaEffectControl =
+                            new AreaEffectControl(ghost);
+                    areaEffectControl.setOwnerInterface(caster
+                            .getControl(InfluenceInterfaceControl.class));
+                    DamageOverTimeBuff ignite = Ignite
+                            .ifNotCooldownCreateDamageOverTimeBuff(caster);
+
                     if (ignite != null) {
                         areaEffectControl.addEnterBuff(ignite);
                     }
 
                     float baseDps = 100f;
-                    final float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
-                    final float dps = baseDps * damageFactor;
-                    DamageOverTimeInfluence damageOverTime = new DamageOverTimeInfluence(dps);
+                    float damageFactor =
+                            caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    float dps = baseDps * damageFactor;
+                    DamageOverTimeInfluence damageOverTime =
+                            new DamageOverTimeInfluence(dps);
                     damageOverTime.setBreaksCrowdControl(false);
                     areaEffectControl.addInfluence(damageOverTime);
-                    
+
                     InfluenceInterfaceControl casterInfluenceInterface =
-                            caster.getControl(InfluenceInterfaceControl.class);                    
-                    areaEffectControl.setOwnerInterface(casterInfluenceInterface);
+                            caster.getControl(InfluenceInterfaceControl.class);
+                    areaEffectControl
+                            .setOwnerInterface(casterInfluenceInterface);
 
                     aoeContainer.addControl(areaEffectControl);
 
@@ -98,9 +110,12 @@ public class PurifyingFlame extends Spell {
                 }
 
                 aoeContainer.setLocalTranslation(0f, 0f, 0f);
-                TimedExistenceControl timedExistence = new TimedExistenceControl(duration);
+                TimedExistenceControl timedExistence =
+                        new TimedExistenceControl(duration);
                 aoeContainer.addControl(timedExistence);
-                timedExistence.setSpace(caster.getControl(CharacterPhysicsControl.class).getPhysicsSpace());
+                timedExistence.setSpace(caster
+                        .getControl(CharacterPhysicsControl.class)
+                        .getPhysicsSpace());
 
                 caster.attachChild(aoeContainer);
 
@@ -109,24 +124,5 @@ public class PurifyingFlame extends Spell {
         };
 
         return spell;
-    }
-}
-
-class AbsorbingShieldBuff extends AbstractBuff {
-
-    {
-        friendly = true;
-        name = "Purifying Flame";
-        setTypeId(BuffTypeIds.PURIFYING_FLAME);
-    }
-
-    public AbsorbingShieldBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
-    }
-
-    @Override
-    public void update(float time) {
-        super.update(time);
-        targetInterface.setImmuneToProjectiles(true);
     }
 }
