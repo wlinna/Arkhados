@@ -62,8 +62,8 @@ public class Fireball extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 1.0f;
-        final float range = 80f;
+        final float cooldown = 0.9f;
+        final float range = 85f;
         final float castTime = 0.37f;
 
         final Fireball spell = new Fireball("Fireball", cooldown, range, castTime);
@@ -161,7 +161,7 @@ class FireballBuilder extends AbstractNodeBuilder {
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, 150f);
+        node.setUserData(UserDataStrings.DAMAGE, 170f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
         if (worldManager.isClient()) {

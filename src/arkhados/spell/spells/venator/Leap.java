@@ -103,7 +103,7 @@ class CastLeapAction extends EntityAction {
 
         MotionEvent motionControl = new MotionEvent(spatial, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / forwardSpeed);
-        motionControl.setSpeed(1.6f);
+        motionControl.setSpeed(1.4f);
 
         direction = finalLocation.subtract(startLocation);
         physics.setViewDirection(direction);

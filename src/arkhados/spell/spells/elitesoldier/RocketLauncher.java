@@ -175,7 +175,7 @@ class RocketBuilder extends AbstractNodeBuilder {
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
         node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, 150f);
+        node.setUserData(UserDataStrings.DAMAGE, 180f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 23000f);
 
         if (worldManager.isClient()) {
@@ -227,7 +227,7 @@ class RocketBuilder extends AbstractNodeBuilder {
         ProjectileControl projectileControl = new ProjectileControl();
 
         SplashAction splash =
-                new SplashAction(30f, 100f, DistanceScaling.LINEAR, null);
+                new SplashAction(25f, 120f, DistanceScaling.LINEAR, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
 

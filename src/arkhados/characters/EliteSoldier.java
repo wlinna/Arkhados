@@ -108,7 +108,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
         float radius = 5.0f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
-        float health = 1600f;
+        float health = 1675f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);

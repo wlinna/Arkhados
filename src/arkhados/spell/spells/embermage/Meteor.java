@@ -92,7 +92,6 @@ public class Meteor extends Spell {
     }
 }
 
-
 class CastMeteorAction extends EntityAction {
 
     private final Spell spell;
@@ -143,7 +142,7 @@ class CastMeteorAction extends EntityAction {
                     SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
                     SplashAction splash = 
-                            new SplashAction(30f, baseDamage, DistanceScaling.LINEAR, null);
+                            new SplashAction(25f, baseDamage, DistanceScaling.LINEAR, null);
                     splash.setCasterInterface(casterInterface);
                     int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
                     splash.setExcludedTeam(teamId);
@@ -213,7 +212,7 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.DAMAGE, 300f);
+        node.setUserData(UserDataStrings.DAMAGE, 340f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 25000f);
 
         SpellBuffControl spellBuffControl = new SpellBuffControl();

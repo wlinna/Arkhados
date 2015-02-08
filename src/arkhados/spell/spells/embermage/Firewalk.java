@@ -73,9 +73,9 @@ public class Firewalk extends Spell {
     }
 
     public static Firewalk create() {
-        final float cooldown = 10f;
+        final float cooldown = 9f;
         final float range = 90f;
-        final float castTime = 0.2f;
+        final float castTime = 0.15f;
         final Firewalk spell = new Firewalk("Firewalk", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {

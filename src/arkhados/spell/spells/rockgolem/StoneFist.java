@@ -160,7 +160,7 @@ class StoneFistAction extends EntityAction {
                 stone.getControl(SpiritStonePhysicsControl.class);
 
         Vector3f direction = hitDirection.normalize();
-        physics.punch(direction.multLocal(110f));
+        physics.punch(direction.multLocal(160f));
         physics.addCollideWithGroup(CollisionGroups.WALLS);
     }
 }

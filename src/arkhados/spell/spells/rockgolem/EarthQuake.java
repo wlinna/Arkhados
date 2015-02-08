@@ -83,7 +83,7 @@ class CastEarthQuakeAction extends EntityAction {
     public boolean update(float tpf) {
         ChargeAction charge = new ChargeAction(chargeRange);
         charge.setChargeSpeed(150f);
-        charge.setHitDamage(250f);
+        charge.setHitDamage(190f);
 
         IncapacitateCC incapacitate = new IncapacitateCC(1.2f, -1);
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
