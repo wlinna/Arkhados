@@ -48,7 +48,7 @@ public class EntityVariableControl extends AbstractControl {
             InfluenceInterfaceControl influenceInterface =
                     spatial.getControl(InfluenceInterfaceControl.class);
             if (influenceInterface != null) {
-                CharacterInteraction.harm(null, influenceInterface, 200f * tpf, null, true);
+                CharacterInteraction.harm(null, influenceInterface, 75f * tpf, null, true);
             }
         }
     }
