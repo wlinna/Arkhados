@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.Globals;
+import arkhados.components.CResting;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
@@ -21,8 +23,8 @@ import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
+import arkhados.controls.ComponentAccessor;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
@@ -30,6 +32,7 @@ import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
+import arkhados.systems.SResting;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
@@ -37,7 +40,7 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector3f;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -60,7 +63,7 @@ public class Venator extends AbstractNodeBuilder {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FERALSCREAM,
                 new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
-                
+
         RandomChoiceEffect randomChoiceEffect = new RandomChoiceEffect();
         randomChoiceEffect.add(
                 new SimpleSoundEffect("Effects/Sound/Rend1.wav"));
@@ -91,6 +94,11 @@ public class Venator extends AbstractNodeBuilder {
         for (Spatial childToScale : entity.getChildren()) {
             childToScale.scale(3f);
         }
+
+        AppStateManager stateManager = Globals.app.getStateManager();
+
+        ComponentAccessor componentAccessor = new ComponentAccessor();
+        entity.addControl(componentAccessor);
 
         entity.addControl(new CharacterPhysicsControl(radius, 22f, 80f));
 
@@ -123,7 +131,7 @@ public class Venator extends AbstractNodeBuilder {
         CharacterAnimationControl characterAnimControl =
                 new CharacterAnimationControl(animControl);
 
-        AnimationData deathAnim = 
+        AnimationData deathAnim =
                 new AnimationData("Die-1", 1f, LoopMode.DontLoop);
         AnimationData walkAnim =
                 new AnimationData("Run", 0.8f, LoopMode.DontLoop);
@@ -199,8 +207,10 @@ public class Venator extends AbstractNodeBuilder {
             entity.getControl(InfluenceInterfaceControl.class)
                     .setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
-            entity.addControl(restingControl);
+            CResting cResting = new CResting();
+            cResting.spatial = entity;
+            componentAccessor.resting = cResting;
+            stateManager.getState(SResting.class).addComponent(cResting);
         }
 
         return entity;

@@ -14,15 +14,17 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.Globals;
+import arkhados.components.CResting;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
+import arkhados.controls.ComponentAccessor;
 import arkhados.controls.EliteSoldierAmmunitionControl;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncControl;
 import arkhados.controls.SyncInterpolationControl;
@@ -31,6 +33,7 @@ import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
+import arkhados.systems.SResting;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
@@ -39,6 +42,7 @@ import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -71,7 +75,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
                 new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
         getEffectBox().addActionEffect(ACTION_RAILGUN,
                 new SimpleSoundEffect("Effects/Sound/Railgun.wav"));
-        getEffectBox().addActionEffect(ACTION_LIKE_A_PRO, 
+        getEffectBox().addActionEffect(ACTION_LIKE_A_PRO,
                 new SimpleSoundEffect("Effects/Sound/LikeAPro.wav"));
         getEffectBox().addActionEffect(ACTION_PLASMAGUN,
                 new SimpleSoundEffect("Effects/Sound/PlasmagunLaunch.wav"));
@@ -113,6 +117,11 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
+
+        AppStateManager stateManager = Globals.app.getStateManager();
+
+        ComponentAccessor componentAccessor = new ComponentAccessor();
+        entity.addControl(componentAccessor);
 
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
@@ -190,8 +199,10 @@ public class EliteSoldier extends AbstractNodeBuilder {
             entity.getControl(InfluenceInterfaceControl.class)
                     .setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
-            entity.addControl(restingControl);
+            CResting cResting = new CResting();
+            cResting.spatial = entity;
+            componentAccessor.resting = cResting;
+            stateManager.getState(SResting.class).addComponent(cResting);
         }
 
         return entity;

@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -40,10 +39,10 @@ import java.util.List;
  */
 public class SpellCastControl extends AbstractControl {
 
+    private static final float GLOBAL_COOLDOWN = 0.2f;
     private HashMap<Integer, Spell> spells = new HashMap<>();
     private HashMap<Integer, Float> cooldowns = new HashMap<>();
     private HashMap<Integer, Spell> keySpellMappings = new HashMap<>();
-    private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
     private final List<SpellCastListener> castListeners = new ArrayList<>();
@@ -70,7 +69,8 @@ public class SpellCastControl extends AbstractControl {
      *
      * @param ammunitionControl
      */
-    public void addCastListeners(EliteSoldierAmmunitionControl ammunitionControl) {
+    public void addCastListeners(
+            EliteSoldierAmmunitionControl ammunitionControl) {
         castListeners.add(ammunitionControl);
     }
 
@@ -82,7 +82,8 @@ public class SpellCastControl extends AbstractControl {
      * Interrupt spell casting so that spell's cooldown is not resetted.
      */
     public void safeInterrupt() {
-        EntityAction action = spatial.getControl(ActionQueueControl.class).getCurrent();
+        EntityAction action =
+                spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
             casting = false;
             Spell spell = ((CastingSpellAction) action).getSpell();
@@ -106,7 +107,8 @@ public class SpellCastControl extends AbstractControl {
             return;
         }
 
-        EntityAction action = spatial.getControl(ActionQueueControl.class).getCurrent();
+        EntityAction action =
+                spatial.getControl(ActionQueueControl.class).getCurrent();
         if (action != null && ((action instanceof CastingSpellAction)
                 || (action instanceof ChannelingSpellAction))) {
 
@@ -140,8 +142,10 @@ public class SpellCastControl extends AbstractControl {
             return false;
         }
 
-        if (getSpatial().getControl(EntityVariableControl.class).getSender().isServer()) {
-            if (!spatial.getControl(InfluenceInterfaceControl.class).canCast()) {
+        if (getSpatial().getControl(EntityVariableControl.class).getSender().
+                isServer()) {
+            if (!spatial.getControl(InfluenceInterfaceControl.class)
+                    .canCast()) {
                 return false;
             }
         }
@@ -163,21 +167,32 @@ public class SpellCastControl extends AbstractControl {
     public void cast(int input, Vector3f targetLocation) {
         Spell spell = keySpellMappings.get(input);
 
-        PlayerEntityAwareness awareness = getSpatial().getControl(EntityVariableControl.class).getAwareness();
+        PlayerEntityAwareness awareness = getSpatial()
+                .getControl(EntityVariableControl.class).getAwareness();
         if (awareness != null) {
 
-            final CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+            CharacterPhysicsControl physics =
+                    spatial.getControl(CharacterPhysicsControl.class);
             physics.setViewDirection(physics.calculateTargetDirection());
-            spatial.getControl(CharacterAnimationControl.class).castSpell(spell);
-            spatial.getControl(ActionQueueControl.class).enqueueAction(new CastingSpellAction(spell, spell.isMultipart()));
+            spatial.getControl(CharacterAnimationControl.class)
+                    .castSpell(spell);
+            spatial.getControl(ActionQueueControl.class).enqueueAction(
+                    new CastingSpellAction(spell, spell.isMultipart()));
 //            activeCastTimeLeft = spell.getCastTime();
-            final EntityAction castingAction = spell.buildCastAction((Node) spatial, targetLocation);
-            spatial.getControl(ActionQueueControl.class).enqueueAction(castingAction);
-            Vector3f direction = targetLocation.subtract(spatial.getLocalTranslation());
+            EntityAction castingAction =
+                    spell.buildCastAction((Node) spatial, targetLocation);
+            spatial.getControl(ActionQueueControl.class)
+                    .enqueueAction(castingAction);
+            Vector3f direction = targetLocation.subtract(
+                    spatial.getLocalTranslation());
+
+            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+
             awareness.getFogManager().addCommand(spatial,
-                    new StartCastingSpellCommand((Integer) spatial.getUserData(UserDataStrings.ENTITY_ID),
-                    spell.getId(), direction));
-            getSpatial().getControl(RestingControl.class).stopRegen();
+                    new StartCastingSpellCommand(entityId, spell.getId(),
+                    direction));
+            getSpatial()
+                    .getControl(ComponentAccessor.class).resting.stopRegen();
         }
         globalCooldown();
         putOnCooldown(spell);
@@ -194,26 +209,28 @@ public class SpellCastControl extends AbstractControl {
 
     public void setCooldown(int spellId, float cooldown) {
         cooldowns.put(spellId, cooldown);
-        PlayerEntityAwareness awareness =
-                getSpatial().getControl(EntityVariableControl.class).getAwareness();
+        PlayerEntityAwareness awareness = getSpatial()
+                .getControl(EntityVariableControl.class).getAwareness();
 
         if (awareness != null) {
-            final Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            awareness.getFogManager().addCommand(spatial, new SetCooldownCommand(entityId, spellId, cooldown, true));
+            awareness.getFogManager().addCommand(spatial,
+                    new SetCooldownCommand(entityId, spellId, cooldown, true));
         }
     }
 
     public void putOnCooldown(Spell spell) {
         cooldowns.put(spell.getId(), spell.getCooldown());
 
-        PlayerEntityAwareness awareness =
-                getSpatial().getControl(EntityVariableControl.class).getAwareness();
+        PlayerEntityAwareness awareness = getSpatial()
+                .getControl(EntityVariableControl.class).getAwareness();
 
         if (awareness != null) {
-            Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            awareness.getFogManager().addCommand(spatial, new SetCooldownCommand(entityId,
-                    spell.getId(), spell.getCooldown(), true));
+            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            awareness.getFogManager().addCommand(spatial,
+                    new SetCooldownCommand(
+                    entityId, spell.getId(), spell.getCooldown(), true));
         }
     }
 
@@ -222,26 +239,18 @@ public class SpellCastControl extends AbstractControl {
         return cooldown > 0f;
     }
 
-    // Not removing this, because it may be useful for AI controlled units and for visual cues
-    private Vector3f findClosestCastingLocation(final Vector3f targetLocation, float range) {
-        Vector3f displacement = getSpatial().getLocalTranslation().subtract(targetLocation);
-        if (displacement.lengthSquared() <= FastMath.sqr(range)) {
-            return getSpatial().getLocalTranslation();
-        }
-        displacement.normalizeLocal().multLocal(range);
-        return displacement.addLocal(targetLocation);
-    }
-
     public Vector3f getClosestPointToTarget(Spell spell) {
-        final Vector3f targetLocation = spatial.getControl(CharacterPhysicsControl.class).getTargetLocation();
+        Vector3f targetLocation = spatial
+                .getControl(CharacterPhysicsControl.class).getTargetLocation();
 
-        final float distance = targetLocation.distance(spatial.getLocalTranslation());
+        float distance = targetLocation.distance(spatial.getLocalTranslation());
         float interpolationFactor = spell.getRange() / distance;
         if (interpolationFactor > 1f) {
             interpolationFactor = 1f;
         }
 
-        final Vector3f target = spatial.getLocalTranslation().clone().interpolate(targetLocation, interpolationFactor);
+        Vector3f target = spatial.getLocalTranslation().clone()
+                .interpolate(targetLocation, interpolationFactor);
         return target;
     }
 
@@ -277,7 +286,8 @@ public class SpellCastControl extends AbstractControl {
     }
 
     public boolean isChanneling() {
-        EntityAction action = spatial.getControl(ActionQueueControl.class).getCurrent();
+        EntityAction action =
+                spatial.getControl(ActionQueueControl.class).getCurrent();
         return action instanceof ChannelingSpellAction;
     }
 

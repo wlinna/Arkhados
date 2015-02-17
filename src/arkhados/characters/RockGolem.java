@@ -15,6 +15,8 @@
 package arkhados.characters;
 
 import arkhados.EffectHandler;
+import arkhados.Globals;
+import arkhados.components.CResting;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
@@ -22,16 +24,16 @@ import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
+import arkhados.controls.ComponentAccessor;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EarthQuakeEffect;
 import arkhados.effects.EffectBox;
-import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.TossHitEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
+import arkhados.systems.SResting;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.AnimationData;
@@ -39,6 +41,7 @@ import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +51,9 @@ import java.util.List;
  * @author william
  */
 public class RockGolem extends AbstractNodeBuilder {
-    public static final int ACTION_EARTHQUAKE = 0;
-    
-    public static int WORLDEFFECT_TOSS_HIT;
 
+    public static final int ACTION_EARTHQUAKE = 0;
+    public static int WORLDEFFECT_TOSS_HIT;
     private final ClientHudManager clientHudManager;
 
     public RockGolem(ClientHudManager clientHudManager) {
@@ -61,8 +63,8 @@ public class RockGolem extends AbstractNodeBuilder {
                 new EarthQuakeEffect();
 
         getEffectBox().addActionEffect(ACTION_EARTHQUAKE, earthQuake);
-        
-        TossHitEffect tossHitEffect = new TossHitEffect();        
+
+        TossHitEffect tossHitEffect = new TossHitEffect();
         WORLDEFFECT_TOSS_HIT = EffectHandler.addWorldEffect(tossHitEffect);
     }
 
@@ -82,6 +84,11 @@ public class RockGolem extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
         entity.getChild(0).scale(3f);
+
+        AppStateManager stateManager = Globals.app.getStateManager();
+
+        ComponentAccessor componentAccessor = new ComponentAccessor();
+        entity.addControl(componentAccessor);
 
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 300f));
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
@@ -126,7 +133,7 @@ public class RockGolem extends AbstractNodeBuilder {
                 "Throw_Rock2", 56f / 130f, seal.getCastTime());
         AnimationData boulderThrowAnim =
                 new AnimationData("Throw_Rock2", boulderThrowSpeed, LoopMode.Loop);
-                
+
         AnimationData spiritStoneAnim =
                 new AnimationData("Throw_Rock", boulderThrowSpeed, LoopMode.Loop);
 
@@ -150,9 +157,12 @@ public class RockGolem extends AbstractNodeBuilder {
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
-            entity.addControl(restingControl);
+            CResting cResting = new CResting();
+            cResting.spatial = entity;
+            componentAccessor.resting = cResting;
+            stateManager.getState(SResting.class).addComponent(cResting);
         }
+
         return entity;
     }
 }

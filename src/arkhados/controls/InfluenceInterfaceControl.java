@@ -86,7 +86,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             removeDamageSensitiveBuffs();
         }
 
-        getSpatial().getControl(RestingControl.class).stopRegen();
+        getSpatial().getControl(ComponentAccessor.class).resting.stopRegen();
 
         return healthBefore - health;
     }
@@ -111,7 +111,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         crowdControlBuffs.add(crowdControlInfluence);
 
-        getSpatial().getControl(RestingControl.class).stopRegen();
+        getSpatial().getControl(ComponentAccessor.class).resting.stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
         // TODO: Remove this ugly repetition
@@ -121,7 +121,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
                     .setWalkDirection(Vector3f.ZERO);
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
-        } else if (crowdControlInfluence instanceof FearCC) { 
+        } else if (crowdControlInfluence instanceof FearCC) {
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
         }
@@ -134,7 +134,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
         otherBuffs.add(buff);
 
         if (!buff.isFriendly()) {
-            getSpatial().getControl(RestingControl.class).stopRegen();
+            getSpatial()
+                    .getControl(ComponentAccessor.class).resting.stopRegen();
         }
     }
 

@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.Globals;
+import arkhados.components.CResting;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
@@ -21,13 +23,14 @@ import arkhados.controls.CharacterHudControl;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.CharacterSoundControl;
 import arkhados.controls.CharacterSyncControl;
+import arkhados.controls.ComponentAccessor;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.controls.SyncInterpolationControl;
 import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
+import arkhados.systems.SResting;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
@@ -35,7 +38,7 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector3f;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.scene.Node;
 
 /**
@@ -70,17 +73,23 @@ public class EmberMage extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
+        AppStateManager stateManager = Globals.app.getStateManager();
+
+        ComponentAccessor componentAccessor = new ComponentAccessor();
+        entity.addControl(componentAccessor);
+
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
         /**
-         * By setting physics damping to low value, we can effectively apply impulses on it.
+         * By setting physics damping to low value, we can effectively apply
+         * impulses on it.
          */
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
         /**
-         * To add spells to entity, create SpellCastControl and call its putSpell-method with name
-         * of the spell as argument.
+         * To add spells to entity, create SpellCastControl and call its
+         * putSpell-method with name of the spell as argument.
          */
         SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
@@ -99,7 +108,8 @@ public class EmberMage extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         /**
-         * Map Spell names to casting animation's name. In this case all spells use same animation.
+         * Map Spell names to casting animation's name. In this case all spells
+         * use same animation.
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
 
@@ -134,8 +144,10 @@ public class EmberMage extends AbstractNodeBuilder {
             entity.addControl(new SyncInterpolationControl());
             entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
-            entity.addControl(restingControl);
+            CResting cResting = new CResting();
+            cResting.spatial = entity;
+            componentAccessor.resting = cResting;
+            stateManager.getState(SResting.class).addComponent(cResting);
         }
 
         return entity;

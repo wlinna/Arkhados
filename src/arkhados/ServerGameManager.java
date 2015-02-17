@@ -18,6 +18,7 @@ import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Sender;
+import arkhados.systems.SResting;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -42,6 +43,7 @@ public class ServerGameManager extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        stateManager.attach(new SResting());
         gameMode.initialize(app);
         worldManager = app.getStateManager().getState(WorldManager.class);
         fogManager = new ServerFogManager();
@@ -63,11 +65,12 @@ public class ServerGameManager extends AbstractAppState {
 
         Sender sender = app.getStateManager().getState(Sender.class);
 
-        worldManager.preloadModels(new String[]{"Models/Circle.j3o", 
+        worldManager.preloadModels(new String[]{"Models/Circle.j3o",
             "Models/DamagingDagger.j3o", "Models/SealingBoulder.j3o",
-        "Models/SpiritStone.j3o"});
+            "Models/SpiritStone.j3o"});
 
-        app.getStateManager().getState(SyncManager.class).addObject(-1, worldManager);
+        app.getStateManager()
+                .getState(SyncManager.class).addObject(-1, worldManager);
 
         running = true;
         sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
@@ -94,7 +97,7 @@ public class ServerGameManager extends AbstractAppState {
     public GameMode getGameMode() {
         return gameMode;
     }
-    
+
     public void playerJoined(int playerId) {
         gameMode.playerJoined(playerId);
     }
