@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.systems;
 
-import arkhados.components.CResting;
+import arkhados.components.CRest;
 import arkhados.controls.InfluenceInterfaceControl;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
@@ -25,21 +25,26 @@ import java.util.List;
  *
  * @author william
  */
-public class SResting extends AbstractAppState {
+public class SRest extends AbstractAppState {
 
-    private List<CResting> components = new ArrayList<>();
+    private List<CRest> components = new ArrayList<>();
+    private SHeal sHeal;
+
+    public SRest(SHeal sHeal) {
+        this.sHeal = sHeal;
+    }        
     
-    private void regenerate(float tpf, CResting component) {
-        InfluenceInterfaceControl influenceInterface =
+    private void regenerate(float tpf, CRest component) {
+        InfluenceInterfaceControl target =
                 component.spatial.getControl(InfluenceInterfaceControl.class);
-        influenceInterface.heal(2.1f * component.idleTime * tpf);
+        sHeal.heal(target, 2.1f * component.idleTime * tpf);
     }
 
     @Override
     public void update(float tpf) {
         super.update(tpf);
 
-        for (CResting cResting : components) {
+        for (CRest cResting : components) {
             Vector3f newLocation = cResting.spatial.getLocalTranslation();
             if (newLocation.distanceSquared(cResting.previousLocation) > 0.1f) {
                 cResting.idleTime = 0f;                
@@ -54,7 +59,7 @@ public class SResting extends AbstractAppState {
         }
     }
     
-    public void addComponent(CResting component) {
+    public void addComponent(CRest component) {
         components.add(component);
     }
 }

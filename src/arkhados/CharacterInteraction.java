@@ -17,6 +17,8 @@ package arkhados;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.gamemode.GameMode;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.systems.SDamage;
+import arkhados.systems.SHeal;
 import arkhados.util.RoundStats;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
@@ -35,6 +37,9 @@ public class CharacterInteraction {
     // TODO: Consider if we really want to put gameMode here or not
     public static GameMode gameMode = null;
     private static final Map<Integer, Integer> latestDamager = new HashMap<>();
+    
+    public static SDamage sDamage = null;
+    public static SHeal sHeal = null;
 
     public static void harm(InfluenceInterfaceControl attacker,
             InfluenceInterfaceControl target, final float rawDamage,
@@ -48,20 +53,26 @@ public class CharacterInteraction {
             return;
         }
 
-        final float damageDone = target.doDamage(rawDamage, canBreakCC);
+        float damageDone = sDamage.doDamage(target, rawDamage, canBreakCC);
 
-        int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        int targetPlayerId =
+                target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
         int attackerPlayerId;
 
         if (attacker != null) {
             Spatial attackerSpatial = attacker.getSpatial();
-            float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
+            float lifeSteal =
+                    attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
             float lifeStolen = lifeSteal * damageDone;
-            attacker.heal(lifeStolen);
 
-            attackerPlayerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
-            getCurrentRoundStats().addDamageForPlayer(attackerPlayerId, damageDone);
-            getCurrentRoundStats().addHealthRestorationForPlayer(attackerPlayerId, lifeStolen);
+            sHeal.heal(attacker, lifeStolen);
+
+            attackerPlayerId =
+                    attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
+            getCurrentRoundStats()
+                    .addDamageForPlayer(attackerPlayerId, damageDone);
+            getCurrentRoundStats().addHealthRestorationForPlayer(
+                    attackerPlayerId, lifeStolen);
 
             latestDamager.put(targetPlayerId, attackerPlayerId);
         } else {
@@ -90,7 +101,8 @@ public class CharacterInteraction {
         }
     }
 
-    public static void heal(InfluenceInterfaceControl healer, InfluenceInterfaceControl target,
+    public static void heal(InfluenceInterfaceControl healer,
+            InfluenceInterfaceControl target,
             float amount) {
         if (target == null) {
             return;
@@ -98,10 +110,12 @@ public class CharacterInteraction {
             return;
         }
 
-        float healingDone = target.heal(amount);
+        float healingDone = sHeal.heal(target, amount);
 
-        int healerPlayerId = healer.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        getCurrentRoundStats().addHealthRestorationForPlayer(healerPlayerId, healingDone);
+        int healerPlayerId =
+                healer.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        getCurrentRoundStats()
+                .addHealthRestorationForPlayer(healerPlayerId, healingDone);
     }
 
     public static void startNewRound() {

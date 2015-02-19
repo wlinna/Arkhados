@@ -15,7 +15,7 @@
 package arkhados.characters;
 
 import arkhados.Globals;
-import arkhados.components.CResting;
+import arkhados.components.CRest;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
@@ -32,7 +32,7 @@ import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
-import arkhados.systems.SResting;
+import arkhados.systems.SRest;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
@@ -207,10 +207,10 @@ public class Venator extends AbstractNodeBuilder {
             entity.getControl(InfluenceInterfaceControl.class)
                     .setIsServer(false);
         } else {
-            CResting cResting = new CResting();
+            CRest cResting = new CRest();
             cResting.spatial = entity;
             componentAccessor.resting = cResting;
-            stateManager.getState(SResting.class).addComponent(cResting);
+            stateManager.getState(SRest.class).addComponent(cResting);
         }
 
         return entity;

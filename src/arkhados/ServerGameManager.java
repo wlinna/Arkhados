@@ -18,7 +18,9 @@ import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Sender;
-import arkhados.systems.SResting;
+import arkhados.systems.SDamage;
+import arkhados.systems.SHeal;
+import arkhados.systems.SRest;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -43,7 +45,10 @@ public class ServerGameManager extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        stateManager.attach(new SResting());
+        SHeal sHeal = new SHeal();
+        stateManager.attach(new SRest(sHeal));
+        stateManager.attach(new SDamage());
+        stateManager.attach(sHeal);
         gameMode.initialize(app);
         worldManager = app.getStateManager().getState(WorldManager.class);
         fogManager = new ServerFogManager();

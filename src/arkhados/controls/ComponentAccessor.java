@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.components.CResting;
+import arkhados.components.CRest;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -30,7 +30,7 @@ import com.jme3.scene.control.AbstractControl;
  * This will be removed when migration is nearing completion
  */
 public class ComponentAccessor extends AbstractControl {
-    public CResting resting;
+    public CRest resting;
 
     @Override
     protected void controlUpdate(float tpf) {

@@ -22,8 +22,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 
-
-public class CResting {
+public class CRest {
     public float idleTime = 0f;
     public Vector3f previousLocation = new Vector3f();
     public Spatial spatial;
