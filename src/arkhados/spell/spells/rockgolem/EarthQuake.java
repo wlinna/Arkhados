@@ -121,6 +121,9 @@ class CastEarthQuakeAction extends EntityAction {
                         continue;
                     }
 
+                    // FIXME: This problematic way to handle KnockUp because some
+                    // other spell can clear ActionQueue while KnockUp is
+                    // executing
                     pair.spatial.getControl(ActionQueueControl.class)
                             .enqueueAction(new KnockupAction());
                 }
