@@ -34,6 +34,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.ComponentAccessor;
 import arkhados.controls.EntityEventControl;
 import arkhados.controls.EntityVariableControl;
 import arkhados.controls.SyncInterpolationControl;
@@ -45,6 +46,7 @@ import arkhados.messages.syncmessages.RemoveEntityCommand;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
+import arkhados.util.ComponentSystemMap;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
@@ -243,6 +245,12 @@ public class WorldManager extends AbstractAppState {
         int teamId = PlayerData.getIntData(playerId, PlayerDataStrings.TEAM_ID);
         entity.setUserData(UserDataStrings.TEAM_ID, teamId);
 
+        ComponentAccessor accessor = entity.getControl(ComponentAccessor.class);
+        if (accessor != null) {
+            ComponentSystemMap.get().addComponents(id,
+                    accessor.getComponents());
+        }
+
         entities.put(id, entity);
         syncManager.addObject(id, entity);
         space.addAll(entity);
@@ -426,9 +434,15 @@ public class WorldManager extends AbstractAppState {
             }
         }
         space.removeAll(spatial);
-        final GhostControl ghostControl = spatial.getControl(GhostControl.class);
+        GhostControl ghostControl = spatial.getControl(GhostControl.class);
         if (ghostControl != null) {
             space.remove(ghostControl);
+        }
+        
+        ComponentAccessor accessor =
+                spatial.getControl(ComponentAccessor.class);        
+        if (accessor != null) {
+            spatial.removeControl(accessor);
         }
     }
 

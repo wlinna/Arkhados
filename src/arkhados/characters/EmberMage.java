@@ -147,7 +147,7 @@ public class EmberMage extends AbstractNodeBuilder {
             CRest cResting = new CRest();
             cResting.spatial = entity;
             componentAccessor.resting = cResting;
-            stateManager.getState(SRest.class).addComponent(cResting);
+            componentAccessor.addComponent(cResting);
         }
 
         return entity;

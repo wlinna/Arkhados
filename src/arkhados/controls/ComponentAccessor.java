@@ -15,22 +15,49 @@
 package arkhados.controls;
 
 import arkhados.components.CRest;
+import arkhados.components.Component;
+import arkhados.systems.SSystem;
+import arkhados.util.ComponentSystemMap;
+import arkhados.util.UserDataStrings;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author william
  */
-
 /**
- * Control used for accessing entity's components.
- * Used as migration step between Entity-Controller and Entity-Component-System.
- * This will be removed when migration is nearing completion
+ * Control used for accessing entity's components. Used as migration step
+ * between Entity-Controller and Entity-Component-System. This will be removed
+ * when migration is nearing completion
  */
 public class ComponentAccessor extends AbstractControl {
+
     public CRest resting;
+    private List<Component> components = new ArrayList<>();
+
+    @Override
+    public void setSpatial(Spatial spatial) {
+        if (spatial == null) {
+            int entityId = this.spatial.getUserData(UserDataStrings.ENTITY_ID);
+            super.setSpatial(spatial);
+            for (Component component : components) {
+                SSystem system =
+                        ComponentSystemMap.get().get(component.getClass());
+                system.removeEntity(entityId);
+            }
+        } else {
+            super.setSpatial(spatial);
+        }
+    }
+
+    public void addComponent(Component component) {
+        components.add(component);
+    }
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -39,5 +66,8 @@ public class ComponentAccessor extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
-    
+
+    public List<Component> getComponents() {
+        return components;
+    }
 }

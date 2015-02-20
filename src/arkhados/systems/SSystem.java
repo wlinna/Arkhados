@@ -12,25 +12,15 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.components;
+package arkhados.systems;
 
-import arkhados.util.ComponentSystemMap;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
+import arkhados.components.Component;
 
 /**
  *
  * @author william
  */
-
-public class CRest implements Component {
-    public static final int type = ComponentSystemMap.idCounter++;    
-    
-    public float idleTime = 0f;
-    public Vector3f previousLocation = new Vector3f();
-    public Spatial spatial;
-    
-    public void stopRegen() {
-        idleTime = 0f;
-    }
+public interface SSystem<T extends Component> {
+    public void addComponent(int entityId, T component);
+    public void removeEntity(int entityId);
 }
