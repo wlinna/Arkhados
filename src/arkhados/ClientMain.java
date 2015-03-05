@@ -441,6 +441,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         });
     }
 
+    public void switchElement(String oldElement, String newElement) {
+        nifty.getCurrentScreen().findElementByName(oldElement).hide();
+        nifty.getCurrentScreen().findElementByName(newElement).show();
+    }
+
     @Override
     public void bind(Nifty nifty, Screen screen) {
     }

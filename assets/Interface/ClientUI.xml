@@ -8,8 +8,21 @@
         </effect>
     </style>
 
+    ￼<controlDefinition name="credits_panel"
+                        controller="de.lessvoid.nifty.controls.panel.PanelBuilder"
+                        inputMapping="de.lessvoid.nifty.input.mapping.MenuInputMapping">
+        <panel childLayout="horizontal">
+            <text style="nifty-label" width="*" text="$who" >
+            </text>
+            <text style="nifty-label" width="1%" text="" >
+            </text>
+            <text style="nifty-label" width="*" text="$for" >
+            </text>
+        </panel>
+    </controlDefinition>
+
     <screen id="null" controller="arkhados.ClientMain">
-    </screen>
+    </screen>    
 
     <screen id="main_menu" controller="arkhados.ClientMain">
         <layer childLayout="horizontal">            
@@ -18,7 +31,7 @@
         <layer childLayout="center">
             <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <effect>
-                    <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
+                    <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
                 </effect>
 
@@ -33,6 +46,10 @@
                 <text style="nifty-label" text=""/>
                 <control id="goto_settings" name="button" label="Settings" align="center">
                     <interact onClick="gotoMenu(settings)" />
+                </control>
+                <text style="nifty-label" text=""/>
+                <control id="goto_credits" name="button" label="Credits" align="center">
+                    <interact onClick="gotoMenu(credits)" />
                 </control>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
@@ -197,7 +214,7 @@
                     </effect>
                 </text>
                 <text style="nifty-label" text=""/>
-                 <image align="center" valign="center" filename="Interface/Images/JoinIcon.png" >
+                <image align="center" valign="center" filename="Interface/Images/JoinIcon.png" >
                     <effect>
                         <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
                     </effect>
@@ -359,15 +376,15 @@
                     </panel>
                     <panel id="game_area" width="*" height="*" align="center"></panel>
                     <panel id="panel_right" width="100px" height="*" childLayout="vertical"
-                               margin="20px,20px,0px,0px">
+                           margin="20px,20px,0px,0px">
                     </panel>
                 </panel>
                 <panel id="panel_bottom" childLayout="vertical" width="512px"  height="140px" align="center" valign="bottom">
                     <panel id="panel_buffs" childLayout="horizontal" width="512px"  height="60px" align="center" valign="top"
-                    paddingLeft="10px">
+                           paddingLeft="10px">
                     </panel>
                     <panel id="panel_spells" childLayout="horizontal" width="512px"  height="90px" align="center" valign="bottom"
-                    margin="6px,0px,0px,12px" paddingLeft="10px" backgroundImage="Interface/Images/SpellBar.png">                        
+                           margin="6px,0px,0px,12px" paddingLeft="10px" backgroundImage="Interface/Images/SpellBar.png">                        
                     </panel>
                 </panel>
             </panel>
@@ -387,6 +404,169 @@
                     <text style="nifty-label" text="Restoration" marginLeft="80px" width="70px" textHAlign="left" />
                     <text style="nifty-label" text="Kills" marginLeft="80px" width="70px" textHAlign="left" />
                 </panel>                                    
+            </panel>
+        </layer>
+    </screen>
+    
+    <screen id="credits" controller="arkhados.ClientMain">
+        <layer childLayout="horizontal">            
+            <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
+        </layer>
+        <layer childLayout="center">
+            <panel id="credits1" visible="true" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Programming" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="William Linna (main programmer)" >
+                </text>
+                <text style="nifty-label" text="Teemu Salminen (contributions)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Design" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="William Linna (main designer)" >
+                </text>
+                <text style="nifty-label" text="Allexit (contributions)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Sound and Graphics" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="William Linna (sound effects editing)" >
+                </text>
+                <text style="nifty-label" text="Teemu Salminen (sound effects and mucic editing)" >
+                </text>
+                <text style="nifty-label" text="Antti Saari (announcer voices)" >
+                </text>
+                <text style="nifty-label" text="Kimmo Näveri (Arkhados logo)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Early phase testing" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="William Linna" >
+                </text>
+                <text style="nifty-label" text="Allexit" >
+                </text>
+                <text style="nifty-label" text="Teemu Salminen" >
+                </text>
+                <text style="nifty-label" text="Otto Tuominen" >
+                </text>
+                <text style="nifty-label" text="Iivari Sassi" >
+                </text>
+                <text style="nifty-label" text="Oskari Saari" >
+                </text>
+                <text style="nifty-label" text="Ilkka Wirkkala" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="(Full credits at https://github.com/dnyarri/Arkhados/blob/master/CREDITS.md)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <control id="next_button" name="button" label="--->" align="center" width="200px">
+                    <interact onClick="switchElement(credits1, credits2)" />
+                </control>
+                <text style="nifty-label" text=""/>
+                <control id="exit_button" name="button" label="Back" align="center" width="200px">
+                    <interact onClick="gotoMenu(main_menu)" />
+                </control>
+            </panel>
+        
+            <panel id="credits2" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="MonkeyZone" for="example multiplayer game" />
+                <control name="credits_panel" who="Clement Wu, Nikolaus and Botanic" for="Mage model" />
+                <control name="credits_panel" who="Dennis Rodriguez (ThetankOmeter)" for="Venator model" />
+                <control name="credits_panel" who="hendori-sama, umask007 and Dm3d" for="Rock Golem model" />
+                <control name="credits_panel" who="wopr2012" for="Elite Soldier model" />
+                <control name="credits_panel" who="izuzf" for="Spirit Stone model" />
+                <control name="credits_panel" who="OliverHM" for="Sealing Boulder model" />
+                <control name="credits_panel" who="Dakal and Saroman" for="Ember Circle texture" />
+                <control name="credits_panel" who="StrumpyStrust" for="Spell Bar UI" />
+                <control name="credits_panel" who="Horrorpen" for="skull icon" />
+                <control name="credits_panel" who="J. W. Bjerk (eleazzaar)" for="spell icons" />
+                <control name="credits_panel" who="Paulius Jurgelevičius" for="spell icons" />
+                <panel childLayout="horizontal">
+                    <panel childLayout="vertical">
+                        <text style="nifty-label" width="*" text="Warlock Gauntlet's artists, rAum, jackFlower," >
+                        </text>
+                        <text style="nifty-label" width="*" text="DrZoliparia and Neil2D" >
+                        </text>
+                    </panel>
+                    <text style="nifty-label" width="1%" text="" >
+                    </text>
+                    <text style="nifty-label" width="*" text="spell icons" >
+                    </text>
+                </panel>
+                <control name="credits_panel" who="Lorc" for='"Crossed Axes" icon' />
+                <control name="credits_panel" who="Skorpio" for="LavaArena tileset" />
+                <control name="credits_panel" who="djonvincent" for="wall model" />
+                <control name="credits_panel" who="Ancient Beast -project and Gergő Soós" for="Rocket Jump icon" />
+                <control name="credits_panel" who="Blender Foundation" for="Meteor explosion sound" />
+                <control name="credits_panel" who="TheGoat" for="Venator's dagger" />
+                <control name="credits_panel" who="ReadeOnly" for="Fireball explosion sound" />
+                <control name="credits_panel" who="lensflare8642" for="Shotgun sound" />
+                <control name="credits_panel" who="Ogrebane" for="sound effects" />
+                <control name="credits_panel" who="thebardofblashphemy" for="pain sounds" />
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="(Full credits at https://github.com/dnyarri/Arkhados/blob/master/CREDITS.md)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <panel childLayout="horizontal" align="center">            
+                    <control id="previous_button" name="button" label="&lt;---" align="center" width="200px">
+                        <interact onClick="switchElement(credits2, credits1)" />
+                    </control>
+                    <control id="next_button" name="button" label="--->" align="center" width="200px">
+                        <interact onClick="switchElement(credits2, credits3)" />
+                    </control>
+                </panel>
+                <text style="nifty-label" text=""/>
+                <control id="exit_button" name="button" label="Back" align="center" width="200px">
+                    <interact onClick="gotoMenu(main_menu)" />
+                </control>
+            </panel>
+    
+            <panel id="credits3" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
+                <control name="credits_panel" who="spookymodem" for="sound effects" />
+                <control name="credits_panel" who="midimagician" for="Ember Circle sound" />
+                <control name="credits_panel" who="Mike Koenig (SoundBible)" for="Shotgun reload sound" />
+                <control name="credits_panel" who="nthompson" for="Earthquake sound effect" />
+                <control name="credits_panel" who="Kirat" for="Survival Instinct sound" />
+                <control name="credits_panel" who="KibblesBob" for="Rocket Launcher sound" />
+                <control name="credits_panel" who="Joe Reynolds - Professorlamp" for="Carmack (music)" />
+                <control name="credits_panel" who="Android128" for="Electric Quake (music)" />
+                <control name="credits_panel" who="Alexandr Zhelanov" for="multiple soundtracks" />
+                <control name="credits_panel" who="Matthew Pablo" for="The Dark Amulet (music)" />
+                <control name="credits_panel" who="Grégoire Lourme" for="multiple soundtracks" />
+                <control name="credits_panel" who="Kondi" for="multiple soundtracks" />
+                <control name="credits_panel" who="Michael Baradari" for="sound effects" />
+                <control name="credits_panel" who="uagadugu" for="Rock Golem pain sound" />
+                <control name="credits_panel" who="Olivier Girardot" for="Dwarves Gathering (music)" />
+                <control name="credits_panel" who="lolamadeus" for="Petrify sound" />
+                <control name="credits_panel" who="Independent.nu" for="Deep Wounds sound" />
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="(Full credits at https://github.com/dnyarri/Arkhados/blob/master/CREDITS.md)" >
+                </text>
+                <text style="nifty-label" text=""/>
+                <control id="previous_button" name="button" label="&lt;---" align="center" width="200px">
+                    <interact onClick="switchElement(credits3, credits2)" />
+                </control>
+                <text style="nifty-label" text=""/>
+                <control id="exit_button" name="button" label="Back" align="center" width="200px">
+                    <interact onClick="gotoMenu(main_menu)" />
+                </control>
             </panel>
         </layer>
     </screen>

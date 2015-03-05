@@ -26,6 +26,7 @@ are all awesome!
   - added many sound effects (with edits)
   - resting-feature
   - some music (with edits)
+  - Credits screen
 
 ## Announcer ##
 
