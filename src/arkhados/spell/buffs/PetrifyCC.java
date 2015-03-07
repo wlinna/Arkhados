@@ -47,4 +47,19 @@ public class PetrifyCC extends CrowdControlBuff {
 
         return false;
     }
+
+    @Override
+    public boolean interrupts() {
+        return true;
+    }
+
+    @Override
+    public boolean preventsCasting() {
+        return true;
+    }
+
+    @Override
+    public boolean preventsMoving() {
+        return true;
+    }
 }

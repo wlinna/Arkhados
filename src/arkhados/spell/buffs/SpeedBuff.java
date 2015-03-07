@@ -14,41 +14,28 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-import arkhados.util.UserDataStrings;
-
 /**
  *
  * @author william
  */
 public class SpeedBuff extends AbstractBuff {
-    private boolean factorBased;
-    private float amount;
 
-    public SpeedBuff(boolean factorBased, float amount, int buffGroupId, float duration) {
+    private float factor;
+    private float constant;
+
+    public SpeedBuff(float percentAmount, float constantAmount, int buffGroupId,
+            float duration) {
         super(buffGroupId, duration);
-        this.factorBased = factorBased;
-        if (factorBased) {
-            assert amount <= 1 && amount >= 0;
-            this.amount = 1 + amount; // It is factor now
-        } else {
-            this.amount = amount;
-        }        
+
+            factor = 1 + percentAmount;
+            constant = constantAmount;        
     }
 
-    @Override
-    public void update(float time) {
-        super.update(time);
-        if (this.targetInterface.isSpeedConstant()) {
-            return;
-        }
-        
-        Float msCurrent = this.targetInterface.getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
-        if (this.factorBased) {
-            msCurrent *= this.amount;
-        } else {
-            msCurrent += this.amount;
-        }
-        
-        this.targetInterface.getSpatial().setUserData(UserDataStrings.SPEED_MOVEMENT, msCurrent);        
-    }       
+    public float getFactor() {
+        return factor;
+    }
+
+    public float getConstant() {
+        return constant;
+    }
 }

@@ -19,12 +19,12 @@ import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.CrowdControlBuff;
-import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.spell.buffs.PetrifyCC;
+import arkhados.spell.buffs.SlowCC;
+import arkhados.spell.buffs.SpeedBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.util.UserDataStrings;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -48,27 +48,32 @@ public class InfluenceInterfaceControl extends AbstractControl {
     private boolean immuneToProjectiles = false;
     // HACK: Maybe this should be global?
     private boolean isServer = true;
+    private final List<SpeedBuff> speedBuffs = new ArrayList<>();
+    private final List<SlowCC> slows = new ArrayList<>();
 
-    public void addCrowdControlBuff(CrowdControlBuff crowdControlInfluence) {
-        if (crowdControlInfluence == null) {
+    public void addCrowdControlBuff(CrowdControlBuff buff) {
+        if (buff == null) {
             return;
         }
 
-        crowdControlBuffs.add(crowdControlInfluence);
-
+        if (buff instanceof SlowCC) {
+            slows.add((SlowCC) buff);
+        } else {
+            crowdControlBuffs.add(buff);
+        }
         getSpatial().getControl(ComponentAccessor.class).resting.stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
         // TODO: Remove this ugly repetition
-        if (crowdControlInfluence instanceof IncapacitateCC
-                || crowdControlInfluence instanceof PetrifyCC) {
+
+        if (buff.interrupts()) {
+
+            spatial.getControl(SpellCastControl.class).setCasting(false);
+            spatial.getControl(ActionQueueControl.class).clear();
+        }
+        if (buff.preventsMoving()) {
             spatial.getControl(CharacterPhysicsControl.class)
                     .setWalkDirection(Vector3f.ZERO);
-            spatial.getControl(SpellCastControl.class).setCasting(false);
-            spatial.getControl(ActionQueueControl.class).clear();
-        } else if (crowdControlInfluence instanceof FearCC) {
-            spatial.getControl(SpellCastControl.class).setCasting(false);
-            spatial.getControl(ActionQueueControl.class).clear();
         }
     }
 
@@ -76,8 +81,11 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (buff == null) {
             return;
         }
-        otherBuffs.add(buff);
-
+        if (buff instanceof SpeedBuff) {
+            speedBuffs.add((SpeedBuff) buff);
+        } else {
+            otherBuffs.add(buff);
+        }
         if (!buff.isFriendly()) {
             getSpatial()
                     .getControl(ComponentAccessor.class).resting.stopRegen();
@@ -95,10 +103,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canMove() {
-        for (CrowdControlBuff crowdControlInfluence : crowdControlBuffs) {
-            if (crowdControlInfluence instanceof IncapacitateCC) {
-                return false;
-            } else if (crowdControlInfluence instanceof PetrifyCC) {
+        for (CrowdControlBuff ccBuff : crowdControlBuffs) {
+            if (ccBuff.preventsMoving()) {
                 return false;
             }
         }
@@ -106,7 +112,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canControlMovement() {
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
             return false;
         }
@@ -119,13 +126,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canCast() {
-        for (CrowdControlBuff crowdControlInfluence : crowdControlBuffs) {
+        for (CrowdControlBuff ccBuff : crowdControlBuffs) {
             // Consider letting buffs to set property and just returning that property
-            if (crowdControlInfluence instanceof IncapacitateCC) {
-                return false;
-            } else if (crowdControlInfluence instanceof FearCC) {
-                return false;
-            } else if (crowdControlInfluence instanceof PetrifyCC) {
+            if (ccBuff.preventsCasting()) {
                 return false;
             }
         }
@@ -197,18 +200,57 @@ public class InfluenceInterfaceControl extends AbstractControl {
             if (!buff.shouldContinue()) {
                 buff.destroy();
                 it.remove();
-                continue;
             }
         }
 
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
+                it.hasNext();) {
             CrowdControlBuff cc = it.next();
             cc.update(tpf);
             if (!cc.shouldContinue()) {
                 cc.destroy();
                 it.remove();
-                continue;
             }
+        }
+
+        if (!isSpeedConstant()) {
+            float speedFactor = 1f;
+
+            for (Iterator<SlowCC> it = slows.iterator(); it.hasNext();) {
+                SlowCC slow = it.next();
+                slow.update(tpf);
+
+                if (!slow.shouldContinue()) {
+                    slow.destroy();
+                    it.remove();
+                    continue;
+                }
+
+                speedFactor *= slow.getSlowFactor();
+            }
+
+            float constantSpeedAddition = 0f;
+
+            for (Iterator<SpeedBuff> it = speedBuffs.iterator();
+                    it.hasNext();) {
+                SpeedBuff speedBuff = it.next();
+                speedBuff.update(tpf);
+
+                if (!speedBuff.shouldContinue()) {
+                    speedBuff.destroy();
+                    it.remove();
+                    continue;
+                }
+
+                speedFactor *= speedBuff.getFactor();
+                constantSpeedAddition += speedBuff.getConstant();
+            }
+
+            float msCurrent =
+                    spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+
+            spatial.setUserData(UserDataStrings.SPEED_MOVEMENT,
+                    msCurrent * speedFactor + constantSpeedAddition);
         }
     }
 
@@ -233,17 +275,11 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void removeDamageSensitiveBuffs() {
-
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
+                it.hasNext();) {
             CrowdControlBuff cc = it.next();
-            boolean remove = false;
-            // TODO: Use some kind of flag instead of detecting type
-            if (cc instanceof IncapacitateCC) {
-                remove = true;
-            } else if (cc instanceof FearCC) {
-                remove = true;
-            }
-            if (remove) {
+
+            if (cc.isDamageSensitive()) {
                 cc.destroy();
                 it.remove();
             }
