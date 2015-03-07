@@ -177,6 +177,10 @@ public class ServerFogManager extends AbstractAppState {
                         influenceInterface.getBuffs());
                 informAboutBuffs(sender, awareness,
                         influenceInterface.getCrowdControlBuffs());
+                informAboutBuffs(sender, awareness,
+                        influenceInterface.getSlows());
+                informAboutBuffs(sender, awareness,
+                        influenceInterface.getSpeedBuffs());
             }
 
         } else {

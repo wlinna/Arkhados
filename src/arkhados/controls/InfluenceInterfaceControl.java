@@ -302,10 +302,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
         this.immuneToProjectiles = immuneToProjectiles;
     }
 
-    public List<AbstractBuff> getBuffs() {
-        return otherBuffs;
-    }
-
     private <T extends AbstractBuff> boolean hasBuff(Class<T> buffClass) {
         if (buffClass.isAssignableFrom(CrowdControlBuff.class)) {
             for (AbstractBuff buff : crowdControlBuffs) {
@@ -331,8 +327,20 @@ public class InfluenceInterfaceControl extends AbstractControl {
         return hasBuff(AbleToCastWhileMovingBuff.class);
     }
 
+    public List<AbstractBuff> getBuffs() {
+        return otherBuffs;
+    }
+
     public List<CrowdControlBuff> getCrowdControlBuffs() {
         return crowdControlBuffs;
+    }
+
+    public List<SpeedBuff> getSpeedBuffs() {
+        return speedBuffs;
+    }
+
+    public List<SlowCC> getSlows() {
+        return slows;
     }
 
     public float mitigateDamage(float damage) {
