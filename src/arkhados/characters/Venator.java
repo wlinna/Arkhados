@@ -15,6 +15,8 @@
 package arkhados.characters;
 
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CCharacterDamage;
+import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -37,7 +39,6 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -60,7 +61,7 @@ public class Venator extends AbstractNodeBuilder {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FERALSCREAM,
                 new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
-                
+
         RandomChoiceEffect randomChoiceEffect = new RandomChoiceEffect();
         randomChoiceEffect.add(
                 new SimpleSoundEffect("Effects/Sound/Rend1.wav"));
@@ -123,7 +124,7 @@ public class Venator extends AbstractNodeBuilder {
         CharacterAnimationControl characterAnimControl =
                 new CharacterAnimationControl(animControl);
 
-        AnimationData deathAnim = 
+        AnimationData deathAnim =
                 new AnimationData("Die-1", 1f, LoopMode.DontLoop);
         AnimationData walkAnim =
                 new AnimationData("Run", 0.8f, LoopMode.DontLoop);
@@ -184,6 +185,8 @@ public class Venator extends AbstractNodeBuilder {
         characterAnimControl.addActionAnimation(swipeLeftAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CCharacterDamage());
+        entity.addControl(new CCharacterHeal());
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {

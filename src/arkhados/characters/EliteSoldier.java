@@ -15,6 +15,8 @@
 package arkhados.characters;
 
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CCharacterDamage;
+import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -175,7 +177,10 @@ public class EliteSoldier extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Like a Pro", null);
         characterAnimControl.addSpellAnimation("Rocket Jump", animationData);
 
-        entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new InfluenceInterfaceControl());        
+        entity.addControl(new CCharacterDamage());
+        entity.addControl(new CCharacterHeal());
+        
         entity.addControl(new EliteSoldierSyncControl());
 
         if (worldManager.isClient()) {

@@ -49,17 +49,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
     // HACK: Maybe this should be global?
     private boolean isServer = true;
 
-    /**
-     * Do damage to character (damage can be mitigated).
-     *
-     * @param damage
-     */
-    public float doDamage(float damage, final boolean canBreakCC) {
-        if (isDead()) {
-            return 0f;
-        }
-        float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-
+    public float mitigateDamage(float damage) {
         // TODO: Generic damage mitigation by shields, petrify etc.
         for (CrowdControlBuff cc : crowdControlBuffs) {
             if (cc instanceof PetrifyCC) {
@@ -75,34 +65,9 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-        float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
-        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-
-        if (health == 0.0f) {
-            death();
-        }
-
-        if (canBreakCC) {
-            removeDamageSensitiveBuffs();
-        }
-
-        getSpatial().getControl(RestingControl.class).stopRegen();
-
-        return healthBefore - health;
+        return damage;
     }
 
-    public float heal(float healing) {
-        if (isDead()) {
-            return 0f;
-        }
-        // TODO: Healing mitigation from negative buff
-        float maxHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
-        float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        Float health = FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
-        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-        return health - healthBefore;
-
-    }
 
     public void addCrowdControlBuff(CrowdControlBuff crowdControlInfluence) {
         if (crowdControlInfluence == null) {
@@ -121,7 +86,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
                     .setWalkDirection(Vector3f.ZERO);
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
-        } else if (crowdControlInfluence instanceof FearCC) { 
+        } else if (crowdControlInfluence instanceof FearCC) {
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
         }
@@ -286,7 +251,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         isServer = flag;
     }
 
-    private void removeDamageSensitiveBuffs() {
+    public void removeDamageSensitiveBuffs() {
 
         for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
             CrowdControlBuff cc = it.next();

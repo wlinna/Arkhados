@@ -14,40 +14,32 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import com.jme3.math.Vector3f;
+import arkhados.util.UserDataStrings;
+import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author Teemu
- */
-public class RestingControl extends AbstractControl {
+public class CCharacterHeal extends AbstractControl {
 
-    private float idleTime = 0;
-    private Vector3f location = new Vector3f();
-
-    public void stopRegen() {
-        idleTime = 0;
-    }
-
-    private void regenerate(float tpf) {
-        getSpatial().getControl(CCharacterHeal.class)
-                .heal(2.1f * idleTime * tpf);
+    public float heal(float healing) {
+        InfluenceInterfaceControl me =
+                spatial.getControl(InfluenceInterfaceControl.class);
+        if (me.isDead()) {
+            return 0f;
+        }
+        // TODO: Healing mitigation from negative buff
+        float maxHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        float healthBefore =
+                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        float health =
+                FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
+        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        return health - healthBefore;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        Vector3f newLocation = getSpatial().getLocalTranslation();
-        if (newLocation.distanceSquared(location) > 0.1) {
-            idleTime = 0;
-        }
-        idleTime += tpf;
-        if (idleTime >= 2.5f) {
-            regenerate(tpf);
-        }
-        location.set(newLocation);
     }
 
     @Override

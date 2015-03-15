@@ -16,6 +16,8 @@ package arkhados.characters;
 
 import arkhados.EffectHandler;
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CCharacterDamage;
+import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -48,10 +50,9 @@ import java.util.List;
  * @author william
  */
 public class RockGolem extends AbstractNodeBuilder {
-    public static final int ACTION_EARTHQUAKE = 0;
-    
-    public static int WORLDEFFECT_TOSS_HIT;
 
+    public static final int ACTION_EARTHQUAKE = 0;
+    public static int WORLDEFFECT_TOSS_HIT;
     private final ClientHudManager clientHudManager;
 
     public RockGolem(ClientHudManager clientHudManager) {
@@ -61,8 +62,8 @@ public class RockGolem extends AbstractNodeBuilder {
                 new EarthQuakeEffect();
 
         getEffectBox().addActionEffect(ACTION_EARTHQUAKE, earthQuake);
-        
-        TossHitEffect tossHitEffect = new TossHitEffect();        
+
+        TossHitEffect tossHitEffect = new TossHitEffect();
         WORLDEFFECT_TOSS_HIT = EffectHandler.addWorldEffect(tossHitEffect);
     }
 
@@ -126,7 +127,7 @@ public class RockGolem extends AbstractNodeBuilder {
                 "Throw_Rock2", 56f / 130f, seal.getCastTime());
         AnimationData boulderThrowAnim =
                 new AnimationData("Throw_Rock2", boulderThrowSpeed, LoopMode.Loop);
-                
+
         AnimationData spiritStoneAnim =
                 new AnimationData("Throw_Rock", boulderThrowSpeed, LoopMode.Loop);
 
@@ -137,6 +138,8 @@ public class RockGolem extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("EarthQuake", chargeAnim);
 
         entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CCharacterDamage());
+        entity.addControl(new CCharacterHeal());
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {

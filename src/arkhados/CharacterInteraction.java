@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.controls.CCharacterDamage;
+import arkhados.controls.CCharacterHeal;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.gamemode.GameMode;
 import arkhados.spell.buffs.AbstractBuff;
@@ -48,20 +50,29 @@ public class CharacterInteraction {
             return;
         }
 
-        final float damageDone = target.doDamage(rawDamage, canBreakCC);
+        final float damageDone = target.getSpatial()
+                .getControl(CCharacterDamage.class)
+                .doDamage(rawDamage, canBreakCC);
 
-        int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        int targetPlayerId = target.getSpatial()
+                .getUserData(UserDataStrings.PLAYER_ID);
         int attackerPlayerId;
 
         if (attacker != null) {
             Spatial attackerSpatial = attacker.getSpatial();
-            float lifeSteal = attackerSpatial.getUserData(UserDataStrings.LIFE_STEAL);
+            float lifeSteal = attackerSpatial
+                    .getUserData(UserDataStrings.LIFE_STEAL);
             float lifeStolen = lifeSteal * damageDone;
-            attacker.heal(lifeStolen);
 
-            attackerPlayerId = attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
-            getCurrentRoundStats().addDamageForPlayer(attackerPlayerId, damageDone);
-            getCurrentRoundStats().addHealthRestorationForPlayer(attackerPlayerId, lifeStolen);
+            attackerSpatial.getControl(CCharacterHeal.class).heal(lifeStolen);
+
+            attackerPlayerId =
+                    attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
+            getCurrentRoundStats()
+                    .addDamageForPlayer(attackerPlayerId, damageDone);
+            getCurrentRoundStats()
+                    .addHealthRestorationForPlayer(attackerPlayerId,
+                    lifeStolen);
 
             latestDamager.put(targetPlayerId, attackerPlayerId);
         } else {
@@ -90,18 +101,21 @@ public class CharacterInteraction {
         }
     }
 
-    public static void heal(InfluenceInterfaceControl healer, InfluenceInterfaceControl target,
-            float amount) {
+    public static void heal(InfluenceInterfaceControl healer,
+            InfluenceInterfaceControl target, float amount) {
         if (target == null) {
             return;
         } else if (target.isDead()) {
             return;
         }
 
-        float healingDone = target.heal(amount);
+        float healingDone = target.getSpatial()
+                .getControl(CCharacterHeal.class).heal(amount);
 
-        int healerPlayerId = healer.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
-        getCurrentRoundStats().addHealthRestorationForPlayer(healerPlayerId, healingDone);
+        int healerPlayerId = healer.getSpatial()
+                .getUserData(UserDataStrings.PLAYER_ID);
+        getCurrentRoundStats().addHealthRestorationForPlayer(healerPlayerId,
+                healingDone);
     }
 
     public static void startNewRound() {

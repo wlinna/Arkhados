@@ -15,6 +15,8 @@
 package arkhados.characters;
 
 import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CCharacterDamage;
+import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -73,14 +75,15 @@ public class EmberMage extends AbstractNodeBuilder {
         entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
 
         /**
-         * By setting physics damping to low value, we can effectively apply impulses on it.
+         * By setting physics damping to low value, we can effectively apply
+         * impulses on it.
          */
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
         entity.addControl(new ActionQueueControl());
 
         /**
-         * To add spells to entity, create SpellCastControl and call its putSpell-method with name
-         * of the spell as argument.
+         * To add spells to entity, create SpellCastControl and call its
+         * putSpell-method with name of the spell as argument.
          */
         SpellCastControl spellCastControl = new SpellCastControl();
         entity.addControl(spellCastControl);
@@ -99,7 +102,8 @@ public class EmberMage extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         /**
-         * Map Spell names to casting animation's name. In this case all spells use same animation.
+         * Map Spell names to casting animation's name. In this case all spells
+         * use same animation.
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
 
@@ -121,6 +125,9 @@ public class EmberMage extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Firewalk", animationData);
 
         entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CCharacterDamage());
+        entity.addControl(new CCharacterHeal());
+
         entity.addControl(new CharacterSyncControl());
 
         if (worldManager.isClient()) {
