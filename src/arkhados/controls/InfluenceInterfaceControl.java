@@ -22,9 +22,10 @@ import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.spell.buffs.PetrifyCC;
+import arkhados.spell.buffs.SlowCC;
+import arkhados.spell.buffs.SpeedBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.util.UserDataStrings;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -42,6 +43,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     private final List<CrowdControlBuff> crowdControlBuffs = new ArrayList<>();
     private final List<AbstractBuff> otherBuffs = new ArrayList<>();
     private final List<Influence> influences = new ArrayList<>();
+    private final List<SlowCC> slows = new ArrayList<>();
+    private final List<SpeedBuff> speedBuffs = new ArrayList<>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
@@ -68,25 +71,28 @@ public class InfluenceInterfaceControl extends AbstractControl {
         return damage;
     }
 
-
-    public void addCrowdControlBuff(CrowdControlBuff crowdControlInfluence) {
-        if (crowdControlInfluence == null) {
+    public void addCrowdControlBuff(CrowdControlBuff buff) {
+        if (buff == null) {
             return;
         }
 
-        crowdControlBuffs.add(crowdControlInfluence);
+        if (buff instanceof SlowCC) {
+            slows.add((SlowCC) buff);
+        } else {
+            crowdControlBuffs.add(buff);
+        }
 
         getSpatial().getControl(RestingControl.class).stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
         // TODO: Remove this ugly repetition
-        if (crowdControlInfluence instanceof IncapacitateCC
-                || crowdControlInfluence instanceof PetrifyCC) {
+        if (buff instanceof IncapacitateCC
+                || buff instanceof PetrifyCC) {
             spatial.getControl(CharacterPhysicsControl.class)
                     .setWalkDirection(Vector3f.ZERO);
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
-        } else if (crowdControlInfluence instanceof FearCC) {
+        } else if (buff instanceof FearCC) {
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
         }
@@ -96,7 +102,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (buff == null) {
             return;
         }
-        otherBuffs.add(buff);
+
+        if (buff instanceof SpeedBuff) {
+            speedBuffs.add((SpeedBuff) buff);
+        } else {
+            otherBuffs.add(buff);
+        }
 
         if (!buff.isFriendly()) {
             getSpatial().getControl(RestingControl.class).stopRegen();
@@ -104,12 +115,14 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void setHealth(float health) {
-        float healthBefore = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        float healthBefore = spatial
+                .getUserData(UserDataStrings.HEALTH_CURRENT);
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         if (health == 0f && !dead) {
             death();
         } else if (health < healthBefore && !isServer && health > 0f) {
-            spatial.getControl(CharacterSoundControl.class).suffer(healthBefore - health);
+            spatial.getControl(CharacterSoundControl.class)
+                    .suffer(healthBefore - health);
         }
     }
 
@@ -125,7 +138,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canControlMovement() {
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
             return false;
         }
@@ -153,7 +167,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public void death() {
         dead = true;
-        spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        spatial.getControl(CharacterPhysicsControl.class)
+                .setWalkDirection(Vector3f.ZERO);
         spatial.getControl(CharacterAnimationControl.class).death();
         spatial.getControl(SpellCastControl.class).setEnabled(false);
         if (!isServer) {
@@ -180,29 +195,36 @@ public class InfluenceInterfaceControl extends AbstractControl {
          * until the end (for example, Venator's ChargeAction).
          */
         if (!isSpeedConstant()) {
-            float msBase = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
+            float msBase =
+                    spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
             spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
         }
 
         applyBuffs(tpf);
         applyInfluences(tpf);
 
-        SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
+        SpellCastControl castControl =
+                spatial.getControl(SpellCastControl.class);
 
         /**
          * This code here applies changes to movement if player can move.
          */
-        if (canMove() && !castControl.isCasting() && !castControl.isChanneling() && isServer) {
+        if (canMove() && !castControl.isCasting() && !castControl.isChanneling()
+                && isServer) {
 
-            CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+            CharacterPhysicsControl physics =
+                    spatial.getControl(CharacterPhysicsControl.class);
             if (canControlMovement()) {
                 spatial.getControl(UserInputControl.class).restoreWalking();
 
             } else {
-                if (!isSpeedConstant() && physics.getDictatedDirection().equals(Vector3f.ZERO)) {
-                    float msCurrent = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                if (!isSpeedConstant() && physics
+                        .getDictatedDirection().equals(Vector3f.ZERO)) {
+                    float msCurrent =
+                            spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
                     Vector3f walkDir = physics.getWalkDirection();
-                    Vector3f newWalkDir = walkDir.normalizeLocal().multLocal(msCurrent);
+                    Vector3f newWalkDir =
+                            walkDir.normalizeLocal().multLocal(msCurrent);
                     physics.setWalkDirection(newWalkDir);
                 }
             }
@@ -220,7 +242,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
             }
         }
 
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
+                it.hasNext();) {
             CrowdControlBuff cc = it.next();
             cc.update(tpf);
             if (!cc.shouldContinue()) {
@@ -228,6 +251,46 @@ public class InfluenceInterfaceControl extends AbstractControl {
                 it.remove();
                 continue;
             }
+        }
+
+        if (!isSpeedConstant()) {
+            float speedFactor = 1f;
+
+            for (Iterator<SlowCC> it = slows.iterator(); it.hasNext();) {
+                SlowCC slow = it.next();
+                slow.update(tpf);
+
+                if (!slow.shouldContinue()) {
+                    slow.destroy();
+                    it.remove();
+                    continue;
+                }
+
+                speedFactor *= slow.getSlowFactor();
+            }
+
+            float constantSpeedAddition = 0f;
+
+            for (Iterator<SpeedBuff> it = speedBuffs.iterator();
+                    it.hasNext();) {
+                SpeedBuff speedBuff = it.next();
+                speedBuff.update(tpf);
+
+                if (!speedBuff.shouldContinue()) {
+                    speedBuff.destroy();
+                    it.remove();
+                    continue;
+                }
+
+                speedFactor *= speedBuff.getFactor();
+                constantSpeedAddition += speedBuff.getConstant();
+            }
+
+            float msCurrent =
+                    spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+
+            spatial.setUserData(UserDataStrings.SPEED_MOVEMENT,
+                    msCurrent * speedFactor + constantSpeedAddition);
         }
     }
 
@@ -253,7 +316,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public void removeDamageSensitiveBuffs() {
 
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator(); it.hasNext();) {
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
+                it.hasNext();) {
             CrowdControlBuff cc = it.next();
             boolean remove = false;
             // TODO: Use some kind of flag instead of detecting type
@@ -316,5 +380,13 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public List<CrowdControlBuff> getCrowdControlBuffs() {
         return crowdControlBuffs;
+    }
+
+    public List<SpeedBuff> getSpeedBuffs() {
+        return speedBuffs;
+    }
+
+    public List<SlowCC> getSlows() {
+        return slows;
     }
 }

@@ -61,7 +61,7 @@ public class LikeAPro extends Spell {
                 likeAPro.setName("Like a Pro");
                 likeAPro.setTypeId(BuffTypeIds.LIKE_A_PRO);
                 buffAction.addBuff(likeAPro);
-                buffAction.addBuff(new SpeedBuff(false, 6, -1, 5));
+                buffAction.addBuff(new SpeedBuff(0, 6, -1, 5));
                 buffAction.addBuff(new ArmorBuff(50, 0.6f, -1, 999999999));
                 
                 EliteSoldierAmmunitionControl ammunitionControl =
