@@ -21,7 +21,7 @@ import arkhados.util.UserDataStrings;
  * @author william
  */
 public class SpeedBuff extends AbstractBuff {
-    
+
     private float factor;
     private float constant;
 
@@ -29,8 +29,8 @@ public class SpeedBuff extends AbstractBuff {
             float duration) {
         super(buffGroupId, duration);
 
-            factor = 1 + percentAmount;
-            constant = constantAmount;        
+        factor = 1 + percentAmount;
+        constant = constantAmount;
     }
 
     public float getFactor() {
