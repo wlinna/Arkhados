@@ -17,6 +17,7 @@ package arkhados.characters;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -94,8 +95,8 @@ public class Venator extends AbstractNodeBuilder {
         }
 
         entity.addControl(new CharacterPhysicsControl(radius, 22f, 80f));
-
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
+        entity.addControl(new CCharacterMovement());
         entity.addControl(new ActionQueueControl());
 
         SpellCastControl spellCastControl = new SpellCastControl();

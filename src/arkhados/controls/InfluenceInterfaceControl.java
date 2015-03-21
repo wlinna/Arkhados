@@ -25,6 +25,7 @@ import arkhados.spell.buffs.PetrifyCC;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.spell.influences.Influence;
+import arkhados.spell.influences.SlowInfluence;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -42,9 +43,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     private final List<CrowdControlBuff> crowdControlBuffs = new ArrayList<>();
     private final List<AbstractBuff> otherBuffs = new ArrayList<>();
-    private final List<Influence> influences = new ArrayList<>();
-    private final List<SlowCC> slows = new ArrayList<>();
+    private final List<SlowCC> slowBuffs = new ArrayList<>();
     private final List<SpeedBuff> speedBuffs = new ArrayList<>();
+    private final List<Influence> influences = new ArrayList<>();
+    private final List<SlowInfluence> slowInfluences = new ArrayList<>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
@@ -77,7 +79,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
 
         if (buff instanceof SlowCC) {
-            slows.add((SlowCC) buff);
+            slowBuffs.add((SlowCC) buff);
         } else {
             crowdControlBuffs.add(buff);
         }
@@ -86,10 +88,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
         // TODO: Check whether other buffs stop casting or not
         // TODO: Remove this ugly repetition
-        if (buff instanceof IncapacitateCC
-                || buff instanceof PetrifyCC) {
-            spatial.getControl(CharacterPhysicsControl.class)
-                    .setWalkDirection(Vector3f.ZERO);
+        if (buff instanceof IncapacitateCC || buff instanceof PetrifyCC) {
+            spatial.getControl(CCharacterMovement.class).stop();
             spatial.getControl(SpellCastControl.class).setCasting(false);
             spatial.getControl(ActionQueueControl.class).clear();
         } else if (buff instanceof FearCC) {
@@ -167,8 +167,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
 
     public void death() {
         dead = true;
-        spatial.getControl(CharacterPhysicsControl.class)
-                .setWalkDirection(Vector3f.ZERO);
+        spatial.getControl(CCharacterMovement.class).stop();
         spatial.getControl(CharacterAnimationControl.class).death();
         spatial.getControl(SpellCastControl.class).setEnabled(false);
         if (!isServer) {
@@ -194,69 +193,28 @@ public class InfluenceInterfaceControl extends AbstractControl {
          * Some buff or action might require entity's speed to remain constant
          * until the end (for example, Venator's ChargeAction).
          */
-        if (!isSpeedConstant()) {
-            float msBase =
-                    spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
-            spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
-        }
+        CCharacterMovement cMovement =
+                spatial.getControl(CCharacterMovement.class);
+
+        cMovement.setSpeedToBase();
+        
+        applySlowsAndSpeedBuffs(tpf);
 
         applyBuffs(tpf);
         applyInfluences(tpf);
-
-        SpellCastControl castControl =
-                spatial.getControl(SpellCastControl.class);
-
-        /**
-         * This code here applies changes to movement if player can move.
-         */
-        if (canMove() && !castControl.isCasting() && !castControl.isChanneling()
-                && isServer) {
-
-            CharacterPhysicsControl physics =
-                    spatial.getControl(CharacterPhysicsControl.class);
-            if (canControlMovement()) {
-                spatial.getControl(UserInputControl.class).restoreWalking();
-
-            } else {
-                if (!isSpeedConstant() && physics
-                        .getDictatedDirection().equals(Vector3f.ZERO)) {
-                    float msCurrent =
-                            spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-                    Vector3f walkDir = physics.getWalkDirection();
-                    Vector3f newWalkDir =
-                            walkDir.normalizeLocal().multLocal(msCurrent);
-                    physics.setWalkDirection(newWalkDir);
-                }
-            }
+        
+        if (isServer) {
+            cMovement.updateMovement(tpf);
         }
+
+
     }
-
-    private void applyBuffs(float tpf) {
-        for (Iterator<AbstractBuff> it = otherBuffs.iterator(); it.hasNext();) {
-            AbstractBuff buff = it.next();
-            buff.update(tpf);
-            if (!buff.shouldContinue()) {
-                buff.destroy();
-                it.remove();
-                continue;
-            }
-        }
-
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
-                it.hasNext();) {
-            CrowdControlBuff cc = it.next();
-            cc.update(tpf);
-            if (!cc.shouldContinue()) {
-                cc.destroy();
-                it.remove();
-                continue;
-            }
-        }
-
-        if (!isSpeedConstant()) {
+    
+    private void applySlowsAndSpeedBuffs(float tpf) {
+        if (!spatial.getControl(CCharacterMovement.class).isSpeedConstant()) {
             float speedFactor = 1f;
 
-            for (Iterator<SlowCC> it = slows.iterator(); it.hasNext();) {
+            for (Iterator<SlowCC> it = slowBuffs.iterator(); it.hasNext();) {
                 SlowCC slow = it.next();
                 slow.update(tpf);
 
@@ -285,6 +243,12 @@ public class InfluenceInterfaceControl extends AbstractControl {
                 speedFactor *= speedBuff.getFactor();
                 constantSpeedAddition += speedBuff.getConstant();
             }
+            
+            for (SlowInfluence slow : slowInfluences) {
+                speedFactor *= slow.getSlowFactor();
+            }
+            
+            slowInfluences.clear();
 
             float msCurrent =
                     spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
@@ -292,6 +256,29 @@ public class InfluenceInterfaceControl extends AbstractControl {
             spatial.setUserData(UserDataStrings.SPEED_MOVEMENT,
                     msCurrent * speedFactor + constantSpeedAddition);
         }
+    }
+
+    private void applyBuffs(float tpf) {
+        for (Iterator<AbstractBuff> it = otherBuffs.iterator(); it.hasNext();) {
+            AbstractBuff buff = it.next();
+            buff.update(tpf);
+            if (!buff.shouldContinue()) {
+                buff.destroy();
+                it.remove();
+                continue;
+            }
+        }
+
+        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
+                it.hasNext();) {
+            CrowdControlBuff cc = it.next();
+            cc.update(tpf);
+            if (!cc.shouldContinue()) {
+                cc.destroy();
+                it.remove();
+                continue;
+            }
+        }        
     }
 
     private void applyInfluences(float tpf) {
@@ -371,7 +358,11 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public void addInfluence(Influence influence) {
-        influences.add(influence);
+        if (influence instanceof SlowInfluence) {
+            slowInfluences.add((SlowInfluence) influence);
+        } else {
+            influences.add(influence);
+        }
     }
 
     public boolean isAbleToCastWhileMoving() {
@@ -387,6 +378,6 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public List<SlowCC> getSlows() {
-        return slows;
+        return slowBuffs;
     }
 }

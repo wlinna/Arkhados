@@ -29,6 +29,7 @@ import com.jme3.scene.control.AbstractControl;
  * @author william
  */
 public class UserInputControl extends AbstractControl {
+
     private ServerPlayerInputState inputState;
 
     @Override
@@ -43,7 +44,8 @@ public class UserInputControl extends AbstractControl {
         InfluenceInterfaceControl influenceInterface =
                 spatial.getControl(InfluenceInterfaceControl.class);
 
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
 
         if (!influenceInterface.canControlMovement()
                 || !influenceInterface.canMove()
@@ -57,22 +59,24 @@ public class UserInputControl extends AbstractControl {
         int down = inputState.previousDown;
 
         Vector3f newWalkDirection = new Vector3f(right, 0, down);
-        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-        newWalkDirection.normalizeLocal().multLocal(speedMovement);
 
-        physics.setWalkDirection(newWalkDirection);
+        spatial.getControl(CCharacterMovement.class)
+                .setWalkDirection(newWalkDirection);
 
         if (down != 0 || right != 0) {
 
             if (!influenceInterface.isAbleToCastWhileMoving()) {
                 int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-                Boolean commandMoveInterrupts = PlayerData.getBooleanData(playerId,
+                Boolean commandMoveInterrupts =
+                        PlayerData.getBooleanData(playerId,
                         PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
 
-                SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
+                SpellCastControl castControl =
+                        spatial.getControl(SpellCastControl.class);
                 if (castControl.isChanneling()
-                        || commandMoveInterrupts != null && commandMoveInterrupts) {
+                        || commandMoveInterrupts != null
+                        && commandMoveInterrupts) {
                     spatial.getControl(SpellCastControl.class).safeInterrupt();
                 }
             }
@@ -83,28 +87,9 @@ public class UserInputControl extends AbstractControl {
         }
     }
 
-    /**
-     * Sets walk direction based on saved saved direction
-     */
-    public void restoreWalking() {
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
-        CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-        if (!physics.getDictatedDirection().equals(Vector3f.ZERO)
-                || physics.isMotionControlled() || influenceInterface.isDead()
-                || !Globals.worldRunning) {
-            return;
-        }
-
-        Vector3f newWalkDirection = new Vector3f(inputState.previousRight, 0, inputState.previousDown);
-        float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-        newWalkDirection.normalizeLocal().multLocal(speedMovement);
-
-        if (!newWalkDirection.equals(Vector3f.ZERO) && physics.isEnabled()) {
-            spatial.getControl(CharacterPhysicsControl.class).setViewDirection(newWalkDirection);
-        }
-
-        spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(newWalkDirection);
+    public Vector3f giveInputDirection() {
+        return new Vector3f(inputState.previousRight,
+                0, inputState.previousDown);
     }
 
     public ServerPlayerInputState getInputState() {

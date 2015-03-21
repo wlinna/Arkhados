@@ -17,6 +17,7 @@ package arkhados.characters;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -79,6 +80,7 @@ public class EmberMage extends AbstractNodeBuilder {
          * impulses on it.
          */
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
+        entity.addControl(new CCharacterMovement());
         entity.addControl(new ActionQueueControl());
 
         /**

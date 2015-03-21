@@ -17,6 +17,7 @@ package arkhados.actions;
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.buffs.AbstractBuff;
@@ -76,7 +77,7 @@ public class ChargeAction extends EntityAction
         ((Node) spatial).attachChild(ghostNode);
         ghostNode.addControl(ghost);
         ghost.setUserObject(spatial);
-        
+
         physics.getPhysicsSpace().add(ghost);
         physics.getPhysicsSpace().addCollisionListener(this);
     }
@@ -151,7 +152,8 @@ public class ChargeAction extends EntityAction
                 spatial.getControl(CharacterPhysicsControl.class);
 
         physics.getDictatedDirection().zero();
-        physics.setWalkDirection(Vector3f.ZERO);
+        
+        spatial.getControl(CCharacterMovement.class).stop();
         physics.enqueueSetLinearVelocity(Vector3f.ZERO);
     }
 
@@ -191,9 +193,5 @@ public class ChargeAction extends EntityAction
 
     public void setHitDamage(float hitDamage) {
         this.hitDamage = hitDamage;
-    }
-
-    public Spatial getCollidedWith() {
-        return collidedWith;
     }
 }

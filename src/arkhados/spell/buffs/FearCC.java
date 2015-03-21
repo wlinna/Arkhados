@@ -14,10 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.util.BuffTypeIds;
-import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
@@ -26,7 +26,9 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class FearCC extends CrowdControlBuff {
+
     private Vector3f initialDirection = new Vector3f();
+
     {
         name = "Fear";
         setTypeId(BuffTypeIds.FEAR);
@@ -40,14 +42,17 @@ public class FearCC extends CrowdControlBuff {
     public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
         super.attachToCharacter(influenceInterface);
         Spatial spatial = influenceInterface.getSpatial();
-        CharacterPhysicsControl characterPhysicsControl = spatial.getControl(CharacterPhysicsControl.class);
-        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-        characterPhysicsControl.setWalkDirection(initialDirection.multLocal(speedMovement));
-        characterPhysicsControl.setViewDirection(initialDirection);
+
+        spatial.getControl(CCharacterMovement.class)
+                .setWalkDirection(initialDirection);
+
+        CharacterPhysicsControl physics =
+                spatial.getControl(CharacterPhysicsControl.class);
+        physics.setViewDirection(initialDirection);
     }
 
     public void setInitialDirection(Vector3f initialDirection) {
-        this.initialDirection = initialDirection.normalize();        
+        this.initialDirection = initialDirection.normalize();
     }
 
     @Override

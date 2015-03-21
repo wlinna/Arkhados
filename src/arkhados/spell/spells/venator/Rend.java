@@ -90,7 +90,8 @@ class DoubleMeleeAttackAction extends EntityAction {
             public boolean update(float tpf) {
                 // HACK: This should happen automatically
                 spatial.getControl(SpellCastControl.class).setCasting(false);
-                spatial.getControl(UserInputControl.class).restoreWalking();
+                // TODO: MAKE SURE it's okay to disable this
+                // spatial.getControl(UserInputControl.class).restoreWalking();
                 return false;
             }
         });

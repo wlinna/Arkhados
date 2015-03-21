@@ -15,10 +15,9 @@
 package arkhados.actions;
 
 import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.spell.Spell;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 /**
@@ -26,17 +25,19 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class ChannelingSpellAction extends EntityAction {
+
     private Spell spell;
     private float timer = 0;
     private float timeLeft;
     private int repeatsLeft;
     private float actionFrequency;
     private EntityAction action;
-    private CharacterPhysicsControl physics;
+    private CCharacterMovement cMovement;
     private InfluenceInterfaceControl inluenceControl;
     private ActionQueueControl actionQueue;
 
-    public ChannelingSpellAction(Spell spell, float maxTime, float actionFrequency, EntityAction action) {
+    public ChannelingSpellAction(Spell spell, float maxTime,
+            float actionFrequency, EntityAction action) {
         timeLeft = maxTime;
         this.actionFrequency = actionFrequency;
         timer = actionFrequency; // Do first action immediately
@@ -45,7 +46,8 @@ public class ChannelingSpellAction extends EntityAction {
         repeatsLeft = 0;
     }
 
-    public ChannelingSpellAction(Spell spell, int repeatCount, float actionFrequency, EntityAction action, boolean whatever) {
+    public ChannelingSpellAction(Spell spell, int repeatCount,
+            float actionFrequency, EntityAction action, boolean whatever) {
         this.spell = spell;
         repeatsLeft = repeatCount;
         this.actionFrequency = actionFrequency;
@@ -55,9 +57,9 @@ public class ChannelingSpellAction extends EntityAction {
 
     @Override
     public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial); //To change body of generated methods, choose Tools | Templates.
+        super.setSpatial(spatial);
         action.setSpatial(spatial);
-        physics = spatial.getControl(CharacterPhysicsControl.class);
+        cMovement = spatial.getControl(CCharacterMovement.class);
         inluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
         actionQueue = spatial.getControl(ActionQueueControl.class);
     }
@@ -77,11 +79,11 @@ public class ChannelingSpellAction extends EntityAction {
             return false;
         }
         if (!inluenceControl.isAbleToCastWhileMoving()) {
-            physics.setWalkDirection(Vector3f.ZERO);
+            cMovement.stop();
         }
         return true;
     }
-    
+
     public void signalEnd() {
         repeatsLeft = 0;
         timeLeft = 0;

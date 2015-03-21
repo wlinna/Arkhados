@@ -14,12 +14,11 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions;
 
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.controls.UserInputControl;
 import arkhados.spell.Spell;
-import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
@@ -48,18 +47,20 @@ public class CastingSpellAction extends EntityAction {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        influenceInterface = spatial.getControl(InfluenceInterfaceControl.class);        
+        influenceInterface =
+                spatial.getControl(InfluenceInterfaceControl.class);
     }
-        
+
     @Override
     public boolean update(float tpf) {
         // TODO: Refactor and / or comment logic
-        
+
         delay -= tpf;
-        
+
         if (delay <= 0f) { // Go inside when casting is over
             if (!spell.canMoveWhileCasting() && !followedByAnotherAnimation) {
-                spatial.getControl(UserInputControl.class).restoreWalking();
+                // TODO: MAKE SURE it's ok to disable this
+                // spatial.getControl(UserInputControl.class).restoreWalking();
             }
 
             if (!followedByAnotherAnimation) {
@@ -68,25 +69,27 @@ public class CastingSpellAction extends EntityAction {
             return false;
         }
         spatial.getControl(SpellCastControl.class).setCasting(true);
+        CCharacterMovement cMovement =
+                spatial.getControl(CCharacterMovement.class);
 
-        if (!spell.canMoveWhileCasting() && !influenceInterface.isAbleToCastWhileMoving()) {
-            spatial.getControl(CharacterPhysicsControl.class).setWalkDirection(Vector3f.ZERO);
+        if (!spell.canMoveWhileCasting()
+                && !influenceInterface.isAbleToCastWhileMoving()) {
+            cMovement.stop();
         } else {
             if (spell.moveTowardsTarget()) {
-                CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
-                if (!physics.getWalkDirection().equals(Vector3f.ZERO)) {
+                CharacterPhysicsControl physics =
+                        spatial.getControl(CharacterPhysicsControl.class);
+                if (!cMovement.getWalkDirection().equals(Vector3f.ZERO)) {
                     if (movementDirection == null) {
-                        Float speedMovement = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
                         movementDirection = physics.calculateTargetDirection();
-                        movementDirection.normalizeLocal().multLocal(speedMovement);
                     }
-                    physics.setWalkDirection(movementDirection);
+                    cMovement.setWalkDirection(movementDirection);
                 }
             }
         }
         return true;
     }
-    
+
     public Spell getSpell() {
         return spell;
     }

@@ -17,6 +17,7 @@ package arkhados.characters;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
+import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CharacterAnimationControl;
 import arkhados.controls.CharacterBuffControl;
 import arkhados.controls.CharacterHudControl;
@@ -73,7 +74,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
                 new SimpleSoundEffect("Effects/Sound/Shotgun.wav"));
         getEffectBox().addActionEffect(ACTION_RAILGUN,
                 new SimpleSoundEffect("Effects/Sound/Railgun.wav"));
-        getEffectBox().addActionEffect(ACTION_LIKE_A_PRO, 
+        getEffectBox().addActionEffect(ACTION_LIKE_A_PRO,
                 new SimpleSoundEffect("Effects/Sound/LikeAPro.wav"));
         getEffectBox().addActionEffect(ACTION_PLASMAGUN,
                 new SimpleSoundEffect("Effects/Sound/PlasmagunLaunch.wav"));
@@ -123,6 +124,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
          * impulses on it.
          */
         entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
+        entity.addControl(new CCharacterMovement());
         entity.addControl(new ActionQueueControl());
 
         /**
@@ -177,10 +179,10 @@ public class EliteSoldier extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Like a Pro", null);
         characterAnimControl.addSpellAnimation("Rocket Jump", animationData);
 
-        entity.addControl(new InfluenceInterfaceControl());        
+        entity.addControl(new InfluenceInterfaceControl());
         entity.addControl(new CCharacterDamage());
         entity.addControl(new CCharacterHeal());
-        
+
         entity.addControl(new EliteSoldierSyncControl());
 
         if (worldManager.isClient()) {
