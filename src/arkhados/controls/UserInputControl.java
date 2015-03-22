@@ -43,7 +43,6 @@ public class UserInputControl extends AbstractControl {
     public void updateDirection() {
         InfluenceInterfaceControl influenceInterface =
                 spatial.getControl(InfluenceInterfaceControl.class);
-
         CharacterPhysicsControl physics =
                 spatial.getControl(CharacterPhysicsControl.class);
 
@@ -55,34 +54,23 @@ public class UserInputControl extends AbstractControl {
             return;
         }
 
-        int right = inputState.previousRight;
-        int down = inputState.previousDown;
+        if (inputState.previousRight == 0 && inputState.previousDown == 0) {
+            return;
+        }
 
-        Vector3f newWalkDirection = new Vector3f(right, 0, down);
+        if (!influenceInterface.isAbleToCastWhileMoving()) {
+            int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        spatial.getControl(CCharacterMovement.class)
-                .setWalkDirection(newWalkDirection);
+            Boolean commandMoveInterruptsBoolean =
+                    PlayerData.getBooleanData(playerId,
+                    PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+            boolean commandMoveInterrupts = commandMoveInterruptsBoolean != null
+                    && commandMoveInterruptsBoolean;
 
-        if (down != 0 || right != 0) {
-
-            if (!influenceInterface.isAbleToCastWhileMoving()) {
-                int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
-
-                Boolean commandMoveInterrupts =
-                        PlayerData.getBooleanData(playerId,
-                        PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
-
-                SpellCastControl castControl =
-                        spatial.getControl(SpellCastControl.class);
-                if (castControl.isChanneling()
-                        || commandMoveInterrupts != null
-                        && commandMoveInterrupts) {
-                    spatial.getControl(SpellCastControl.class).safeInterrupt();
-                }
-            }
-
-            if (!physics.isMotionControlled()) {
-                physics.setViewDirection(newWalkDirection);
+            SpellCastControl castControl =
+                    spatial.getControl(SpellCastControl.class);
+            if (castControl.isChanneling() || commandMoveInterrupts) {
+                castControl.safeInterrupt();
             }
         }
     }
