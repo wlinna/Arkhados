@@ -30,4 +30,19 @@ public class IncapacitateCC extends CrowdControlBuff {
     public IncapacitateCC(float duration, int id) {
         super(id, duration);
     }
+
+    @Override
+    public boolean preventsCasting() {
+        return true;
+    }
+
+    @Override
+    public boolean preventsMoving() {
+        return true;
+    }
+
+    @Override
+    public boolean isDamageSensitive() {
+        return true;
+    }
 }

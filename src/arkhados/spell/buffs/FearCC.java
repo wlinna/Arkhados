@@ -67,4 +67,14 @@ public class FearCC extends CrowdControlBuff {
         super.destroy();
 
     }
+
+    @Override
+    public boolean preventsCasting() {
+        return true;
+    }
+
+    @Override
+    public boolean isDamageSensitive() {
+        return true;
+    }
 }

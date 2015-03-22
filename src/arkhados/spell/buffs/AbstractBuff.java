@@ -144,4 +144,6 @@ public abstract class AbstractBuff {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
+    
+    public boolean isDamageSensitive() { return false; }
 }

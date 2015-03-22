@@ -53,4 +53,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
                     new BuffCommand(entityId, getTypeId(), getBuffId(), duration, true));
         }
     }
+    
+    public boolean preventsCasting() { return false; }
+    public boolean preventsMoving() { return false; }
 }
