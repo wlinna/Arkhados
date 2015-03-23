@@ -57,7 +57,7 @@ public class PlayerEntityAwareness {
     private final int playerId;
     private Node walls;
     private Ray ray = new Ray();
-    private float rangeSquared = FastMath.sqr(140);
+    private float rangeSquared = FastMath.sqr(170);
     private Vector3f _reUsableVec = new Vector3f();
     private ServerFogManager fogManager;
 
