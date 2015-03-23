@@ -22,8 +22,9 @@ import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
 
 /**
- * Base class for all buffs that somehow restricts or limits the entity that is carrying the buff.
- * Some examples of crowd control buffs are stun, silence, incapacitate, slow, snare etc.
+ * Base class for all buffs that somehow restricts or limits the entity that is
+ * carrying the buff. Some examples of crowd control buffs are stun, silence,
+ * incapacitate, slow, snare etc.
  *
  * @author william
  */
@@ -42,18 +43,28 @@ public abstract class CrowdControlBuff extends AbstractBuff {
     public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
         targetInterface = influenceInterface;
         influenceInterface.addCrowdControlBuff(this);
-        if (getTypeId() != -1) {
-            int entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-            // TODO: These messages should be sent through FogManager!
-            Spatial spatial = targetInterface.getSpatial();
-            ServerFogManager fogManager = spatial.getControl(EntityVariableControl.class)
-                    .getAwareness().getFogManager();
-            
-            fogManager.addCommand(spatial, 
-                    new BuffCommand(entityId, getTypeId(), getBuffId(), duration, true));
+
+        if (getTypeId() == -1) {
+            return;
         }
+
+        int entityId = targetInterface.getSpatial()
+                .getUserData(UserDataStrings.ENTITY_ID);
+
+        Spatial spatial = targetInterface.getSpatial();
+        ServerFogManager fogManager = spatial
+                .getControl(EntityVariableControl.class)
+                .getAwareness().getFogManager();
+
+        fogManager.addCommand(spatial, new BuffCommand(entityId,
+                getTypeId(), getBuffId(), duration, true));
     }
-    
-    public boolean preventsCasting() { return false; }
-    public boolean preventsMoving() { return false; }
+
+    public boolean preventsCasting() {
+        return false;
+    }
+
+    public boolean preventsMoving() {
+        return false;
+    }
 }

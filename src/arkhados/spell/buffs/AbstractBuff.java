@@ -42,8 +42,8 @@ public abstract class AbstractBuff {
     private int buffId = ++currentBuffId;
 
     /**
-     * @param buffGroupId identifies group of buffs so that they can be removed with single dispel.
-     * Not used currently
+     * @param buffGroupId identifies group of buffs so that they can be removed
+     * with single dispel. Not used currently
      */
     public AbstractBuff(int buffGroupId, float duration) {
         this.buffGroupId = buffGroupId;
@@ -57,22 +57,18 @@ public abstract class AbstractBuff {
         BuffCommand buffCommand = generateBuffCommand(true);
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
-            ServerFogManager fogManager = spatial.getControl(EntityVariableControl.class)
-                    .getAwareness().getFogManager();
-
+            ServerFogManager fogManager = spatial
+                    .getControl(EntityVariableControl.class).getAwareness()
+                    .getFogManager();
             fogManager.addCommand(spatial, buffCommand);
         }
     }
 
     public BuffCommand generateBuffCommand(boolean added) {
-        int entityId = targetInterface.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-        if (typeId != -1) {
-            BuffCommand buffCommand = new BuffCommand(entityId, typeId, buffId, duration, added);
-
-            return buffCommand;
-        }
-
-        return null;
+        int entityId = targetInterface.getSpatial()
+                .getUserData(UserDataStrings.ENTITY_ID);
+        return typeId == -1 ? null
+                : new BuffCommand(entityId, typeId, buffId, duration, added);
     }
 
     /**
@@ -88,23 +84,22 @@ public abstract class AbstractBuff {
     }
 
     /**
-     * Method for checking from buff's internal state whether it should be removed or not
+     * Method for checking from buff's internal state whether it should be
+     * removed or not
      *
      * @return true if buff should continue. false, if it should be removed
      */
     public boolean shouldContinue() {
-        if (duration <= 0f) {
-            return false;
-        }
-        return true;
+        return duration > 0f;
     }
 
     public void destroy() {
         BuffCommand buffCommand = generateBuffCommand(false);
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
-            ServerFogManager fogManager = spatial.getControl(EntityVariableControl.class)
-                    .getAwareness().getFogManager();
+            ServerFogManager fogManager = spatial
+                    .getControl(EntityVariableControl.class).getAwareness()
+                    .getFogManager();
             fogManager.addCommand(spatial, buffCommand);
         }
     }
@@ -144,6 +139,8 @@ public abstract class AbstractBuff {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
-    
-    public boolean isDamageSensitive() { return false; }
+
+    public boolean isDamageSensitive() {
+        return false;
+    }
 }
