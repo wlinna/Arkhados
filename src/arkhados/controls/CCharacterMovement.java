@@ -86,7 +86,7 @@ public class CCharacterMovement extends AbstractControl {
     }
 
     public void updateMovement(float tpf) {
-        
+
         InfluenceInterfaceControl cInfluence =
                 spatial.getControl(InfluenceInterfaceControl.class);
         SpellCastControl cSpellCast =
@@ -96,12 +96,12 @@ public class CCharacterMovement extends AbstractControl {
                 || cPhysics.isMotionControlled() || cInfluence.isDead()) {
             return;
         }
-        
+
         /**
          * This code here applies changes to movement if player can move.
          */
-        if (cInfluence.canMove() && !cSpellCast.isCasting()
-                && !cSpellCast.isChanneling()) {
+        if (cInfluence.canMove() && (cInfluence.isAbleToCastWhileMoving()
+                || (!cSpellCast.isCasting() && !cSpellCast.isChanneling()))) {
             if (cInfluence.canControlMovement()) {
                 Vector3f direction = spatial
                         .getControl(UserInputControl.class).giveInputDirection();
