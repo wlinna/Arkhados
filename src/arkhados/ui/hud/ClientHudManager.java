@@ -15,7 +15,6 @@
 package arkhados.ui.hud;
 
 import arkhados.PlayerData;
-import arkhados.UserCommandManager;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterHud;
 import arkhados.util.PlayerDataStrings;
@@ -46,7 +45,6 @@ import java.util.List;
  *
  * @author william
  */
-// TODO: ClientHudManager is messy and fragile. Clean it up.
 public class ClientHudManager extends AbstractAppState
         implements ScreenController {
 
@@ -59,9 +57,6 @@ public class ClientHudManager extends AbstractAppState
     private List<BitmapText> hpBars = new ArrayList<>();
     private List<BitmapText> playerNames = new ArrayList<>();
     private Spatial playerCharacter = null;
-    private AppStateManager stateManager;
-    // HACK: 
-    private boolean hudCreated = false;
     private GameMessageHandler messageHandler = new GameMessageHandler();
     private SpellBar spellBar = new SpellBar();
     private VisualStatistics statistics = new VisualStatistics();
@@ -86,25 +81,28 @@ public class ClientHudManager extends AbstractAppState
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         cam = app.getCamera();
-        this.stateManager = stateManager;
         messageHandler.initialize(nifty);
         messageHandler.createRows(10);
         statistics.initialize(app);
     }
 
+    public void newOwnCharacter(Spatial newCharacter, boolean differentEntity) {
+        playerCharacter = newCharacter;
+
+        spellBar.setPlayerCharacter(newCharacter);
+        if (differentEntity) {
+            spellBar.clean();
+            spellBar.setPlayerCharacter(newCharacter);
+            spellBar.loadIcons();
+        } else {
+            spellBar.setPlayerCharacter(newCharacter);
+        }
+    }
+
     @Override
     public void update(float tpf) {
-        if (playerCharacter == null) {
-            UserCommandManager userCommandManager =
-                    stateManager.getState(UserCommandManager.class);
-            playerCharacter = userCommandManager.getCharacter();
-            spellBar.setPlayerCharacter(playerCharacter);
-            if (playerCharacter != null && !hudCreated) {
-                spellBar.loadSpellIcons();
-                hudCreated = true;
-            }
-        } else {
-            spellBar.updateSpellIcons();
+        if (playerCharacter != null) {
+            spellBar.updateIcons();
         }
 
         for (int i = 0; i < characters.size(); ++i) {
@@ -122,7 +120,7 @@ public class ClientHudManager extends AbstractAppState
                 PlayerData.getStringData(playerId, PlayerDataStrings.NAME);
 
         createPlayerName(name);
-    }    
+    }
 
     public void clear() {
         characters.clear();
@@ -141,7 +139,7 @@ public class ClientHudManager extends AbstractAppState
         clearAllButHpBars();
     }
 
-    public void clearAllButHpBars() {        
+    public void clearAllButHpBars() {
         playerCharacter = null;
 
         removeChildren("panel_buffs");
@@ -150,8 +148,6 @@ public class ClientHudManager extends AbstractAppState
         hideStatistics();
 
         spellBar.clean();
-
-        hudCreated = false;
     }
 
     private void createHpBar() {
@@ -316,5 +312,5 @@ public class ClientHudManager extends AbstractAppState
     public void cleanup() {
         super.cleanup();
         clear();
-    }        
+    }
 }

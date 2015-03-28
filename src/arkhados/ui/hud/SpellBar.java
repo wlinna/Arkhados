@@ -32,17 +32,16 @@ public class SpellBar {
     private final Map<String, Element> icons = new HashMap<>(6);
     private Spatial playerCharacter;
 
-
-    public void loadSpellIcons() {
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M1));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M2));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.Q));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.E));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.R));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
+    void loadIcons() {
+        addIcon(InputMappingStrings.getId(InputMappingStrings.M1));
+        addIcon(InputMappingStrings.getId(InputMappingStrings.M2));
+        addIcon(InputMappingStrings.getId(InputMappingStrings.Q));
+        addIcon(InputMappingStrings.getId(InputMappingStrings.E));
+        addIcon(InputMappingStrings.getId(InputMappingStrings.R));
+        addIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
     }
 
-    public void addSpellIcon(int key) {
+    void addIcon(int key) {
         Element bottomPanel = screen.findElementByName("panel_spells");
         CSpellCast castControl =
                 playerCharacter.getControl(CSpellCast.class);
@@ -62,7 +61,7 @@ public class SpellBar {
                 iconPath).build(nifty, screen, bottomPanel));
     }
 
-    public void updateSpellIcons() {
+    void updateIcons() {
         if (playerCharacter == null) {
             return;
         }
@@ -97,20 +96,20 @@ public class SpellBar {
         }
     }
 
-    public void clean() {
+    void clean() {
         icons.clear();
         setPlayerCharacter(null);
     }
 
-    public void setNifty(Nifty nifty) {
+    void setNifty(Nifty nifty) {
         this.nifty = nifty;
     }
 
-    public void setScreen(Screen screen) {
+    void setScreen(Screen screen) {
         this.screen = screen;
     }
 
-    public void setPlayerCharacter(Spatial playerCharacter) {
+    void setPlayerCharacter(Spatial playerCharacter) {
         this.playerCharacter = playerCharacter;
     }
 }

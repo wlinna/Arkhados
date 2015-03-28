@@ -157,10 +157,12 @@ public class UserCommandManager extends AbstractAppState {
         if (!inputListenersActive) {
             return;
         }
+
         Spatial localCharacter = getCharacter();
         if (localCharacter == null) {
             return;
         }
+
         listener.setLocation(localCharacter.getWorldTranslation());
         mouseTargetUpdateTimer -= tpf;
         if (mouseTargetUpdateTimer <= 0f) {
@@ -256,26 +258,29 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        if (spatial.getUserData(UserDataStrings.ENTITY_ID).equals(characterId)) {
-            character = (Node) spatial;
-            if (characterChanged) {
-                character.getControl(CSpellCast.class)
-                        .thisIsOwnedByClient();
-            } else {
-                character.getControl(CSpellCast.class)
-                        .restoreClientCooldowns();
-            }
-            ClientHudManager hudManager = app.getStateManager()
-                    .getState(ClientHudManager.class);
-            hudManager.clearBuffIcons();
-            hudManager.hideStatistics();
-            character.getControl(CCharacterHud.class)
-                    .setHudManager(hudManager);
-            followPlayer();
-            characterChanged = false;
-            return true;
+        if (!spatial.getUserData(UserDataStrings.ENTITY_ID)
+                .equals(characterId)) {
+            return false;
         }
-        return false;
+
+        character = (Node) spatial;
+
+        if (characterChanged) {
+            character.getControl(CSpellCast.class).thisIsOwnedByClient();
+        } else {
+            character.getControl(CSpellCast.class).restoreClientCooldowns();
+        }
+
+        ClientHudManager hudManager = app.getStateManager()
+                .getState(ClientHudManager.class);
+        hudManager.newOwnCharacter(spatial, characterChanged);
+        hudManager.clearBuffIcons();
+        hudManager.hideStatistics();
+
+        character.getControl(CCharacterHud.class).setHudManager(hudManager);
+        followPlayer();
+        characterChanged = false;
+        return true;
     }
 
     public void onLoseFocus() {
