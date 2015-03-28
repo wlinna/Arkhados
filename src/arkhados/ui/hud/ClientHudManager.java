@@ -15,13 +15,9 @@
 package arkhados.ui.hud;
 
 import arkhados.PlayerData;
-import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.controls.ActionQueueControl;
 import arkhados.controls.CharacterHudControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.messages.TopicOnlyCommand;
-import arkhados.net.Sender;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.PlayerRoundStats;
 import arkhados.util.UserDataStrings;
@@ -69,12 +65,11 @@ public class ClientHudManager extends AbstractAppState
     // HACK: This is only meant for initial implementation testing.
     // Remove this when all round statistics are accessible via GUI
     private boolean roundTableCreated = false;
-    private List<Element> statisticsPanels = new ArrayList<>();
     // HACK: 
     private boolean hudCreated = false;
-    private List<PlayerRoundStats> latestRoundStatsList = null;
     private GameMessageHandler messageHandler = new GameMessageHandler();
     private SpellBar spellBar = new SpellBar();
+    private VisualStatistics statistics = new VisualStatistics();
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -88,6 +83,8 @@ public class ClientHudManager extends AbstractAppState
         screen = nifty.getScreen("default_hud");
         spellBar.setNifty(nifty);
         spellBar.setScreen(screen);
+        statistics.setNifty(nifty);
+        statistics.setScreen(screen);
     }
 
     @Override
@@ -97,6 +94,7 @@ public class ClientHudManager extends AbstractAppState
         this.stateManager = stateManager;
         messageHandler.initialize(nifty);
         messageHandler.createRows(10);
+        statistics.initialize(app);
     }
 
     @Override
@@ -121,7 +119,6 @@ public class ClientHudManager extends AbstractAppState
     }
 
     public void addCharacter(Spatial character) {
-        // TODO: Add some checks
         characters.add((Node) character);
         createHpBar();
 
@@ -184,15 +181,6 @@ public class ClientHudManager extends AbstractAppState
 
         removeChildren("panel_buffs");
         removeChildren("panel_spells");
-
-        for (Iterator<Element> it = statisticsPanels.iterator();
-                it.hasNext();) {
-            Element element = it.next();
-            // TODO: Unregister element ids here
-            element.markForRemoval();
-        }
-
-        statisticsPanels.clear();
 
         hideRoundStatistics();
 
@@ -275,9 +263,6 @@ public class ClientHudManager extends AbstractAppState
         }
 
         if (spatial == playerCharacter) {
-            SpellCastControl castControl =
-                    playerCharacter.getControl(SpellCastControl.class);
-            playerCharacter.removeControl(castControl);
             playerCharacter = null;
             spellBar.setPlayerCharacter(null);
         }
@@ -295,51 +280,12 @@ public class ClientHudManager extends AbstractAppState
     public void onEndScreen() {
     }
 
-    private void initializePlayerStatisticsPanels() {
-        Element statisticsPanel = screen.findElementByName("panel_statistics");
-        List<PlayerData> playerDataList = PlayerData.getPlayers();
-        for (PlayerData playerData : playerDataList) {
-            statisticsPanels.add(new PlayerStatisticsPanelBuilder(
-                    playerData.getId()).build(nifty, screen, statisticsPanel));
-        }
-    }
-
     public void showRoundStatistics() {
-        initializePlayerStatisticsPanels();
-        Sender sender = stateManager.getState(Sender.class);
-        sender.addCommand(
-                new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
-        Element statisticsLayer = screen.findElementByName("layer_statistics");
-        statisticsLayer.show();
+        statistics.showRoundStatistics();
     }
 
     public void hideRoundStatistics() {
-        Element statisticsLayer = screen.findElementByName("layer_statistics");
-        statisticsLayer.hideWithoutEffect();
-    }
-
-    public void updateStatistics() {
-        if (latestRoundStatsList == null) {
-            return;
-        }
-
-        Element statisticsPanel = screen.findElementByName("panel_statistics");
-        for (PlayerRoundStats playerRoundStats : latestRoundStatsList) {
-
-            Element damagePanel = statisticsPanel.findElementByName(
-                    playerRoundStats.playerId + "-damage");
-            Element restorationPanel = statisticsPanel.findElementByName(
-                    playerRoundStats.playerId + "-restoration");
-            Element killsPanel = statisticsPanel.findElementByName(
-                    playerRoundStats.playerId + "-kills");
-
-            damagePanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", (int) playerRoundStats.damageDone));
-            restorationPanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", (int) playerRoundStats.healthRestored));
-            killsPanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", playerRoundStats.kills));
-        }
+        statistics.hideRoundStatistics();
     }
 
     public void endGame() {
@@ -370,12 +316,7 @@ public class ClientHudManager extends AbstractAppState
 
     public void setLatestRoundStatsList(
             List<PlayerRoundStats> latestRoundStatsList) {
-        this.latestRoundStatsList = latestRoundStatsList;
-        Element statisticsLayer = screen.findElementByName("layer_statistics");
-
-        if (statisticsLayer.isVisible()) {
-            updateStatistics();
-        }
+        statistics.setLatestRoundStatsList(latestRoundStatsList);
     }
 
     public void disableCharacterHudControl() {
