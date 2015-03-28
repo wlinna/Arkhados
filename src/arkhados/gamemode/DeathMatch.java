@@ -25,10 +25,10 @@ import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.WorldManager;
 import arkhados.controls.PlayerEntityAwareness;
-import arkhados.messages.ClientSelectHeroCommand;
-import arkhados.messages.PlayerKillCommand;
+import arkhados.messages.CmdClientSelectHero;
+import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
@@ -142,7 +142,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     nifty.gotoScreen("default_hud");
                     heroSelectionLayer.show();
                     sender.addCommand(
-                            new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
+                            new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
                 } else if (sender.isServer()) {
                     syncManager.setEnabled(true);
                     syncManager.startListening();
@@ -256,7 +256,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
             combo = killer.getCombo();
         }
 
-        sender.addCommand(new PlayerKillCommand(playerId, killersPlayerId,
+        sender.addCommand(new CmdPlayerKill(playerId, killersPlayerId,
                 killingSpree, combo, endedSpree));
 
         int kills = CharacterInteraction.getCurrentRoundStats()
@@ -265,7 +265,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         firstBloodHappened = true;
 
         if (kills >= killLimit) {
-            sender.addCommand(new TopicOnlyCommand(Topic.GAME_ENDED));
+            sender.addCommand(new CmdTopicOnly(Topic.GAME_ENDED));
         }
     }
 
@@ -373,24 +373,24 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     private void serverReadGuaranteed(HostedConnection source,
             Command command) {
-        if (command instanceof ClientSelectHeroCommand) {
+        if (command instanceof CmdClientSelectHero) {
             int playerId =
                     source.getAttribute(ServerClientDataStrings.PLAYER_ID);
             playerChoseHero(playerId,
-                    ((ClientSelectHeroCommand) command).getHeroName());
-        } else if (command instanceof TopicOnlyCommand) {
-            serverHandleTopicOnlyCommand(source, (TopicOnlyCommand) command);
+                    ((CmdClientSelectHero) command).getHeroName());
+        } else if (command instanceof CmdTopicOnly) {
+            serverHandleTopicOnlyCommand(source, (CmdTopicOnly) command);
         }
     }
 
     private void clientReadGuaranteed(Command command) {
-        if (command instanceof PlayerKillCommand) {
-            PlayerKillCommand pkCommand = (PlayerKillCommand) command;
+        if (command instanceof CmdPlayerKill) {
+            CmdPlayerKill pkCommand = (CmdPlayerKill) command;
             clientPlayerDied(pkCommand.getDiedPlayerId(),
                     pkCommand.getKillerPlayerId(), pkCommand.getKillingSpree(),
                     pkCommand.getCombo(), pkCommand.getEndedSpree());
-        } else if (command instanceof TopicOnlyCommand) {
-            clientHandleTopicOnlyCommand((TopicOnlyCommand) command);
+        } else if (command instanceof CmdTopicOnly) {
+            clientHandleTopicOnlyCommand((CmdTopicOnly) command);
         }
 
     }
@@ -422,7 +422,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         stateManager.getState(MusicManager.class).setPlaying(false);
     }
 
-    private void clientHandleTopicOnlyCommand(TopicOnlyCommand command) {
+    private void clientHandleTopicOnlyCommand(CmdTopicOnly command) {
         switch (command.getTopicId()) {
             case Topic.GAME_ENDED:
                 gameEnded();
@@ -434,14 +434,14 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     private void serverHandleTopicOnlyCommand(HostedConnection source,
-            TopicOnlyCommand command) {
+            CmdTopicOnly command) {
         switch (command.getTopicId()) {
             case Topic.CLIENT_WORLD_CREATED:
                 if (firstBloodHappened) {
                     ServerSender sender =
                             stateManager.getState(ServerSender.class);
                     sender.addCommandForSingle(
-                            new TopicOnlyCommand(Topic.FIRST_BLOOD_HAPPENED),
+                            new CmdTopicOnly(Topic.FIRST_BLOOD_HAPPENED),
                             source);
                 }
                 break;

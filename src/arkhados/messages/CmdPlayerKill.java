@@ -24,17 +24,17 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public class PlayerKillCommand implements Command {
+public class CmdPlayerKill implements Command {
     private byte diedPlayerId;
     private byte killerPlayerId;
     private byte killingSpree;
     private byte combo;
     private byte endedSpree;
 
-    public PlayerKillCommand() {
+    public CmdPlayerKill() {
     }
 
-    public PlayerKillCommand(int diedPlayerId, int killerPlayerId,
+    public CmdPlayerKill(int diedPlayerId, int killerPlayerId,
             int killingSpree, int combo, int endedSpree) {
         this.diedPlayerId = (byte) diedPlayerId;
         this.killerPlayerId = (byte) killerPlayerId;

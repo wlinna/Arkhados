@@ -16,7 +16,6 @@
 package arkhados.messages.syncmessages;
 
 import com.jme3.math.Vector3f;
-import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 import arkhados.controls.CharacterAnimationControl;
@@ -31,14 +30,14 @@ import arkhados.spell.Spell;
  * @author william
  */
 @Serializable
-public class StartCastingSpellCommand extends StateData {
+public class CmdStartCastingSpell extends StateData {
     private short spellId;
     private Vector3f direction = new Vector3f();
 
-    public StartCastingSpellCommand() {
+    public CmdStartCastingSpell() {
     }
 
-    public StartCastingSpellCommand(int id, int spellId, Vector3f direction) {
+    public CmdStartCastingSpell(int id, int spellId, Vector3f direction) {
         super(id);
         this.spellId = (short)spellId;
         this.direction.set(direction);

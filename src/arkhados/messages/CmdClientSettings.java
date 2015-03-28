@@ -22,41 +22,24 @@ import com.jme3.network.serializing.Serializable;
  *
  * @author william
  */
+
 @Serializable
-public class ServerLoginCommand implements Command {
-    private String name;
-    private int playerId;
-    private boolean accepted;    
-    private String gameMode;
+public class CmdClientSettings implements Command {
+    private boolean commandMoveInterrupts;
 
-    public ServerLoginCommand() {
+    public CmdClientSettings() {
     }
 
-    public ServerLoginCommand(String nick, int playerId, boolean accepted, String gameMode) {
-        this.name = nick;
-        this.playerId = playerId;
-        this.accepted = accepted;
-        this.gameMode = gameMode;
+    public CmdClientSettings(boolean commandMoveInterrupts) {
+        this.commandMoveInterrupts = commandMoveInterrupts;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    public boolean isAccepted() {
-        return accepted;
-    }
+    public boolean commandMoveInterrupts() {
+        return commandMoveInterrupts;
+    }        
 
     @Override
     public boolean isGuaranteed() {
         return true;
-    }
-
-    public String getGameMode() {
-        return gameMode;
     }
 }

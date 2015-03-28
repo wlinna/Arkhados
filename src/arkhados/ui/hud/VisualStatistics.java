@@ -16,7 +16,7 @@ package arkhados.ui.hud;
 
 import arkhados.PlayerData;
 import arkhados.Topic;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Sender;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerRoundStats;
@@ -63,7 +63,7 @@ public class VisualStatistics implements ActionListener {
         initializePlayerStatisticsPanels();
         Sender sender = stateManager.getState(Sender.class);
         sender.addCommand(
-                new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
+                new CmdTopicOnly(Topic.BATTLE_STATISTICS_REQUEST));
         Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.show();
     }

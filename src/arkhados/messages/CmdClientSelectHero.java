@@ -22,13 +22,13 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class ClientSelectHeroCommand implements Command {
+public class CmdClientSelectHero implements Command {
     private String heroName;
 
-    public ClientSelectHeroCommand() {
+    public CmdClientSelectHero() {
     }
 
-    public ClientSelectHeroCommand(String heroName) {
+    public CmdClientSelectHero(String heroName) {
         this.heroName = heroName;
     }
 

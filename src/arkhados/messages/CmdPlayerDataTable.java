@@ -24,13 +24,13 @@ import arkhados.net.Command;
  * @author william
  */
 @Serializable
-public class PlayerDataTableCommand implements Command {    
+public class CmdPlayerDataTable implements Command {    
     private List<PlayerData> playerDataList;
 
-    public PlayerDataTableCommand() {
+    public CmdPlayerDataTable() {
 
     }
-    private PlayerDataTableCommand(List<PlayerData> playerDataList) {
+    private CmdPlayerDataTable(List<PlayerData> playerDataList) {
         this.playerDataList = playerDataList;
     }
 
@@ -38,8 +38,8 @@ public class PlayerDataTableCommand implements Command {
         return this.playerDataList;        
     }
 
-    public static PlayerDataTableCommand makeFromPlayerDataList() {        
-        return new PlayerDataTableCommand(PlayerData.getPlayers());
+    public static CmdPlayerDataTable makeFromPlayerDataList() {        
+        return new CmdPlayerDataTable(PlayerData.getPlayers());
     }
 
     @Override

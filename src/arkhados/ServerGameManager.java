@@ -16,7 +16,7 @@ package arkhados;
 
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Sender;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -70,7 +70,7 @@ public class ServerGameManager extends AbstractAppState {
         app.getStateManager().getState(SyncManager.class).addObject(-1, worldManager);
 
         running = true;
-        sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
+        sender.addCommand(new CmdTopicOnly(Topic.START_GAME));
 
         gameMode.startGame();
 

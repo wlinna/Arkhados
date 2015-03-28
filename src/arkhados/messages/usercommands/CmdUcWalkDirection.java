@@ -14,10 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.usercommands;
 
-import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Spatial;
-import arkhados.controls.SpellCastControl;
 import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
@@ -25,30 +22,28 @@ import arkhados.messages.syncmessages.statedata.StateData;
  * @author william
  */
 @Serializable
-public class UcCastSpellCommand extends StateData {
+public class CmdUcWalkDirection extends StateData {
 
-    private byte input;
-    private Vector3f direction;
+    private byte down;
+    private byte right;
 
-    public UcCastSpellCommand() {
+    public CmdUcWalkDirection() {
     }
 
-    public UcCastSpellCommand(int input, Vector3f location) {
-        this.input = (byte) input;
-        this.direction = location;
+    public CmdUcWalkDirection(int down, int right) {
+        this.down = (byte) down;
+        this.right = (byte) right;
     }
 
     @Override
     public void applyData(Object target) {
-        Spatial character = (Spatial) target;
-        character.getControl(SpellCastControl.class).castIfDifferentSpell(this.input, this.direction);
+    }       
+
+    public byte getDown() {
+        return down;
     }
 
-    public int getInput() {
-        return input;
-    }
-
-    public Vector3f getLocation() {
-        return direction;
+    public byte getRight() {
+        return right;
     }
 }

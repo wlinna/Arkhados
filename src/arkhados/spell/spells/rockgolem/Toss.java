@@ -25,7 +25,7 @@ import arkhados.controls.CharacterPhysicsControl;
 import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.messages.WorldEffectCommand;
+import arkhados.messages.CmdWorldEffect;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
@@ -233,7 +233,7 @@ class TossAction extends EntityAction {
                         .getFogManager();
 
                 fogManager.addCommand(target,
-                        new WorldEffectCommand(RockGolem.WORLDEFFECT_TOSS_HIT,
+                        new CmdWorldEffect(RockGolem.WORLDEFFECT_TOSS_HIT,
                         target.getLocalTranslation()));
             }
         };

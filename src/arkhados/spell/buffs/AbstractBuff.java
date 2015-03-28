@@ -17,7 +17,7 @@ package arkhados.spell.buffs;
 import arkhados.ServerFogManager;
 import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.syncmessages.BuffCommand;
+import arkhados.messages.syncmessages.CmdBuff;
 import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
@@ -54,7 +54,7 @@ public abstract class AbstractBuff {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
 
-        BuffCommand buffCommand = generateBuffCommand(true);
+        CmdBuff buffCommand = generateBuffCommand(true);
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
             ServerFogManager fogManager = spatial
@@ -64,11 +64,11 @@ public abstract class AbstractBuff {
         }
     }
 
-    public BuffCommand generateBuffCommand(boolean added) {
+    public CmdBuff generateBuffCommand(boolean added) {
         int entityId = targetInterface.getSpatial()
                 .getUserData(UserDataStrings.ENTITY_ID);
         return typeId == -1 ? null
-                : new BuffCommand(entityId, typeId, buffId, duration, added);
+                : new CmdBuff(entityId, typeId, buffId, duration, added);
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class AbstractBuff {
     }
 
     public void destroy() {
-        BuffCommand buffCommand = generateBuffCommand(false);
+        CmdBuff buffCommand = generateBuffCommand(false);
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
             ServerFogManager fogManager = spatial

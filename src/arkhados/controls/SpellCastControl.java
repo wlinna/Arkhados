@@ -24,8 +24,8 @@ import java.util.Map;
 import arkhados.actions.CastingSpellAction;
 import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.SetCooldownCommand;
-import arkhados.messages.syncmessages.StartCastingSpellCommand;
+import arkhados.messages.syncmessages.CmdSetCooldown;
+import arkhados.messages.syncmessages.CmdStartCastingSpell;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
@@ -197,7 +197,7 @@ public class SpellCastControl extends AbstractControl {
             Vector3f direction = targetLocation
                     .subtract(spatial.getLocalTranslation());
             awareness.getFogManager().addCommand(spatial,
-                    new StartCastingSpellCommand(
+                    new CmdStartCastingSpell(
                     (int) spatial.getUserData(UserDataStrings.ENTITY_ID),
                     spell.getId(), direction));
             getSpatial().getControl(RestingControl.class).stopRegen();
@@ -225,7 +225,7 @@ public class SpellCastControl extends AbstractControl {
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
             awareness.getFogManager().addCommand(spatial,
-                    new SetCooldownCommand(entityId, spellId, cooldown, true));
+                    new CmdSetCooldown(entityId, spellId, cooldown, true));
         }
     }
 
@@ -238,7 +238,7 @@ public class SpellCastControl extends AbstractControl {
         if (awareness != null) {
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
             awareness.getFogManager().addCommand(spatial,
-                    new SetCooldownCommand(entityId, spell.getId(),
+                    new CmdSetCooldown(entityId, spell.getId(),
                     spell.getCooldown(), true));
         }
     }

@@ -17,9 +17,9 @@ package arkhados;
 import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.PlayerEntityAwareness;
-import arkhados.messages.syncmessages.AddEntityCommand;
-import arkhados.messages.syncmessages.BuffCommand;
-import arkhados.messages.syncmessages.RemoveEntityCommand;
+import arkhados.messages.syncmessages.CmdAddEntity;
+import arkhados.messages.syncmessages.CmdBuff;
+import arkhados.messages.syncmessages.CmdRemoveEntity;
 import arkhados.net.Command;
 import arkhados.net.ServerSender;
 import arkhados.spell.buffs.AbstractBuff;
@@ -165,7 +165,7 @@ public class ServerFogManager extends AbstractAppState {
                 location = target.getLocalTranslation();
                 rotation = target.getLocalRotation();
             }
-            Command command = new AddEntityCommand(entityId, nodeBuilderId,
+            Command command = new CmdAddEntity(entityId, nodeBuilderId,
                     location, rotation, playerId);
             sender.addCommandForSingle(command,
                     awarenessConnectionMap.get(awareness));
@@ -184,7 +184,7 @@ public class ServerFogManager extends AbstractAppState {
             }
 
         } else {
-            Command command = new RemoveEntityCommand(entityId,
+            Command command = new CmdRemoveEntity(entityId,
                     RemovalReasons.DISAPPEARED);
             sender.addCommandForSingle(command,
                     awarenessConnectionMap.get(awareness));
@@ -194,7 +194,7 @@ public class ServerFogManager extends AbstractAppState {
     private <T extends AbstractBuff> void informAboutBuffs(ServerSender sender,
             PlayerEntityAwareness awareness, List<T> buffs) {
         for (AbstractBuff abstractBuff : buffs) {
-            BuffCommand command = abstractBuff.generateBuffCommand(true);
+            CmdBuff command = abstractBuff.generateBuffCommand(true);
             if (command != null) {
                 sender.addCommandForSingle(command,
                         awarenessConnectionMap.get(awareness));

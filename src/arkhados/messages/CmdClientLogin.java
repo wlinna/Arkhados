@@ -22,21 +22,20 @@ import com.jme3.network.serializing.Serializable;
  *
  * @author william
  */
-
 @Serializable
-public class ClientSettingsCommand implements Command {
-    private boolean commandMoveInterrupts;
+public class CmdClientLogin implements Command {
+    private String name;
 
-    public ClientSettingsCommand() {
+    public CmdClientLogin() {
     }
 
-    public ClientSettingsCommand(boolean commandMoveInterrupts) {
-        this.commandMoveInterrupts = commandMoveInterrupts;
+    public CmdClientLogin(String nick) {
+        this.name = nick;
     }
 
-    public boolean commandMoveInterrupts() {
-        return commandMoveInterrupts;
-    }        
+    public String getName() {
+        return this.name;
+    }
 
     @Override
     public boolean isGuaranteed() {

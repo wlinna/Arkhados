@@ -40,8 +40,8 @@ import arkhados.controls.SyncInterpolationControl;
 import arkhados.controls.TimedExistenceControl;
 import arkhados.controls.UserInputControl;
 import arkhados.effects.BuffEffect;
-import arkhados.messages.syncmessages.AddEntityCommand;
-import arkhados.messages.syncmessages.RemoveEntityCommand;
+import arkhados.messages.syncmessages.CmdAddEntity;
+import arkhados.messages.syncmessages.CmdRemoveEntity;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
@@ -291,7 +291,7 @@ public class WorldManager extends AbstractAppState {
             }
 
             serverFogManager.createNewEntity(entity,
-                    new AddEntityCommand(id, nodeBuilderId,
+                    new CmdAddEntity(id, nodeBuilderId,
                     location, rotation, playerId));
         }
 
@@ -386,7 +386,7 @@ public class WorldManager extends AbstractAppState {
 
         if (serverFogManager != null) {
             serverFogManager
-                    .removeEntity(spatial, new RemoveEntityCommand(id, reason));
+                    .removeEntity(spatial, new CmdRemoveEntity(id, reason));
         }
 
         if (isClient()) {

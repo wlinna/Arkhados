@@ -15,8 +15,8 @@
 package arkhados;
 
 import arkhados.controls.UserInputControl;
-import arkhados.messages.usercommands.UcMouseTargetCommand;
-import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.messages.usercommands.CmdUcMouseTarget;
+import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import com.jme3.app.Application;
@@ -95,16 +95,16 @@ public class ServerPlayerInputHandler implements CommandHandler {
             return;
         }
 
-        if (command instanceof UcWalkDirection) {
-            UcWalkDirection uc = (UcWalkDirection) command;
+        if (command instanceof CmdUcWalkDirection) {
+            CmdUcWalkDirection uc = (CmdUcWalkDirection) command;
             inputState.previousDown = uc.getDown();
             inputState.previousRight = uc.getRight();
             if (inputState.currentActiveSpatial != null) {
                 inputState.currentActiveSpatial.getControl(
                         UserInputControl.class).updateDirection();
             }
-        } else if (command instanceof UcMouseTargetCommand) {
-            UcMouseTargetCommand uc = (UcMouseTargetCommand) command;
+        } else if (command instanceof CmdUcMouseTarget) {
+            CmdUcMouseTarget uc = (CmdUcMouseTarget) command;
             inputState.mouseTarget = uc.getLocation();
         }
 

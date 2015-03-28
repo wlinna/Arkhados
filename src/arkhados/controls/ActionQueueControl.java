@@ -20,7 +20,7 @@ import com.jme3.scene.control.AbstractControl;
 import java.util.LinkedList;
 import java.util.Queue;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.ActionCommand;
+import arkhados.messages.syncmessages.CmdAction;
 import arkhados.util.UserDataStrings;
 
 /**
@@ -106,7 +106,7 @@ public class ActionQueueControl extends AbstractControl {
         if (awareness != null) {
             int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
             awareness.getFogManager().addCommand(spatial,
-                    new ActionCommand(id, action.getTypeId()));
+                    new CmdAction(id, action.getTypeId()));
         }
     }
 }

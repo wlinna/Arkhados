@@ -20,9 +20,9 @@ import arkhados.gamemode.LastManStanding;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientSelectHeroCommand;
+import arkhados.messages.CmdClientSelectHero;
 import arkhados.messages.MessageUtils;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
@@ -377,11 +377,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     public void selectHero(String heroName) {
         stateManager.getState(MusicManager.class).setMusicCategory(heroName);
-        sender.addCommand(new ClientSelectHeroCommand(heroName));
+        sender.addCommand(new CmdClientSelectHero(heroName));
     }
 
     public void sendStartGameRequest() {
-        sender.addCommand(new TopicOnlyCommand(Topic.START_GAME));
+        sender.addCommand(new CmdTopicOnly(Topic.START_GAME));
     }
 
     public void startGame() {

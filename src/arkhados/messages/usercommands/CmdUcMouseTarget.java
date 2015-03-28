@@ -25,14 +25,14 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 @Serializable
-public class UcMouseTargetCommand extends StateData {
+public class CmdUcMouseTarget extends StateData {
 
     private Vector3f location;
 
-    public UcMouseTargetCommand() {
+    public CmdUcMouseTarget() {
     }
 
-    public UcMouseTargetCommand(Vector3f location) {  
+    public CmdUcMouseTarget(Vector3f location) {  
         this.location = location;
     }
     

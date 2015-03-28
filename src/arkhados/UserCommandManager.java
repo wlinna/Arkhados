@@ -18,9 +18,9 @@ import arkhados.controls.CharacterHudControl;
 import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
 import arkhados.controls.SpellCastControl;
-import arkhados.messages.usercommands.UcCastSpellCommand;
-import arkhados.messages.usercommands.UcMouseTargetCommand;
-import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.messages.usercommands.CmdUcCastSpell;
+import arkhados.messages.usercommands.CmdUcMouseTarget;
+import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Sender;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.InputMappingStrings;
@@ -106,7 +106,7 @@ public class UserCommandManager extends AbstractAppState {
             calculateMouseGroundPosition();
             if (name != null) {
                 sender.addCommand(
-                        new UcCastSpellCommand(InputMappingStrings.getId(name),
+                        new CmdUcCastSpell(InputMappingStrings.getId(name),
                         mouseGroundPosition));
             }
         }
@@ -165,7 +165,7 @@ public class UserCommandManager extends AbstractAppState {
         mouseTargetUpdateTimer -= tpf;
         if (mouseTargetUpdateTimer <= 0f) {
             calculateMouseGroundPosition();
-            sender.addCommand(new UcMouseTargetCommand(mouseGroundPosition));
+            sender.addCommand(new CmdUcMouseTarget(mouseGroundPosition));
             mouseTargetUpdateTimer = 0.075f;
         }
     }
@@ -181,7 +181,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void sendWalkDirection() {
-        sender.addCommand(new UcWalkDirection(down, right));
+        sender.addCommand(new CmdUcWalkDirection(down, right));
     }
 
     @Override
@@ -283,6 +283,6 @@ public class UserCommandManager extends AbstractAppState {
             return;
         }
 
-        sender.addCommand(new UcWalkDirection(down, right));
+        sender.addCommand(new CmdUcWalkDirection(down, right));
     }
 }

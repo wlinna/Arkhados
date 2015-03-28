@@ -23,19 +23,19 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public class TopicOnlyCommand implements Command {    
+public class CmdTopicOnly implements Command {    
     
     private transient boolean isGuaranteed = true;
     private byte topicId;
    
-    public TopicOnlyCommand() {
+    public CmdTopicOnly() {
     }
     
-    public TopicOnlyCommand(int topicId) {
+    public CmdTopicOnly(int topicId) {
         this.topicId = (byte) topicId;
     }
 
-    public TopicOnlyCommand(int topicId, boolean isGuaranteed) {
+    public CmdTopicOnly(int topicId, boolean isGuaranteed) {
         this.topicId = (byte) topicId;
         this.isGuaranteed = isGuaranteed;        
     }     

@@ -16,8 +16,8 @@ package arkhados;
 
 import arkhados.effects.EffectBox;
 import arkhados.effects.WorldEffect;
-import arkhados.messages.WorldEffectCommand;
-import arkhados.messages.syncmessages.ActionCommand;
+import arkhados.messages.CmdWorldEffect;
+import arkhados.messages.syncmessages.CmdAction;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.util.UserDataStrings;
@@ -58,7 +58,7 @@ public class EffectHandler implements CommandHandler {
         actionEffects.put(id, effectBox);
     }
 
-    private void handleAction(final ActionCommand actionCommand) {
+    private void handleAction(final CmdAction actionCommand) {
         final Spatial entity =
                 worldManager.getEntity(actionCommand.getSyncId());
         if (entity == null) {
@@ -83,7 +83,7 @@ public class EffectHandler implements CommandHandler {
         });
     }
 
-    private void handleWorldEffect(final WorldEffectCommand command) {
+    private void handleWorldEffect(final CmdWorldEffect command) {
         if (command.getEffectId() >= worldEffects.size()) {
             return;
         }
@@ -107,10 +107,10 @@ public class EffectHandler implements CommandHandler {
 
     @Override
     public void readGuaranteed(Object source, Command guaranteed) {
-        if (guaranteed instanceof ActionCommand) {
-            handleAction((ActionCommand) guaranteed);
-        } else if (guaranteed instanceof WorldEffectCommand) {
-            handleWorldEffect((WorldEffectCommand) guaranteed);
+        if (guaranteed instanceof CmdAction) {
+            handleAction((CmdAction) guaranteed);
+        } else if (guaranteed instanceof CmdWorldEffect) {
+            handleWorldEffect((CmdWorldEffect) guaranteed);
         }
     }
 

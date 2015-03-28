@@ -17,20 +17,20 @@ package arkhados.messages;
 import arkhados.PlayerData;
 import arkhados.characters.EliteSoldierSyncData;
 import com.jme3.network.serializing.Serializer;
-import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
-import arkhados.messages.syncmessages.ActionCommand;
-import arkhados.messages.syncmessages.AddEntityCommand;
-import arkhados.messages.syncmessages.BuffCommand;
-import arkhados.messages.syncmessages.RemoveEntityCommand;
-import arkhados.messages.syncmessages.SetCooldownCommand;
-import arkhados.messages.syncmessages.StartCastingSpellCommand;
+import arkhados.messages.roundprotocol.CmdRoundStartCountdown;
+import arkhados.messages.syncmessages.CmdAction;
+import arkhados.messages.syncmessages.CmdAddEntity;
+import arkhados.messages.syncmessages.CmdBuff;
+import arkhados.messages.syncmessages.CmdRemoveEntity;
+import arkhados.messages.syncmessages.CmdSetCooldown;
+import arkhados.messages.syncmessages.CmdStartCastingSpell;
 import arkhados.messages.syncmessages.statedata.CharacterSyncData;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.messages.usercommands.UcCastSpellCommand;
-import arkhados.messages.usercommands.UcMouseTargetCommand;
-import arkhados.messages.usercommands.UcWalkDirection;
+import arkhados.messages.usercommands.CmdUcCastSpell;
+import arkhados.messages.usercommands.CmdUcMouseTarget;
+import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Ack;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.OtmIdCommandListPair;
@@ -52,44 +52,45 @@ public class MessageUtils {
         Serializer.registerClass(OtmIdCommandListPair.class);
 
         Serializer.registerClass(Ack.class);
-        Serializer.registerClass(TopicOnlyCommand.class);
+        Serializer.registerClass(CmdTopicOnly.class);
 
         // <Lobby>
-        Serializer.registerClass(ServerLoginCommand.class);
-        Serializer.registerClass(ClientLoginCommand.class);
-        Serializer.registerClass(ClientSettingsCommand.class);
-        Serializer.registerClass(PlayerDataTableCommand.class);
+        Serializer.registerClass(CmdServerLogin.class);
+        Serializer.registerClass(CmdClientLogin.class);
+        Serializer.registerClass(CmdClientSettings.class);
+        Serializer.registerClass(CmdPlayerDataTable.class);
         Serializer.registerClass(ChatMessage.class);
-        Serializer.registerClass(ClientSelectHeroCommand.class);
+        Serializer.registerClass(CmdClientSelectHero.class);
         // </Lobby>
 
         // <RoundProtocol>
-        Serializer.registerClass(RoundStartCountdownCommand.class);
+        Serializer.registerClass(CmdRoundStartCountdown.class);
         // </RoundProtocol>
 
 
         // <Sync>
-        Serializer.registerClass(AddEntityCommand.class);
-        Serializer.registerClass(RemoveEntityCommand.class);
-        Serializer.registerClasses(StateData.class, CharacterSyncData.class, GenericSyncData.class, ProjectileSyncData.class);
+        Serializer.registerClass(CmdAddEntity.class);
+        Serializer.registerClass(CmdRemoveEntity.class);
+        Serializer.registerClasses(StateData.class, CharacterSyncData.class,
+                GenericSyncData.class, ProjectileSyncData.class);
         Serializer.registerClass(EliteSoldierSyncData.class);
-        Serializer.registerClass(StartCastingSpellCommand.class);
-        Serializer.registerClass(SetCooldownCommand.class);
-        Serializer.registerClass(ActionCommand.class);
-        Serializer.registerClass(BuffCommand.class);
+        Serializer.registerClass(CmdStartCastingSpell.class);
+        Serializer.registerClass(CmdSetCooldown.class);
+        Serializer.registerClass(CmdAction.class);
+        Serializer.registerClass(CmdBuff.class);
         // </Sync>
 
         // <UserCommands>
-        Serializer.registerClass(UcCastSpellCommand.class);
-        Serializer.registerClass(UcWalkDirection.class);
-        Serializer.registerClass(UcMouseTargetCommand.class);
+        Serializer.registerClass(CmdUcCastSpell.class);
+        Serializer.registerClass(CmdUcWalkDirection.class);
+        Serializer.registerClass(CmdUcMouseTarget.class);
         // </UserCommands>
 
         // <Other>
         Serializer.registerClass(CmdSetPlayersCharacter.class);
         Serializer.registerClass(BattleStatisticsResponse.class);
-        Serializer.registerClass(PlayerKillCommand.class);
-        Serializer.registerClass(WorldEffectCommand.class);        
+        Serializer.registerClass(CmdPlayerKill.class);
+        Serializer.registerClass(CmdWorldEffect.class);        
         // </Other>
     }
 }

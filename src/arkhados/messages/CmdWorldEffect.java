@@ -12,12 +12,12 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
 
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.messages.syncmessages.statedata.StateData;
+package arkhados.messages;
+
+import arkhados.net.Command;
+import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Spatial;
 
 /**
  *
@@ -25,24 +25,28 @@ import com.jme3.scene.Spatial;
  */
 
 @Serializable
-public class ActionCommand extends StateData {
-    private byte actionId;
+public class CmdWorldEffect implements Command {
+    private short effectId;
+    private Vector3f location = new Vector3f();
 
-    public ActionCommand() {
+    public CmdWorldEffect() {
     }
 
-    public ActionCommand(int id, int actionId) {
-        super(id);
-        this.actionId = (byte) actionId;
+    public CmdWorldEffect(int effectId, Vector3f location) {
+        this.effectId = (short) effectId;
+        this.location.set(location);
     }
 
     @Override
-    public void applyData(Object target) {
-        Spatial character = (Spatial) target;
-        character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
+    public boolean isGuaranteed() {
+        return true;
     }
 
-    public int getActionId() {
-        return actionId;
+    public short getEffectId() {
+        return effectId;
     }
+
+    public Vector3f getLocation() {
+        return location;
+    }    
 }

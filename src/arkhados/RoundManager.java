@@ -27,8 +27,8 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.CmdSetPlayersCharacter;
-import arkhados.messages.TopicOnlyCommand;
-import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
+import arkhados.messages.CmdTopicOnly;
+import arkhados.messages.roundprotocol.CmdRoundStartCountdown;
 import arkhados.net.ClientSender;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
@@ -99,12 +99,12 @@ public class RoundManager implements CommandHandler {
                 Sender sender = app.getStateManager().getState(Sender.class);
                 if (worldManager.isClient()) {
                     sender.addCommand(
-                            new TopicOnlyCommand(Topic.CLIENT_WORLD_CREATED));
+                            new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
                 }
 
                 if (sender.isServer()) {
                     logger.log(Level.INFO, "Broadcasting CreateWorldMessage");
-                    sender.addCommand(new TopicOnlyCommand(Topic.CREATE_WORLD));
+                    sender.addCommand(new CmdTopicOnly(Topic.CREATE_WORLD));
                     syncManager.setEnabled(true);
                     syncManager.startListening();
                 }
@@ -157,7 +157,7 @@ public class RoundManager implements CommandHandler {
             });
         }
 
-        sender.addCommand(new RoundStartCountdownCommand(5));
+        sender.addCommand(new CmdRoundStartCountdown(5));
         roundStartTimer.setTimeLeft(5f);
         roundStartTimer.setActive(true);
     }
@@ -167,7 +167,7 @@ public class RoundManager implements CommandHandler {
         Sender sender = app.getStateManager().getState(Sender.class);
         logger.log(Level.INFO, "Starting new round");
         if (sender.isServer()) {
-            sender.addCommand(new TopicOnlyCommand(Topic.NEW_ROUND));
+            sender.addCommand(new CmdTopicOnly(Topic.NEW_ROUND));
             CharacterInteraction.startNewRound();
         }
         roundRunning = true;
@@ -200,7 +200,7 @@ public class RoundManager implements CommandHandler {
         Sender sender = app.getStateManager().getState(Sender.class);
         logger.log(Level.INFO, "Ending round");
         if (sender.isServer()) {
-            sender.addCommand(new TopicOnlyCommand(Topic.ROUND_FINISHED));
+            sender.addCommand(new CmdTopicOnly(Topic.ROUND_FINISHED));
             PlayerData.setDataForAll(PlayerDataStrings.WORLD_CREATED, false);
             PlayerData.setDataForAll(PlayerDataStrings.READY_FOR_ROUND, false);
             logger.log(Level.INFO, "Disabling syncManager");
@@ -304,17 +304,17 @@ public class RoundManager implements CommandHandler {
     }
 
     private void serverReadGuaranteed(HostedConnection source, Command command) {
-        if (command instanceof TopicOnlyCommand) {
-            serverHandleTopicOnly(source, (TopicOnlyCommand) command);
+        if (command instanceof CmdTopicOnly) {
+            serverHandleTopicOnly(source, (CmdTopicOnly) command);
         }
     }
 
     private void clientReadGuaranteed(Command command) {
-        if (command instanceof TopicOnlyCommand) {
-            clientHandleTopicOnly((TopicOnlyCommand) command);
-        } else if (command instanceof RoundStartCountdownCommand) {
-            RoundStartCountdownCommand countDownCommand =
-                    (RoundStartCountdownCommand) command;
+        if (command instanceof CmdTopicOnly) {
+            clientHandleTopicOnly((CmdTopicOnly) command);
+        } else if (command instanceof CmdRoundStartCountdown) {
+            CmdRoundStartCountdown countDownCommand =
+                    (CmdRoundStartCountdown) command;
             roundStartTimer.setTimeLeft(countDownCommand.getTime());
             roundStartTimer.setActive(true);
         }
@@ -324,7 +324,7 @@ public class RoundManager implements CommandHandler {
     public void readUnreliable(Object source, Command command) {
     }
 
-    private void clientHandleTopicOnly(TopicOnlyCommand command) {
+    private void clientHandleTopicOnly(CmdTopicOnly command) {
         switch (command.getTopicId()) {
             case Topic.CREATE_WORLD:
                 createWorld();
@@ -360,7 +360,7 @@ public class RoundManager implements CommandHandler {
         });
     }
 
-    private void serverHandleTopicOnly(HostedConnection source, TopicOnlyCommand topicOnlyCommand) {
+    private void serverHandleTopicOnly(HostedConnection source, CmdTopicOnly topicOnlyCommand) {
         switch (topicOnlyCommand.getTopicId()) {
             case Topic.CLIENT_WORLD_CREATED:
                 serverHandleClientWorldCreated(source);

@@ -12,43 +12,37 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.messages.syncmessages;
 
-import arkhados.WorldManager;
+import arkhados.controls.CharacterAnimationControl;
 import arkhados.messages.syncmessages.statedata.StateData;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Spatial;
 
 /**
  *
  * @author william
  */
-@Serializable
-public class AddEntityCommand extends StateData {
-    private int entityId;
-    private short nodeBuilderId;
-    private Vector3f location;
-    private Quaternion rotation;
-    private byte playerId;
 
-    public AddEntityCommand() {
+@Serializable
+public class CmdAction extends StateData {
+    private byte actionId;
+
+    public CmdAction() {
     }
 
-    public AddEntityCommand(int entityId, int nodeBuilderId, Vector3f location,
-            Quaternion rotation, int playerId) {
-        this.entityId = entityId;
-        this.nodeBuilderId = (short) nodeBuilderId;
-        this.location = location;
-        this.rotation = rotation;
-        this.playerId = (byte) playerId;
+    public CmdAction(int id, int actionId) {
+        super(id);
+        this.actionId = (byte) actionId;
     }
 
     @Override
     public void applyData(Object target) {
-        WorldManager worldManager = (WorldManager) target;
-        worldManager.addEntity(entityId, nodeBuilderId, location,
-                rotation, playerId);
+        Spatial character = (Spatial) target;
+        character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
+    }
+
+    public int getActionId() {
+        return actionId;
     }
 }

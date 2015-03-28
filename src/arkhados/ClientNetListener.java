@@ -18,12 +18,12 @@ import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientLoginCommand;
-import arkhados.messages.ClientSettingsCommand;
-import arkhados.messages.PlayerDataTableCommand;
-import arkhados.messages.ServerLoginCommand;
+import arkhados.messages.CmdClientLogin;
+import arkhados.messages.CmdClientSettings;
+import arkhados.messages.CmdPlayerDataTable;
+import arkhados.messages.CmdServerLogin;
 import arkhados.messages.CmdSetPlayersCharacter;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
@@ -71,7 +71,7 @@ public class ClientNetListener extends AbstractAppState
         if (udpHandshakeAckTimer.timeJustEnded()) {
             Sender sender = app.getStateManager().getState(Sender.class);
             sender.addCommand(
-                    new TopicOnlyCommand(Topic.UDP_HANDSHAKE_REQUEST, false));
+                    new CmdTopicOnly(Topic.UDP_HANDSHAKE_REQUEST, false));
             udpHandshakeAckTimer
                     .setTimeLeft(udpHandshakeAckTimer.getOriginal());
         }
@@ -96,16 +96,16 @@ public class ClientNetListener extends AbstractAppState
 
     @Override
     public void readGuaranteed(Object source, Command command) {
-        if (command instanceof TopicOnlyCommand) {
-            handleTopicCommand((TopicOnlyCommand) command);
-        } else if (command instanceof PlayerDataTableCommand) {
-            PlayerDataTableCommand dataTable = (PlayerDataTableCommand) command;
+        if (command instanceof CmdTopicOnly) {
+            handleTopicCommand((CmdTopicOnly) command);
+        } else if (command instanceof CmdPlayerDataTable) {
+            CmdPlayerDataTable dataTable = (CmdPlayerDataTable) command;
             app.refreshPlayerData(dataTable.getPlayerData());
         } else if (command instanceof ChatMessage) {
             ChatMessage chat = (ChatMessage) command;
             app.addChat(chat.getName(), chat.getMessage());
-        } else if (command instanceof ServerLoginCommand) {
-            handleLoginCommand((ServerLoginCommand) command);
+        } else if (command instanceof CmdServerLogin) {
+            handleLoginCommand((CmdServerLogin) command);
         } else if (command instanceof BattleStatisticsResponse) {
             BattleStatisticsResponse response =
                     (BattleStatisticsResponse) command;
@@ -119,12 +119,12 @@ public class ClientNetListener extends AbstractAppState
 
     @Override
     public void readUnreliable(Object source, Command command) {
-        if (command instanceof TopicOnlyCommand) {
-            handleTopicCommand((TopicOnlyCommand) command);
+        if (command instanceof CmdTopicOnly) {
+            handleTopicCommand((CmdTopicOnly) command);
         }
     }
 
-    private void handleTopicCommand(TopicOnlyCommand topicOnlyCommand) {
+    private void handleTopicCommand(CmdTopicOnly topicOnlyCommand) {
         switch (topicOnlyCommand.getTopicId()) {
             case Topic.START_GAME:
                 app.startGame();
@@ -135,13 +135,13 @@ public class ClientNetListener extends AbstractAppState
                 break;
             case Topic.CONNECTION_ESTABLISHED:
                 Sender sender = app.getStateManager().getState(Sender.class);
-                sender.addCommand(new TopicOnlyCommand(
+                sender.addCommand(new CmdTopicOnly(
                         Topic.UDP_HANDSHAKE_REQUEST, false));
                 udpHandshakeAckTimer.setActive(true);
         }
     }
 
-    private void handleLoginCommand(ServerLoginCommand loginCommand) {
+    private void handleLoginCommand(CmdServerLogin loginCommand) {
         if (loginCommand.isAccepted()) {
             app.getStateManager().getState(UserCommandManager.class).
                     setPlayerId(loginCommand.getPlayerId());
@@ -150,8 +150,8 @@ public class ClientNetListener extends AbstractAppState
             boolean movingInterrupts = settings
                     .getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
 
-            ClientSettingsCommand clientSettingsCommand =
-                    new ClientSettingsCommand(movingInterrupts);
+            CmdClientSettings clientSettingsCommand =
+                    new CmdClientSettings(movingInterrupts);
             Sender sender = app.getStateManager().getState(Sender.class);
             sender.addCommand(clientSettingsCommand);
 
@@ -170,7 +170,7 @@ public class ClientNetListener extends AbstractAppState
     private void handleUdpHandshakeAck() {
         Sender sender = app.getStateManager().getState(Sender.class);
         if (!handshakeComplete) {
-            ClientLoginCommand command = new ClientLoginCommand(name);
+            CmdClientLogin command = new CmdClientLogin(name);
             sender.addCommand(command);
             handshakeComplete = true;
             app.setStatusText("");

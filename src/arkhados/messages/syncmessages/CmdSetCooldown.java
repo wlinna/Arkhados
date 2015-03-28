@@ -24,15 +24,15 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 @Serializable
-public class SetCooldownCommand extends StateData {
+public class CmdSetCooldown extends StateData {
     private short spellId;
     private float cooldown;
     private boolean globalCooldown;
 
-    public SetCooldownCommand() {
+    public CmdSetCooldown() {
     }
 
-    public SetCooldownCommand(int id, int spellId, float cooldown, boolean globalCooldown) {
+    public CmdSetCooldown(int id, int spellId, float cooldown, boolean globalCooldown) {
         super(id);
         this.spellId = (short) spellId;
         this.cooldown = cooldown;

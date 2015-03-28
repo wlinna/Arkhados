@@ -24,17 +24,17 @@ import com.jme3.scene.Node;
  * @author william
  */
 @Serializable
-public class BuffCommand extends StateData {
+public class CmdBuff extends StateData {
 
     private short buffTypeId;
     private int buffId;
     private float duration;
     private boolean added;    
 
-    public BuffCommand() {
+    public CmdBuff() {
     }
 
-    public BuffCommand(int entityId, int buffTypeId, int buffId, float duration, boolean added) {
+    public CmdBuff(int entityId, int buffTypeId, int buffId, float duration, boolean added) {
         super(entityId);
         this.buffTypeId = (short) buffTypeId;
         this.buffId = buffId;

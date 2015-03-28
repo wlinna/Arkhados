@@ -17,7 +17,7 @@ package arkhados.spell.buffs;
 import arkhados.ServerFogManager;
 import arkhados.controls.EntityVariableControl;
 import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.messages.syncmessages.BuffCommand;
+import arkhados.messages.syncmessages.CmdBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
 
@@ -56,7 +56,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
                 .getControl(EntityVariableControl.class)
                 .getAwareness().getFogManager();
 
-        fogManager.addCommand(spatial, new BuffCommand(entityId,
+        fogManager.addCommand(spatial, new CmdBuff(entityId,
                 getTypeId(), getBuffId(), duration, true));
     }
 

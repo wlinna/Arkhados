@@ -18,7 +18,7 @@ import arkhados.ClientMain;
 import arkhados.SyncManager;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ServerSender;
 import arkhados.ui.hud.ClientHudManager;
 import com.jme3.app.Application;
@@ -63,7 +63,7 @@ public abstract class GameMode {
             });
         } else {
             getApp().getStateManager().getState(ServerSender.class).addCommand(
-                    new TopicOnlyCommand(Topic.GAME_ENDED));
+                    new CmdTopicOnly(Topic.GAME_ENDED));
         }
     }
 

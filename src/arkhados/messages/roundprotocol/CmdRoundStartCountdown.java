@@ -23,13 +23,13 @@ import com.jme3.network.serializing.Serializable;
  */
 
 @Serializable
-public class RoundStartCountdownCommand implements Command{
+public class CmdRoundStartCountdown implements Command{
     private int time;
 
-    public RoundStartCountdownCommand() {
+    public CmdRoundStartCountdown() {
     }
 
-    public RoundStartCountdownCommand(int time) {
+    public CmdRoundStartCountdown(int time) {
         this.time = time;
     }
 

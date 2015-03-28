@@ -15,7 +15,7 @@
 package arkhados.ui.hud;
 
 import arkhados.MusicManager;
-import arkhados.messages.ClientSelectHeroCommand;
+import arkhados.messages.CmdClientSelectHero;
 import arkhados.net.Sender;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -56,7 +56,7 @@ public class DeathMatchHeroSelectionScreenController implements ScreenController
     public void selectHero(String heroName) {
         stateManager.getState(MusicManager.class).setMusicCategory(heroName);
         stateManager.getState(MusicManager.class).setPlaying(true);
-        stateManager.getState(Sender.class).addCommand(new ClientSelectHeroCommand(heroName));
+        stateManager.getState(Sender.class).addCommand(new CmdClientSelectHero(heroName));
         nifty.gotoScreen("default_hud");
     }
     

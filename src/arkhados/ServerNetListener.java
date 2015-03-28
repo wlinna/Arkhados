@@ -22,12 +22,12 @@ import com.jme3.network.Server;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
-import arkhados.messages.ClientLoginCommand;
-import arkhados.messages.ClientSelectHeroCommand;
-import arkhados.messages.ClientSettingsCommand;
-import arkhados.messages.PlayerDataTableCommand;
-import arkhados.messages.ServerLoginCommand;
-import arkhados.messages.TopicOnlyCommand;
+import arkhados.messages.CmdClientLogin;
+import arkhados.messages.CmdClientSelectHero;
+import arkhados.messages.CmdClientSettings;
+import arkhados.messages.CmdPlayerDataTable;
+import arkhados.messages.CmdServerLogin;
+import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
@@ -60,8 +60,8 @@ public class ServerNetListener implements ConnectionListener,
             sender.addConnection(conn);
             app.getStateManager().getState(Receiver.class).addConnection(conn);
 
-            TopicOnlyCommand connectionEstablishendCommand =
-                    new TopicOnlyCommand(Topic.CONNECTION_ESTABLISHED);
+            CmdTopicOnly connectionEstablishendCommand =
+                    new CmdTopicOnly(Topic.CONNECTION_ESTABLISHED);
             sender.addCommand(connectionEstablishendCommand);
         } else {
             Logger.getLogger(ServerNetListener.class.getName())
@@ -79,25 +79,25 @@ public class ServerNetListener implements ConnectionListener,
         ServerSender sender =
                 app.getStateManager().getState(ServerSender.class);
 
-        if (command instanceof TopicOnlyCommand) {
+        if (command instanceof CmdTopicOnly) {
             handleTopicOnlyCommand((HostedConnection) source,
-                    (TopicOnlyCommand) command);
+                    (CmdTopicOnly) command);
         } else if (command instanceof ChatMessage) {
             sender.addCommand(command);
-        } else if (command instanceof ClientLoginCommand) {
+        } else if (command instanceof CmdClientLogin) {
             handleClientLoginCommand((HostedConnection) source,
-                    (ClientLoginCommand) command);
-        } else if (command instanceof ClientSelectHeroCommand) {
+                    (CmdClientLogin) command);
+        } else if (command instanceof CmdClientSelectHero) {
             handleClientSelectHeroCommand((HostedConnection) source,
-                    (ClientSelectHeroCommand) command);
-        } else if (command instanceof ClientSettingsCommand) {
+                    (CmdClientSelectHero) command);
+        } else if (command instanceof CmdClientSettings) {
             handleClientSettingsCommand((HostedConnection) source,
-                    (ClientSettingsCommand) command);
+                    (CmdClientSettings) command);
         }
 
     }
 
-    private void handleTopicOnlyCommand(HostedConnection source, TopicOnlyCommand topicCommand) {
+    private void handleTopicOnlyCommand(HostedConnection source, CmdTopicOnly topicCommand) {
         ServerSender sender =
                 app.getStateManager().getState(ServerSender.class);
 
@@ -118,14 +118,14 @@ public class ServerNetListener implements ConnectionListener,
                 break;
             case Topic.UDP_HANDSHAKE_REQUEST:
                 sender.addCommandForSingle(
-                        new TopicOnlyCommand(Topic.UDP_HANDSHAKE_ACK, false),
+                        new CmdTopicOnly(Topic.UDP_HANDSHAKE_ACK, false),
                         source);
                 break;
         }
     }
 
     private void handleClientLoginCommand(HostedConnection source,
-            ClientLoginCommand commmand) {
+            CmdClientLogin commmand) {
         ServerSender sender =
                 app.getStateManager().getState(ServerSender.class);
         final int clientId = source.getId();
@@ -155,15 +155,15 @@ public class ServerNetListener implements ConnectionListener,
         gameManager.playerJoined(playerId);
 
         String modeKey = gameManager.getGameMode().getClass().getSimpleName();
-        ServerLoginCommand serverLoginMessage =
-                new ServerLoginCommand(commmand.getName(), playerId,
+        CmdServerLogin serverLoginMessage =
+                new CmdServerLogin(commmand.getName(), playerId,
                 true, modeKey);
         sender.addCommandForSingle(serverLoginMessage, source);
-        sender.addCommand(PlayerDataTableCommand.makeFromPlayerDataList());
+        sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
     }
 
     private void handleClientSelectHeroCommand(HostedConnection source,
-            ClientSelectHeroCommand command) {
+            CmdClientSelectHero command) {
         int playerId = ServerClientData.getPlayerId(
                 ((HostedConnection) source).getId());
 
@@ -173,7 +173,7 @@ public class ServerNetListener implements ConnectionListener,
     }
 
     private void handleClientSettingsCommand(HostedConnection source,
-            ClientSettingsCommand clientSettings) {
+            CmdClientSettings clientSettings) {
         int playerId = ServerClientData.getPlayerId(source.getId());
         PlayerData.setData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
                 clientSettings.commandMoveInterrupts());
@@ -181,9 +181,9 @@ public class ServerNetListener implements ConnectionListener,
 
     @Override
     public void readUnreliable(Object source, Command command) {
-        if (command instanceof TopicOnlyCommand) {
+        if (command instanceof CmdTopicOnly) {
             handleTopicOnlyCommand((HostedConnection) source,
-                    (TopicOnlyCommand) command);
+                    (CmdTopicOnly) command);
         }
     }
 }

@@ -13,32 +13,34 @@
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages;
+package arkhados.messages.syncmessages;
 
-import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
+import arkhados.WorldManager;
+import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
  *
  * @author william
  */
 @Serializable
-public class ClientLoginCommand implements Command {
-    private String name;
+public class CmdRemoveEntity extends StateData {
 
-    public ClientLoginCommand() {
+    private int entityId;
+    private byte reason;
+
+    public CmdRemoveEntity() {
     }
 
-    public ClientLoginCommand(String nick) {
-        this.name = nick;
-    }
-
-    public String getName() {
-        return this.name;
+    public CmdRemoveEntity(int entityId, int reason) {
+        super(-1);
+        this.entityId = entityId;
+        this.reason = (byte) reason;
     }
 
     @Override
-    public boolean isGuaranteed() {
-        return true;
+    public void applyData(Object target) {
+        WorldManager worldManager = (WorldManager) target;
+        worldManager.removeEntity(entityId, reason);
     }
 }
