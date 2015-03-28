@@ -20,11 +20,11 @@ import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.characters.RockGolem;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.EntityVariableControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CEntityVariable;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.messages.CmdWorldEffect;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -91,7 +91,7 @@ class CastTossAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        ActionQueueControl actionQueue = spatial.getControl(ActionQueueControl.class);
+        CActionQueue actionQueue = spatial.getControl(CActionQueue.class);
 
         TossAction tossAction = new TossAction(spell, range);
         actionQueue.enqueueAction(tossAction);
@@ -112,8 +112,8 @@ class TossAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl =
-                spatial.getControl(CharacterPhysicsControl.class);
+        final CCharacterPhysics physicsControl =
+                spatial.getControl(CCharacterPhysics.class);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
                 .normalize().multLocal(range);
 
@@ -123,8 +123,8 @@ class TossAction extends EntityAction {
                 new Predicate<SpatialDistancePair>() {
             @Override
             public boolean test(SpatialDistancePair value) {
-                InfluenceInterfaceControl targetInfluenceControl = value.spatial
-                        .getControl(InfluenceInterfaceControl.class);
+                CInfluenceInterface targetInfluenceControl = value.spatial
+                        .getControl(CInfluenceInterface.class);
                 if (targetInfluenceControl == null) {
                     SpiritStonePhysicsControl stone =
                             value.spatial
@@ -171,7 +171,7 @@ class TossAction extends EntityAction {
 
     private void toss(final Spatial target) {
         Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1);
-        Vector3f finalLocation = spatial.getControl(SpellCastControl.class)
+        Vector3f finalLocation = spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 
         final MotionPath path = new MotionPath();
@@ -198,7 +198,7 @@ class TossAction extends EntityAction {
                     int wayPointIndex) {
                 if (wayPointIndex == path.getNbWayPoints() - 1) {
                     if (stonePhysics == null) {
-                        target.getControl(CharacterPhysicsControl.class)
+                        target.getControl(CCharacterPhysics.class)
                                 .switchToNormalPhysicsMode();
                     }
                     landingEffect();
@@ -214,13 +214,13 @@ class TossAction extends EntityAction {
                 splashAction.excludeSpatial(spatial);
                 splashAction.excludeSpatial(target);
                 splashAction.setCasterInterface(spatial
-                        .getControl(InfluenceInterfaceControl.class));
+                        .getControl(CInfluenceInterface.class));
                 splashAction.update(0f);
                 if (stonePhysics == null) {
-                    InfluenceInterfaceControl targetInterface =
-                            target.getControl(InfluenceInterfaceControl.class);
-                    InfluenceInterfaceControl myInterface =
-                            spatial.getControl(InfluenceInterfaceControl.class);
+                    CInfluenceInterface targetInterface =
+                            target.getControl(CInfluenceInterface.class);
+                    CInfluenceInterface myInterface =
+                            spatial.getControl(CInfluenceInterface.class);
 
                     CharacterInteraction.harm(myInterface, targetInterface,
                             200f, null, true);
@@ -229,7 +229,7 @@ class TossAction extends EntityAction {
                 }
 
                 ServerFogManager fogManager = spatial
-                        .getControl(EntityVariableControl.class).getAwareness()
+                        .getControl(CEntityVariable.class).getAwareness()
                         .getFogManager();
 
                 fogManager.addCommand(target,
@@ -243,9 +243,9 @@ class TossAction extends EntityAction {
         motionControl.play();
 
         if (stonePhysics == null) {
-            target.getControl(CharacterPhysicsControl.class)
+            target.getControl(CCharacterPhysics.class)
                     .switchToMotionCollisionMode();
-            target.getControl(ActionQueueControl.class).clear();
+            target.getControl(CActionQueue.class).clear();
         }
     }
 }

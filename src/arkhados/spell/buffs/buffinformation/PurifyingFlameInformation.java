@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.Material;
@@ -36,7 +36,7 @@ public class PurifyingFlameInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
         final FlameShield flameShield = new FlameShield(duration);
         flameShield.addToCharacter(buffControl);
         return flameShield;
@@ -51,7 +51,7 @@ class FlameShield extends BuffEffect {
     private Node node = null;
     private AudioNode sound = null;
 
-    public void addToCharacter(final CharacterBuffControl buffControl) {
+    public void addToCharacter(final CCharacterBuff buffControl) {
         final Node characterNode = (Node) buffControl.getSpatial();
 
         final float radius = 12f;

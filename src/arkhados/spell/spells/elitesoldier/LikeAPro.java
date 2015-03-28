@@ -17,7 +17,7 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
 import arkhados.characters.EliteSoldier;
-import arkhados.controls.EliteSoldierAmmunitionControl;
+import arkhados.controls.CEliteSoldierAmmunition;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
@@ -64,8 +64,8 @@ public class LikeAPro extends Spell {
                 buffAction.addBuff(new SpeedBuff(0, 6, -1, 5));
                 buffAction.addBuff(new ArmorBuff(50, 0.6f, -1, 999999999));
                 
-                EliteSoldierAmmunitionControl ammunitionControl =
-                        caster.getControl(EliteSoldierAmmunitionControl.class);
+                CEliteSoldierAmmunition ammunitionControl =
+                        caster.getControl(CEliteSoldierAmmunition.class);
                 ammunitionControl.likeAPro();
                 return buffAction;
             }

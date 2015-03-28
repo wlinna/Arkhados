@@ -17,8 +17,8 @@ package arkhados.spell.spells.venator;
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
@@ -87,8 +87,8 @@ public class Dagger extends Spell {
 
             node.addControl(physicsBody);
 
-            node.addControl(new ProjectileControl());
-            SpellBuffControl buffControl = new SpellBuffControl();
+            node.addControl(new CProjectile());
+            CSpellBuff buffControl = new CSpellBuff();
             buffControl.addBuff(new SlowCC(-1, 6f, 0.33f));
             node.addControl(buffControl);
 

@@ -19,10 +19,10 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.characters.EliteSoldier;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -132,7 +132,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
             final ParticleEmitter smoke = createTrailEmitter();
             node.attachChild(smoke);
 
-            node.addControl(new EntityEventControl());
+            node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
@@ -142,7 +142,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
-            node.getControl(EntityEventControl.class)
+            node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
         }
 
@@ -166,10 +166,10 @@ class RailgunBuilder extends AbstractNodeBuilder {
         node.addControl(characterCollision);
 
         node.addControl(physicsBody);
-        ProjectileControl projectileControl = new ProjectileControl();
+        CProjectile projectileControl = new CProjectile();
         projectileControl.setIsProjectile(false);
         node.addControl(projectileControl);
-        final SpellBuffControl buffControl = new SpellBuffControl();
+        final CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
 
         return node;
@@ -194,7 +194,7 @@ class RailgunRemovalAction implements RemovalEventAction {
         smokeTrail.setParticlesPerSec(0);
         worldRoot.attachChild(smokeTrail);
         smokeTrail.setLocalTranslation(worldTranslation);
-        smokeTrail.addControl(new TimedExistenceControl(5f));
+        smokeTrail.addControl(new CTimedExistence(5f));
     }
 
     @Override

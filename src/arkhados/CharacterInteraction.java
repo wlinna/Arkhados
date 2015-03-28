@@ -16,7 +16,7 @@ package arkhados;
 
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.gamemode.GameMode;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.RoundStats;
@@ -38,8 +38,8 @@ public class CharacterInteraction {
     public static GameMode gameMode = null;
     private static final Map<Integer, Integer> latestDamager = new HashMap<>();
 
-    public static void harm(InfluenceInterfaceControl attacker,
-            InfluenceInterfaceControl target, final float rawDamage,
+    public static void harm(CInfluenceInterface attacker,
+            CInfluenceInterface target, final float rawDamage,
             List<AbstractBuff> buffs, boolean canBreakCC) {
 
         if (target == null) {
@@ -101,8 +101,8 @@ public class CharacterInteraction {
         }
     }
 
-    public static void heal(InfluenceInterfaceControl healer,
-            InfluenceInterfaceControl target, float amount) {
+    public static void heal(CInfluenceInterface healer,
+            CInfluenceInterface target, float amount) {
         if (target == null) {
             return;
         } else if (target.isDead()) {

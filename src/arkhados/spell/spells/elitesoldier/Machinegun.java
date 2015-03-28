@@ -17,11 +17,11 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.WorldManager;
 import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.EliteSoldierAmmunitionControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.ProjectileControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CEliteSoldierAmmunition;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CProjectile;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.PelletBuilder;
 import arkhados.spell.Spell;
@@ -78,9 +78,9 @@ class ShootBulletAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final EliteSoldierAmmunitionControl ammunitionControl = super.spatial.getControl(EliteSoldierAmmunitionControl.class);
+        final CEliteSoldierAmmunition ammunitionControl = super.spatial.getControl(CEliteSoldierAmmunition.class);
         if (!ammunitionControl.validateSpellCast(null, spell)) {
-            EntityAction current = super.spatial.getControl(ActionQueueControl.class).getCurrent();
+            EntityAction current = super.spatial.getControl(CActionQueue.class).getCurrent();
             if (current instanceof ChannelingSpellAction) {
                 ((ChannelingSpellAction) current).signalEnd();
             }            
@@ -88,11 +88,11 @@ class ShootBulletAction extends EntityAction {
         }
         
         ammunitionControl.spellCasted(null, spell);
-        final CharacterPhysicsControl physicsControl = super.spatial.getControl(CharacterPhysicsControl.class);
+        final CCharacterPhysics physicsControl = super.spatial.getControl(CCharacterPhysics.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
         final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-        super.spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        super.spatial.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
 
         final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
         final Vector3f pelletDirection = viewDirection.clone();
@@ -106,10 +106,10 @@ class ShootBulletAction extends EntityAction {
         final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-        final ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
+        final CProjectile projectileControl = projectile.getControl(CProjectile.class);
         projectileControl.setRange(this.spell.getRange());
         projectileControl.setDirection(pelletDirection);
-        projectileControl.setOwnerInterface(super.spatial.getControl(InfluenceInterfaceControl.class));
+        projectileControl.setOwnerInterface(super.spatial.getControl(CInfluenceInterface.class));
         return false;
     }
 }

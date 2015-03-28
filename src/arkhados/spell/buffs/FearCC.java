@@ -15,8 +15,8 @@
 package arkhados.spell.buffs;
 
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -39,15 +39,15 @@ public class FearCC extends CrowdControlBuff {
     }
 
     @Override
-    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
+    public void attachToCharacter(CInfluenceInterface influenceInterface) {
         super.attachToCharacter(influenceInterface);
         Spatial spatial = influenceInterface.getSpatial();
 
         spatial.getControl(CCharacterMovement.class)
                 .setWalkDirection(initialDirection);
 
-        CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
         physics.setViewDirection(initialDirection);
     }
 

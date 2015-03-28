@@ -16,9 +16,9 @@ package arkhados.actions;
 
 import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellBuffControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.Selector;
@@ -45,7 +45,7 @@ public class SplashAction extends EntityAction {
     private List<Spatial> excluded = new ArrayList<>();
     private Integer excludedTeam = null;
     
-    private InfluenceInterfaceControl casterInterface;
+    private CInfluenceInterface casterInterface;
 
     public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling,
             List<AbstractBuff> splashBuffs) {
@@ -73,8 +73,8 @@ public class SplashAction extends EntityAction {
                 spatial, radius);
 
         for (SpatialDistancePair pair : spatialsOnDistance) {
-            InfluenceInterfaceControl targetInterface =
-                    pair.spatial.getControl(InfluenceInterfaceControl.class);
+            CInfluenceInterface targetInterface =
+                    pair.spatial.getControl(CInfluenceInterface.class);
             if (targetInterface == null || excluded.contains(pair.spatial)) {
                 continue;
             }
@@ -100,7 +100,7 @@ public class SplashAction extends EntityAction {
             if (splashBuffsOnly) {
                 buffsToApply = splashBuffs;
             } else {
-                final SpellBuffControl buffControl = spatial.getControl(SpellBuffControl.class);
+                final CSpellBuff buffControl = spatial.getControl(CSpellBuff.class);
                 if (buffControl != null) {
                     buffsToApply = buffControl.getBuffs();
                     if (splashBuffs != null) {
@@ -113,8 +113,8 @@ public class SplashAction extends EntityAction {
 
             CharacterInteraction.harm(casterInterface, targetInterface, damage, buffsToApply, true);
 
-            CharacterPhysicsControl physics =
-                    pair.spatial.getControl(CharacterPhysicsControl.class);
+            CCharacterPhysics physics =
+                    pair.spatial.getControl(CCharacterPhysics.class);
             Float impulseFactor;
             if (customImpulse == null) {
                 impulseFactor = spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
@@ -148,11 +148,11 @@ public class SplashAction extends EntityAction {
         excluded.add(oneSpatial);
     }
 
-    public InfluenceInterfaceControl getCasterInterface() {
+    public CInfluenceInterface getCasterInterface() {
         return casterInterface;
     }
 
-    public void setCasterInterface(InfluenceInterfaceControl casterInterface) {
+    public void setCasterInterface(CInfluenceInterface casterInterface) {
         this.casterInterface = casterInterface;
     }
 }

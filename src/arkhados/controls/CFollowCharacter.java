@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -25,20 +21,18 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 
 /**
  *
  * @author william
  */
-public class FollowCharacterControl extends AbstractControl {
+public class CFollowCharacter extends AbstractControl {
     private Node character;
     private Camera cam;
 
     private Vector3f relativePosition;
 
-    public FollowCharacterControl(Node character, Camera cam) {
+    public CFollowCharacter(Node character, Camera cam) {
         this.character = character;
         this.cam = cam;
     }
@@ -50,30 +44,13 @@ public class FollowCharacterControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        this.cam.setLocation(this.character.getWorldTranslation().add(this.relativePosition));
-        this.cam.lookAt(this.character.getWorldTranslation(), Vector3f.UNIT_Y);
+        cam.setLocation(character.getWorldTranslation().add(relativePosition));
+        cam.lookAt(character.getWorldTranslation(), Vector3f.UNIT_Y);
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
 
-    }
-
-//    public Control cloneForSpatial(Spatial spatial) {
-//        FollowCharacterControl control = new FollowCharacterControl();
-//        return control;
-//    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public void setRelativePosition(Vector3f relativePosition) {

@@ -15,8 +15,8 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.Globals;
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CCharacterPhysics;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
@@ -37,7 +37,7 @@ public class DeepWoundsInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
         DeepWoundsEffect effect = new DeepWoundsEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
@@ -47,14 +47,14 @@ public class DeepWoundsInformation extends BuffInformation {
 class DeepWoundsEffect extends BuffEffect {
 
     private ParticleEmitter emitter = null;
-    private CharacterPhysicsControl physics = null;
+    private CCharacterPhysics physics = null;
     private float updateTimer = 0f;
 
     public DeepWoundsEffect(float timeLeft) {
         super(timeLeft);
     }
 
-    public void addToCharacter(CharacterBuffControl buffControl) {
+    public void addToCharacter(CCharacterBuff buffControl) {
         emitter = new ParticleEmitter("blood-emitter", ParticleMesh.Type.Triangle, 100);
 
         Material bloodMat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
@@ -80,7 +80,7 @@ class DeepWoundsEffect extends BuffEffect {
         characterNode.attachChild(emitter);
         emitter.move(0f, 7f, 0f);
 
-        physics = characterNode.getControl(CharacterPhysicsControl.class);
+        physics = characterNode.getControl(CCharacterPhysics.class);
 
         AudioNode sound = new AudioNode(Globals.assetManager,
                 "Effects/Sound/DeepWounds.wav");

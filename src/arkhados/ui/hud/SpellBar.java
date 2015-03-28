@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
 import com.jme3.scene.Spatial;
@@ -44,8 +44,8 @@ public class SpellBar {
 
     public void addSpellIcon(int key) {
         Element bottomPanel = screen.findElementByName("panel_spells");
-        SpellCastControl castControl =
-                playerCharacter.getControl(SpellCastControl.class);
+        CSpellCast castControl =
+                playerCharacter.getControl(CSpellCast.class);
         Spell spell = castControl.getKeySpellNameMapping(key);
 
         if (spell == null) {
@@ -66,8 +66,8 @@ public class SpellBar {
         if (playerCharacter == null) {
             return;
         }
-        SpellCastControl castControl =
-                playerCharacter.getControl(SpellCastControl.class);
+        CSpellCast castControl =
+                playerCharacter.getControl(CSpellCast.class);
 
         for (Map.Entry<String, Element> entry : icons.entrySet()) {
             float cooldown = castControl.getCooldown(Spell

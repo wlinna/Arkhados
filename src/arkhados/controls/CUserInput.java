@@ -28,7 +28,7 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author william
  */
-public class UserInputControl extends AbstractControl {
+public class CUserInput extends AbstractControl {
 
     private ServerPlayerInputState inputState;
 
@@ -41,10 +41,10 @@ public class UserInputControl extends AbstractControl {
     }
 
     public void updateDirection() {
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
-        CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CInfluenceInterface influenceInterface =
+                spatial.getControl(CInfluenceInterface.class);
+        CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
 
         if (!influenceInterface.canControlMovement()
                 || !influenceInterface.canMove()
@@ -67,8 +67,8 @@ public class UserInputControl extends AbstractControl {
             boolean commandMoveInterrupts = commandMoveInterruptsBoolean != null
                     && commandMoveInterruptsBoolean;
 
-            SpellCastControl castControl =
-                    spatial.getControl(SpellCastControl.class);
+            CSpellCast castControl =
+                    spatial.getControl(CSpellCast.class);
             if (castControl.isChanneling() || commandMoveInterrupts) {
                 castControl.safeInterrupt();
             }

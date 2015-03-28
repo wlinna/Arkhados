@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
 import com.jme3.renderer.queue.RenderQueue;
@@ -34,7 +34,7 @@ public class FearInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
         FearEffect effect = new FearEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
@@ -48,7 +48,7 @@ class FearEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CharacterBuffControl buffControl) {
+    public void addToCharacter(CCharacterBuff buffControl) {
         Quad blanket = new Quad(8, 8, true);
         fearIcon = new Geometry("fear-icon", blanket);
         fearIcon.scale(1f);

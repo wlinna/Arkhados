@@ -35,7 +35,7 @@ import java.util.Set;
  *
  * @author william
  */
-public class ProjectileControl extends AbstractControl implements SyncControl {
+public class CProjectile extends AbstractControl implements CSync {
 
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
@@ -44,20 +44,20 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     private static final float timeToLive = 3.0f;
     private float range = 0f;
     private float speed = 0f;
-    private InfluenceInterfaceControl ownerInterface;
+    private CInfluenceInterface ownerInterface;
     private SplashAction splashAction = null;
-    private boolean needsSync = true;   
-
+    private boolean needsSync = true;
     // This is if we want spatial to behave like projectile without certain properties
     private boolean isProjectile = true;
     private final Set<Spatial> hurtList = new HashSet<>();
-    
+
     // Not used anymore but I'm saving it for projectiles that can be set
     // to explode at selected location
     public void setTarget(Vector3f target) {
-        float speedMovement = getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
-        direction = target.subtract(rigidBodyControl.getPhysicsLocation()).setY(0.0f)
-                .normalizeLocal().multLocal(speedMovement);
+        float speedMovement =
+                getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
+        direction = target.subtract(rigidBodyControl.getPhysicsLocation())
+                .setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
         rotation.lookAt(direction, Vector3f.UNIT_Y);
         rigidBodyControl.setPhysicsRotation(rotation);
@@ -74,8 +74,10 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
      * ownerships.
      */
     public void setDirection(Vector3f direction) {
-        float speedMovement = getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
-        this.direction = direction.setY(0f).normalizeLocal().multLocal(speedMovement);
+        float speedMovement =
+                getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
+        this.direction =
+                direction.setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
         rotation.lookAt(direction, Vector3f.UNIT_Y);
         rigidBodyControl.setPhysicsRotation(rotation);
@@ -88,7 +90,7 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         rigidBodyControl = spatial.getControl(RigidBodyControl.class);
-        
+
         // This is default behaviour and can be overridden
         rigidBodyControl.addCollideWithGroup(CollisionGroups.WALLS);
     }
@@ -98,23 +100,24 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
         if (direction == null) {
             rigidBodyControl.setGravity(Vector3f.ZERO);
             return;
-        }        
+        }
         age += tpf;
 
         if (range > 0f && age * speed >= range) {
             if (splashAction != null) {
                 splashAction.update(tpf);
             }
-            
+
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-            worldManager.removeEntity(entityId , RemovalReasons.EXPIRED);
+            worldManager.removeEntity(entityId, RemovalReasons.EXPIRED);
         }
 
-        if (age > ProjectileControl.timeToLive) {
+        if (age > CProjectile.timeToLive) {
             if (splashAction != null) {
                 splashAction.update(tpf);
             }
-            worldManager.removeEntity((int) spatial.getUserData(UserDataStrings.ENTITY_ID),
+            worldManager.removeEntity(
+                    (int) spatial.getUserData(UserDataStrings.ENTITY_ID),
                     RemovalReasons.EXPIRED);
         }
     }
@@ -128,18 +131,18 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
     }
 
     public static void setWorldManager(WorldManager worldManager) {
-        ProjectileControl.worldManager = worldManager;
+        CProjectile.worldManager = worldManager;
     }
 
     public void setRange(float range) {
         this.range = range;
     }
 
-    public InfluenceInterfaceControl getOwnerInterface() {
+    public CInfluenceInterface getOwnerInterface() {
         return ownerInterface;
     }
 
-    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+    public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         this.ownerInterface = ownerInterface;
     }
 
@@ -152,7 +155,8 @@ public class ProjectileControl extends AbstractControl implements SyncControl {
         if (needsSync) {
             needsSync = true;
             return new ProjectileSyncData(
-                    (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID), rigidBodyControl);
+                    (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
+                    rigidBodyControl);
         }
 
         return null;

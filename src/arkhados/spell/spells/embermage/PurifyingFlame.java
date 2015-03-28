@@ -17,10 +17,10 @@ package arkhados.spell.spells.embermage;
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
-import arkhados.controls.AreaEffectControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CAreaEffect;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CTimedExistence;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbsorbingShieldBuff;
@@ -79,10 +79,10 @@ public class PurifyingFlame extends Spell {
                     ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
                     aoeContainer.addControl(ghost);
 
-                    AreaEffectControl areaEffectControl =
-                            new AreaEffectControl(ghost);
+                    CAreaEffect areaEffectControl =
+                            new CAreaEffect(ghost);
                     areaEffectControl.setOwnerInterface(caster
-                            .getControl(InfluenceInterfaceControl.class));
+                            .getControl(CInfluenceInterface.class));
                     DamageOverTimeBuff ignite = Ignite
                             .ifNotCooldownCreateDamageOverTimeBuff(caster);
 
@@ -99,8 +99,8 @@ public class PurifyingFlame extends Spell {
                     damageOverTime.setBreaksCrowdControl(false);
                     areaEffectControl.addInfluence(damageOverTime);
 
-                    InfluenceInterfaceControl casterInfluenceInterface =
-                            caster.getControl(InfluenceInterfaceControl.class);
+                    CInfluenceInterface casterInfluenceInterface =
+                            caster.getControl(CInfluenceInterface.class);
                     areaEffectControl
                             .setOwnerInterface(casterInfluenceInterface);
 
@@ -110,11 +110,11 @@ public class PurifyingFlame extends Spell {
                 }
 
                 aoeContainer.setLocalTranslation(0f, 0f, 0f);
-                TimedExistenceControl timedExistence =
-                        new TimedExistenceControl(duration);
+                CTimedExistence timedExistence =
+                        new CTimedExistence(duration);
                 aoeContainer.addControl(timedExistence);
                 timedExistence.setSpace(caster
-                        .getControl(CharacterPhysicsControl.class)
+                        .getControl(CCharacterPhysics.class)
                         .getPhysicsSpace());
 
                 caster.attachChild(aoeContainer);

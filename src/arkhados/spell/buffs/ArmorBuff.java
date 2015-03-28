@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import com.jme3.math.FastMath;
 
 /**
@@ -33,7 +33,7 @@ public class ArmorBuff extends AbstractBuff {
     }
 
     @Override
-    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
 
         ArmorBuff armorBuff = null;
         for (AbstractBuff buff : targetInterface.getBuffs()) {

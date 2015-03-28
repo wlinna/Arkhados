@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.influences;
 
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 
 /**
  *
@@ -23,13 +23,13 @@ import arkhados.controls.InfluenceInterfaceControl;
 
 
 public abstract class AbstractInfluence implements Influence {
-    private InfluenceInterfaceControl owner = null;
+    private CInfluenceInterface owner = null;
 
-    public InfluenceInterfaceControl getOwner() {
+    public CInfluenceInterface getOwner() {
         return owner;
     }
 
-    public void setOwner(InfluenceInterfaceControl owner) {
+    public void setOwner(CInfluenceInterface owner) {
         this.owner = owner;
     }
 }

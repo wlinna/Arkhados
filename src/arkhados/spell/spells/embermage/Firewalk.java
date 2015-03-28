@@ -19,13 +19,13 @@ import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
-import arkhados.controls.EntityVariableControl;
-import arkhados.controls.GenericSyncControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CEntityVariable;
+import arkhados.controls.CGenericSync;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.PlayerEntityAwareness;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSyncInterpolation;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -76,13 +76,16 @@ public class Firewalk extends Spell {
         final float cooldown = 9f;
         final float range = 90f;
         final float castTime = 0.15f;
-        final Firewalk spell = new Firewalk("Firewalk", cooldown, range, castTime);
+        final Firewalk spell =
+                new Firewalk("Firewalk", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastFirewalkAction castAction = new CastFirewalkAction(spell, Spell.worldManager);
-                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                CastFirewalkAction castAction =
+                        new CastFirewalkAction(spell, Spell.worldManager);
+                DamageOverTimeBuff ignite =
+                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     castAction.additionalBuffs.add(ignite);
                 }
@@ -108,43 +111,49 @@ public class Firewalk extends Spell {
 
         public void addAdditionalBuff(AbstractBuff buff) {
             if (buff == null) {
-                throw new IllegalArgumentException("Nulls are not allowed for buff collection");
+                throw new IllegalArgumentException("Nulls are not allowed "
+                        + "for buff collection");
             }
             additionalBuffs.add(buff);
         }
 
         private void motion() {
-            final Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
-            final int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+            Vector3f startLocation =
+                    spatial.getLocalTranslation().clone().setY(1f);
+            int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
             final int firewalkId = world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
-            final Spatial firewalkNode = world.getEntity(firewalkId);
-            
-            final PlayerEntityAwareness awareness = 
-                    spatial.getControl(EntityVariableControl.class).getAwareness();
+            Spatial firewalkNode = world.getEntity(firewalkId);
+
+            final PlayerEntityAwareness awareness =
+                    spatial.getControl(CEntityVariable.class).getAwareness();
             awareness.setOwnSpatial(firewalkNode);
 
-            final SpellBuffControl buffControl = firewalkNode.getControl(SpellBuffControl.class);
-            buffControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+            CSpellBuff buffControl = firewalkNode.getControl(CSpellBuff.class);
+            buffControl.setOwnerInterface(spatial
+                    .getControl(CInfluenceInterface.class));
             buffControl.getBuffs().addAll(additionalBuffs);
 
             final MotionPath path = new MotionPath();
             path.setPathSplineType(Spline.SplineType.Linear);
 
-            final SpellCastControl castControl = spatial.getControl(SpellCastControl.class);
-            final Vector3f finalLocation = castControl.getClosestPointToTarget(spell).setY(1f);
+            CSpellCast castControl = spatial.getControl(CSpellCast.class);
+            final Vector3f finalLocation =
+                    castControl.getClosestPointToTarget(spell).setY(1f);
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
 
             MotionEvent motionControl = new MotionEvent(firewalkNode, path);
             motionControl.setSpeed(1f);
-            motionControl.setInitialDuration(finalLocation.distance(startLocation) / 105f);
+            motionControl.setInitialDuration(
+                    finalLocation.distance(startLocation) / 105f);
 
             final int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
             world.temporarilyRemoveEntity(id);
             path.addListener(new MotionPathListener() {
                 @Override
-                public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+                public void onWayPointReach(MotionEvent motionControl,
+                        int wayPointIndex) {
                     if (path.getNbWayPoints() == wayPointIndex + 1) {
                         world.restoreTemporarilyRemovedEntity(id, finalLocation,
                                 spatial.getLocalRotation());
@@ -167,10 +176,12 @@ public class Firewalk extends Spell {
     private static class FirewalkNodeBuilder extends AbstractNodeBuilder {
 
         private ParticleEmitter createFireEmitter() {
-            ParticleEmitter fire =
-                    new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-            Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-            materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
+            ParticleEmitter fire = new ParticleEmitter("fire-emitter",
+                    ParticleMesh.Type.Triangle, 100);
+            Material materialRed = new Material(assetManager,
+                    "Common/MatDefs/Misc/Particle.j3md");
+            materialRed.setTexture("Texture",
+                    assetManager.loadTexture("Effects/flame.png"));
             fire.setMaterial(materialRed);
             fire.setImagesX(2);
             fire.setImagesY(2);
@@ -195,9 +206,10 @@ public class Firewalk extends Spell {
             node.setLocalTranslation((Vector3f) location);
             node.attachChild(projectileGeom);
 
-            node.addControl(new SyncInterpolationControl());
+            node.addControl(new CSyncInterpolation());
             // TODO: Give at least bit better material
-            Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            Material material = new Material(assetManager,
+                    "Common/MatDefs/Misc/Unshaded.j3md");
             material.setColor("Color", ColorRGBA.Yellow);
             node.setMaterial(material);
 
@@ -207,15 +219,16 @@ public class Firewalk extends Spell {
             node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
             node.setUserData(UserDataStrings.FOLLOW_ME, true);
 
-            SpellBuffControl buffControl = new SpellBuffControl();
+            CSpellBuff buffControl = new CSpellBuff();
             SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
             buffControl.addBuff(slowCC);
             node.addControl(buffControl);
 
-            node.addControl(new GenericSyncControl());
+            node.addControl(new CGenericSync());
 
             if (worldManager.isServer()) {
-                SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
+                SphereCollisionShape collisionShape =
+                        new SphereCollisionShape(8f);
 
                 GhostControl ghost = new GhostControl(collisionShape);
                 ghost.setCollisionGroup(CollisionGroups.NONE);
@@ -223,7 +236,7 @@ public class Firewalk extends Spell {
 
                 node.addControl(ghost);
 
-                node.addControl(new FirewalkCollisionHandler());
+                node.addControl(new CFirewalkCollisionHandler());
             }
             if (AbstractNodeBuilder.worldManager.isClient()) {
                 final ParticleEmitter fire = createFireEmitter();
@@ -234,7 +247,7 @@ public class Firewalk extends Spell {
     }
 }
 
-class FirewalkCollisionHandler extends AbstractControl {
+class CFirewalkCollisionHandler extends AbstractControl {
 
     private GhostControl ghost;
     private final Set<Integer> collidedWith = new HashSet<>(8);
@@ -247,11 +260,12 @@ class FirewalkCollisionHandler extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects = ghost.getOverlappingObjects();
+        List<PhysicsCollisionObject> collisionObjects =
+                ghost.getOverlappingObjects();
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
-                Integer entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
                 if (collidedWith.contains(entityId)) {
                     continue;
                 }
@@ -263,15 +277,15 @@ class FirewalkCollisionHandler extends AbstractControl {
     }
 
     private void collisionEffect(Spatial target) {
-        InfluenceInterfaceControl targetInterface =
-                target.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface targetInterface =
+                target.getControl(CInfluenceInterface.class);
         if (targetInterface == null) {
             return;
         }
 
-        SpellBuffControl buffControl = spatial.getControl(SpellBuffControl.class);
-        CharacterInteraction.harm(buffControl.getOwnerInterface(), targetInterface,
-                80f, buffControl.getBuffs(), true);
+        CSpellBuff buffControl = spatial.getControl(CSpellBuff.class);
+        CharacterInteraction.harm(buffControl.getOwnerInterface(),
+                targetInterface, 80f, buffControl.getBuffs(), true);
     }
 
     @Override

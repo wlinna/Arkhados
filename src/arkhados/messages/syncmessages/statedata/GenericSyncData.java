@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages.statedata;
 
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CSyncInterpolation;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
@@ -42,7 +42,7 @@ public class GenericSyncData extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial spatial = (Spatial) target;
-        SyncInterpolationControl syncInterpolation = spatial.getControl(SyncInterpolationControl.class);
+        CSyncInterpolation syncInterpolation = spatial.getControl(CSyncInterpolation.class);
         if (syncInterpolation != null) {
             syncInterpolation.interpolate(this.location);
         } else {

@@ -20,10 +20,10 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.characters.EliteSoldier;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -188,10 +188,10 @@ class RocketBuilder extends AbstractNodeBuilder {
             ParticleEmitter smokePuff = createSmokePuff();
             worldManager.getWorldRoot().attachChild(smokePuff);
             smokePuff.setLocalTranslation((Vector3f) location);
-            smokePuff.addControl(new TimedExistenceControl(5f));
+            smokePuff.addControl(new CTimedExistence(5f));
             smokePuff.emitAllParticles();
 
-            node.addControl(new EntityEventControl());
+            node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
@@ -202,7 +202,7 @@ class RocketBuilder extends AbstractNodeBuilder {
             removalAction.setSmokeTrail(smokeTrail);
 
 
-            node.getControl(EntityEventControl.class)
+            node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
         }
 
@@ -224,7 +224,7 @@ class RocketBuilder extends AbstractNodeBuilder {
 
         node.addControl(physicsBody);
 
-        ProjectileControl projectileControl = new ProjectileControl();
+        CProjectile projectileControl = new CProjectile();
 
         SplashAction splash =
                 new SplashAction(25f, 120f, DistanceScaling.LINEAR, null);
@@ -232,7 +232,7 @@ class RocketBuilder extends AbstractNodeBuilder {
         projectileControl.setSplashAction(splash);
 
         node.addControl(projectileControl);
-        final SpellBuffControl buffControl = new SpellBuffControl();
+        final CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
         return node;
     }
@@ -262,7 +262,7 @@ class RocketRemovalAction implements RemovalEventAction {
         smokeTrail.setParticlesPerSec(0);
         worldRoot.attachChild(smokeTrail);
         smokeTrail.setLocalTranslation(worldTranslation);
-        smokeTrail.addControl(new TimedExistenceControl(5f));
+        smokeTrail.addControl(new CTimedExistence(5f));
     }
 
     private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
@@ -313,7 +313,7 @@ class RocketRemovalAction implements RemovalEventAction {
         node.setLocalTranslation(worldTranslation);
         fire.setLocalTranslation(Vector3f.ZERO);
         worldManager.getWorldRoot().attachChild(node);
-        node.addControl(new TimedExistenceControl(6f));
+        node.addControl(new CTimedExistence(6f));
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));

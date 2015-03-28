@@ -25,13 +25,13 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author william
  */
-public class EntityVariableControl extends AbstractControl {
+public class CEntityVariable extends AbstractControl {
 
     private WorldManager worldManager;
     private PlayerEntityAwareness awareness;
     private Sender sender;
     
-    public EntityVariableControl(WorldManager worldManager, Sender sender) {
+    public CEntityVariable(WorldManager worldManager, Sender sender) {
         this.worldManager = worldManager;        
         this.sender = sender;
     }
@@ -45,8 +45,8 @@ public class EntityVariableControl extends AbstractControl {
         
         boolean validLoc = worldManager.validateLocation(spatial.getLocalTranslation());
         if (!validLoc) {
-            InfluenceInterfaceControl influenceInterface =
-                    spatial.getControl(InfluenceInterfaceControl.class);
+            CInfluenceInterface influenceInterface =
+                    spatial.getControl(CInfluenceInterface.class);
             if (influenceInterface != null) {
                 CharacterInteraction.harm(null, influenceInterface, 75f * tpf, null, true);
             }

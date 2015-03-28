@@ -15,7 +15,6 @@
 package arkhados.controls;
 
 import arkhados.CollisionGroups;
-import arkhados.Globals;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -26,7 +25,7 @@ import com.jme3.scene.Spatial;
  *
  * @author william
  */
-public class CharacterPhysicsControl extends BetterCharacterControl {
+public class CCharacterPhysics extends BetterCharacterControl {
 
     private Vector3f impulseToApply = null;
     private Vector3f queuedLinearVelocity = null;
@@ -34,7 +33,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     private Vector3f dictatedDirection = new Vector3f();
     private boolean motionControlled = false;
 
-    public CharacterPhysicsControl(float radius, float height, float mass) {
+    public CCharacterPhysics(float radius, float height, float mass) {
         super(radius, height, mass);
     }
 
@@ -43,8 +42,8 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
         super.setSpatial(spatial);
         rigidBody.setUserObject(spatial);
         rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
-        rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN | CollisionGroups.CHARACTERS |
-                CollisionGroups.WALLS);
+        rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN
+                | CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
         rigidBody.setFriction(1f);
         rigidBody.setRestitution(0f);
         rigidBody.setGravity(Vector3f.ZERO);
@@ -116,7 +115,7 @@ public class CharacterPhysicsControl extends BetterCharacterControl {
     public void setDictatedDirection(Vector3f dictatedDirection) {
         this.dictatedDirection = dictatedDirection;
         setWalkDirection(dictatedDirection);
-    }       
+    }
 
     public boolean isMotionControlled() {
         return motionControlled;

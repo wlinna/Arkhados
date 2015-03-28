@@ -14,7 +14,7 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages;
 
-import arkhados.controls.CharacterAnimationControl;
+import arkhados.controls.CCharacterAnimation;
 import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -39,7 +39,7 @@ public class CmdAction extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(CharacterAnimationControl.class).animateAction(this.actionId);
+        character.getControl(CCharacterAnimation.class).animateAction(this.actionId);
     }
 
     public int getActionId() {

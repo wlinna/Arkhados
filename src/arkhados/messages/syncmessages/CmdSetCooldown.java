@@ -14,7 +14,7 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages;
 
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CSpellCast;
 import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -42,7 +42,7 @@ public class CmdSetCooldown extends StateData {
     @Override
     public void applyData(Object target) {
         final Spatial character = (Spatial) target;
-        final SpellCastControl castControl = character.getControl(SpellCastControl.class);
+        final CSpellCast castControl = character.getControl(CSpellCast.class);
         castControl.setCooldown(this.spellId, this.cooldown);
         if (this.globalCooldown) {
             castControl.globalCooldown();

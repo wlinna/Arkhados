@@ -15,7 +15,7 @@
 package arkhados.effects;
 
 import arkhados.Globals;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CTimedExistence;
 import arkhados.spell.spells.rockgolem.Toss;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -82,6 +82,6 @@ public class TossHitEffect implements WorldEffect {
         root.attachChild(emitter);
         emitter.setLocalTranslation(location.add(0, 1f, 0));
         emitter.emitAllParticles();
-        emitter.addControl(new TimedExistenceControl(1f));
+        emitter.addControl(new CTimedExistence(1f));
     }
 }

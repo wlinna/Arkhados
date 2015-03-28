@@ -18,11 +18,11 @@ import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -171,7 +171,7 @@ class FireballBuilder extends AbstractNodeBuilder {
             ParticleEmitter smoke = createSmokeEmitter();
             node.attachChild(smoke);
 
-            node.addControl(new EntityEventControl());
+            node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
@@ -182,7 +182,7 @@ class FireballBuilder extends AbstractNodeBuilder {
             removalAction.setSmokeTrail(smoke);
 
 
-            node.getControl(EntityEventControl.class)
+            node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
         }
 
@@ -207,8 +207,8 @@ class FireballBuilder extends AbstractNodeBuilder {
 
         node.addControl(physicsBody);
 
-        node.addControl(new ProjectileControl());
-        SpellBuffControl buffControl = new SpellBuffControl();
+        node.addControl(new CProjectile());
+        CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
         buffControl.addBuff(new BrimstoneBuff(-1, 8f));
 
@@ -240,7 +240,7 @@ class FireballRemovalAction implements RemovalEventAction {
         smokeTrail.setParticlesPerSec(0);
         worldRoot.attachChild(smokeTrail);
         smokeTrail.setLocalTranslation(worldTranslation);
-        smokeTrail.addControl(new TimedExistenceControl(5f));
+        smokeTrail.addControl(new CTimedExistence(5f));
     }
 
     private void createSmokePuff( Node worldRoot, Vector3f worldTranslation) {
@@ -289,7 +289,7 @@ class FireballRemovalAction implements RemovalEventAction {
         fire.removeFromParent();
         worldManager.getWorldRoot().attachChild(fire);
         fire.setLocalTranslation(worldTranslation);
-        fire.addControl(new TimedExistenceControl(1f));
+        fire.addControl(new CTimedExistence(1f));
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
@@ -327,7 +327,7 @@ class BrimstoneBuff extends AbstractBuff {
     }
 
     @Override
-    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
 
         BrimstoneBuff existingBrimstone = null;
         for (AbstractBuff buff : targetInterface.getBuffs()) {

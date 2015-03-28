@@ -15,7 +15,7 @@
 
 package arkhados.spell;
 
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CSpellCast;
 
 /**
  *
@@ -24,5 +24,5 @@ import arkhados.controls.SpellCastControl;
 
 
 public interface SpellCastListener {
-    public void spellCasted(SpellCastControl castControl, Spell spell);
+    public void spellCasted(CSpellCast castControl, Spell spell);
 }

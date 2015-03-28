@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.syncmessages;
 
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
@@ -45,7 +45,7 @@ public class CmdBuff extends StateData {
     @Override
     public void applyData(Object target) {
         final Node casterNode = (Node) target;
-        final CharacterBuffControl buffControl = casterNode.getControl(CharacterBuffControl.class);
+        final CCharacterBuff buffControl = casterNode.getControl(CCharacterBuff.class);
         // TODO: Add to InfluenceInterfaceControl so that its non-visual effects
         // can be simulated
         if (this.added) {

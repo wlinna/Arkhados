@@ -29,20 +29,20 @@ import com.jme3.scene.control.AbstractControl;
 public class CCharacterMovement extends AbstractControl {
 
     private boolean speedConstant = false;
-    private CharacterPhysicsControl cPhysics;
+    private CCharacterPhysics cPhysics;
 
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         if (spatial != null) {
-            cPhysics = spatial.getControl(CharacterPhysicsControl.class);
+            cPhysics = spatial.getControl(CCharacterPhysics.class);
         }
 
     }
 
     public void setWalkDirection(Vector3f direction) {
-        InfluenceInterfaceControl cInfluence =
-                spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface cInfluence =
+                spatial.getControl(CInfluenceInterface.class);
 
         if (cPhysics.isMotionControlled() || !cInfluence.canMove()) {
             return;
@@ -73,7 +73,7 @@ public class CCharacterMovement extends AbstractControl {
     }
 
     public void stop() {
-        spatial.getControl(CharacterPhysicsControl.class)
+        spatial.getControl(CCharacterPhysics.class)
                 .setWalkDirection(Vector3f.ZERO);
     }
 
@@ -87,10 +87,10 @@ public class CCharacterMovement extends AbstractControl {
 
     public void updateMovement(float tpf) {
 
-        InfluenceInterfaceControl cInfluence =
-                spatial.getControl(InfluenceInterfaceControl.class);
-        SpellCastControl cSpellCast =
-                spatial.getControl(SpellCastControl.class);
+        CInfluenceInterface cInfluence =
+                spatial.getControl(CInfluenceInterface.class);
+        CSpellCast cSpellCast =
+                spatial.getControl(CSpellCast.class);
 
         if (!cPhysics.getDictatedDirection().equals(Vector3f.ZERO)
                 || cPhysics.isMotionControlled() || cInfluence.isDead()) {
@@ -104,9 +104,9 @@ public class CCharacterMovement extends AbstractControl {
                 || (!cSpellCast.isCasting() && !cSpellCast.isChanneling()))) {
             if (cInfluence.canControlMovement()) {
                 Vector3f direction = spatial
-                        .getControl(UserInputControl.class).giveInputDirection();
+                        .getControl(CUserInput.class).giveInputDirection();
                 if (!direction.equals(Vector3f.ZERO) && cPhysics.isEnabled()) {
-                    spatial.getControl(CharacterPhysicsControl.class)
+                    spatial.getControl(CCharacterPhysics.class)
                             .setViewDirection(direction);
                 }
 

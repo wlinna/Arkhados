@@ -17,7 +17,7 @@ package arkhados;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -33,12 +33,12 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.EntityVariableControl;
-import arkhados.controls.SyncInterpolationControl;
-import arkhados.controls.TimedExistenceControl;
-import arkhados.controls.UserInputControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CEntityVariable;
+import arkhados.controls.CSyncInterpolation;
+import arkhados.controls.CTimedExistence;
+import arkhados.controls.CUserInput;
 import arkhados.effects.BuffEffect;
 import arkhados.messages.syncmessages.CmdAddEntity;
 import arkhados.messages.syncmessages.CmdRemoveEntity;
@@ -106,7 +106,7 @@ public class WorldManager extends AbstractAppState {
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-        TimedExistenceControl.setWorldManager(this);
+        CTimedExistence.setWorldManager(this);
         Selector.setWorldManager(this);
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
@@ -254,19 +254,19 @@ public class WorldManager extends AbstractAppState {
         }
 
         worldRoot.attachChild(entity);
-        EntityVariableControl variableControl =
-                new EntityVariableControl(this, sender);
+        CEntityVariable variableControl =
+                new CEntityVariable(this, sender);
         entity.addControl(variableControl);
 
         boolean isCharacter =
-                entity.getControl(CharacterPhysicsControl.class) != null;
+                entity.getControl(CCharacterPhysics.class) != null;
 
         if (isCharacter && PlayerData.isHuman(playerId)) {
             logger.log(Level.INFO, "Adding entity {0} for player {1}",
                     new Object[]{id, playerId});
             entity.setUserData(UserDataStrings.FOLLOW_ME, true);
 
-            UserInputControl userInputControl = new UserInputControl();
+            CUserInput userInputControl = new CUserInput();
             if (isServer()) {
                 ServerPlayerInputState inputState = ServerPlayerInputHandler
                         .get().getPlayerInputState(playerId);
@@ -323,8 +323,8 @@ public class WorldManager extends AbstractAppState {
         spatial.removeFromParent();
         syncManager.removeEntity(id);
 
-        CharacterPhysicsControl characterPhysics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics characterPhysics =
+                spatial.getControl(CCharacterPhysics.class);
         if (characterPhysics != null) {
             characterPhysics.setEnabled(false);
         }
@@ -339,14 +339,14 @@ public class WorldManager extends AbstractAppState {
         worldRoot.attachChild(spatial);
         syncManager.addObject(id, spatial);
 
-        CharacterPhysicsControl characterPhysics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics characterPhysics =
+                spatial.getControl(CCharacterPhysics.class);
         if (characterPhysics != null) {
             characterPhysics.setEnabled(true);
         }
 
-        SyncInterpolationControl interpolationControl =
-                spatial.getControl(SyncInterpolationControl.class);
+        CSyncInterpolation interpolationControl =
+                spatial.getControl(CSyncInterpolation.class);
         if (interpolationControl != null) {
             interpolationControl.ignoreNext();
         }
@@ -360,10 +360,10 @@ public class WorldManager extends AbstractAppState {
         if (rigid != null && !rigid.isKinematic()) {
             rigid.setPhysicsLocation(location);
             rigid.setPhysicsRotation(rotation.toRotationMatrix());
-        } else if (entity.getControl(CharacterPhysicsControl.class) != null) {
-            entity.getControl(CharacterPhysicsControl.class).warp(location);
+        } else if (entity.getControl(CCharacterPhysics.class) != null) {
+            entity.getControl(CCharacterPhysics.class).warp(location);
             entity.setLocalTranslation(location);
-            entity.getControl(CharacterPhysicsControl.class).setViewDirection(
+            entity.getControl(CCharacterPhysics.class).setViewDirection(
                     rotation.mult(Vector3f.UNIT_Z).setY(0).normalizeLocal());
         } else {
             entity.setLocalTranslation(location);
@@ -391,8 +391,8 @@ public class WorldManager extends AbstractAppState {
 
         if (isClient()) {
             if (reason != -1) {
-                EntityEventControl eventControl =
-                        spatial.getControl(EntityEventControl.class);
+                CEntityEvent eventControl =
+                        spatial.getControl(CEntityEvent.class);
                 if (eventControl != null) {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
@@ -411,8 +411,8 @@ public class WorldManager extends AbstractAppState {
                     .entityDisappeared(spatial);
 
             // TODO: Consider doing this to all controls to generalize destruction
-            CharacterBuffControl buffControl =
-                    spatial.getControl(CharacterBuffControl.class);
+            CCharacterBuff buffControl =
+                    spatial.getControl(CCharacterBuff.class);
             spatial.removeControl(buffControl);
         }
 

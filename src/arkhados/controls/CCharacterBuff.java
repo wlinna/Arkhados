@@ -34,10 +34,10 @@ import java.util.logging.Logger;
  *
  * @author william
  */
-public class CharacterBuffControl extends AbstractControl {
+public class CCharacterBuff extends AbstractControl {
 
     private static final Logger logger =
-            Logger.getLogger(CharacterBuffControl.class.getName());
+            Logger.getLogger(CCharacterBuff.class.getName());
     private HashMap<Integer, BuffEffect> buffs = new HashMap<>();
     private HashMap<Integer, Element> buffIcons = new HashMap<>();
     private ClientHudManager hudManager = null;

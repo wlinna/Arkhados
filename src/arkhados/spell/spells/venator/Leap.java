@@ -19,10 +19,10 @@ import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -84,12 +84,12 @@ class CastLeapAction extends EntityAction {
     }
 
     private void motionPathVersion() {
-        final CharacterPhysicsControl physics = spatial.getControl(CharacterPhysicsControl.class);
+        final CCharacterPhysics physics = spatial.getControl(CCharacterPhysics.class);
         physics.switchToMotionCollisionMode();
 
         // We set y to 1 to prevent ground collision on start
         final Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
-        final Vector3f finalLocation = spatial.getControl(SpellCastControl.class)
+        final Vector3f finalLocation = spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 
         final MotionPath path = new MotionPath();
@@ -116,7 +116,7 @@ class CastLeapAction extends EntityAction {
                 SpatialDistancePair pairWithSmallestDistance = null;
                 for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
                     // Check if spatial is character
-                    if (spatialDistancePair.spatial.getControl(InfluenceInterfaceControl.class)
+                    if (spatialDistancePair.spatial.getControl(CInfluenceInterface.class)
                             == null) {
                         continue;
                     }
@@ -131,10 +131,10 @@ class CastLeapAction extends EntityAction {
                     }
                 }
                 if (pairWithSmallestDistance != null) {
-                    InfluenceInterfaceControl thisInfluenceInterfaceControl =
-                            spatial.getControl(InfluenceInterfaceControl.class);
-                    InfluenceInterfaceControl targetInfluenceInterface = pairWithSmallestDistance
-                            .spatial.getControl(InfluenceInterfaceControl.class);
+                    CInfluenceInterface thisInfluenceInterfaceControl =
+                            spatial.getControl(CInfluenceInterface.class);
+                    CInfluenceInterface targetInfluenceInterface = pairWithSmallestDistance
+                            .spatial.getControl(CInfluenceInterface.class);
 
                     final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
                     final float damage = 200f * damageFactor;
@@ -152,7 +152,7 @@ class CastLeapAction extends EntityAction {
                 if (wayPointIndex == path.getNbWayPoints() - 2) {
                 } else if (wayPointIndex == path.getNbWayPoints() - 1) {
                     physics.switchToNormalPhysicsMode();
-                    spatial.getControl(ActionQueueControl.class).enqueueAction(
+                    spatial.getControl(CActionQueue.class).enqueueAction(
                             new ChangeAnimationAction(Venator.ANIM_LAND));
                     landingEffect();
                     motionPending = false;

@@ -17,8 +17,8 @@ package arkhados.spell.spells.venator;
 import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.FearCC;
@@ -84,13 +84,13 @@ class FeralScreamAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         // TODO: Replace with Selector.coneSelect
-        CharacterPhysicsControl physicsControl =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physicsControl =
+                spatial.getControl(CCharacterPhysics.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
         final Vector3f viewDirection = targetLocation
                 .subtract(spatial.getLocalTranslation()).normalizeLocal();
-        spatial.getControl(CharacterPhysicsControl.class)
+        spatial.getControl(CCharacterPhysics.class)
                 .setViewDirection(viewDirection);
         final Vector3f forward = viewDirection.mult(range);
 
@@ -111,9 +111,9 @@ class FeralScreamAction extends EntityAction {
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, range);
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
-            InfluenceInterfaceControl influenceInterface =
+            CInfluenceInterface influenceInterface =
                     spatialDistancePair.spatial
-                    .getControl(InfluenceInterfaceControl.class);
+                    .getControl(CInfluenceInterface.class);
 
             if (influenceInterface == null) {
                 continue;

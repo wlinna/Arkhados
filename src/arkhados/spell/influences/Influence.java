@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.influences;
 
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 
 /**
  *
@@ -23,7 +23,7 @@ import arkhados.controls.InfluenceInterfaceControl;
 public  interface Influence {
 
     public boolean isFriendly();
-    public void affect(InfluenceInterfaceControl target, float tpf);
+    public void affect(CInfluenceInterface target, float tpf);
     
-    public void setOwner(InfluenceInterfaceControl influenceInterface);
+    public void setOwner(CInfluenceInterface influenceInterface);
 }

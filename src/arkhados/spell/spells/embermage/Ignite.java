@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.BuffTypeIds;
@@ -42,7 +42,7 @@ public class Ignite extends Spell {
     }
 
     public static DamageOverTimeBuff ifNotCooldownCreateDamageOverTimeBuff(final Node caster) {
-        final SpellCastControl castControl = caster.getControl(SpellCastControl.class);
+        final CSpellCast castControl = caster.getControl(CSpellCast.class);
         if (castControl.isOnCooldown("Ignite")) {
             // TODO: Check if adding null causes problems
             return null;
@@ -53,7 +53,7 @@ public class Ignite extends Spell {
         final DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(-1, 4f);
         dotBuff.setName("Ignite");
         dotBuff.setTypeId(BuffTypeIds.IGNITE);
-        final InfluenceInterfaceControl ownerInterface = caster.getControl(InfluenceInterfaceControl.class);
+        final CInfluenceInterface ownerInterface = caster.getControl(CInfluenceInterface.class);
         dotBuff.setOwnerInterface(ownerInterface);
 
         float damagePerSecond = 20f;

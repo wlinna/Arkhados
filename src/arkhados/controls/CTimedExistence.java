@@ -14,14 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import java.io.IOException;
 import arkhados.WorldManager;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
@@ -31,7 +26,7 @@ import com.jme3.bullet.PhysicsSpace;
  *
  * @author william
  */
-public class TimedExistenceControl extends AbstractControl {
+public class CTimedExistence extends AbstractControl {
 
     private static WorldManager worldManager;
     private float timeOut;
@@ -39,30 +34,31 @@ public class TimedExistenceControl extends AbstractControl {
     private boolean removeEntity;
     private PhysicsSpace space = null;
 
-    public TimedExistenceControl(float timeOut) {
+    public CTimedExistence(float timeOut) {
         this.timeOut = timeOut;
-        this.removeEntity = false;
+        removeEntity = false;
     }
 
-    public TimedExistenceControl(float timeOut, boolean removeEntity) {
+    public CTimedExistence(float timeOut, boolean removeEntity) {
         this.timeOut = timeOut;
         this.removeEntity = removeEntity;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        this.age += tpf;
-        if (this.age >= this.timeOut) {
-            if (this.removeEntity) {
+        age += tpf;
+        if (age >= timeOut) {
+            if (removeEntity) {
                 if (worldManager.isServer()) {
-                    worldManager.removeEntity((Integer) super.getSpatial()
-                            .getUserData(UserDataStrings.ENTITY_ID), RemovalReasons.EXPIRED);
+                    worldManager.removeEntity((Integer) getSpatial()
+                            .getUserData(UserDataStrings.ENTITY_ID),
+                            RemovalReasons.EXPIRED);
                 }
             } else {
-                if (this.space != null) {
-                    this.space.removeAll(super.spatial);
+                if (space != null) {
+                    space.removeAll(spatial);
                 }
-                super.spatial.removeFromParent();
+                spatial.removeFromParent();
             }
         }
     }
@@ -71,25 +67,13 @@ public class TimedExistenceControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
-    }
-
     public static void setWorldManager(WorldManager worldManager) {
-        TimedExistenceControl.worldManager = worldManager;
+        CTimedExistence.worldManager = worldManager;
     }
 
     public void setSpace(PhysicsSpace space) {
         if (this.space != null) {
-            this.space.removeAll(super.spatial);
+            this.space.removeAll(spatial);
         }
         this.space = space;
         if (space == null) {

@@ -27,7 +27,7 @@ import arkhados.util.UserDataStrings;
  *
  * @author william
  */
-public class ActionQueueControl extends AbstractControl {
+public class CActionQueue extends AbstractControl {
 
     private Queue<EntityAction> actions = new LinkedList<>();
     private EntityAction current = null;
@@ -96,13 +96,13 @@ public class ActionQueueControl extends AbstractControl {
         if (action.getTypeId() == -1) {
             return;
         }
-        CharacterAnimationControl animationControl = 
-                spatial.getControl(CharacterAnimationControl.class);
+        CCharacterAnimation animationControl = 
+                spatial.getControl(CCharacterAnimation.class);
         if (animationControl != null) {
             animationControl.animateAction(action.getTypeId());
         }
         PlayerEntityAwareness awareness =
-                spatial.getControl(EntityVariableControl.class).getAwareness();
+                spatial.getControl(CEntityVariable.class).getAwareness();
         if (awareness != null) {
             int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
             awareness.getFogManager().addCommand(spatial,

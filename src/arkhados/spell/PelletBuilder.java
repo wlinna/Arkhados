@@ -16,10 +16,10 @@ package arkhados.spell;
 
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.UserDataStrings;
@@ -64,7 +64,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, damage);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
         if (worldManager.isClient()) {
-            node.addControl(new EntityEventControl());
+            node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when pellet is
              * removed. In this case we want explosion effect.
@@ -72,7 +72,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
             PelletRemovalAction removalAction =
                     new PelletRemovalAction(assetManager);
             removalAction.setPellet(node);
-            node.getControl(EntityEventControl.class)
+            node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
         }
         SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
@@ -93,8 +93,8 @@ public class PelletBuilder extends AbstractNodeBuilder {
         collision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         node.addControl(collision);
         node.addControl(physicsBody);
-        node.addControl(new ProjectileControl());
-        SpellBuffControl buffControl = new SpellBuffControl();
+        node.addControl(new CProjectile());
+        CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
         return node;
     }
@@ -149,7 +149,7 @@ class PelletRemovalAction implements RemovalEventAction {
         root.attachChild(fire);
         fire.setLocalTranslation(location);
         fire.emitAllParticles();
-        fire.addControl(new TimedExistenceControl(1f));
+        fire.addControl(new CTimedExistence(1f));
     }
 
     private void createSmokePuff(Node root, Vector3f location) {
@@ -182,7 +182,7 @@ class PelletRemovalAction implements RemovalEventAction {
         root.attachChild(smokePuff);
         smokePuff.setLocalTranslation(location);
         smokePuff.emitAllParticles();
-        smokePuff.addControl(new TimedExistenceControl(1f));
+        smokePuff.addControl(new CTimedExistence(1f));
     }
 
     @Override

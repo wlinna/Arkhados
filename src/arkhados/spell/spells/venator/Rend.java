@@ -18,9 +18,9 @@ import arkhados.actions.CastingSpellAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.MeleeAttackAction;
 import arkhados.characters.Venator;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.UserInputControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CUserInput;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
@@ -74,7 +74,7 @@ class DoubleMeleeAttackAction extends EntityAction {
     public boolean update(float tpf) {
         // TODO: Make an attack start with different animation than previous one
         float range = spell.getRange();
-        ActionQueueControl queue = spatial.getControl(ActionQueueControl.class);
+        CActionQueue queue = spatial.getControl(CActionQueue.class);
         final MeleeAttackAction action1 = new MeleeAttackAction(75f, range);
         CastingSpellAction action2Anim = new CastingSpellAction(spell, true);
         MeleeAttackAction action2 = new MeleeAttackAction(85f, range);
@@ -89,7 +89,7 @@ class DoubleMeleeAttackAction extends EntityAction {
             @Override
             public boolean update(float tpf) {
                 // HACK: This should happen automatically
-                spatial.getControl(SpellCastControl.class).setCasting(false);
+                spatial.getControl(CSpellCast.class).setCasting(false);
                 // TODO: MAKE SURE it's okay to disable this
                 // spatial.getControl(UserInputControl.class).restoreWalking();
                 return false;

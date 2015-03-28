@@ -33,10 +33,10 @@ import java.util.HashMap;
  *
  * @author william
  */
-public class CharacterAnimationControl extends AbstractControl {
+public class CCharacterAnimation extends AbstractControl {
 
     private AnimControl animControl;
-    private CharacterPhysicsControl cPhysics;
+    private CCharacterPhysics cPhysics;
     private CCharacterMovement cMovement;
     private AnimChannel channel;
     private float actionTime = 0f;
@@ -46,14 +46,14 @@ public class CharacterAnimationControl extends AbstractControl {
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
 
-    public CharacterAnimationControl(AnimControl animControl) {
+    public CCharacterAnimation(AnimControl animControl) {
         this.animControl = animControl;
     }
 
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        cPhysics = spatial.getControl(CharacterPhysicsControl.class);
+        cPhysics = spatial.getControl(CCharacterPhysics.class);
         cMovement = spatial.getControl(CCharacterMovement.class);
         channel = animControl.createChannel();
         channel.setAnim(walkAnimation.getName());

@@ -17,9 +17,9 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EliteSoldier;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.ProjectileControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CProjectile;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.PelletBuilder;
 import arkhados.spell.Spell;
@@ -81,12 +81,12 @@ class CastShotgunAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physicsControl = spatial.getControl(CCharacterPhysics.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
         final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation())
                 .normalizeLocal();
-        spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        spatial.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
 
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
@@ -106,10 +106,10 @@ class CastShotgunAction extends EntityAction {
             final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-            ProjectileControl projectileControl = projectile.getControl(ProjectileControl.class);
+            CProjectile projectileControl = projectile.getControl(CProjectile.class);
             projectileControl.setRange(spell.getRange());
             projectileControl.setDirection(pelletDirection);
-            projectileControl.setOwnerInterface(spatial.getControl(InfluenceInterfaceControl.class));
+            projectileControl.setOwnerInterface(spatial.getControl(CInfluenceInterface.class));
         }
         
         return false;

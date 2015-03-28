@@ -23,18 +23,18 @@ import com.jme3.scene.control.AbstractControl;
  * @author william
  */
 
-public class RotationControl extends AbstractControl {
+public class CRotation extends AbstractControl {
     private float x;
     private float y;
     private float z;
 
-    public RotationControl() {
+    public CRotation() {
         x = 0f;
         y = 0f;
         z = 0f;
     }
 
-    public RotationControl(float x, float y, float z) {
+    public CRotation(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;

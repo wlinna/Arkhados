@@ -17,7 +17,7 @@ package arkhados.messages.usercommands;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CSpellCast;
 import arkhados.messages.syncmessages.statedata.StateData;
 
 /**
@@ -41,7 +41,7 @@ public class CmdUcCastSpell extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(SpellCastControl.class).castIfDifferentSpell(this.input, this.direction);
+        character.getControl(CSpellCast.class).castIfDifferentSpell(this.input, this.direction);
     }
 
     public int getInput() {

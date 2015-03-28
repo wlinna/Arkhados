@@ -15,7 +15,7 @@
 package arkhados.effects;
 
 import arkhados.Globals;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CTimedExistence;
 import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -114,7 +114,7 @@ public class RocketExplosionEffect implements WorldEffect {
         root.attachChild(explosion);
         explosion.setLocalTranslation(location);
 
-        explosion.addControl(new TimedExistenceControl(5f));
+        explosion.addControl(new CTimedExistence(5f));
 
         fire.emitAllParticles();
         smoke.emitAllParticles();

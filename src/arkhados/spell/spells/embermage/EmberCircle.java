@@ -18,9 +18,9 @@ import arkhados.CollisionGroups;
 import arkhados.actions.DelayAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastOnGroundAction;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.AreaEffectControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CAreaEffect;
+import arkhados.controls.CTimedExistence;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -160,7 +160,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         node.setMaterial(material);
         
         node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
-        ActionQueueControl actionQueue = new ActionQueueControl();
+        CActionQueue actionQueue = new CActionQueue();
         node.addControl(actionQueue);
         
         actionQueue.enqueueAction(new DelayAction(0.8f));
@@ -171,7 +171,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
             node.addControl(ghost);
             
-            final AreaEffectControl areaEffectControl = new AreaEffectControl(ghost);
+            final CAreaEffect areaEffectControl = new CAreaEffect(ghost);
             node.addControl(areaEffectControl);
             
             actionQueue.enqueueAction(new EntityAction() {
@@ -185,7 +185,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     slowInfluence.setSlowFactor(0.67f);
                     areaEffectControl.addInfluence(slowInfluence);
                     
-                    node.addControl(new TimedExistenceControl(5f, true));
+                    node.addControl(new CTimedExistence(5f, true));
                     
                     return false;
                 }
@@ -208,9 +208,9 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     final ParticleEmitter smoke = createSmoke(radius);
                     worldManager.getWorldRoot().attachChild(smoke);
                     smoke.setLocalTranslation(worldTranslation.add(0, 1f, 0));
-                    smoke.addControl(new TimedExistenceControl(10f));
+                    smoke.addControl(new CTimedExistence(10f));
                     
-                    ActionQueueControl smokeActions = new ActionQueueControl();
+                    CActionQueue smokeActions = new CActionQueue();
                     smoke.addControl(smokeActions);
                     smokeActions.enqueueAction(new DelayAction(5f));
                     smokeActions.enqueueAction(new EntityAction() {

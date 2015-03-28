@@ -16,7 +16,7 @@ package arkhados.spell;
 
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.controls.ProjectileControl;
+import arkhados.controls.CProjectile;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
 import arkhados.spell.spells.elitesoldier.Machinegun;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
@@ -82,7 +82,7 @@ public abstract class Spell {
         AbstractNodeBuilder.setAssetManager(assetManager);
         AbstractNodeBuilder.setWorldManager(worldManager);
 
-        ProjectileControl.setWorldManager(worldManager);
+        CProjectile.setWorldManager(worldManager);
 
         // *************** INIT spells here ************************
 

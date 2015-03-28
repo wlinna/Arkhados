@@ -23,8 +23,8 @@ import com.jme3.scene.control.AbstractControl;
 public class CCharacterHeal extends AbstractControl {
 
     public float heal(float healing) {
-        InfluenceInterfaceControl me =
-                spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface me =
+                spatial.getControl(CInfluenceInterface.class);
         if (me.isDead()) {
             return 0f;
         }

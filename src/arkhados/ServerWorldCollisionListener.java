@@ -14,11 +14,11 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SkyDropControl;
-import arkhados.controls.SpellBuffControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSkyDrop;
+import arkhados.controls.CSpellBuff;
 import arkhados.spell.buffs.AbsorbingShieldBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.spells.embermage.PurifyingFlame;
@@ -61,15 +61,15 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             wallB = event.getNodeB();
         }
 
-        InfluenceInterfaceControl characterA = event.getNodeA().getControl(InfluenceInterfaceControl.class);
-        InfluenceInterfaceControl characterB = event.getNodeB().getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface characterA = event.getNodeA().getControl(CInfluenceInterface.class);
+        CInfluenceInterface characterB = event.getNodeB().getControl(CInfluenceInterface.class);
 
-        ProjectileControl projectileA = event.getNodeA().getControl(ProjectileControl.class);
-        ProjectileControl projectileB = event.getNodeB().getControl(ProjectileControl.class);
+        CProjectile projectileA = event.getNodeA().getControl(CProjectile.class);
+        CProjectile projectileB = event.getNodeB().getControl(CProjectile.class);
 
-        SkyDropControl skyDrop = event.getNodeA().getControl(SkyDropControl.class);
+        CSkyDrop skyDrop = event.getNodeA().getControl(CSkyDrop.class);
         if (skyDrop == null) {
-            skyDrop = event.getNodeB().getControl(SkyDropControl.class);
+            skyDrop = event.getNodeB().getControl(CSkyDrop.class);
         }
         if (skyDrop != null) {
             skyDrop.onGroundCollision();
@@ -100,8 +100,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     }
 
-    private void projectileCharacterCollision(ProjectileControl projectile,
-            InfluenceInterfaceControl target) {
+    private void projectileCharacterCollision(CProjectile projectile,
+            CInfluenceInterface target) {
 
         int projectileTeamId = projectile.getSpatial().getUserData(UserDataStrings.TEAM_ID);
         int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
@@ -122,8 +122,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             removalReason = RemovalReasons.ABSORBED;
         } else {
 
-            final SpellBuffControl buffControl = projectile.getSpatial()
-                    .getControl(SpellBuffControl.class);
+            final CSpellBuff buffControl = projectile.getSpatial()
+                    .getControl(CSpellBuff.class);
 
             final boolean canBreakCC = damage > 0f ? true : false;
 
@@ -138,7 +138,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                     .getPhysicsLocation().setY(0)).normalizeLocal()
                     .multLocal(impulseFactor);
 
-            target.getSpatial().getControl(CharacterPhysicsControl.class)
+            target.getSpatial().getControl(CCharacterPhysics.class)
                     .applyImpulse(impulse);
 
             if (projectile.getSplashAction() != null) {
@@ -156,7 +156,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         }
     }
 
-    private void projectileWallCollision(ProjectileControl projectile, Spatial wall) {
+    private void projectileWallCollision(CProjectile projectile, Spatial wall) {
         if (projectile.getSplashAction() != null) {
             projectile.getSplashAction().update(0);
         }
@@ -165,7 +165,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
     }
 
-    private void reducePurifyingFlame(InfluenceInterfaceControl target, float dmg) {
+    private void reducePurifyingFlame(CInfluenceInterface target, float dmg) {
         for (AbstractBuff abstractBuff : target.getBuffs()) {
             if (abstractBuff instanceof AbsorbingShieldBuff) {
                 ((AbsorbingShieldBuff) abstractBuff).reduce(dmg);

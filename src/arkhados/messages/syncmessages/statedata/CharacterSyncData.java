@@ -15,9 +15,9 @@
 
 package arkhados.messages.syncmessages.statedata;
 
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSyncInterpolation;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
@@ -43,21 +43,21 @@ public class CharacterSyncData extends StateData {
     public CharacterSyncData(int id, Spatial spatial) {
         super(id);        
         location.set(spatial.getLocalTranslation());
-        walkDirection.set(spatial.getControl(CharacterPhysicsControl.class).getWalkDirection());
-        velocity.set(spatial.getControl(CharacterPhysicsControl.class).getVelocity());
-        viewDirection.set(spatial.getControl(CharacterPhysicsControl.class).getViewDirection());
+        walkDirection.set(spatial.getControl(CCharacterPhysics.class).getWalkDirection());
+        velocity.set(spatial.getControl(CCharacterPhysics.class).getVelocity());
+        viewDirection.set(spatial.getControl(CCharacterPhysics.class).getViewDirection());
         health = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
     }
 
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(InfluenceInterfaceControl.class).setHealth(health);
-        character.getControl(SyncInterpolationControl.class).interpolate(location);
-        character.getControl(CharacterPhysicsControl.class).warp(location);
-        character.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
-        character.getControl(CharacterPhysicsControl.class).enqueueSetLinearVelocity(velocity);
-        character.getControl(CharacterPhysicsControl.class).setWalkDirection(walkDirection);
+        character.getControl(CInfluenceInterface.class).setHealth(health);
+        character.getControl(CSyncInterpolation.class).interpolate(location);
+        character.getControl(CCharacterPhysics.class).warp(location);
+        character.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
+        character.getControl(CCharacterPhysics.class).enqueueSetLinearVelocity(velocity);
+        character.getControl(CCharacterPhysics.class).setWalkDirection(walkDirection);
     }
 
     @Override

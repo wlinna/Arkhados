@@ -35,26 +35,26 @@ import java.util.List;
  *
  * @author william
  */
-public class AreaEffectControl extends AbstractControl {
+public class CAreaEffect extends AbstractControl {
 
     private GhostControl ghostControl;
     private final List<Influence> influences = new ArrayList<>();
     private final List<AbstractBuff> exitBuffs = new ArrayList<>();
     private final List<AbstractBuff> enterBuffs = new ArrayList<>();
-    private final HashMap<InfluenceInterfaceControl, Boolean> enteredPlayers = new HashMap<>();
-    private InfluenceInterfaceControl ownerInterface = null;
+    private final HashMap<CInfluenceInterface, Boolean> enteredPlayers = new HashMap<>();
+    private CInfluenceInterface ownerInterface = null;
 
-    public AreaEffectControl() {
+    public CAreaEffect() {
     }
 
-    public AreaEffectControl(GhostControl ghostControl) {
+    public CAreaEffect(GhostControl ghostControl) {
         this.ghostControl = ghostControl;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
         // HACK
-        ActionQueueControl actionQueue = getSpatial().getControl(ActionQueueControl.class);
+        CActionQueue actionQueue = getSpatial().getControl(CActionQueue.class);
         if (actionQueue != null && actionQueue.getCurrent() instanceof DelayAction) {
             return;
         }
@@ -67,8 +67,8 @@ public class AreaEffectControl extends AbstractControl {
                 continue;
             }
             Spatial other = (Spatial) collisionObject.getUserObject();
-            InfluenceInterfaceControl targetInterface =
-                    other.getControl(InfluenceInterfaceControl.class);
+            CInfluenceInterface targetInterface =
+                    other.getControl(CInfluenceInterface.class);
 
             if (targetInterface == null) {
                 continue;
@@ -126,7 +126,7 @@ public class AreaEffectControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+    public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         if (ownerInterface == null) {
             throw new IllegalArgumentException("Null cannot be ownerInterface");
         }

@@ -17,10 +17,10 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.controls.RotationControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncInterpolationControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CRotation;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSyncInterpolation;
+import arkhados.controls.CTimedExistence;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
@@ -84,8 +84,8 @@ class SpiritStoneCastAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        SpellCastControl castControl =
-                spatial.getControl(SpellCastControl.class);
+        CSpellCast castControl =
+                spatial.getControl(CSpellCast.class);
         Vector3f target = castControl.getClosestPointToTarget(spell).setY(10f);
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
         worldManager.addNewEntity(spell.getId(),
@@ -132,9 +132,9 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
                 | CollisionGroups.PROJECTILES);
         physicsBody.setAngularDamping(1f);
 
-        node.addControl(new TimedExistenceControl(8f, true));
-        node.addControl(new RotationControl(0f, 2f, 0f));
-        node.addControl(new SyncInterpolationControl());
+        node.addControl(new CTimedExistence(8f, true));
+        node.addControl(new CRotation(0f, 2f, 0f));
+        node.addControl(new CSyncInterpolation());
 
         return node;
     }

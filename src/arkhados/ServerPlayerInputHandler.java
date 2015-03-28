@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.controls.UserInputControl;
+import arkhados.controls.CUserInput;
 import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Command;
@@ -101,7 +101,7 @@ public class ServerPlayerInputHandler implements CommandHandler {
             inputState.previousRight = uc.getRight();
             if (inputState.currentActiveSpatial != null) {
                 inputState.currentActiveSpatial.getControl(
-                        UserInputControl.class).updateDirection();
+                        CUserInput.class).updateDirection();
             }
         } else if (command instanceof CmdUcMouseTarget) {
             CmdUcMouseTarget uc = (CmdUcMouseTarget) command;

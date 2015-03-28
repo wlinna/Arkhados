@@ -16,9 +16,9 @@ package arkhados.actions.castspellactions;
 
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.controls.AreaEffectControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CAreaEffect;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
@@ -46,8 +46,8 @@ public class CastOnGroundAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        SpellCastControl castControl = 
-                spatial.getControl(SpellCastControl.class);
+        CSpellCast castControl = 
+                spatial.getControl(CSpellCast.class);
         Vector3f adjustedTarget =
                 castControl.getClosestPointToTarget(spell).setY(0.1f);
         Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
@@ -55,10 +55,10 @@ public class CastOnGroundAction extends EntityAction {
                 adjustedTarget, Quaternion.IDENTITY, playerId);
 
         Spatial entity = worldManager.getEntity(entityId);
-        AreaEffectControl aoeControl =
-                entity.getControl(AreaEffectControl.class);
+        CAreaEffect aoeControl =
+                entity.getControl(CAreaEffect.class);
         aoeControl.setOwnerInterface(spatial.getControl(
-                InfluenceInterfaceControl.class));
+                CInfluenceInterface.class));
         for (AbstractBuff buff : additionalEnterBuffs) {
             aoeControl.addEnterBuff(buff);
         }

@@ -31,7 +31,8 @@ import java.util.List;
  *
  * @author william
  */
-public class EliteSoldierAmmunitionControl extends AbstractControl implements SpellCastValidator, SpellCastListener {
+public class CEliteSoldierAmmunition extends AbstractControl
+        implements SpellCastValidator, SpellCastListener {
 
     private final List<AmmunitionLoader> ammunitionLoaders = new ArrayList<>(4);
 
@@ -44,10 +45,11 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (spatial.getControl(EntityVariableControl.class).getWorldManager().isClient()) {
+        if (spatial.getControl(CEntityVariable.class).getWorldManager()
+                .isClient()) {
             return;
         }
-        
+
         for (AmmunitionLoader ammunitionLoader : ammunitionLoaders) {
             ammunitionLoader.update(tpf);
         }
@@ -58,53 +60,72 @@ public class EliteSoldierAmmunitionControl extends AbstractControl implements Sp
     }
 
     @Override
-    public boolean validateSpellCast(SpellCastControl castControl, Spell spell) {
+    public boolean validateSpellCast(CSpellCast castControl, Spell spell) {
         if ("Shotgun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).hasEnough(8);
+            return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
+                    .hasEnough(8);
         } else if ("Machinegun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).hasEnough(1);
+            return ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
+                    .hasEnough(1);
         } else if ("Plasmagun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).hasEnough(3);
+            return ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
+                    .hasEnough(3);
         } else if ("Rocket Launcher".equals(spell.getName())
                 || "Rocket Jump".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).hasEnough(1);
+            return ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot())
+                    .hasEnough(1);
         }
 
         return true;
     }
 
     @Override
-    public void spellCasted(SpellCastControl castControl, Spell spell) {
+    public void spellCasted(CSpellCast castControl, Spell spell) {
         if ("Shotgun".equals(spell.getName())) {
-            ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).consumeAmmo(8);
+            ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
+                    .consumeAmmo(8);
         } else if ("Machinegun".equals(spell.getName())) {
-            ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).consumeAmmo(1);
+            ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
+                    .consumeAmmo(1);
         } else if ("Plasmagun".equals(spell.getName())) {
-            ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).consumeAmmo(3);
+            ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
+                    .consumeAmmo(3);
         } else if ("Rocket Launcher".equals(spell.getName())
                 || "Rocket Jump".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).consumeAmmo(1);
         }
     }
-    
-    public EliteSoldierSyncData addAmmoSynchronizationData(EliteSoldierSyncData syncData, float towardsFuture) {
-        syncData.setBullets(ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).predictAmmoAmount(towardsFuture));       
-        syncData.setBullets(ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).predictAmmoAmount(towardsFuture));       
-        syncData.setBullets(ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).predictAmmoAmount(towardsFuture));       
-        syncData.setBullets(ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).predictAmmoAmount(towardsFuture));       
+
+    public EliteSoldierSyncData addAmmoSynchronizationData(
+            EliteSoldierSyncData syncData, float towardsFuture) {
+        syncData.setBullets(ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
+                .predictAmmoAmount(towardsFuture));
+        syncData.setBullets(ammunitionLoaders
+                .get(AmmunitionSlot.MACHINEGUN.slot())
+                .predictAmmoAmount(towardsFuture));
+        syncData.setBullets(ammunitionLoaders
+                .get(AmmunitionSlot.PLASMAGUN.slot())
+                .predictAmmoAmount(towardsFuture));
+        syncData.setBullets(ammunitionLoaders
+                .get(AmmunitionSlot.ROCKETS.slot())
+                .predictAmmoAmount(towardsFuture));
         return syncData;
     }
-    
-    public void synchronizeAmmunition(int pellets, int bullets, int plasmas, int rockets) {
+
+    public void synchronizeAmmunition(int pellets, int bullets, int plasmas,
+            int rockets) {
         ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).setAmount(pellets);
-        ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).setAmount(bullets);
-        ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).setAmount(plasmas);
+        ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
+                .setAmount(bullets);
+        ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
+                .setAmount(plasmas);
         ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).setAmount(rockets);
     }
-    
+
     public void likeAPro() {
         ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).addAmmunition(16);
-        ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot()).addAmmunition(10);
+        ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
+                .addAmmunition(10);
         ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).addAmmunition(3);
         ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).addAmmunition(2);
     }
@@ -118,7 +139,8 @@ class AmmunitionLoader {
     private int amount;
     private float timer = 0f;
 
-    private AmmunitionLoader(int amountPerTick, int time, int startingAmount, int maxAmount) {
+    private AmmunitionLoader(int amountPerTick, int time, int startingAmount,
+            int maxAmount) {
         this.amountPerTick = amountPerTick;
         this.time = time;
         this.amount = startingAmount;
@@ -139,12 +161,12 @@ class AmmunitionLoader {
             }
         }
     }
-    
+
     public int predictAmmoAmount(float towardsFuture) {
         if (timer + towardsFuture >= time) {
             return amount + amountPerTick;
         }
-        
+
         return amount;
     }
 
@@ -155,11 +177,11 @@ class AmmunitionLoader {
     public boolean hasEnough(int needed) {
         return amount >= needed;
     }
-    
+
     public void setAmount(int amount) {
         this.amount = amount;
     }
-    
+
     public void addAmmunition(int amount) {
         this.amount += amount;
         if (this.amount > maxAmount) {

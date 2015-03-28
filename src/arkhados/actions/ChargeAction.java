@@ -18,8 +18,8 @@ import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -64,8 +64,8 @@ public class ChargeAction extends EntityAction
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
         CapsuleCollisionShape shape = physics.getCapsuleShape();
         shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
         ghost = new GhostControl(shape);
@@ -91,10 +91,10 @@ public class ChargeAction extends EntityAction
             return false;
         }
 
-        CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
+        CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
+        CInfluenceInterface influenceInterface =
+                spatial.getControl(CInfluenceInterface.class);
         influenceInterface.setCanControlMovement(false);
 
         if (!isCharging) {
@@ -122,10 +122,10 @@ public class ChargeAction extends EntityAction
         float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         float rawDamage = hitDamage * damageFactor;
 
-        InfluenceInterfaceControl targetInfluenceControl =
-                target.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface targetInfluenceControl =
+                target.getControl(CInfluenceInterface.class);
         CharacterInteraction
-                .harm(spatial.getControl(InfluenceInterfaceControl.class),
+                .harm(spatial.getControl(CInfluenceInterface.class),
                 targetInfluenceControl, rawDamage, buffs, true);
     }
 
@@ -144,12 +144,12 @@ public class ChargeAction extends EntityAction
                 return null;
             }
         });
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface influenceInterface =
+                spatial.getControl(CInfluenceInterface.class);
         influenceInterface.setCanControlMovement(true);
         influenceInterface.setSpeedConstant(false);
-        CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
 
         physics.getDictatedDirection().zero();
         

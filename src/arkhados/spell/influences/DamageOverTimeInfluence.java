@@ -15,7 +15,7 @@
 package arkhados.spell.influences;
 
 import arkhados.CharacterInteraction;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 
 /**
  * @author william
@@ -30,7 +30,7 @@ public class DamageOverTimeInfluence extends AbstractInfluence {
     }
 
     @Override
-    public void affect(InfluenceInterfaceControl targetInterface, float tpf) {
+    public void affect(CInfluenceInterface targetInterface, float tpf) {
         if (targetInterface != null) {
             // FIXME: Rounding errors cause significant changes in total damage
             CharacterInteraction.harm(getOwner(), targetInterface, dps * tpf, null,

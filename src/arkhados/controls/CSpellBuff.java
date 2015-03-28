@@ -15,17 +15,9 @@
 package arkhados.controls;
 
 import arkhados.spell.buffs.AbstractBuff;
-import arkhados.spell.buffs.CrowdControlBuff;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +25,10 @@ import java.util.List;
  *
  * @author william
  */
-public class SpellBuffControl extends AbstractControl {
+public class CSpellBuff extends AbstractControl {
 
-    private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
-    private InfluenceInterfaceControl ownerInterface;
-
+    private List<AbstractBuff> buffs = new ArrayList<>();
+    private CInfluenceInterface ownerInterface;
 
     public void addBuff(AbstractBuff buff) {
         this.buffs.add(buff);
@@ -51,32 +42,15 @@ public class SpellBuffControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public Control cloneForSpatial(Spatial spatial) {
-        SpellBuffControl control = new SpellBuffControl();
-        return control;
-    }
-
-    @Override
-    public void read(JmeImporter im) throws IOException {
-        super.read(im);
-        InputCapsule in = im.getCapsule(this);
-    }
-
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
-    }
-
     public List<AbstractBuff> getBuffs() {
         return this.buffs;
     }
 
-    public InfluenceInterfaceControl getOwnerInterface() {
+    public CInfluenceInterface getOwnerInterface() {
         return this.ownerInterface;
     }
 
-    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+    public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         this.ownerInterface = ownerInterface;
     }
 }

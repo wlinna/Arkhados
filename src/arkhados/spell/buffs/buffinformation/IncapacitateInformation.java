@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.RotationControl;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CRotation;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -34,7 +34,7 @@ public class IncapacitateInformation extends BuffInformation
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
         IncapacitateEffect effect = new IncapacitateEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
@@ -49,7 +49,7 @@ class IncapacitateEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CharacterBuffControl buffControl) {
+    public void addToCharacter(CCharacterBuff buffControl) {
         Sphere sphere = new Sphere(8, 8, 0.7f);
 
         Geometry geom1 = new Geometry("sphere", sphere);
@@ -71,7 +71,7 @@ class IncapacitateEffect extends BuffEffect {
         characterNode.attachChild(centralNode);
 
         centralNode.setLocalTranslation(0f, 20f, 0f);        
-        centralNode.addControl(new RotationControl(0f, 2f, 0f));
+        centralNode.addControl(new CRotation(0f, 2f, 0f));
     }
 
     @Override

@@ -15,7 +15,7 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.Globals;
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.MatParam;
@@ -40,7 +40,7 @@ public class PetrifyInformation extends BuffInformation {
 
     @Override
     public BuffEffect createBuffEffect(
-            CharacterBuffControl buffControl, float duration) {
+            CCharacterBuff buffControl, float duration) {
         PetrifyEffect effect = new PetrifyEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
@@ -57,7 +57,7 @@ class PetrifyEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CharacterBuffControl buffControl) {
+    public void addToCharacter(CCharacterBuff buffControl) {
         characterNode = (Node) buffControl.getSpatial();
 
         SceneGraphVisitor visitor = new SceneGraphVisitorAdapter() {

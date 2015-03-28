@@ -17,8 +17,8 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.PetrifyCC;
@@ -99,8 +99,8 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
                 | CollisionGroups.WALLS);
         node.addControl(physicsBody);
 
-        node.addControl(new ProjectileControl());
-        SpellBuffControl buffControl = new SpellBuffControl();
+        node.addControl(new CProjectile());
+        CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
         buffControl.addBuff(new PetrifyCC(-1, 2.3f));
 

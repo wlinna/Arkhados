@@ -18,10 +18,10 @@ package arkhados.messages.syncmessages;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.CharacterSoundControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CCharacterAnimation;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CCharacterSound;
+import arkhados.controls.CSpellCast;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
 
@@ -47,11 +47,11 @@ public class CmdStartCastingSpell extends StateData {
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
         Spell spell =
-                character.getControl(SpellCastControl.class).getSpell(spellId);
-        character.getControl(CharacterAnimationControl.class).castSpell(spell);
-        character.getControl(CharacterPhysicsControl.class)
+                character.getControl(CSpellCast.class).getSpell(spellId);
+        character.getControl(CCharacterAnimation.class).castSpell(spell);
+        character.getControl(CCharacterPhysics.class)
                 .setViewDirection(direction);
         
-        character.getControl(CharacterSoundControl.class).castSound(spellId);
+        character.getControl(CCharacterSound.class).castSound(spellId);
     }
 }

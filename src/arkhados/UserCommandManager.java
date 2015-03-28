@@ -14,10 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.controls.CharacterHudControl;
-import arkhados.controls.FreeCameraControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CCharacterHud;
+import arkhados.controls.CFreeCamera;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.messages.usercommands.CmdUcCastSpell;
 import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
@@ -86,15 +86,15 @@ public class UserCommandManager extends AbstractAppState {
     public void createCameraControl() {
         Node camNode = new Node("cam-node");
         worldManager.getWorldRoot().attachChild(camNode);
-        FreeCameraControl cameraControl =
-                new FreeCameraControl(cam, inputManager);
+        CFreeCamera cameraControl =
+                new CFreeCamera(cam, inputManager);
         camNode.addControl(cameraControl);
         cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
     private ActionListener actionCastSpell = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
-            InfluenceInterfaceControl influenceInterface =
+            CInfluenceInterface influenceInterface =
                     getCharacterInterface();
             if (influenceInterface == null || influenceInterface.isDead()) {
                 return;
@@ -172,12 +172,12 @@ public class UserCommandManager extends AbstractAppState {
 
     public void followPlayer() {
         worldManager.getWorldRoot().getChild("cam-node")
-                .getControl(FreeCameraControl.class).setCharacter(character);
+                .getControl(CFreeCamera.class).setCharacter(character);
     }
 
     public void followSpatial(Spatial spatial) {
         worldManager.getWorldRoot().getChild("cam-node")
-                .getControl(FreeCameraControl.class).setCharacter(spatial);
+                .getControl(CFreeCamera.class).setCharacter(spatial);
     }
 
     public void sendWalkDirection() {
@@ -230,12 +230,12 @@ public class UserCommandManager extends AbstractAppState {
         character = null;
     }
 
-    private InfluenceInterfaceControl getCharacterInterface() {
+    private CInfluenceInterface getCharacterInterface() {
         Spatial spatial = getCharacter();
         if (spatial == null) {
             return null;
         }
-        return spatial.getControl(InfluenceInterfaceControl.class);
+        return spatial.getControl(CInfluenceInterface.class);
     }
 
     public int getPlayerId() {
@@ -259,17 +259,17 @@ public class UserCommandManager extends AbstractAppState {
         if (spatial.getUserData(UserDataStrings.ENTITY_ID).equals(characterId)) {
             character = (Node) spatial;
             if (characterChanged) {
-                character.getControl(SpellCastControl.class)
+                character.getControl(CSpellCast.class)
                         .thisIsOwnedByClient();
             } else {
-                character.getControl(SpellCastControl.class)
+                character.getControl(CSpellCast.class)
                         .restoreClientCooldowns();
             }
             ClientHudManager hudManager = app.getStateManager()
                     .getState(ClientHudManager.class);
             hudManager.clearBuffIcons();
             hudManager.hideRoundStatistics();
-            character.getControl(CharacterHudControl.class)
+            character.getControl(CCharacterHud.class)
                     .setHudManager(hudManager);
             followPlayer();
             characterChanged = false;

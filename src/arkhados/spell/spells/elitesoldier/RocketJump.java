@@ -17,9 +17,9 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.characters.EliteSoldier;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
@@ -77,8 +77,8 @@ class CastRocketJumpAction extends EntityAction {
     }
 
     private void motionPath() {        
-        final CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        final CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
         physics.switchToMotionCollisionMode();
 
         final MotionPath path = new MotionPath();
@@ -87,7 +87,7 @@ class CastRocketJumpAction extends EntityAction {
         final Vector3f startLocation = 
                 spatial.getLocalTranslation().clone().setY(1f);
         final Vector3f finalLocation = 
-                spatial.getControl(SpellCastControl.class)
+                spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 
         path.addWayPoint(startLocation);
@@ -125,7 +125,7 @@ class CastRocketJumpAction extends EntityAction {
         int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         splash.setExcludedTeam(teamId);
         splash.setCasterInterface(
-                spatial.getControl(InfluenceInterfaceControl.class));
+                spatial.getControl(CInfluenceInterface.class));
         splash.update(-1);
         return false;
     }

@@ -17,9 +17,9 @@ package arkhados.spell.spells.embermage;
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -129,8 +129,8 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
         node.addControl(physicsBody);
 
-        node.addControl(new ProjectileControl());
-        SpellBuffControl buffControl = new SpellBuffControl();
+        node.addControl(new CProjectile());
+        CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
         buffControl.addBuff(new BrimstoneIncapacitate(1.20f, -1));
 
@@ -146,7 +146,7 @@ class BrimstoneIncapacitate extends IncapacitateCC {
     }
 
     @Override
-    public void attachToCharacter(InfluenceInterfaceControl influenceInterface) {
+    public void attachToCharacter(CInfluenceInterface influenceInterface) {
         BrimstoneBuff brimstone = null;
 
         for (Iterator<AbstractBuff> it = influenceInterface.getBuffs().iterator(); it.hasNext();) {

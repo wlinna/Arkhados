@@ -17,10 +17,10 @@ package arkhados.actions.castspellactions;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.UserDataStrings;
@@ -51,11 +51,11 @@ public class CastProjectileAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CharacterPhysicsControl physicsControl = spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physicsControl = spatial.getControl(CCharacterPhysics.class);
         Vector3f targetLocation = physicsControl.getTargetLocation();
         Vector3f viewDirection = targetLocation.subtract(
                 spatial.getLocalTranslation()).normalizeLocal();
-        spatial.getControl(CharacterPhysicsControl.class).setViewDirection(viewDirection);
+        spatial.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
 
         float characterRadius = spatial.getUserData(UserDataStrings.RADIUS);
         Vector3f spawnLocation = spatial.getLocalTranslation().add(
@@ -71,13 +71,13 @@ public class CastProjectileAction extends EntityAction {
         float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-        ProjectileControl projectileControl =
-                projectile.getControl(ProjectileControl.class);
+        CProjectile projectileControl =
+                projectile.getControl(CProjectile.class);
         projectileControl.setRange(spell.getRange());
         projectileControl.setDirection(viewDirection);
         
-        InfluenceInterfaceControl influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface influenceInterface =
+                spatial.getControl(CInfluenceInterface.class);
         
         projectileControl.setOwnerInterface(influenceInterface);
         
@@ -88,8 +88,8 @@ public class CastProjectileAction extends EntityAction {
             splashAction.setCasterInterface(influenceInterface);
         }
 
-        SpellBuffControl buffControl =
-                projectile.getControl(SpellBuffControl.class);
+        CSpellBuff buffControl =
+                projectile.getControl(CSpellBuff.class);
         for (AbstractBuff buff : additionalBuffs) {
             buffControl.addBuff(buff);
         }

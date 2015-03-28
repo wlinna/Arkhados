@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell;
 
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CSpellCast;
 
 /**
  *
@@ -23,5 +23,5 @@ import arkhados.controls.SpellCastControl;
 
 
 public interface SpellCastValidator {
-    public boolean validateSpellCast(SpellCastControl castControl, Spell spell);
+    public boolean validateSpellCast(CSpellCast castControl, Spell spell);
 }

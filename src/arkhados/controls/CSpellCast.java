@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author william
  */
-public class SpellCastControl extends AbstractControl {
+public class CSpellCast extends AbstractControl {
     private static HashMap<Integer, Float> clientCooldowns;
     
     private HashMap<Integer, Spell> spells = new HashMap<>();
@@ -80,7 +80,7 @@ public class SpellCastControl extends AbstractControl {
      * @param ammunitionControl
      */
     public void addCastListeners(
-            EliteSoldierAmmunitionControl ammunitionControl) {
+            CEliteSoldierAmmunition ammunitionControl) {
         castListeners.add(ammunitionControl);
     }
 
@@ -93,16 +93,16 @@ public class SpellCastControl extends AbstractControl {
      */
     public void safeInterrupt() {
         EntityAction action =
-                spatial.getControl(ActionQueueControl.class).getCurrent();
+                spatial.getControl(CActionQueue.class).getCurrent();
         if (action != null && action instanceof CastingSpellAction) {
             casting = false;
             Spell spell = ((CastingSpellAction) action).getSpell();
-            spatial.getControl(ActionQueueControl.class).clear();
+            spatial.getControl(CActionQueue.class).clear();
             setCooldown(spell.getId(), 0f);
         } else if (action != null && action instanceof ChannelingSpellAction) {
             ChannelingSpellAction channeling = (ChannelingSpellAction) action;
             putOnCooldown(channeling.getSpell());
-            spatial.getControl(ActionQueueControl.class).clear();
+            spatial.getControl(CActionQueue.class).clear();
         }
     }
 
@@ -118,7 +118,7 @@ public class SpellCastControl extends AbstractControl {
         }
 
         EntityAction action =
-                spatial.getControl(ActionQueueControl.class).getCurrent();
+                spatial.getControl(CActionQueue.class).getCurrent();
         if (action != null && ((action instanceof CastingSpellAction)
                 || (action instanceof ChannelingSpellAction))) {
 
@@ -135,7 +135,7 @@ public class SpellCastControl extends AbstractControl {
                 return;
             }
 
-            spatial.getControl(ActionQueueControl.class).clear();
+            spatial.getControl(CActionQueue.class).clear();
             if (action instanceof CastingSpellAction) {
                 setCooldown(currentSpellId, 0f);
             }
@@ -152,9 +152,9 @@ public class SpellCastControl extends AbstractControl {
             return false;
         }
 
-        if (getSpatial().getControl(EntityVariableControl.class)
+        if (getSpatial().getControl(CEntityVariable.class)
                 .getSender().isServer()) {
-            if (!spatial.getControl(InfluenceInterfaceControl.class)
+            if (!spatial.getControl(CInfluenceInterface.class)
                     .canCast()) {
                 return false;
             }
@@ -178,21 +178,21 @@ public class SpellCastControl extends AbstractControl {
         Spell spell = keySpellMappings.get(input);
 
         PlayerEntityAwareness awareness = getSpatial()
-                .getControl(EntityVariableControl.class).getAwareness();
+                .getControl(CEntityVariable.class).getAwareness();
         if (awareness != null) {
 
-            CharacterPhysicsControl physics =
-                    spatial.getControl(CharacterPhysicsControl.class);
+            CCharacterPhysics physics =
+                    spatial.getControl(CCharacterPhysics.class);
             physics.setViewDirection(physics.calculateTargetDirection());
-            spatial.getControl(CharacterAnimationControl.class)
+            spatial.getControl(CCharacterAnimation.class)
                     .castSpell(spell);
-            spatial.getControl(ActionQueueControl.class)
+            spatial.getControl(CActionQueue.class)
                     .enqueueAction(new CastingSpellAction(spell,
                     spell.isMultipart()));
 
             EntityAction castingAction =
                     spell.buildCastAction((Node) spatial, targetLocation);
-            spatial.getControl(ActionQueueControl.class)
+            spatial.getControl(CActionQueue.class)
                     .enqueueAction(castingAction);
             Vector3f direction = targetLocation
                     .subtract(spatial.getLocalTranslation());
@@ -200,7 +200,7 @@ public class SpellCastControl extends AbstractControl {
                     new CmdStartCastingSpell(
                     (int) spatial.getUserData(UserDataStrings.ENTITY_ID),
                     spell.getId(), direction));
-            getSpatial().getControl(RestingControl.class).stopRegen();
+            getSpatial().getControl(CResting.class).stopRegen();
         }
 
         globalCooldown();
@@ -219,7 +219,7 @@ public class SpellCastControl extends AbstractControl {
     public void setCooldown(int spellId, float cooldown) {
         cooldowns.put(spellId, cooldown);
         PlayerEntityAwareness awareness = getSpatial()
-                .getControl(EntityVariableControl.class).getAwareness();
+                .getControl(CEntityVariable.class).getAwareness();
 
         if (awareness != null) {
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
@@ -233,7 +233,7 @@ public class SpellCastControl extends AbstractControl {
         cooldowns.put(spell.getId(), spell.getCooldown());
 
         PlayerEntityAwareness awareness = getSpatial()
-                .getControl(EntityVariableControl.class).getAwareness();
+                .getControl(CEntityVariable.class).getAwareness();
 
         if (awareness != null) {
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
@@ -250,7 +250,7 @@ public class SpellCastControl extends AbstractControl {
 
     public Vector3f getClosestPointToTarget(Spell spell) {
         Vector3f targetLocation = spatial
-                .getControl(CharacterPhysicsControl.class).getTargetLocation();
+                .getControl(CCharacterPhysics.class).getTargetLocation();
 
         float distance = targetLocation.distance(spatial.getLocalTranslation());
         float interpolationFactor = spell.getRange() / distance;
@@ -296,7 +296,7 @@ public class SpellCastControl extends AbstractControl {
 
     public boolean isChanneling() {
         EntityAction action =
-                spatial.getControl(ActionQueueControl.class).getCurrent();
+                spatial.getControl(CActionQueue.class).getCurrent();
         return action instanceof ChannelingSpellAction;
     }
 

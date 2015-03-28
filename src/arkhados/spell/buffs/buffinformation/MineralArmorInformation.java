@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 
 /**
@@ -29,7 +29,7 @@ public class MineralArmorInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
         return new BuffEffect(duration);
     }
 }

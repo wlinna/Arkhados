@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @author william
  */
-public class InfluenceInterfaceControl extends AbstractControl {
+public class CInfluenceInterface extends AbstractControl {
 
     private final List<CrowdControlBuff> crowdControlBuffs = new ArrayList<>();
     private final List<AbstractBuff> otherBuffs = new ArrayList<>();
@@ -84,7 +84,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
             crowdControlBuffs.add(cc);
         }
 
-        getSpatial().getControl(RestingControl.class).stopRegen();
+        getSpatial().getControl(CResting.class).stopRegen();
 
         // TODO: Check whether other buffs stop casting or not
         // TODO: Remove this ugly repetition
@@ -94,8 +94,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
 
         if (cc.preventsCasting()) {
-            spatial.getControl(SpellCastControl.class).setCasting(false);
-            spatial.getControl(ActionQueueControl.class).clear();
+            spatial.getControl(CSpellCast.class).setCasting(false);
+            spatial.getControl(CActionQueue.class).clear();
         }
     }
 
@@ -111,7 +111,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         }
 
         if (!buff.isFriendly()) {
-            getSpatial().getControl(RestingControl.class).stopRegen();
+            getSpatial().getControl(CResting.class).stopRegen();
         }
     }
 
@@ -122,7 +122,7 @@ public class InfluenceInterfaceControl extends AbstractControl {
         if (health == 0f && !dead) {
             death();
         } else if (health < healthBefore && !isServer && health > 0f) {
-            spatial.getControl(CharacterSoundControl.class)
+            spatial.getControl(CCharacterSound.class)
                     .suffer(healthBefore - health);
         }
     }
@@ -137,8 +137,8 @@ public class InfluenceInterfaceControl extends AbstractControl {
     }
 
     public boolean canControlMovement() {
-        CharacterPhysicsControl physics =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
             return false;
         }
@@ -162,10 +162,10 @@ public class InfluenceInterfaceControl extends AbstractControl {
     public void death() {
         dead = true;
         spatial.getControl(CCharacterMovement.class).stop();
-        spatial.getControl(CharacterAnimationControl.class).death();
-        spatial.getControl(SpellCastControl.class).setEnabled(false);
+        spatial.getControl(CCharacterAnimation.class).death();
+        spatial.getControl(CSpellCast.class).setEnabled(false);
         if (!isServer) {
-            spatial.getControl(CharacterSoundControl.class).death();
+            spatial.getControl(CCharacterSound.class).death();
         }
     }
 

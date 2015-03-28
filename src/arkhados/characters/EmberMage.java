@@ -14,20 +14,20 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
-import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.CharacterHudControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.CharacterSoundControl;
-import arkhados.controls.CharacterSyncControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CCharacterAnimation;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CCharacterHud;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CCharacterSound;
+import arkhados.controls.CCharacterSync;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CResting;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
@@ -73,21 +73,21 @@ public class EmberMage extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
-        entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
+        entity.addControl(new CCharacterPhysics(radius, 20.0f, 75.0f));
 
         /**
          * By setting physics damping to low value, we can effectively apply
          * impulses on it.
          */
-        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
+        entity.getControl(CCharacterPhysics.class).setPhysicsDamping(0.2f);
         entity.addControl(new CCharacterMovement());
-        entity.addControl(new ActionQueueControl());
+        entity.addControl(new CActionQueue());
 
         /**
          * To add spells to entity, create SpellCastControl and call its
          * putSpell-method with name of the spell as argument.
          */
-        SpellCastControl spellCastControl = new SpellCastControl();
+        CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
         spellCastControl.putSpell(Spell.getSpell("Fireball"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
@@ -109,7 +109,7 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
 
-        CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
+        CCharacterAnimation characterAnimControl = new CCharacterAnimation(animControl);
         AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
         AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
 
@@ -126,24 +126,24 @@ public class EmberMage extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
         characterAnimControl.addSpellAnimation("Firewalk", animationData);
 
-        entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
         entity.addControl(new CCharacterHeal());
 
-        entity.addControl(new CharacterSyncControl());
+        entity.addControl(new CCharacterSync());
 
         if (worldManager.isClient()) {
-            CharacterSoundControl soundControl = new CharacterSoundControl();
+            CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/EmberMagePain.wav");
             soundControl.setDeathSound("Effects/Sound/EmberMageDeath.wav");
             entity.addControl(soundControl);
-            entity.addControl(new CharacterBuffControl());
-            entity.addControl(new CharacterHudControl());
+            entity.addControl(new CCharacterBuff());
+            entity.addControl(new CCharacterHud());
 
-            entity.addControl(new SyncInterpolationControl());
-            entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+            entity.addControl(new CSyncInterpolation());
+            entity.getControl(CInfluenceInterface.class).setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
+            CResting restingControl = new CResting();
             entity.addControl(restingControl);
         }
 

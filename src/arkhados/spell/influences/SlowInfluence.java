@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.influences;
 
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
 
@@ -32,7 +32,7 @@ public class SlowInfluence extends AbstractInfluence {
     }
 
     @Override
-    public void affect(InfluenceInterfaceControl targetInterface, float tpf) {
+    public void affect(CInfluenceInterface targetInterface, float tpf) {
         if (targetInterface.isSpeedConstant()) {
             return;
         }

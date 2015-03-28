@@ -18,7 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.PlayerData;
 import arkhados.WorldManager;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
@@ -76,16 +76,16 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         }
         int myTeamId = myStone.getUserData(UserDataStrings.TEAM_ID);
 
-        InfluenceInterfaceControl influenceInterface =
-                other.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface influenceInterface =
+                other.getControl(CInfluenceInterface.class);
         if (influenceInterface != null && stonePhysics.isPunched()
                 && !otherTeamId.equals(myTeamId)) {
             
             int ownerId = myStone.getUserData(UserDataStrings.PLAYER_ID);
             int playerEntityId = PlayerData.getIntData(ownerId, PlayerDataStrings.ENTITY_ID);
             Spatial playerEntity = worldManager.getEntity(playerEntityId);
-            InfluenceInterfaceControl playerInterface =
-                    playerEntity.getControl(InfluenceInterfaceControl.class);
+            CInfluenceInterface playerInterface =
+                    playerEntity.getControl(CInfluenceInterface.class);
             
             CharacterInteraction.harm(playerInterface, influenceInterface,
                     M1_COMBINATION_DAMAGE, null, true);

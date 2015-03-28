@@ -18,9 +18,9 @@ import arkhados.CharacterInteraction;
 import arkhados.actions.ChargeAction;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -79,11 +79,11 @@ class CastDeepWoundsAction extends EntityAction {
         ChargeAction charge = new ChargeAction(spell.getRange());
         charge.setHitDamage(100f);
         charge.setChargeSpeed(255f);
-        spatial.getControl(ActionQueueControl.class).enqueueAction(charge);
+        spatial.getControl(CActionQueue.class).enqueueAction(charge);
 
         BleedBuff bleedBuff = new BleedBuff(-1, 4.2f);
         bleedBuff.setOwnerInterface(spatial
-                .getControl(InfluenceInterfaceControl.class));
+                .getControl(CInfluenceInterface.class));
 
         float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         bleedBuff.setDamagePerUnit(2f * damageFactor);
@@ -97,7 +97,7 @@ class CastDeepWoundsAction extends EntityAction {
 
 class BleedBuff extends AbstractBuff {
 
-    private CharacterPhysicsControl physics = null;
+    private CCharacterPhysics physics = null;
     private Spatial spatial = null;
     private float dmgPerUnit = 2f;
 
@@ -111,10 +111,10 @@ class BleedBuff extends AbstractBuff {
     }
 
     @Override
-    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
         super.attachToCharacter(targetInterface);
         spatial = targetInterface.getSpatial();
-        physics = spatial.getControl(CharacterPhysicsControl.class);
+        physics = spatial.getControl(CCharacterPhysics.class);
     }
 
     @Override

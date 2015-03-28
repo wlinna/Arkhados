@@ -14,7 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.messages.syncmessages.statedata.GenericSyncData;
+import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.util.UserDataStrings;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -23,26 +25,21 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author william
  */
-public class CharacterHudControl extends AbstractControl {
 
-    private ClientHudManager hudManager;
+
+public class CGenericSync extends AbstractControl implements CSync{
 
     @Override
-    protected void controlUpdate(float tpf) {
+    protected void controlUpdate(float tpf) {        
     }
 
     @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    public void setHudManager(ClientHudManager hudManager) {
-        this.hudManager = hudManager;
-        spatial.getControl(CharacterBuffControl.class).setHudManager(hudManager);
+    protected void controlRender(RenderManager rm, ViewPort vp) {        
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        spatial.getControl(CharacterBuffControl.class).setEnabled(enabled);
-    }        
+    public StateData getSyncableData(StateData stateData) {
+        return new GenericSyncData((int) 
+                getSpatial().getUserData(UserDataStrings.ENTITY_ID), spatial);
+    }    
 }

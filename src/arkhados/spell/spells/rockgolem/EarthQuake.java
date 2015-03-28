@@ -19,9 +19,9 @@ import arkhados.actions.ChargeAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.characters.RockGolem;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -95,11 +95,11 @@ class CastEarthQuakeAction extends EntityAction {
                 DistanceScaling.CONSTANT, buffs);
         final int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         splash.setExcludedTeam(teamId);
-        InfluenceInterfaceControl casterInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface casterInterface =
+                spatial.getControl(CInfluenceInterface.class);
         splash.setCasterInterface(casterInterface);
 
-        ActionQueueControl queue = spatial.getControl(ActionQueueControl.class);
+        CActionQueue queue = spatial.getControl(CActionQueue.class);
         queue.enqueueAction(charge);
         queue.enqueueAction(splash);
         splash.setTypeId(RockGolem.ACTION_EARTHQUAKE);
@@ -113,7 +113,7 @@ class CastEarthQuakeAction extends EntityAction {
                         spatial.getLocalTranslation(), splashRadius);
 
                 for (SpatialDistancePair pair : spatialsWithinDistance) {
-                    if (pair.spatial.getControl(InfluenceInterfaceControl.class)
+                    if (pair.spatial.getControl(CInfluenceInterface.class)
                             == null) {
                         continue;
                     } else if (pair.spatial.getUserData(UserDataStrings.TEAM_ID)
@@ -121,7 +121,7 @@ class CastEarthQuakeAction extends EntityAction {
                         continue;
                     }
 
-                    pair.spatial.getControl(ActionQueueControl.class)
+                    pair.spatial.getControl(CActionQueue.class)
                             .enqueueAction(new KnockupAction());
                 }
                 
@@ -170,7 +170,7 @@ class KnockupAction extends EntityAction {
             public void onWayPointReach(MotionEvent motionControl,
                     int wayPointIndex) {
                 if (wayPointIndex == path.getNbWayPoints() - 1) {
-                    spatial.getControl(CharacterPhysicsControl.class)
+                    spatial.getControl(CCharacterPhysics.class)
                             .switchToNormalPhysicsMode();
                     shouldContinue = false;
                 }
@@ -180,7 +180,7 @@ class KnockupAction extends EntityAction {
         path.addListener(pathListener);
         motionControl.play();
 
-        spatial.getControl(CharacterPhysicsControl.class)
+        spatial.getControl(CCharacterPhysics.class)
                 .switchToMotionCollisionMode();
     }
 }

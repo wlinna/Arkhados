@@ -14,21 +14,21 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
-import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.CharacterHudControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.CharacterSoundControl;
-import arkhados.controls.EliteSoldierAmmunitionControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncControl;
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CCharacterAnimation;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CCharacterHud;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CCharacterSound;
+import arkhados.controls.CEliteSoldierAmmunition;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CResting;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSync;
+import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
 import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
@@ -117,25 +117,25 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
-        entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 75.0f));
+        entity.addControl(new CCharacterPhysics(radius, 20.0f, 75.0f));
 
         /**
          * By setting physics damping to low value, we can effectively apply
          * impulses on it.
          */
-        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
+        entity.getControl(CCharacterPhysics.class).setPhysicsDamping(.2f);
         entity.addControl(new CCharacterMovement());
-        entity.addControl(new ActionQueueControl());
+        entity.addControl(new CActionQueue());
 
         /**
          * To add spells to entity, create SpellCastControl and call its
          * putSpell-method with name of the spell as argument.
          */
-        EliteSoldierAmmunitionControl ammunitionControl =
-                new EliteSoldierAmmunitionControl();
+        CEliteSoldierAmmunition ammunitionControl =
+                new CEliteSoldierAmmunition();
         entity.addControl(ammunitionControl);
 
-        SpellCastControl spellCastControl = new SpellCastControl();
+        CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
@@ -158,8 +158,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
          * use same animation.
          */
         AnimControl animControl = real.getControl(AnimControl.class);
-        CharacterAnimationControl characterAnimControl =
-                new CharacterAnimationControl(animControl);
+        CCharacterAnimation characterAnimControl =
+                new CCharacterAnimation(animControl);
 
         AnimationData deathAnim =
                 new AnimationData("Die", 1f, LoopMode.DontLoop);
@@ -179,25 +179,25 @@ public class EliteSoldier extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Like a Pro", null);
         characterAnimControl.addSpellAnimation("Rocket Jump", animationData);
 
-        entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
         entity.addControl(new CCharacterHeal());
 
-        entity.addControl(new EliteSoldierSyncControl());
+        entity.addControl(new CEliteSoldierSync());
 
         if (worldManager.isClient()) {
-            CharacterSoundControl soundControl = new CharacterSoundControl();
+            CCharacterSound soundControl = new CCharacterSound();
             entity.addControl(soundControl);
             soundControl.setSufferSound("Effects/Sound/EliteSoldierPain.wav");
             soundControl.setDeathSound("Effects/Sound/EliteSoldierDeath.wav");
-            entity.addControl(new CharacterBuffControl());
-            entity.addControl(new CharacterHudControl());
+            entity.addControl(new CCharacterBuff());
+            entity.addControl(new CCharacterHud());
 
-            entity.addControl(new SyncInterpolationControl());
-            entity.getControl(InfluenceInterfaceControl.class)
+            entity.addControl(new CSyncInterpolation());
+            entity.getControl(CInfluenceInterface.class)
                     .setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
+            CResting restingControl = new CResting();
             entity.addControl(restingControl);
         }
 
@@ -205,7 +205,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
     }
 }
 
-class EliteSoldierSyncControl extends AbstractControl implements SyncControl {
+class CEliteSoldierSync extends AbstractControl implements CSync {
 
     @Override
     public StateData getSyncableData(StateData stateData) {

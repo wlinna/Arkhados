@@ -23,7 +23,7 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author Teemu
  */
-public class RestingControl extends AbstractControl {
+public class CResting extends AbstractControl {
 
     private float idleTime = 0;
     private Vector3f location = new Vector3f();

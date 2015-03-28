@@ -25,9 +25,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
 import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 
@@ -35,11 +33,11 @@ import java.io.IOException;
  *
  * @author william
  */
-public class DebugControl extends AbstractControl {
+public class CDebug extends AbstractControl {
 
     private AssetManager assetManager;
 
-    public DebugControl(AssetManager assetManager) {
+    public CDebug(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
 
@@ -69,7 +67,8 @@ public class DebugControl extends AbstractControl {
 
         arrow.setLineWidth(4f);
         Geometry g = new Geometry("arrow", arrow);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat = 
+                new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
         mat.setColor("Color", ColorRGBA.Yellow);
         g.setMaterial(mat);
@@ -84,7 +83,8 @@ public class DebugControl extends AbstractControl {
 
         arrow.setLineWidth(6f);
         Geometry g = new Geometry("arrow", arrow);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat =
+                new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
         mat.setColor("Color", ColorRGBA.Blue);
         g.setMaterial(mat);

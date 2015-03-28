@@ -15,9 +15,9 @@
 package arkhados.actions;
 
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellCastControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -32,7 +32,7 @@ public class CastingSpellAction extends EntityAction {
     private final Spell spell;
     private Vector3f movementDirection = null;
     private boolean followedByAnotherAnimation = false;
-    private InfluenceInterfaceControl influenceInterface;
+    private CInfluenceInterface influenceInterface;
 
     public CastingSpellAction(Spell spell) {
         this.spell = spell;
@@ -48,7 +48,7 @@ public class CastingSpellAction extends EntityAction {
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
         influenceInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
+                spatial.getControl(CInfluenceInterface.class);
     }
 
     @Override
@@ -64,11 +64,11 @@ public class CastingSpellAction extends EntityAction {
             }
 
             if (!followedByAnotherAnimation) {
-                spatial.getControl(SpellCastControl.class).setCasting(false);
+                spatial.getControl(CSpellCast.class).setCasting(false);
             }
             return false;
         }
-        spatial.getControl(SpellCastControl.class).setCasting(true);
+        spatial.getControl(CSpellCast.class).setCasting(true);
         CCharacterMovement cMovement =
                 spatial.getControl(CCharacterMovement.class);
 
@@ -77,8 +77,8 @@ public class CastingSpellAction extends EntityAction {
             cMovement.stop();
         } else {
             if (spell.moveTowardsTarget()) {
-                CharacterPhysicsControl physics =
-                        spatial.getControl(CharacterPhysicsControl.class);
+                CCharacterPhysics physics =
+                        spatial.getControl(CCharacterPhysics.class);
                 if (!cMovement.getWalkDirection().equals(Vector3f.ZERO)) {
                     if (movementDirection == null) {
                         movementDirection = physics.calculateTargetDirection();

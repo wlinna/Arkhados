@@ -14,41 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.util.UserDataStrings;
-import com.jme3.math.FastMath;
+import arkhados.ui.hud.ClientHudManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-public class CCharacterDamage extends AbstractControl {
+/**
+ *
+ * @author william
+ */
+public class CCharacterHud extends AbstractControl {
 
-    public float doDamage(float damage, boolean canBreakCC) {
-        CInfluenceInterface me =
-                spatial.getControl(CInfluenceInterface.class);
-        if (me.isDead()) {
-            return 0f;
-        }
-
-        float healthBefore =
-                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-
-        damage = me.mitigateDamage(damage);
-
-        float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
-        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-
-        if (health == 0.0f) {
-            me.death();
-        }
-
-        if (canBreakCC) {
-            me.removeDamageSensitiveBuffs();
-        }
-
-        spatial.getControl(CResting.class).stopRegen();
-
-        return healthBefore - health;
-    }
+    private ClientHudManager hudManager;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -57,4 +34,15 @@ public class CCharacterDamage extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
+
+    public void setHudManager(ClientHudManager hudManager) {
+        this.hudManager = hudManager;
+        spatial.getControl(CCharacterBuff.class).setHudManager(hudManager);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        spatial.getControl(CCharacterBuff.class).setEnabled(enabled);
+    }        
 }

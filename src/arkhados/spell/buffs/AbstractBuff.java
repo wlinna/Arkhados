@@ -15,8 +15,8 @@
 package arkhados.spell.buffs;
 
 import arkhados.ServerFogManager;
-import arkhados.controls.EntityVariableControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CEntityVariable;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.messages.syncmessages.CmdBuff;
 import arkhados.net.Sender;
 import arkhados.util.UserDataStrings;
@@ -36,8 +36,8 @@ public abstract class AbstractBuff {
     private int typeId = -1;
     private int buffGroupId;
     protected float duration;
-    protected InfluenceInterfaceControl targetInterface = null;
-    private InfluenceInterfaceControl ownerInterface = null;
+    protected CInfluenceInterface targetInterface = null;
+    private CInfluenceInterface ownerInterface = null;
     protected boolean friendly = false;
     private int buffId = ++currentBuffId;
 
@@ -50,7 +50,7 @@ public abstract class AbstractBuff {
         this.duration = duration;
     }
 
-    public void attachToCharacter(InfluenceInterfaceControl targetInterface) {
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
         this.targetInterface = targetInterface;
         targetInterface.addOtherBuff(this);
 
@@ -58,7 +58,7 @@ public abstract class AbstractBuff {
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
             ServerFogManager fogManager = spatial
-                    .getControl(EntityVariableControl.class).getAwareness()
+                    .getControl(CEntityVariable.class).getAwareness()
                     .getFogManager();
             fogManager.addCommand(spatial, buffCommand);
         }
@@ -98,17 +98,17 @@ public abstract class AbstractBuff {
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
             ServerFogManager fogManager = spatial
-                    .getControl(EntityVariableControl.class).getAwareness()
+                    .getControl(CEntityVariable.class).getAwareness()
                     .getFogManager();
             fogManager.addCommand(spatial, buffCommand);
         }
     }
 
-    public InfluenceInterfaceControl getOwnerInterface() {
+    public CInfluenceInterface getOwnerInterface() {
         return ownerInterface;
     }
 
-    public void setOwnerInterface(InfluenceInterfaceControl ownerInterface) {
+    public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         this.ownerInterface = ownerInterface;
     }
 

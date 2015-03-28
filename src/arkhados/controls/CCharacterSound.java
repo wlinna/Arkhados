@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author Teemu
  */
-public class CharacterSoundControl extends AbstractControl {
+public class CCharacterSound extends AbstractControl {
 
     private float suffering = 0;
     private String sufferPath;

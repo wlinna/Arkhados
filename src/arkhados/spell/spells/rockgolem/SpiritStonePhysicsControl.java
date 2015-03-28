@@ -15,7 +15,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.WorldManager;
-import arkhados.controls.SyncControl;
+import arkhados.controls.CSync;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.UserDataStrings;
@@ -29,7 +29,7 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class SpiritStonePhysicsControl extends RigidBodyControl implements SyncControl {
+public class SpiritStonePhysicsControl extends RigidBodyControl implements CSync {
 
     private Vector3f tempVector = new Vector3f();
     private Vector3f punchDirection = null;

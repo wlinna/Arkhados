@@ -15,7 +15,7 @@
 package arkhados.effects;
 
 import arkhados.Globals;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CTimedExistence;
 import arkhados.spell.spells.rockgolem.EarthQuake;
 import arkhados.spell.spells.rockgolem.Toss;
 import com.jme3.effect.ParticleEmitter;
@@ -79,6 +79,6 @@ public class EarthQuakeEffect implements WorldEffect {
         root.attachChild(emitter);
         emitter.setLocalTranslation(location);
         emitter.emitAllParticles();
-        emitter.addControl(new TimedExistenceControl(14f));
+        emitter.addControl(new CTimedExistence(14f));
     }
 }

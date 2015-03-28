@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CharacterBuffControl;
+import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -33,7 +33,7 @@ public class IgniteInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl, float duration) {
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
         IgniteEffect effect = new IgniteEffect(duration);
         effect.addToCharacter(buffControl);
         return effect;
@@ -48,7 +48,7 @@ class IgniteEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CharacterBuffControl buffControl) {
+    public void addToCharacter(CCharacterBuff buffControl) {
         fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50);
         Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));

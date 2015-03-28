@@ -16,7 +16,7 @@ package arkhados.spell.spells.venator;
 
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -80,7 +80,7 @@ class DamagePerHealthPercentBuff extends AbstractBuff {
 
     @Override
     public void attachToCharacter(
-            InfluenceInterfaceControl influenceInterface) {
+            CInfluenceInterface influenceInterface) {
         super.attachToCharacter(influenceInterface);
         spatial = influenceInterface.getSpatial();
     }
@@ -117,7 +117,7 @@ class MovementSpeedPerHealthMissingBuff extends SpeedBuff {
 
     @Override
     public void attachToCharacter(
-            InfluenceInterfaceControl influenceInterface) {
+            CInfluenceInterface influenceInterface) {
         super.attachToCharacter(influenceInterface);
         spatial = influenceInterface.getSpatial();
         originalHealth = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);

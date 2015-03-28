@@ -15,7 +15,7 @@
 package arkhados.effects;
 
 import arkhados.Globals;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CTimedExistence;
 import com.jme3.audio.AudioNode;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -37,7 +37,7 @@ public class SimpleSoundEffect implements WorldEffect {
         AudioNode sound = new AudioNode(Globals.assetManager, this.path);
         sound.setPositional(true);
         sound.setLocalTranslation(location);
-        sound.addControl(new TimedExistenceControl(sound.getAudioData().getDuration()));
+        sound.addControl(new CTimedExistence(sound.getAudioData().getDuration()));
         sound.setReverbEnabled(false);
         sound.setVolume(volume);
         sound.play();

@@ -17,13 +17,13 @@ package arkhados.spell.spells.embermage;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.GenericSyncControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncInterpolationControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CGenericSync;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSyncInterpolation;
+import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -114,7 +114,7 @@ class CastMeteorAction extends EntityAction {
         final Vector3f startingPoint = spatial.getLocalTranslation().add(0f, 60f, 0f);
 
         final Vector3f target = 
-                spatial.getControl(SpellCastControl.class).getClosestPointToTarget(spell);
+                spatial.getControl(CSpellCast.class).getClosestPointToTarget(spell);
         raySelectPoint(startingPoint, target);
 
         final MotionPath path = new MotionPath();
@@ -129,9 +129,9 @@ class CastMeteorAction extends EntityAction {
         motionControl.setInitialDuration(0.6f);
         motionControl.setSpeed(1f);
 
-        final InfluenceInterfaceControl casterInterface =
-                spatial.getControl(InfluenceInterfaceControl.class);
-        meteor.getControl(SpellBuffControl.class).setOwnerInterface(casterInterface);
+        final CInfluenceInterface casterInterface =
+                spatial.getControl(CInfluenceInterface.class);
+        meteor.getControl(CSpellBuff.class).setOwnerInterface(casterInterface);
 
         path.addListener(new MotionPathListener() {
             @Override
@@ -139,7 +139,7 @@ class CastMeteorAction extends EntityAction {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
                     final float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
 
-                    SpellBuffControl buffControl = meteor.getControl(SpellBuffControl.class);
+                    CSpellBuff buffControl = meteor.getControl(CSpellBuff.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
                     SplashAction splash = 
                             new SplashAction(25f, baseDamage, DistanceScaling.LINEAR, null);
@@ -215,21 +215,21 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.DAMAGE, 340f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 25000f);
 
-        SpellBuffControl spellBuffControl = new SpellBuffControl();
+        CSpellBuff spellBuffControl = new CSpellBuff();
         node.addControl(spellBuffControl);
 
-        node.addControl(new GenericSyncControl());
+        node.addControl(new CGenericSync());
 
         if (worldManager.isClient()) {
-            node.addControl(new SyncInterpolationControl());
-            node.addControl(new EntityEventControl());
+            node.addControl(new CSyncInterpolation());
+            node.addControl(new CEntityEvent());
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
             MeteorRemovalAction removalAction = new MeteorRemovalAction(assetManager);
             removalAction.setEmitter(fire);
 
-            node.getControl(EntityEventControl.class).setOnRemoval(removalAction);
+            node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
         }
 
         return node;
@@ -262,7 +262,7 @@ class MeteorRemovalAction implements RemovalEventAction {
         worldManager.getWorldRoot().attachChild(emitter);
 
         emitter.setLocalTranslation(worldTranslation);
-        emitter.addControl(new TimedExistenceControl(4f));
+        emitter.addControl(new CTimedExistence(4f));
         emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(1f, 0.01f, 1f).mult(16.0f));
         emitter.getParticleInfluencer().setVelocityVariation(1f);
         emitter.setStartSize(6f);

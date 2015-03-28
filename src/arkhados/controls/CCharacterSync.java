@@ -19,16 +19,13 @@ import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.UserDataStrings;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 /**
  *
  * @author william
  */
-
-
-public class CharacterSyncControl extends AbstractControl implements SyncControl{
+public class CCharacterSync extends AbstractControl implements CSync {
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -39,7 +36,9 @@ public class CharacterSyncControl extends AbstractControl implements SyncControl
     }
 
     @Override
-    public StateData getSyncableData(StateData stateData) {        
-        return new CharacterSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), super.getSpatial());
-    }    
+    public StateData getSyncableData(StateData stateData) {
+        return new CharacterSyncData(
+                (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
+                getSpatial());
+    }
 }

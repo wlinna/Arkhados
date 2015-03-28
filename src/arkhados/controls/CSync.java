@@ -12,14 +12,11 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+
 package arkhados.controls;
 
-import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.util.UserDataStrings;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
-import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.Control;
 
 /**
  *
@@ -27,18 +24,6 @@ import com.jme3.scene.control.AbstractControl;
  */
 
 
-public class GenericSyncControl extends AbstractControl implements SyncControl{
-
-    @Override
-    protected void controlUpdate(float tpf) {        
-    }
-
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {        
-    }
-
-    @Override
-    public StateData getSyncableData(StateData stateData) {
-        return new GenericSyncData((int) super.getSpatial().getUserData(UserDataStrings.ENTITY_ID), spatial);
-    }    
+public interface CSync extends Control {
+    public StateData getSyncableData(StateData stateData);
 }

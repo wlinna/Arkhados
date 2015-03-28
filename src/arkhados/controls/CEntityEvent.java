@@ -30,7 +30,7 @@ import arkhados.entityevents.RemovalEventAction;
  *
  * @author william
  */
-public class EntityEventControl extends AbstractControl {
+public class CEntityEvent extends AbstractControl {
     private RemovalEventAction onRemoval = null;
 
     @Override
@@ -42,7 +42,7 @@ public class EntityEventControl extends AbstractControl {
     }
 
     public Control cloneForSpatial(Spatial spatial) {
-        EntityEventControl control = new EntityEventControl();
+        CEntityEvent control = new CEntityEvent();
         control.setOnRemoval(this.onRemoval);
         return control;
     }

@@ -21,10 +21,10 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.characters.EliteSoldier;
-import arkhados.controls.EntityEventControl;
-import arkhados.controls.ProjectileControl;
-import arkhados.controls.SpellBuffControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CEntityEvent;
+import arkhados.controls.CProjectile;
+import arkhados.controls.CSpellBuff;
+import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -140,7 +140,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
             ParticleEmitter plasma = createPlasmaEmitter();
             node.attachChild(plasma);
 
-            node.addControl(new EntityEventControl());
+            node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when plasmaball is
              * removed. In this case we want explosion effect.
@@ -149,7 +149,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
                     new PlasmaRemovalAction(assetManager);
             removalAction.setPlasmaEmitter(plasma);
 
-            node.getControl(EntityEventControl.class)
+            node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
         }
 
@@ -171,13 +171,13 @@ class PlasmaBuilder extends AbstractNodeBuilder {
 
         node.addControl(physicsBody);
 
-        ProjectileControl projectileControl = new ProjectileControl();
+        CProjectile projectileControl = new CProjectile();
         SplashAction splash = new SplashAction(23f, 23f,
                 DistanceScaling.CONSTANT, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
         node.addControl(projectileControl);
-        SpellBuffControl buffControl = new SpellBuffControl();
+        CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
 
         buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
@@ -208,7 +208,7 @@ class PlasmaRemovalAction implements RemovalEventAction {
         plasma.removeFromParent();
         worldManager.getWorldRoot().attachChild(plasma);
         plasma.setLocalTranslation(worldTranslation);
-        plasma.addControl(new TimedExistenceControl(1f));
+        plasma.addControl(new CTimedExistence(1f));
         plasma.setStartColor(new ColorRGBA(0.5f, 0.150f, 0.9f, 1.0f));
         plasma.setEndColor(new ColorRGBA(0.60f, 0.10f, 0.9f, 0.8f));
         plasma.setLowLife(0.1f);

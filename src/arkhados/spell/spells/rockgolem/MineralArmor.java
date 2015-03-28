@@ -17,7 +17,7 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastSelfBuffAction;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.ArmorBuff;
@@ -54,7 +54,7 @@ public class MineralArmor extends Spell {
                 MineralArmorBuff armor =
                         new MineralArmorBuff(200f, 0.75f, -1, 4f);
                 armor.setOwnerInterface(caster
-                        .getControl(InfluenceInterfaceControl.class));
+                        .getControl(CInfluenceInterface.class));
                 action.addBuff(armor);
                 return action;
             }

@@ -15,20 +15,20 @@
 package arkhados.characters;
 
 import arkhados.EffectHandler;
-import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.CharacterHudControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.CharacterSoundControl;
-import arkhados.controls.CharacterSyncControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CCharacterAnimation;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CCharacterHud;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CCharacterSound;
+import arkhados.controls.CCharacterSync;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CResting;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EarthQuakeEffect;
 import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
@@ -85,12 +85,12 @@ public class RockGolem extends AbstractNodeBuilder {
 
         entity.getChild(0).scale(3f);
 
-        entity.addControl(new CharacterPhysicsControl(radius, 20.0f, 300f));
-        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(0.2f);
+        entity.addControl(new CCharacterPhysics(radius, 20.0f, 300f));
+        entity.getControl(CCharacterPhysics.class).setPhysicsDamping(0.2f);
         entity.addControl(new CCharacterMovement());
-        entity.addControl(new ActionQueueControl());
+        entity.addControl(new CActionQueue());
 
-        SpellCastControl spellCastControl = new SpellCastControl();
+        CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
 
         Spell stoneFist = Spell.getSpell("StoneFist");
@@ -108,7 +108,7 @@ public class RockGolem extends AbstractNodeBuilder {
         spellCastControl.putSpell(quake, InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         AnimControl animControl = entity.getControl(AnimControl.class);
-        CharacterAnimationControl characterAnimControl = new CharacterAnimationControl(animControl);
+        CCharacterAnimation characterAnimControl = new CCharacterAnimation(animControl);
 
         AnimationData deathAnim = new AnimationData("Death", 1f, LoopMode.DontLoop);
         AnimationData runAnim = new AnimationData("Run", 1.5f, LoopMode.DontLoop);
@@ -138,23 +138,23 @@ public class RockGolem extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Toss", fistAnim);
         characterAnimControl.addSpellAnimation("EarthQuake", chargeAnim);
 
-        entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
         entity.addControl(new CCharacterHeal());
-        entity.addControl(new CharacterSyncControl());
+        entity.addControl(new CCharacterSync());
 
         if (worldManager.isClient()) {
-            CharacterSoundControl soundControl = new CharacterSoundControl();
+            CCharacterSound soundControl = new CCharacterSound();
             entity.addControl(soundControl);
             soundControl.setSufferSound("Effects/Sound/RockGolemPain.wav");
 
-            entity.addControl(new CharacterBuffControl());
-            entity.addControl(new CharacterHudControl());
+            entity.addControl(new CCharacterBuff());
+            entity.addControl(new CCharacterHud());
 
-            entity.addControl(new SyncInterpolationControl());
-            entity.getControl(InfluenceInterfaceControl.class).setIsServer(false);
+            entity.addControl(new CSyncInterpolation());
+            entity.getControl(CInfluenceInterface.class).setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
+            CResting restingControl = new CResting();
             entity.addControl(restingControl);
         }
         return entity;

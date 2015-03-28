@@ -14,8 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.controls.EntityVariableControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CEntityVariable;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.PlayerEntityAwareness;
 import arkhados.messages.syncmessages.CmdAddEntity;
 import arkhados.messages.syncmessages.CmdBuff;
@@ -170,8 +170,8 @@ public class ServerFogManager extends AbstractAppState {
             sender.addCommandForSingle(command,
                     awarenessConnectionMap.get(awareness));
 
-            InfluenceInterfaceControl influenceInterface =
-                    target.getControl(InfluenceInterfaceControl.class);
+            CInfluenceInterface influenceInterface =
+                    target.getControl(CInfluenceInterface.class);
             if (influenceInterface != null) {
                 informAboutBuffs(sender, awareness,
                         influenceInterface.getBuffs());
@@ -242,7 +242,7 @@ public class ServerFogManager extends AbstractAppState {
                 : awarenessConnectionMap.keySet()) {
             if (playerEntityAwareness.getPlayerId() == playerId) {
                 playerEntityAwareness.setOwnSpatial(character);
-                character.getControl(EntityVariableControl.class)
+                character.getControl(CEntityVariable.class)
                         .setAwareness(playerEntityAwareness);
                 break;
             }
@@ -269,7 +269,7 @@ public class ServerFogManager extends AbstractAppState {
                 : awarenessConnectionMap.keySet()) {
             Spatial spatial = playerEntityAwareness.getOwnSpatial();
             if (spatial != null) {
-                spatial.getControl(EntityVariableControl.class)
+                spatial.getControl(CEntityVariable.class)
                         .setAwareness(null);
             }
         }

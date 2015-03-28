@@ -14,20 +14,20 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
-import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.CharacterAnimationControl;
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.CharacterHudControl;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.CharacterSoundControl;
-import arkhados.controls.CharacterSyncControl;
-import arkhados.controls.InfluenceInterfaceControl;
-import arkhados.controls.RestingControl;
-import arkhados.controls.SpellCastControl;
-import arkhados.controls.SyncInterpolationControl;
+import arkhados.controls.CCharacterAnimation;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CCharacterHud;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CCharacterSound;
+import arkhados.controls.CCharacterSync;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CResting;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
 import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
@@ -94,12 +94,12 @@ public class Venator extends AbstractNodeBuilder {
             childToScale.scale(3f);
         }
 
-        entity.addControl(new CharacterPhysicsControl(radius, 22f, 80f));
-        entity.getControl(CharacterPhysicsControl.class).setPhysicsDamping(.2f);
+        entity.addControl(new CCharacterPhysics(radius, 22f, 80f));
+        entity.getControl(CCharacterPhysics.class).setPhysicsDamping(.2f);
         entity.addControl(new CCharacterMovement());
-        entity.addControl(new ActionQueueControl());
+        entity.addControl(new CActionQueue());
 
-        SpellCastControl spellCastControl = new SpellCastControl();
+        CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
         Spell rend = Spell.getSpell("Rend");
         Spell dagger = Spell.getSpell("Damaging Dagger");
@@ -122,8 +122,8 @@ public class Venator extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.R));
 
         AnimControl animControl = entity.getControl(AnimControl.class);
-        CharacterAnimationControl characterAnimControl =
-                new CharacterAnimationControl(animControl);
+        CCharacterAnimation characterAnimControl =
+                new CCharacterAnimation(animControl);
 
         AnimationData deathAnim =
                 new AnimationData("Die-1", 1f, LoopMode.DontLoop);
@@ -185,25 +185,25 @@ public class Venator extends AbstractNodeBuilder {
 
         characterAnimControl.addActionAnimation(swipeLeftAnim);
 
-        entity.addControl(new InfluenceInterfaceControl());
+        entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
         entity.addControl(new CCharacterHeal());
-        entity.addControl(new CharacterSyncControl());
+        entity.addControl(new CCharacterSync());
 
         if (worldManager.isClient()) {
-            CharacterSoundControl soundControl = new CharacterSoundControl();
+            CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/VenatorPain.wav");
             soundControl.setDeathSound("Effects/Sound/VenatorDeath.wav");
             soundControl.addCastSound(rend.getId(), rendEffect);
             entity.addControl(soundControl);
-            entity.addControl(new CharacterBuffControl());
-            entity.addControl(new CharacterHudControl());
+            entity.addControl(new CCharacterBuff());
+            entity.addControl(new CCharacterHud());
 
-            entity.addControl(new SyncInterpolationControl());
-            entity.getControl(InfluenceInterfaceControl.class)
+            entity.addControl(new CSyncInterpolation());
+            entity.getControl(CInfluenceInterface.class)
                     .setIsServer(false);
         } else {
-            RestingControl restingControl = new RestingControl();
+            CResting restingControl = new CResting();
             entity.addControl(restingControl);
         }
 

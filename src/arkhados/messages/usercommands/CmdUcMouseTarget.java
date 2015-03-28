@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.messages.usercommands;
 
-import arkhados.controls.CharacterPhysicsControl;
+import arkhados.controls.CCharacterPhysics;
 import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
@@ -39,7 +39,7 @@ public class CmdUcMouseTarget extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        CharacterPhysicsControl physicsControl = character.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physicsControl = character.getControl(CCharacterPhysics.class);
         physicsControl.setTargetLocation(location);        
         
         if (!physicsControl.isMotionControlled()

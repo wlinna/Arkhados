@@ -17,8 +17,8 @@ package arkhados.actions.castspellactions;
 import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
@@ -48,8 +48,8 @@ public class MeleeAttackAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final CharacterPhysicsControl physicsControl = spatial
-                .getControl(CharacterPhysicsControl.class);
+        final CCharacterPhysics physicsControl = spatial
+                .getControl(CCharacterPhysics.class);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
                 .normalize().multLocal(range);
 
@@ -71,8 +71,8 @@ public class MeleeAttackAction extends EntityAction {
                     return false;
                 }
 
-                InfluenceInterfaceControl influenceInterface = value.spatial
-                        .getControl(InfluenceInterfaceControl.class);
+                CInfluenceInterface influenceInterface = value.spatial
+                        .getControl(CInfluenceInterface.class);
 
                 if (influenceInterface != null
                         && !nullableTeamId.equals(myTeamId)) {
@@ -91,15 +91,15 @@ public class MeleeAttackAction extends EntityAction {
             return false;
         }
 
-        InfluenceInterfaceControl targetInterface =
-                closest.spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface targetInterface =
+                closest.spatial.getControl(CInfluenceInterface.class);
         if (targetInterface != null) {
             final float damageFactor =
                     spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             final float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
             CharacterInteraction.harm(
-                    spatial.getControl(InfluenceInterfaceControl.class),
+                    spatial.getControl(CInfluenceInterface.class),
                     targetInterface, rawDamage, buffs, true);
         }
         

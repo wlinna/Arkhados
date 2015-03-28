@@ -15,8 +15,8 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.Globals;
-import arkhados.controls.CharacterBuffControl;
-import arkhados.controls.TimedExistenceControl;
+import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CTimedExistence;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.MatParam;
@@ -37,7 +37,7 @@ public class SurvivalInstinctInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CharacterBuffControl buffControl,
+    public BuffEffect createBuffEffect(CCharacterBuff buffControl,
             float duration) {
         SurvivalInstinctEffect effect = new SurvivalInstinctEffect(duration);
         effect.addToCharacter(buffControl);
@@ -54,7 +54,7 @@ class SurvivalInstinctEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CharacterBuffControl buffControl) {
+    public void addToCharacter(CCharacterBuff buffControl) {
         characterNode = (Node) buffControl.getSpatial();
         for (Spatial childSpatial : characterNode.getChildren()) {
             if (!(childSpatial instanceof Geometry)) {
@@ -76,7 +76,7 @@ class SurvivalInstinctEffect extends BuffEffect {
         characterNode.attachChild(sound);
         sound.setPositional(true);
         sound.addControl(
-                new TimedExistenceControl(sound.getAudioData().getDuration()));
+                new CTimedExistence(sound.getAudioData().getDuration()));
         sound.setReverbEnabled(false);
         sound.setVolume(1f);        
         sound.play();

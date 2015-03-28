@@ -16,8 +16,8 @@ package arkhados.ui.hud;
 
 import arkhados.PlayerData;
 import arkhados.UserCommandManager;
-import arkhados.controls.ActionQueueControl;
-import arkhados.controls.CharacterHudControl;
+import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterHud;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.PlayerRoundStats;
 import arkhados.util.UserDataStrings;
@@ -75,7 +75,7 @@ public class ClientHudManager extends AbstractAppState
         this.cam = cam;
         this.guiNode = guiNode;
         this.guiFont = guiFont;
-        guiNode.addControl(new ActionQueueControl());
+        guiNode.addControl(new CActionQueue());
     }
 
     public void setNifty(Nifty nifty) {
@@ -292,8 +292,6 @@ public class ClientHudManager extends AbstractAppState
         clear();
 
         nifty.gotoScreen("main_menu");
-
-        clear();
         roundTableCreated = false;
     }
 
@@ -324,7 +322,7 @@ public class ClientHudManager extends AbstractAppState
             return;
         }
 
-        playerCharacter.getControl(CharacterHudControl.class).setEnabled(false);
+        playerCharacter.getControl(CCharacterHud.class).setEnabled(false);
     }
 
     public void addMessage(String message) {
@@ -350,4 +348,10 @@ public class ClientHudManager extends AbstractAppState
     public void clearMessages() {
         messageHandler.cleanup();
     }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        clear();
+    }        
 }

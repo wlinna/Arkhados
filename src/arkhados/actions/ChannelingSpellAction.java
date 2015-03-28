@@ -14,9 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions;
 
-import arkhados.controls.ActionQueueControl;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterMovement;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.Spell;
 import com.jme3.scene.Spatial;
 
@@ -33,8 +33,8 @@ public class ChannelingSpellAction extends EntityAction {
     private float actionFrequency;
     private EntityAction action;
     private CCharacterMovement cMovement;
-    private InfluenceInterfaceControl inluenceControl;
-    private ActionQueueControl actionQueue;
+    private CInfluenceInterface inluenceControl;
+    private CActionQueue actionQueue;
 
     public ChannelingSpellAction(Spell spell, float maxTime,
             float actionFrequency, EntityAction action) {
@@ -60,8 +60,8 @@ public class ChannelingSpellAction extends EntityAction {
         super.setSpatial(spatial);
         action.setSpatial(spatial);
         cMovement = spatial.getControl(CCharacterMovement.class);
-        inluenceControl = spatial.getControl(InfluenceInterfaceControl.class);
-        actionQueue = spatial.getControl(ActionQueueControl.class);
+        inluenceControl = spatial.getControl(CInfluenceInterface.class);
+        actionQueue = spatial.getControl(CActionQueue.class);
     }
 
     @Override

@@ -47,7 +47,7 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author william
  */
-public class FreeCameraControl extends AbstractControl {
+public class CFreeCamera extends AbstractControl {
 
     private Spatial spatialToFollow;
     private Camera cam;
@@ -57,9 +57,9 @@ public class FreeCameraControl extends AbstractControl {
     private Vector3f relativePosition;
     private Vector3f targetDestination = new Vector3f();
     private float timeToReach = 20f;
-    private float timeMoved = this.timeToReach;
+    private float timeMoved = timeToReach;
 
-    public FreeCameraControl(Camera cam, InputManager inputManager) {
+    public CFreeCamera(Camera cam, InputManager inputManager) {
         this.cam = cam;
         this.inputManager = inputManager;
     }
@@ -71,7 +71,8 @@ public class FreeCameraControl extends AbstractControl {
         }
 
         calculateMouseLocation();
-        Vector3f midPoint = intersectionPoint.subtract(spatialToFollow.getLocalTranslation())
+        Vector3f midPoint = intersectionPoint
+                .subtract(spatialToFollow.getLocalTranslation())
                 .multLocal(0.5f);
         midPoint.addLocal(relativePosition);
         midPoint.addLocal(spatialToFollow.getLocalTranslation());
@@ -84,7 +85,8 @@ public class FreeCameraControl extends AbstractControl {
             factor = 1f;
         }
 
-        cam.setLocation(cam.getLocation().interpolate(targetDestination, factor));
+        cam.setLocation(cam.getLocation()
+                .interpolate(targetDestination, factor));
     }
 
     @Override
@@ -92,10 +94,11 @@ public class FreeCameraControl extends AbstractControl {
     }
 
     private void calculateMouseLocation() {
-        final Vector2f mouse2dPosition = inputManager.getCursorPosition();
-        final Vector3f mouse3dPosition = cam.getWorldCoordinates(mouse2dPosition, 0.0f);
+        Vector2f mouse2dPosition = inputManager.getCursorPosition();
+        Vector3f mouse3dPosition =
+                cam.getWorldCoordinates(mouse2dPosition, 0.0f);
 
-        final Vector3f rayDirection = cam.getWorldCoordinates(mouse2dPosition, 1.0f)
+        Vector3f rayDirection = cam.getWorldCoordinates(mouse2dPosition, 1.0f)
                 .subtractLocal(mouse3dPosition).normalizeLocal();
 
         Ray ray = new Ray(mouse3dPosition, rayDirection);

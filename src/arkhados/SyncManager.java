@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.Callable;
-import arkhados.controls.SyncControl;
+import arkhados.controls.CSync;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
@@ -94,7 +94,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
 
             Spatial spatial = (Spatial) entry.getValue();
 
-            SyncControl syncControl = spatial.getControl(SyncControl.class);
+            CSync syncControl = spatial.getControl(CSync.class);
             if (syncControl != null) {
                 StateData data = syncControl.getSyncableData(null);
                 if (data != null) {

@@ -18,8 +18,8 @@ import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
-import arkhados.controls.CharacterPhysicsControl;
-import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -86,8 +86,8 @@ class StoneFistAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CharacterPhysicsControl physicsControl =
-                spatial.getControl(CharacterPhysicsControl.class);
+        CCharacterPhysics physicsControl =
+                spatial.getControl(CCharacterPhysics.class);
         final int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         int myPlayerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
@@ -111,8 +111,8 @@ class StoneFistAction extends EntityAction {
                     return false;
                 }
 
-                InfluenceInterfaceControl influenceInterface = value.spatial
-                        .getControl(InfluenceInterfaceControl.class);
+                CInfluenceInterface influenceInterface = value.spatial
+                        .getControl(CInfluenceInterface.class);
 
                 if (influenceInterface != null &&
                         !nullableTeamId.equals(myTeamId)) {                    
@@ -138,15 +138,15 @@ class StoneFistAction extends EntityAction {
             return false;
         }
 
-        InfluenceInterfaceControl targetInterface =
-                closest.spatial.getControl(InfluenceInterfaceControl.class);
+        CInfluenceInterface targetInterface =
+                closest.spatial.getControl(CInfluenceInterface.class);
         if (targetInterface != null) {
             final float damageFactor =
                     spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             final float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
             CharacterInteraction.harm(
-                    spatial.getControl(InfluenceInterfaceControl.class),
+                    spatial.getControl(CInfluenceInterface.class),
                     targetInterface, rawDamage, buffs, true);
         } else {
             pushSpiritStone(closest.spatial, hitDirection);
