@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.gamemode.LastManStanding;
 import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -107,14 +106,6 @@ public class ServerNetListener implements ConnectionListener,
                         BattleStatisticsResponse
                         .buildBattleStatisticsResponse();
                 sender.addCommand(response);
-                break;
-            case Topic.START_GAME:
-                // HACK: This is wrong place for this. Clean this up
-                if (app.getStateManager().getState(ServerGameManager.class)
-                        .getGameMode() instanceof LastManStanding) {
-                    sender.addCommand(topicCommand);
-                    app.startGame();
-                }
                 break;
             case Topic.UDP_HANDSHAKE_REQUEST:
                 sender.addCommandForSingle(

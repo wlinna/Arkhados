@@ -35,7 +35,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
@@ -59,12 +58,8 @@ public class ClientHudManager extends AbstractAppState
     private List<Node> characters = new ArrayList<>();
     private List<BitmapText> hpBars = new ArrayList<>();
     private List<BitmapText> playerNames = new ArrayList<>();
-    private int currentSeconds = -1;
     private Spatial playerCharacter = null;
     private AppStateManager stateManager;
-    // HACK: This is only meant for initial implementation testing.
-    // Remove this when all round statistics are accessible via GUI
-    private boolean roundTableCreated = false;
     // HACK: 
     private boolean hudCreated = false;
     private GameMessageHandler messageHandler = new GameMessageHandler();
@@ -127,36 +122,7 @@ public class ClientHudManager extends AbstractAppState
                 PlayerData.getStringData(playerId, PlayerDataStrings.NAME);
 
         createPlayerName(name);
-    }
-
-    public void startRound() {
-        Element layerCountdown = screen.findElementByName("layer_countdown");
-        layerCountdown.disable();
-        layerCountdown.hide();
-
-        // TODO: Create statistics panel creation to more appropriate place
-        // HACK: This is only meant for initial implementation testing.
-        // Remove this "if" when all round statistics are accessible via GUI
-        if (!roundTableCreated) {
-            roundTableCreated = true;
-        }
-    }
-
-    public void setSecondsLeftToStart(int seconds) {
-        if (currentSeconds == -1) {
-            Element layerCountdown =
-                    screen.findElementByName("layer_countdown");
-
-            layerCountdown.enable();
-            layerCountdown.show();
-        }
-        if (seconds != currentSeconds) {
-            currentSeconds = seconds;
-            Element textElement = screen.findElementByName("text_countdown");
-            textElement.getRenderer(TextRenderer.class)
-                    .setText(Integer.toString(seconds));
-        }
-    }
+    }    
 
     public void clear() {
         characters.clear();
@@ -175,14 +141,13 @@ public class ClientHudManager extends AbstractAppState
         clearAllButHpBars();
     }
 
-    public void clearAllButHpBars() {
-        currentSeconds = -1;
+    public void clearAllButHpBars() {        
         playerCharacter = null;
 
         removeChildren("panel_buffs");
         removeChildren("panel_spells");
 
-        hideRoundStatistics();
+        hideStatistics();
 
         spellBar.clean();
 
@@ -280,19 +245,18 @@ public class ClientHudManager extends AbstractAppState
     public void onEndScreen() {
     }
 
-    public void showRoundStatistics() {
-        statistics.showRoundStatistics();
+    public void showStatistics() {
+        statistics.show();
     }
 
-    public void hideRoundStatistics() {
-        statistics.hideRoundStatistics();
+    public void hideStatistics() {
+        statistics.hide();
     }
 
     public void endGame() {
         clear();
 
         nifty.gotoScreen("main_menu");
-        roundTableCreated = false;
     }
 
     public void clearBuffIcons() {
@@ -312,9 +276,8 @@ public class ClientHudManager extends AbstractAppState
         return screen;
     }
 
-    public void setLatestRoundStatsList(
-            List<PlayerRoundStats> latestRoundStatsList) {
-        statistics.setLatestRoundStatsList(latestRoundStatsList);
+    public void setLatestStatsList(List<PlayerRoundStats> latestStatsList) {
+        statistics.setLatestStatsList(latestStatsList);
     }
 
     public void disableCharacterHudControl() {

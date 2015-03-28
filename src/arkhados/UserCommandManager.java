@@ -268,7 +268,7 @@ public class UserCommandManager extends AbstractAppState {
             ClientHudManager hudManager = app.getStateManager()
                     .getState(ClientHudManager.class);
             hudManager.clearBuffIcons();
-            hudManager.hideRoundStatistics();
+            hudManager.hideStatistics();
             character.getControl(CCharacterHud.class)
                     .setHudManager(hudManager);
             followPlayer();

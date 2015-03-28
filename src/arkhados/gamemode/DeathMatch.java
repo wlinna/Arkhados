@@ -355,7 +355,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 ClientHudManager hudManager =
                         stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButHpBars();
-                hudManager.showRoundStatistics();
+                hudManager.showStatistics();
                 heroSelectionLayer.showWithoutEffects();
                 return null;
             }
@@ -460,7 +460,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 @Override
                 public Void call() throws Exception {
                     hudManager.clear();
-                    hudManager.showRoundStatistics();
+                    hudManager.showStatistics();
                     nifty.removeElement(nifty.getScreen("default_hud"),
                             heroSelectionLayer);
                     return null;

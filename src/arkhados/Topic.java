@@ -25,10 +25,7 @@ public class Topic {
     public static final int UDP_HANDSHAKE_ACK = 2;    
     public static final int CONNECTION_ESTABLISHED = 3;
     public static final int UDP_HANDSHAKE_REQUEST = 4;
-    public static final int CREATE_WORLD = 5;
-    public static final int NEW_ROUND= 6;
-    public static final int ROUND_FINISHED = 7;
-    public static final int GAME_ENDED = 8;
-    public static final int CLIENT_WORLD_CREATED = 9;
-    public static final int FIRST_BLOOD_HAPPENED = 10;
+    public static final int GAME_ENDED = 5;
+    public static final int CLIENT_WORLD_CREATED = 6;
+    public static final int FIRST_BLOOD_HAPPENED = 7;
 }

@@ -265,7 +265,8 @@ class CFirewalkCollisionHandler extends AbstractControl {
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
-                int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                Integer entityId =
+                        spatial.getUserData(UserDataStrings.ENTITY_ID);
                 if (collidedWith.contains(entityId)) {
                     continue;
                 }

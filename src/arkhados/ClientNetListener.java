@@ -17,7 +17,6 @@ package arkhados;
 import arkhados.messages.BattleStatisticsResponse;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
-import arkhados.messages.ChatMessage;
 import arkhados.messages.CmdClientLogin;
 import arkhados.messages.CmdClientSettings;
 import arkhados.messages.CmdPlayerDataTable;
@@ -101,16 +100,13 @@ public class ClientNetListener extends AbstractAppState
         } else if (command instanceof CmdPlayerDataTable) {
             CmdPlayerDataTable dataTable = (CmdPlayerDataTable) command;
             app.refreshPlayerData(dataTable.getPlayerData());
-        } else if (command instanceof ChatMessage) {
-            ChatMessage chat = (ChatMessage) command;
-            app.addChat(chat.getName(), chat.getMessage());
         } else if (command instanceof CmdServerLogin) {
             handleLoginCommand((CmdServerLogin) command);
         } else if (command instanceof BattleStatisticsResponse) {
             BattleStatisticsResponse response =
                     (BattleStatisticsResponse) command;
             app.getStateManager().getState(ClientHudManager.class)
-                    .setLatestRoundStatsList(response
+                    .setLatestStatsList(response
                     .getPlayerRoundStatsList());
         } else if (command instanceof CmdSetPlayersCharacter) {
             handleSetPlayersCharacter((CmdSetPlayersCharacter) command);

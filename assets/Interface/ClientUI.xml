@@ -252,115 +252,6 @@
             </panel>
         </layer>
     </screen>
-
-    <screen id="lobby" controller="arkhados.ClientMain">
-        <layer childLayout="horizontal">            
-            <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
-        </layer>
-        <layer childLayout="vertical">
-            <panel childLayout="horizontal" height="50%">
-                <panel id="players_panel" height="100%" width="320px" valign="center" style="nifty-panel" childLayout="vertical">
-                    <text style="nifty-label" text="Players" valign="center"/>
-                    <panel childLayout="horizontal">
-                        <control selectionMode="Disabled"
-                                 id="players_list" name="listBox"
-                                 horizontal="false" width="*" displayItems="6"
-                                 childLayout="vertical" visibleToMouse="false">
-
-                        </control>
-                    </panel>
-                </panel>
-                <panel id="maps_panel" height="100%" width="300px" valign="center" style="nifty-panel" childLayout="vertical">
-                    <text style="nifty-label" text="" valign="center"/>
-                    <control id="select_hero_button" name="button" label="Select hero" align="center">
-                        <interact onClick="gotoMenu(hero_selection)"/>
-                    </control>
-                    <control id="start_server_button" name="button" label="Start Game" align="center">
-                        <interact onClick="sendStartGameRequest()"/>
-                    </control>
-                </panel>
-                <effect>
-                    <onStartScreen name="move" mode="in" direction="top" length="200" startDelay="0" inherit="true"/>
-                    <onEndScreen name="move" mode="out" direction="bottom" length="200" startDelay="0" inherit="true"/>
-                </effect>
-            </panel>
-            <panel id="bottom_panel" childLayout="horizontal" style="nifty-panel" height="*">
-                <panel id="chat_panel" childLayout="vertical">
-                    <control id="chat_list" name="listBox" horizontal="false" height="*" displayItems="10" childLayout="vertical" visibleToMouse="true">
-
-                    </control>
-                    <panel id="chat_bottom_bar" childLayout="horizontal">
-                        <control id="chat_text" name="textfield" valign="center">
-                            <interact onEnter="sendChat()"/>
-                        </control>
-                        <control id="send_button" name="button" label="send" valign="center">
-                            <interact onClick="sendChat()"/>
-                        </control>
-                    </panel>
-                </panel>
-                <effect>
-                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
-                </effect>
-            </panel>
-        </layer>
-    </screen>
-
-    <screen id="hero_selection" controller="arkhados.ClientMain">
-        <layer childLayout="center">
-            <panel align="center" valign="center" style="nifty-panel" childLayout="vertical">
-                <effect>
-                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true" />
-                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true" />
-                </effect>
-                <text style="nifty-label" text="Select your hero" />
-                <text style="nifty-label" text="" />
-
-                <panel childLayout="horizontal">
-                    <panel childLayout="vertical" >
-                        <text style="nifty-label" text="Ranged" />
-                        <control id="embermage" name="button" label="Embermage">
-                            <interact onClick="selectHero(EmberMage)" />
-                        </control>
-                        <control id="elitesoldier" name="button" label="Elite Soldier">
-                            <interact onClick="selectHero(EliteSoldier)" />
-                        </control>
-                    </panel>
-                    <panel childLayout="vertical" >
-                        <text style="nifty-label" text="Melee" />
-                        <control id="venator" name="button" label="Venator">
-                            <interact onClick="selectHero(Venator)" />
-                        </control>
-                    </panel>
-                    <panel childLayout="vertical" >
-                        <text style="nifty-label" text="Tank" />
-                        <control id="rockgolem" name="button" label="Rock Golem">
-                            <interact onClick="selectHero(RockGolem)" />
-                        </control>
-                    </panel>
-                </panel>
-                <text style="nifty-label" text="" />
-                <control id="back" name="button" label="Back">
-                    <interact onClick="gotoMenu(lobby)" />
-                </control>
-
-            </panel>
-        </layer>
-    </screen>
-
-    <screen id="load_level" controller="arkhados.ClientMain">
-        <layer childLayout="center">
-            <panel height="140px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
-                <effect>
-                    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-                    <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
-                </effect>
-                <text style="nifty-label" text="Loading Level" />
-                <text style="nifty-label" text=""/>
-                <text id="status_text" font="aurulent-sans-16.fnt" color="#ffff" text="Loading..." align="center" valign="center" />
-            </panel>
-        </layer>
-    </screen>
     
     <screen id="default_hud" controller="arkhados.ui.hud.ClientHudManager">
         <layer id="bars" childLayout="vertical" valign="bottom">
@@ -390,7 +281,6 @@
         </layer>
         <layer id="layer_countdown" childLayout="center" valign="center">
             <panel id="panel_countdown" valign="center" align="center" childLayout="absolute">
-                <!--textLineHeight doesn't appear to be working :(-->
                 <text id="text_countdown" style="nifty-label" text="" align="center" x="50%" y="30%" height="40px" width="40px" textLineHeight="30" />
             </panel>
         </layer>

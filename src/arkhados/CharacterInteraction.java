@@ -120,7 +120,7 @@ public class CharacterInteraction {
 
     public static void startNewRound() {
         final RoundStats roundStats = new RoundStats();
-        roundStats.initializeRound();
+        roundStats.initialize();
         roundStatList.add(roundStats);
     }
 

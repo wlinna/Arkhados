@@ -16,13 +16,10 @@ package arkhados;
 
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
-import arkhados.gamemode.LastManStanding;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
-import arkhados.messages.ChatMessage;
 import arkhados.messages.CmdClientSelectHero;
 import arkhados.messages.MessageUtils;
-import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
@@ -39,7 +36,6 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
@@ -145,7 +141,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
     private ClientHudManager clientHudManager;
     private ClientSender sender;
-    private RoundManager roundManager;
     private GameMode gameMode = null;
 
     @Override
@@ -297,11 +292,6 @@ public class ClientMain extends SimpleApplication implements ScreenController {
             @Override
             public Void call() throws Exception {
                 switch (gameModeString) {
-                    case "LastManStanding":
-                        toLobby();
-                        gameMode = new LastManStanding();
-                        gameMode.initialize(ClientMain.this);
-                        break;
                     case "DeathMatch":
                         DeathMatch dm = new DeathMatch();
                         gameMode = dm;
@@ -315,73 +305,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         });
     }
 
-    public void toLobby() {
-        inputManager.setCursorVisible(true);
-        nifty.gotoScreen("lobby");
-    }
-
-    // TODO: Change playerDatas type to something that holds all necessary data
-    public void refreshPlayerData(final List<PlayerData> playerDataList) {
-        PlayerData.setPlayers(playerDataList);
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                Screen screen = nifty.getScreen("lobby");
-                if (screen == null) {
-                    System.out.println("Screen is null");
-                }
-                ListBox listBox =
-                        screen.findNiftyControl("players_list", ListBox.class);
-                assert listBox != null;
-                listBox.clear();
-                for (PlayerData playerData : playerDataList) {
-                    listBox.addItem(playerData
-                            .getStringData(PlayerDataStrings.NAME));
-                }
-
-                return null;
-            }
-        });
-    }
-
-    public void addChat(final String name, final String message) {
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                Screen screen = nifty.getScreen("lobby");
-                ListBox listBox =
-                        screen.findNiftyControl("chat_list", ListBox.class);
-                listBox.addItem(String.format("<%s> %s", name, message));
-                return null;
-            }
-        });
-    }
-
-    public void sendChat() {
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                Screen screen = nifty.getScreen("lobby");
-                TextField textField =
-                        screen.findNiftyControl("chat_text", TextField.class);
-                String name = stateManager
-                        .getState(ClientNetListener.class).getName();
-
-                sender.addCommand(
-                        new ChatMessage(name, textField.getDisplayedText()));
-                textField.setText("");
-                return null;
-            }
-        });
+    public void refreshPlayerData(List<PlayerData> playerDataList) {
+        PlayerData.setPlayers(playerDataList);        
     }
 
     public void selectHero(String heroName) {
         stateManager.getState(MusicManager.class).setMusicCategory(heroName);
         sender.addCommand(new CmdClientSelectHero(heroName));
-    }
-
-    public void sendStartGameRequest() {
-        sender.addCommand(new CmdTopicOnly(Topic.START_GAME));
     }
 
     public void startGame() {
@@ -464,7 +394,7 @@ public class ClientMain extends SimpleApplication implements ScreenController {
 
     @Override
     public void destroy() {
-        final NetworkClient client = clientWrapper.get();
+        NetworkClient client = clientWrapper.get();
         if (client != null && client.isConnected()) {
             clientWrapper.get().close();
         }

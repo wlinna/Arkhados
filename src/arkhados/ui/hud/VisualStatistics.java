@@ -39,7 +39,7 @@ public class VisualStatistics implements ActionListener {
     private Screen screen;
     private AppStateManager stateManager;
     private List<Element> statisticsPanels = new ArrayList<>();
-    private List<PlayerRoundStats> latestRoundStatsList = null;
+    private List<PlayerRoundStats> latestStatsList = null;
 
     void initialize(Application app) {
         stateManager = app.getStateManager();
@@ -49,17 +49,16 @@ public class VisualStatistics implements ActionListener {
                 InputMappingStrings.TOGGLE_STATS);
     }
 
-    void setLatestRoundStatsList(
-            List<PlayerRoundStats> latestRoundStatsList) {
-        this.latestRoundStatsList = latestRoundStatsList;
+    void setLatestStatsList(List<PlayerRoundStats> latestStatsList) {
+        this.latestStatsList = latestStatsList;
         Element statisticsLayer = screen.findElementByName("layer_statistics");
 
         if (statisticsLayer.isVisible()) {
-            updateStatistics();
+            update();
         }
     }
 
-    void showRoundStatistics() {
+    void show() {
         initializePlayerStatisticsPanels();
         Sender sender = stateManager.getState(Sender.class);
         sender.addCommand(
@@ -68,7 +67,7 @@ public class VisualStatistics implements ActionListener {
         statisticsLayer.show();
     }
 
-    void hideRoundStatistics() {
+    void hide() {
         Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.hideWithoutEffect();
     }
@@ -82,27 +81,27 @@ public class VisualStatistics implements ActionListener {
         }
     }
 
-    private void updateStatistics() {
-        if (latestRoundStatsList == null) {
+    private void update() {
+        if (latestStatsList == null) {
             return;
         }
 
         Element statisticsPanel = screen.findElementByName("panel_statistics");
-        for (PlayerRoundStats playerRoundStats : latestRoundStatsList) {
+        for (PlayerRoundStats playerStats : latestStatsList) {
 
             Element damagePanel = statisticsPanel.findElementByName(
-                    playerRoundStats.playerId + "-damage");
+                    playerStats.playerId + "-damage");
             Element restorationPanel = statisticsPanel.findElementByName(
-                    playerRoundStats.playerId + "-restoration");
+                    playerStats.playerId + "-restoration");
             Element killsPanel = statisticsPanel.findElementByName(
-                    playerRoundStats.playerId + "-kills");
+                    playerStats.playerId + "-kills");
 
             damagePanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", (int) playerRoundStats.damageDone));
+                    String.format("%d", (int) playerStats.damageDone));
             restorationPanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", (int) playerRoundStats.healthRestored));
+                    String.format("%d", (int) playerStats.healthRestored));
             killsPanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", playerRoundStats.kills));
+                    String.format("%d", playerStats.kills));
         }
     }
 
@@ -132,9 +131,9 @@ public class VisualStatistics implements ActionListener {
         Element layer = screen.findElementByName("layer_statistics");
 
         if (!layer.isVisible()) {
-            showRoundStatistics();
+            show();
         } else {
-            hideRoundStatistics();
+            hide();
             clean();
         }
     }

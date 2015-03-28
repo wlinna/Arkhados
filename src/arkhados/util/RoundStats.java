@@ -27,7 +27,7 @@ public class RoundStats {
 
     private HashMap<Integer, PlayerRoundStats> playerStats = new HashMap<>();    
     
-    public void initializeRound() {
+    public void initialize() {
         List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
             playerStats.put(playerData.getId(), new PlayerRoundStats(playerData.getId()));
@@ -86,7 +86,6 @@ public class RoundStats {
     }
     
     public ArrayList<PlayerRoundStats> buildCurrentPlayerRoundStatsList() {
-        ArrayList<PlayerRoundStats> playerRoundStatsList = new ArrayList<>(playerStats.values());
-        return playerRoundStatsList;
+        return new ArrayList<>(playerStats.values());
     }
 }
