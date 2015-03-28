@@ -22,8 +22,6 @@ import arkhados.controls.CharacterHudControl;
 import arkhados.controls.SpellCastControl;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Sender;
-import arkhados.spell.Spell;
-import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.PlayerRoundStats;
 import arkhados.util.UserDataStrings;
@@ -46,17 +44,16 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author william
  */
 // TODO: ClientHudManager is messy and fragile. Clean it up.
-public class ClientHudManager extends AbstractAppState implements ScreenController {
+public class ClientHudManager extends AbstractAppState
+        implements ScreenController {
 
     private Nifty nifty;
     private Screen screen;
@@ -67,17 +64,17 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     private List<BitmapText> hpBars = new ArrayList<>();
     private List<BitmapText> playerNames = new ArrayList<>();
     private int currentSeconds = -1;
-    private Map<String, Element> spellIcons = new HashMap<>(6);
     private Spatial playerCharacter = null;
     private AppStateManager stateManager;
-    // HACK: This is only meant for initial implementation testing. Remove this when all round statistics are accessible via GUI
+    // HACK: This is only meant for initial implementation testing.
+    // Remove this when all round statistics are accessible via GUI
     private boolean roundTableCreated = false;
     private List<Element> statisticsPanels = new ArrayList<>();
     // HACK: 
     private boolean hudCreated = false;
-    private HashMap<Integer, Float> cooldowns = null;
     private List<PlayerRoundStats> latestRoundStatsList = null;
     private GameMessageHandler messageHandler = new GameMessageHandler();
+    private SpellBar spellBar = new SpellBar();
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -89,6 +86,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
         screen = nifty.getScreen("default_hud");
+        spellBar.setNifty(nifty);
+        spellBar.setScreen(screen);
     }
 
     @Override
@@ -106,17 +105,13 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
             UserCommandManager userCommandManager =
                     stateManager.getState(UserCommandManager.class);
             playerCharacter = userCommandManager.getCharacter();
+            spellBar.setPlayerCharacter(playerCharacter);
             if (playerCharacter != null && !hudCreated) {
-                loadSpellIcons();
+                spellBar.loadSpellIcons();
                 hudCreated = true;
-                cooldowns = playerCharacter.getControl(SpellCastControl.class)
-                        .getCooldowns();
-            } else if (playerCharacter != null && hudCreated) {
-                playerCharacter.getControl(SpellCastControl.class)
-                        .setCooldowns(cooldowns);
             }
         } else {
-            updateSpellIcons();
+            spellBar.updateSpellIcons();
         }
 
         for (int i = 0; i < characters.size(); ++i) {
@@ -143,7 +138,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
         layerCountdown.hide();
 
         // TODO: Create statistics panel creation to more appropriate place
-        // HACK: This is only meant for initial implementation testing. Remove this "if" when all round statistics are accessible via GUI
+        // HACK: This is only meant for initial implementation testing.
+        // Remove this "if" when all round statistics are accessible via GUI
         if (!roundTableCreated) {
             roundTableCreated = true;
         }
@@ -151,7 +147,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
     public void setSecondsLeftToStart(int seconds) {
         if (currentSeconds == -1) {
-            Element layerCountdown = screen.findElementByName("layer_countdown");
+            Element layerCountdown =
+                    screen.findElementByName("layer_countdown");
 
             layerCountdown.enable();
             layerCountdown.show();
@@ -199,7 +196,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
         hideRoundStatistics();
 
-        spellIcons.clear();
+        spellBar.clean();
 
         hudCreated = false;
     }
@@ -282,6 +279,7 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
                     playerCharacter.getControl(SpellCastControl.class);
             playerCharacter.removeControl(castControl);
             playerCharacter = null;
+            spellBar.setPlayerCharacter(null);
         }
     }
 
@@ -309,7 +307,8 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
     public void showRoundStatistics() {
         initializePlayerStatisticsPanels();
         Sender sender = stateManager.getState(Sender.class);
-        sender.addCommand(new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
+        sender.addCommand(
+                new TopicOnlyCommand(Topic.BATTLE_STATISTICS_REQUEST));
         Element statisticsLayer = screen.findElementByName("layer_statistics");
         statisticsLayer.show();
     }
@@ -350,70 +349,6 @@ public class ClientHudManager extends AbstractAppState implements ScreenControll
 
         clear();
         roundTableCreated = false;
-    }
-
-    private void loadSpellIcons() {
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M1));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.M2));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.Q));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.E));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.R));
-        addSpellIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
-    }
-
-    private void addSpellIcon(int key) {
-        Element bottomPanel = screen.findElementByName("panel_spells");
-        SpellCastControl castControl =
-                playerCharacter.getControl(SpellCastControl.class);
-        Spell spell = castControl.getKeySpellNameMapping(key);
-
-        if (spell == null) {
-            return;
-        }
-
-        String iconPath;
-        if (spell.getIconName() != null) {
-            iconPath = "Interface/Images/SpellIcons/" + spell.getIconName();
-        } else {
-            iconPath = "Interface/Images/SpellIcons/placeholder.png";
-        }
-        spellIcons.put(spell.getName(), new SpellIconBuilder(spell.getName(),
-                iconPath).build(nifty, screen, bottomPanel));
-    }
-
-    private void updateSpellIcons() {
-        if (playerCharacter == null) {
-            return;
-        }
-        final SpellCastControl castControl =
-                playerCharacter.getControl(SpellCastControl.class);
-
-        for (Map.Entry<String, Element> entry : spellIcons.entrySet()) {
-            float cooldown = castControl.getCooldown(Spell
-                    .getSpell(entry.getKey()).getId());
-            Element overlay = entry.getValue()
-                    .findElementByName(entry.getKey() + "-overlay");
-            if (cooldown <= 0) {
-                if (overlay.isVisible()) {
-                    overlay.hide();
-                }
-            } else {
-                if (!overlay.isVisible()) {
-                    overlay.show();
-                }
-
-                Element cooldownText = overlay
-                        .findElementByName(entry.getKey() + "-counter");
-
-                if (cooldown > 3) {
-                    cooldownText.getRenderer(TextRenderer.class)
-                            .setText(String.format("%d", (int) cooldown));
-                } else {
-                    cooldownText.getRenderer(TextRenderer.class)
-                            .setText(String.format("%.1f", cooldown));
-                }
-            }
-        }
     }
 
     public void clearBuffIcons() {

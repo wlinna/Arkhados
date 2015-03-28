@@ -26,7 +26,7 @@ import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import arkhados.messages.SetPlayersCharacterCommand;
+import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.messages.roundprotocol.RoundStartCountdownCommand;
 import arkhados.net.ClientSender;
@@ -145,7 +145,7 @@ public class RoundManager implements CommandHandler {
                     for (PlayerData playerData : PlayerData.getPlayers()) {
                         int entityId = playerData.getIntData(
                                 PlayerDataStrings.ENTITY_ID);
-                        sender.addCommand(new SetPlayersCharacterCommand(
+                        sender.addCommand(new CmdSetPlayersCharacter(
                                 entityId, playerData.getId()));
                     }
 

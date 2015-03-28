@@ -22,7 +22,7 @@ import arkhados.messages.ClientLoginCommand;
 import arkhados.messages.ClientSettingsCommand;
 import arkhados.messages.PlayerDataTableCommand;
 import arkhados.messages.ServerLoginCommand;
-import arkhados.messages.SetPlayersCharacterCommand;
+import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
@@ -36,22 +36,20 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.NetworkClient;
 import com.jme3.system.AppSettings;
-import java.util.List;
 
 /**
  *
  * @author william
  */
-public class ClientNetListener extends AbstractAppState implements ClientStateListener, CommandHandler {
+public class ClientNetListener extends AbstractAppState
+        implements ClientStateListener, CommandHandler {
 
     private ClientMain app;
-    private ValueWrapper<NetworkClient> client;
     private String name = "";
     private Timer udpHandshakeAckTimer = new Timer(1f);
     private boolean handshakeComplete = false;
 
     public ClientNetListener(ValueWrapper<NetworkClient> client) {
-        this.client = client;
     }
 
     @Override
@@ -72,8 +70,10 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
         udpHandshakeAckTimer.update(tpf);
         if (udpHandshakeAckTimer.timeJustEnded()) {
             Sender sender = app.getStateManager().getState(Sender.class);
-            sender.addCommand(new TopicOnlyCommand(Topic.UDP_HANDSHAKE_REQUEST, false));
-            udpHandshakeAckTimer.setTimeLeft(udpHandshakeAckTimer.getOriginal());
+            sender.addCommand(
+                    new TopicOnlyCommand(Topic.UDP_HANDSHAKE_REQUEST, false));
+            udpHandshakeAckTimer
+                    .setTimeLeft(udpHandshakeAckTimer.getOriginal());
         }
     }
 
@@ -107,13 +107,14 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
         } else if (command instanceof ServerLoginCommand) {
             handleLoginCommand((ServerLoginCommand) command);
         } else if (command instanceof BattleStatisticsResponse) {
-            BattleStatisticsResponse response = (BattleStatisticsResponse) command;
+            BattleStatisticsResponse response =
+                    (BattleStatisticsResponse) command;
             app.getStateManager().getState(ClientHudManager.class)
-                    .setLatestRoundStatsList(response.getPlayerRoundStatsList());
-        } else if (command instanceof SetPlayersCharacterCommand) {
-            handleSetPlayersCharacter((SetPlayersCharacterCommand) command);
+                    .setLatestRoundStatsList(response
+                    .getPlayerRoundStatsList());
+        } else if (command instanceof CmdSetPlayersCharacter) {
+            handleSetPlayersCharacter((CmdSetPlayersCharacter) command);
         }
-
     }
 
     @Override
@@ -146,9 +147,11 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
                     setPlayerId(loginCommand.getPlayerId());
             AppSettings settings = app.getContext().getSettings();
 
-            boolean movingInterrupts = settings.getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+            boolean movingInterrupts = settings
+                    .getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
 
-            ClientSettingsCommand clientSettingsCommand = new ClientSettingsCommand(movingInterrupts);
+            ClientSettingsCommand clientSettingsCommand =
+                    new ClientSettingsCommand(movingInterrupts);
             Sender sender = app.getStateManager().getState(Sender.class);
             sender.addCommand(clientSettingsCommand);
 
@@ -156,12 +159,11 @@ public class ClientNetListener extends AbstractAppState implements ClientStateLi
         }
     }
 
-    private void handleSetPlayersCharacter(SetPlayersCharacterCommand message) {
+    private void handleSetPlayersCharacter(CmdSetPlayersCharacter message) {
         UserCommandManager userCommandManager = app.getStateManager()
                 .getState(UserCommandManager.class);
         if (userCommandManager.getPlayerId() == message.getPlayerId()) {
             userCommandManager.setCharacterId(message.getEntityId());
-            System.out.println(String.format("Your entityId: %d", message.getEntityId()));
         }
     }
 

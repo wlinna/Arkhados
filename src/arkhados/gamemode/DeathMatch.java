@@ -27,7 +27,7 @@ import arkhados.WorldManager;
 import arkhados.controls.PlayerEntityAwareness;
 import arkhados.messages.ClientSelectHeroCommand;
 import arkhados.messages.PlayerKillCommand;
-import arkhados.messages.SetPlayersCharacterCommand;
+import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.TopicOnlyCommand;
 import arkhados.net.ClientSender;
 import arkhados.net.Command;
@@ -208,8 +208,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                         new Quaternion(), playerId);
                 playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
 
-                SetPlayersCharacterCommand playersCharacterCommand =
-                        new SetPlayersCharacterCommand(entityId, playerId);
+                CmdSetPlayersCharacter playersCharacterCommand =
+                        new CmdSetPlayersCharacter(entityId, playerId);
 
                 stateManager.getState(ServerSender.class)
                         .addCommand(playersCharacterCommand);

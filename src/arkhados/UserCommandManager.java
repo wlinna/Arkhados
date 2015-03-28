@@ -17,6 +17,7 @@ package arkhados;
 import arkhados.controls.CharacterHudControl;
 import arkhados.controls.FreeCameraControl;
 import arkhados.controls.InfluenceInterfaceControl;
+import arkhados.controls.SpellCastControl;
 import arkhados.messages.usercommands.UcCastSpellCommand;
 import arkhados.messages.usercommands.UcMouseTargetCommand;
 import arkhados.messages.usercommands.UcWalkDirection;
@@ -60,6 +61,7 @@ public class UserCommandManager extends AbstractAppState {
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f mouseGroundPosition = new Vector3f();
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
+    private boolean characterChanged = false;
     private Listener listener;
 
     public UserCommandManager(Sender sender, InputManager inputManager) {
@@ -75,23 +77,25 @@ public class UserCommandManager extends AbstractAppState {
         worldManager = stateManager.getState(WorldManager.class);
         listener = app.getListener();
         cam = app.getCamera();
-        
+
         inputManager.addListener(actionMoveDirection,
-                    InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
-                    InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+                InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
+                InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
     }
 
     public void createCameraControl() {
         Node camNode = new Node("cam-node");
         worldManager.getWorldRoot().attachChild(camNode);
-        FreeCameraControl cameraControl = new FreeCameraControl(cam, inputManager);
+        FreeCameraControl cameraControl =
+                new FreeCameraControl(cam, inputManager);
         camNode.addControl(cameraControl);
         cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
     private ActionListener actionCastSpell = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
-            InfluenceInterfaceControl influenceInterface = getCharacterInterface();
+            InfluenceInterfaceControl influenceInterface =
+                    getCharacterInterface();
             if (influenceInterface == null || influenceInterface.isDead()) {
                 return;
             }
@@ -101,7 +105,8 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
             if (name != null) {
-                sender.addCommand(new UcCastSpellCommand(InputMappingStrings.getId(name),
+                sender.addCommand(
+                        new UcCastSpellCommand(InputMappingStrings.getId(name),
                         mouseGroundPosition));
             }
         }
@@ -137,7 +142,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private void enableInputListeners() {
-        if (!inputListenersActive) {            
+        if (!inputListenersActive) {
             inputManager.addListener(actionCastSpell,
                     InputMappingStrings.M1, InputMappingStrings.M2,
                     InputMappingStrings.Q, InputMappingStrings.E,
@@ -166,13 +171,13 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void followPlayer() {
-        worldManager.getWorldRoot().getChild("cam-node").getControl(FreeCameraControl.class)
-                .setCharacter(character);
+        worldManager.getWorldRoot().getChild("cam-node")
+                .getControl(FreeCameraControl.class).setCharacter(character);
     }
-    
+
     public void followSpatial(Spatial spatial) {
-        worldManager.getWorldRoot().getChild("cam-node").getControl(FreeCameraControl.class)
-                .setCharacter(spatial);
+        worldManager.getWorldRoot().getChild("cam-node")
+                .getControl(FreeCameraControl.class).setCharacter(spatial);
     }
 
     public void sendWalkDirection() {
@@ -198,12 +203,11 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     private void calculateMouseGroundPosition() {
-        final Vector2f mouse2dPosition = inputManager.getCursorPosition();
-        final Vector3f mouse3dPosition = cam
+        Vector2f mouse2dPosition = inputManager.getCursorPosition();
+        Vector3f mouse3dPosition = cam
                 .getWorldCoordinates(mouse2dPosition, 0.0f);
 
-
-        final Vector3f rayDirection = cam
+        Vector3f rayDirection = cam
                 .getWorldCoordinates(mouse2dPosition, 1.0f)
                 .subtractLocal(mouse3dPosition).normalizeLocal();
 
@@ -224,8 +228,6 @@ public class UserCommandManager extends AbstractAppState {
 
     public void nullifyCharacter() {
         character = null;
-//        worldManager.getWorldRoot().getChild("cam-node")
-//                .getControl(FreeCameraControl.class).setCharacter(null);
     }
 
     private InfluenceInterfaceControl getCharacterInterface() {
@@ -250,17 +252,27 @@ public class UserCommandManager extends AbstractAppState {
 
     public void setCharacterId(int characterId) {
         this.characterId = characterId;
+        characterChanged = true;
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        // FIXME: NullPointerException. Or is it here anymore?
         if (spatial.getUserData(UserDataStrings.ENTITY_ID).equals(characterId)) {
             character = (Node) spatial;
-            ClientHudManager hudManager = app.getStateManager().getState(ClientHudManager.class);
+            if (characterChanged) {
+                character.getControl(SpellCastControl.class)
+                        .thisIsOwnedByClient();
+            } else {
+                character.getControl(SpellCastControl.class)
+                        .restoreClientCooldowns();
+            }
+            ClientHudManager hudManager = app.getStateManager()
+                    .getState(ClientHudManager.class);
             hudManager.clearBuffIcons();
             hudManager.hideRoundStatistics();
-            character.getControl(CharacterHudControl.class).setHudManager(hudManager);
+            character.getControl(CharacterHudControl.class)
+                    .setHudManager(hudManager);
             followPlayer();
+            characterChanged = false;
             return true;
         }
         return false;

@@ -23,24 +23,24 @@ import com.jme3.network.serializing.Serializable;
  * @author william
  */
 @Serializable
-public class SetPlayersCharacterCommand implements Command{
+public class CmdSetPlayersCharacter implements Command{
     private int entityId;
     private int playerId;
 
-    public SetPlayersCharacterCommand() {
+    public CmdSetPlayersCharacter() {
     }
 
-    public SetPlayersCharacterCommand(int entityId, int playerId) {
+    public CmdSetPlayersCharacter(int entityId, int playerId) {
         this.entityId = entityId;
         this.playerId = playerId;
     }
 
     public int getEntityId() {
-        return this.entityId;
+        return entityId;
     }
 
     public int getPlayerId() {
-        return this.playerId;
+        return playerId;
     }
 
     @Override
