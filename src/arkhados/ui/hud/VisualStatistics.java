@@ -73,6 +73,7 @@ public class VisualStatistics implements ActionListener {
     }
 
     private void initializePlayerStatisticsPanels() {
+        clean();
         Element statisticsPanel = screen.findElementByName("panel_statistics");
         List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
@@ -134,12 +135,10 @@ public class VisualStatistics implements ActionListener {
             show();
         } else {
             hide();
-            clean();
         }
     }
 
     private boolean isEnabled() {
         return nifty.getCurrentScreen() == screen;
     }
-
 }
