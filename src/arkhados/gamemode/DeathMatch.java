@@ -354,7 +354,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 userCommandManager.nullifyCharacter();
                 ClientHudManager hudManager =
                         stateManager.getState(ClientHudManager.class);
-                hudManager.clearAllButHpBars();
+                hudManager.clearAllButCharactersInfo();
                 hudManager.showStatistics();
                 heroSelectionLayer.showWithoutEffects();
                 return null;

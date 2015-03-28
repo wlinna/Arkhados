@@ -17,6 +17,7 @@ package arkhados.ui.hud;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.util.InputMappingStrings;
+import arkhados.util.NiftyUtils;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
@@ -98,6 +99,7 @@ public class SpellBar {
 
     void clean() {
         icons.clear();
+        NiftyUtils.removeChildren(screen, "panel_spells");        
         setPlayerCharacter(null);
     }
 
