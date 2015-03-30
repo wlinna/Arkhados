@@ -20,10 +20,10 @@
         </panel>
     </controlDefinition>
 
-    <screen id="null" controller="arkhados.ClientMain">
+    <screen id="null" controller="arkhados.ui.Menu">
     </screen>    
 
-    <screen id="main_menu" controller="arkhados.ClientMain">
+    <screen id="main_menu" controller="arkhados.ui.Menu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
@@ -59,7 +59,7 @@
         </layer>
     </screen>
 
-    <screen id="settings" controller="arkhados.ClientMain">
+    <screen id="settings" controller="arkhados.ui.Menu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
@@ -197,7 +197,7 @@
         </layer>
     </screen>
 
-    <screen id="join_server" controller="arkhados.ClientMain">
+    <screen id="join_server" controller="arkhados.ui.Menu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
@@ -297,7 +297,7 @@
         </layer>
     </screen>
     
-    <screen id="credits" controller="arkhados.ClientMain">
+    <screen id="credits" controller="arkhados.ui.Menu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>

@@ -168,7 +168,7 @@ public class ClientNetListener extends AbstractAppState
             CmdClientLogin command = new CmdClientLogin(name);
             sender.addCommand(command);
             handshakeComplete = true;
-            app.setStatusText("");
+            app.getMenu().setStatusText("");
         }
     }
 }

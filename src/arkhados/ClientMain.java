@@ -18,11 +18,11 @@ import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
-import arkhados.messages.CmdClientSelectHero;
 import arkhados.messages.MessageUtils;
 import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
+import arkhados.ui.Menu;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
@@ -36,16 +36,11 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.render.TextRenderer;
-import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,7 +48,7 @@ import java.util.logging.SimpleFormatter;
 import java.util.prefs.BackingStoreException;
 import javax.imageio.ImageIO;
 
-public class ClientMain extends SimpleApplication implements ScreenController {
+public class ClientMain extends SimpleApplication {
 
     public final static String PREFERENCES_KEY = "arkhados";
 
@@ -137,11 +132,11 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
-    private TextRenderer statusText;
     private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
     private ClientHudManager clientHudManager;
     private ClientSender sender;
     private GameMode gameMode = null;
+    private Menu menu;
 
     @Override
     public void simpleInitApp() {
@@ -222,40 +217,17 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         niftyDisplay = new NiftyJmeDisplay(assetManager,
                 inputManager, audioRenderer, guiViewPort);
 
+        menu = new Menu();
         nifty = niftyDisplay.getNifty();
-        nifty.fromXml("Interface/ClientUI.xml", "main_menu", this,
+        nifty.fromXml("Interface/ClientUI.xml", "main_menu", menu,
                 new KeySetter(this, inputManager), clientHudManager,
                 ClientSettings.getClientSettings());
         guiViewPort.addProcessor(niftyDisplay);
 
         clientHudManager.setNifty(nifty);
-
-        statusText = nifty.getScreen("join_server")
-                .findElementByName("status_text")
-                .getRenderer(TextRenderer.class);
     }
 
-    public void setStatusText(final String text) {
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                statusText.setText(text);
-                return null;
-            }
-        });
-    }
-
-    public void connect() {
-        Screen joinScreen = nifty.getScreen("join_server");
-        String username =
-                joinScreen.findNiftyControl("username_text", TextField.class)
-                .getDisplayedText();
-
-        int port = Integer.parseInt(joinScreen.findNiftyControl("server_port",
-                TextField.class).getDisplayedText());
-        String ip = joinScreen.findNiftyControl("server_ip", TextField.class)
-                .getDisplayedText();
-
+    public void connect(String username, String address, int port) {
         clientWrapper.set(Network.createClient());
 
         ClientNetListener listenerManager =
@@ -270,18 +242,13 @@ public class ClientMain extends SimpleApplication implements ScreenController {
         receiver.reset();
         sender.setClient(clientWrapper.get());
 
-        if (username.trim().length() == 0) {
-            setStatusText("Username is invalid");
-            return;
-        }
         listenerManager.setName(username);
 
-        setStatusText("Connecting... " + username);
         try {
-            clientWrapper.get().connectToServer(ip, port, port);
+            clientWrapper.get().connectToServer(address, port, port);
             clientWrapper.get().start();
         } catch (IOException ex) {
-            setStatusText(ex.getMessage());
+            menu.setStatusText(ex.getMessage());
             Logger.getLogger(ClientMain.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
@@ -306,86 +273,44 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     }
 
     public void refreshPlayerData(List<PlayerData> playerDataList) {
-        PlayerData.setPlayers(playerDataList);        
-    }
-
-    public void selectHero(String heroName) {
-        stateManager.getState(MusicManager.class).setMusicCategory(heroName);
-        sender.addCommand(new CmdClientSelectHero(heroName));
+        PlayerData.setPlayers(playerDataList);
     }
 
     public void startGame() {
         flyCam.setEnabled(false);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    enqueue(new Callable<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            gameMode.setRunning(true);
-                            WorldManager worldManager =
-                                    stateManager.getState(WorldManager.class);
-                            worldManager.preloadModels(new String[]{
-                                "Models/EliteSoldier.j3o",
-                                "Models/Mage.j3o", "Models/Warwolf.j3o",
-                                "Models/Circle.j3o", "Models/DamagingDagger.j3o",
-                                "Models/SealingBoulder.j3o",
-                                "Models/SpiritStone.j3o",
-                                "Scenes/LavaArenaWithFogWalls.j3o"});
-                            worldManager.preloadSoundEffects(new String[]{
-                                "EmberCircle.wav", "FireballExplosion.wav",
-                                "Firewalk.wav", "MagmaBash.wav",
-                                "MeteorBoom.wav", "PurifyingFlame.wav",
-                                "Shotgun.wav", "Rend1.wav", "Rend2.wav",
-                                "Rend3.wav", "RockGolemPain.wav",
-                                "VenatorDeath.wav", "VenatorPain.wav",
-                                "EmberMageDeath.wav", "EmberMagePain.wav",
-                                "EliteSoldierDeath.wav", "EliteSoldierPain.wav",
-                                "DeepWounds.wav", "Petrify.wav", "Railgun.wav"});
-                            nifty.gotoScreen("default_hud");
-                            return null;
-                        }
-                    }).get();
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(ClientMain.class.getName())
-                            .log(Level.SEVERE, null, ex);
-                }
-            }
-        }).start();
-    }
-
-    public void gameEnded() {
-        gameMode.cleanup();
-        gameMode = null;
-    }
-
-    public void gotoMenu(final String menu) {
         enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                nifty.gotoScreen(menu);
+                gameMode.setRunning(true);
+                WorldManager worldManager =
+                        stateManager.getState(WorldManager.class);
+                worldManager.preloadModels(new String[]{
+                    "Models/EliteSoldier.j3o",
+                    "Models/Mage.j3o", "Models/Warwolf.j3o",
+                    "Models/Circle.j3o", "Models/DamagingDagger.j3o",
+                    "Models/SealingBoulder.j3o",
+                    "Models/SpiritStone.j3o",
+                    "Scenes/LavaArenaWithFogWalls.j3o"});
+                worldManager.preloadSoundEffects(new String[]{
+                    "EmberCircle.wav", "FireballExplosion.wav",
+                    "Firewalk.wav", "MagmaBash.wav",
+                    "MeteorBoom.wav", "PurifyingFlame.wav",
+                    "Shotgun.wav", "Rend1.wav", "Rend2.wav",
+                    "Rend3.wav", "RockGolemPain.wav",
+                    "VenatorDeath.wav", "VenatorPain.wav",
+                    "EmberMageDeath.wav", "EmberMagePain.wav",
+                    "EliteSoldierDeath.wav", "EliteSoldierPain.wav",
+                    "DeepWounds.wav", "Petrify.wav", "Railgun.wav"});
+                nifty.gotoScreen("default_hud");
                 return null;
             }
         });
     }
 
-    public void switchElement(String oldElement, String newElement) {
-        nifty.getCurrentScreen().findElementByName(oldElement).hide();
-        nifty.getCurrentScreen().findElementByName(newElement).show();
-    }
-
-    @Override
-    public void bind(Nifty nifty, Screen screen) {
-    }
-
-    @Override
-    public void onStartScreen() {
-    }
-
-    @Override
-    public void onEndScreen() {
+    public void gameEnded() {
+        gameMode.cleanup();
+        gameMode = null;
     }
 
     public void closeApplication() {
@@ -405,5 +330,9 @@ public class ClientMain extends SimpleApplication implements ScreenController {
     public void loseFocus() {
         super.loseFocus();
         stateManager.getState(UserCommandManager.class).onLoseFocus();
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 }
