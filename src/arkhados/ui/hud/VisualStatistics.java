@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
+import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.Topic;
 import arkhados.messages.CmdTopicOnly;
@@ -32,6 +33,7 @@ import de.lessvoid.nifty.screen.Screen;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class VisualStatistics implements ActionListener {
 
@@ -63,13 +65,11 @@ public class VisualStatistics implements ActionListener {
         Sender sender = stateManager.getState(Sender.class);
         sender.addCommand(
                 new CmdTopicOnly(Topic.BATTLE_STATISTICS_REQUEST));
-        Element statisticsLayer = screen.findElementByName("layer_statistics");
-        statisticsLayer.show();
+        screen.findElementByName("layer_statistics").show();
     }
 
     void hide() {
-        Element statisticsLayer = screen.findElementByName("layer_statistics");
-        statisticsLayer.hideWithoutEffect();
+        screen.findElementByName("layer_statistics").hideWithoutEffect();
     }
 
     private void initializePlayerStatisticsPanels() {
@@ -87,22 +87,20 @@ public class VisualStatistics implements ActionListener {
             return;
         }
 
-        Element statisticsPanel = screen.findElementByName("panel_statistics");
-        for (PlayerRoundStats playerStats : latestStatsList) {
+        Element root = screen.findElementByName("panel_statistics");
+        for (PlayerRoundStats stats : latestStatsList) {
 
-            Element damagePanel = statisticsPanel.findElementByName(
-                    playerStats.playerId + "-damage");
-            Element restorationPanel = statisticsPanel.findElementByName(
-                    playerStats.playerId + "-restoration");
-            Element killsPanel = statisticsPanel.findElementByName(
-                    playerStats.playerId + "-kills");
+            Element damage = root.findElementByName(stats.playerId + "-damage");
+            Element restoration = root.findElementByName(
+                    stats.playerId + "-restoration");
+            Element kills = root.findElementByName(stats.playerId + "-kills");
 
-            damagePanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", (int) playerStats.damageDone));
-            restorationPanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", (int) playerStats.healthRestored));
-            killsPanel.getRenderer(TextRenderer.class).setText(
-                    String.format("%d", playerStats.kills));
+            damage.getRenderer(TextRenderer.class).setText(
+                    String.format("%d", (int) stats.damageDone));
+            restoration.getRenderer(TextRenderer.class).setText(
+                    String.format("%d", (int) stats.healthRestored));
+            kills.getRenderer(TextRenderer.class).setText(
+                    String.format("%d", stats.kills));
         }
     }
 
@@ -129,13 +127,18 @@ public class VisualStatistics implements ActionListener {
             return;
         }
 
-        Element layer = screen.findElementByName("layer_statistics");
-
-        if (!layer.isVisible()) {
-            show();
-        } else {
-            hide();
-        }
+        Globals.app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Element layer = screen.findElementByName("layer_statistics");
+                if (!layer.isVisible()) {
+                    show();
+                } else {
+                    hide();
+                }
+                return null;
+            }
+        });
     }
 
     private boolean isEnabled() {

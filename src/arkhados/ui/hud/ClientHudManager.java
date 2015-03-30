@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
+import arkhados.Globals;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterHud;
 import arkhados.util.NiftyUtils;
@@ -30,6 +31,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  *
@@ -159,8 +161,15 @@ public class ClientHudManager extends AbstractAppState
         return screen;
     }
 
-    public void setLatestStatsList(List<PlayerRoundStats> latestStatsList) {
-        statistics.setLatestStatsList(latestStatsList);
+    public void setLatestStatsList(final List<PlayerRoundStats> statsList) {
+        Globals.app.enqueue(new Callable<Void>() {
+
+            @Override
+            public Void call() throws Exception {
+                statistics.setLatestStatsList(statsList);
+                return null;
+            }
+        });        
     }
 
     public void disableCharacterHudControl() {
