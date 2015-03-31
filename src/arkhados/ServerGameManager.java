@@ -63,11 +63,9 @@ public class ServerGameManager extends AbstractAppState {
 
         Sender sender = app.getStateManager().getState(Sender.class);
 
-        worldManager.preloadModels(new String[]{"Models/Circle.j3o", 
-            "Models/DamagingDagger.j3o", "Models/SealingBoulder.j3o",
-        "Models/SpiritStone.j3o"});
-
-        app.getStateManager().getState(SyncManager.class).addObject(-1, worldManager);
+        Preloader.loadServer(Globals.assetManager);
+        app.getStateManager().getState(SyncManager.class)
+                .addObject(-1, worldManager);
 
         running = true;
         sender.addCommand(new CmdTopicOnly(Topic.START_GAME));

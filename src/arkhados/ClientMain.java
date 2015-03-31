@@ -283,25 +283,7 @@ public class ClientMain extends SimpleApplication {
             @Override
             public Void call() throws Exception {
                 gameMode.setRunning(true);
-                WorldManager worldManager =
-                        stateManager.getState(WorldManager.class);
-                worldManager.preloadModels(new String[]{
-                    "Models/EliteSoldier.j3o",
-                    "Models/Mage.j3o", "Models/Warwolf.j3o",
-                    "Models/Circle.j3o", "Models/DamagingDagger.j3o",
-                    "Models/SealingBoulder.j3o",
-                    "Models/SpiritStone.j3o",
-                    "Scenes/LavaArenaWithFogWalls.j3o"});
-                worldManager.preloadSoundEffects(new String[]{
-                    "EmberCircle.wav", "FireballExplosion.wav",
-                    "Firewalk.wav", "MagmaBash.wav",
-                    "MeteorBoom.wav", "PurifyingFlame.wav",
-                    "Shotgun.wav", "Rend1.wav", "Rend2.wav",
-                    "Rend3.wav", "RockGolemPain.wav",
-                    "VenatorDeath.wav", "VenatorPain.wav",
-                    "EmberMageDeath.wav", "EmberMagePain.wav",
-                    "EliteSoldierDeath.wav", "EliteSoldierPain.wav",
-                    "DeepWounds.wav", "Petrify.wav", "Railgun.wav"});
+                Preloader.loadClient(assetManager);
                 nifty.gotoScreen("default_hud");
                 return null;
             }

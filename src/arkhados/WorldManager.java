@@ -152,12 +152,6 @@ public class WorldManager extends AbstractAppState {
         BuffEffect.setAssetManager(assetManager);
     }
 
-    public void preloadModels(String[] modelNames) {
-        for (String path : modelNames) {
-            assetManager.loadModel(path);
-        }
-    }
-
     public void loadLevel() {
         worldRoot = (Node) assetManager.loadModel(
                 "Scenes/LavaArenaWithFogWalls.j3o");
@@ -494,12 +488,6 @@ public class WorldManager extends AbstractAppState {
 
     public ClientMain getClientMain() {
         return clientMain;
-    }
-
-    void preloadSoundEffects(String[] string) {
-        for (String audioPath : string) {
-            assetManager.loadAudio("Effects/Sound/" + audioPath);
-        }
     }
 
     public PhysicsSpace getSpace() {
