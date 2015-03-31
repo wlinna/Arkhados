@@ -53,7 +53,7 @@
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <control id="exit_application_button" name="button" label="Exit game" align="center" valign="bottom">
-                    <interact onClick="closeApplication()" />
+                    <interact onClick="stop()" />
                 </control>
             </panel>
         </layer>

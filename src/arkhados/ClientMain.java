@@ -23,13 +23,9 @@ import arkhados.net.ClientSender;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.ui.Menu;
-import arkhados.util.InputMappingStrings;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.ValueWrapper;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import com.jme3.network.Network;
 import com.jme3.network.NetworkClient;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -39,7 +35,6 @@ import de.lessvoid.nifty.Nifty;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -51,38 +46,6 @@ import javax.imageio.ImageIO;
 public class ClientMain extends SimpleApplication {
 
     public final static String PREFERENCES_KEY = "arkhados";
-
-    public static void setInputDefaultSettings(AppSettings settings) {
-        setKey(settings, InputMappingStrings.M1, false, MouseInput.BUTTON_LEFT);
-        setKey(settings, InputMappingStrings.M2, false,
-                MouseInput.BUTTON_RIGHT);
-
-        setKey(settings, InputMappingStrings.MOVE_UP, true, KeyInput.KEY_W);
-        setKey(settings, InputMappingStrings.MOVE_DOWN, true, KeyInput.KEY_S);
-        setKey(settings, InputMappingStrings.MOVE_LEFT, true, KeyInput.KEY_A);
-        setKey(settings, InputMappingStrings.MOVE_RIGHT, true, KeyInput.KEY_D);
-
-        setKey(settings, InputMappingStrings.Q, true, KeyInput.KEY_Q);
-        setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
-        setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
-        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
-
-        if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
-            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
-                    false);
-        }
-    }
-
-    public static void setKey(AppSettings settings, String inputMapping,
-            boolean isKeyboard, int code) {
-        if (settings.containsKey(inputMapping)) {
-            return;
-        }
-        String prefix = isKeyboard ? "keyboard::" : "mouse::";
-        String setting = prefix + Integer.toString(code);
-        settings.putString(inputMapping, setting);
-
-    }
 
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.INFO);
@@ -112,9 +75,11 @@ public class ClientMain extends SimpleApplication {
             Logger.getLogger("").log(Level.WARNING,
                     "Could not load preferences: {0}", ex.getMessage());
         }
-        setInputDefaultSettings(settings);
+
+        InputSettings.setInputDefaultSettings(settings);
         settings.setFrameRate(60);
-        settings.setTitle("Arkhados Client");
+        settings.setTitle("Arkhados");
+
         try {
             settings.setIcons(new BufferedImage[]{
                 ImageIO.read(new File("icon32.png"))});
@@ -122,6 +87,7 @@ public class ClientMain extends SimpleApplication {
             Logger.getLogger(ClientMain.class.getName())
                     .log(Level.WARNING, null, ex);
         }
+
         settings.setSettingsDialogImage("Interface/Images/Splash.png");
         ClientMain app = new ClientMain();
         app.setSettings(settings);
@@ -137,6 +103,7 @@ public class ClientMain extends SimpleApplication {
     private ClientSender sender;
     private GameMode gameMode = null;
     private Menu menu;
+    private InputSettings inputSettings;
 
     @Override
     public void simpleInitApp() {
@@ -145,6 +112,7 @@ public class ClientMain extends SimpleApplication {
         setDisplayStatView(false);
         ClientSettings.initialize(this);
         ClientSettings.setAppSettings(settings);
+        inputSettings = new InputSettings(inputManager);
         BulletAppState bulletState = new BulletAppState();
         bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
 
@@ -157,9 +125,8 @@ public class ClientMain extends SimpleApplication {
 
         stateManager.attach(clientHudManager);
         stateManager.attach(bulletState);
-        bulletState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);
+        bulletState.getPhysicsSpace().setAccuracy(1f / 30f);
         flyCam.setEnabled(false);
-        flyCam.setMoveSpeed(25.0f);
         startNifty();
 
         SyncManager syncManager = new SyncManager(this);
@@ -219,8 +186,10 @@ public class ClientMain extends SimpleApplication {
 
         menu = new Menu();
         nifty = niftyDisplay.getNifty();
-        nifty.fromXml("Interface/ClientUI.xml", "main_menu", menu,
-                new KeySetter(this, inputManager), clientHudManager,
+        nifty.fromXml("Interface/ClientUI.xml", "main_menu",
+                menu,
+                new KeySetter(this, inputManager, inputSettings),
+                clientHudManager,
                 ClientSettings.getClientSettings());
         guiViewPort.addProcessor(niftyDisplay);
 
@@ -272,10 +241,6 @@ public class ClientMain extends SimpleApplication {
         });
     }
 
-    public void refreshPlayerData(List<PlayerData> playerDataList) {
-        PlayerData.setPlayers(playerDataList);
-    }
-
     public void startGame() {
         flyCam.setEnabled(false);
 
@@ -293,10 +258,6 @@ public class ClientMain extends SimpleApplication {
     public void gameEnded() {
         gameMode.cleanup();
         gameMode = null;
-    }
-
-    public void closeApplication() {
-        stop();
     }
 
     @Override

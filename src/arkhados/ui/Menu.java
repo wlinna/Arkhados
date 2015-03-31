@@ -94,4 +94,8 @@ public class Menu implements ScreenController {
     @Override
     public void onEndScreen() {
     }
+    
+    public void stop() {
+        Globals.app.stop();
+    }
 }

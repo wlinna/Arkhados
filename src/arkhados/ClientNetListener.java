@@ -99,7 +99,7 @@ public class ClientNetListener extends AbstractAppState
             handleTopicCommand((CmdTopicOnly) command);
         } else if (command instanceof CmdPlayerDataTable) {
             CmdPlayerDataTable dataTable = (CmdPlayerDataTable) command;
-            app.refreshPlayerData(dataTable.getPlayerData());
+            PlayerData.setPlayers(dataTable.getPlayerData());
         } else if (command instanceof CmdServerLogin) {
             handleLoginCommand((CmdServerLogin) command);
         } else if (command instanceof BattleStatisticsResponse) {
