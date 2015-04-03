@@ -18,8 +18,10 @@ import arkhados.CollisionGroups;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import com.jme3.util.TempVars;
 
 /**
  *
@@ -55,7 +57,54 @@ public class CCharacterPhysics extends BetterCharacterControl {
 
     @Override
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
-        super.prePhysicsTick(space, tpf);
+        // Most of this code is taken from BetterCharacterControl (BSD-licensed)
+        
+        checkOnGround();
+        if (wantToUnDuck && checkCanUnDuck()) {
+            setHeightPercent(1);
+            wantToUnDuck = false;
+            ducked = false;
+        }
+        TempVars vars = TempVars.get();
+
+        // dampen existing x/z forces
+        float existingLeftVelocity = velocity.dot(localLeft);
+        float existingForwardVelocity = velocity.dot(localForward);
+        Vector3f counter = vars.vect1;
+        existingLeftVelocity *= physicsDamping;
+        existingForwardVelocity *= physicsDamping;
+        counter.set(-existingLeftVelocity, 0, -existingForwardVelocity);
+        localForwardRotation.multLocal(counter);
+        velocity.addLocal(counter);
+
+        float designatedSpeed = walkDirection.length();
+        if (designatedSpeed > 0) {
+            Vector3f localWalkDirection = vars.vect1;
+            //normalize walkdirection
+            localWalkDirection.set(walkDirection).normalizeLocal();
+            //check for the existing velocity in the desired direction
+            float existingSpeed = velocity.dot(localWalkDirection);
+
+            //calculate the final velocity in the desired direction
+
+            float finalSpeed = FastMath.abs(existingSpeed) > designatedSpeed
+                    ? 0 : designatedSpeed - existingSpeed;
+
+            localWalkDirection.multLocal(finalSpeed);
+
+            //add resulting vector to existing velocity
+
+            velocity.addLocal(localWalkDirection);
+        }
+        rigidBody.setLinearVelocity(velocity);
+        if (jump) {
+            //TODO: precalculate jump force
+            Vector3f rotatedJumpForce = vars.vect1;
+            rotatedJumpForce.set(jumpForce);
+            rigidBody.applyImpulse(localForwardRotation.multLocal(rotatedJumpForce), Vector3f.ZERO);
+            jump = false;
+        }
+        vars.release();
 
         if (impulseToApply != null) {
             rigidBody.applyImpulse(impulseToApply, Vector3f.ZERO);
