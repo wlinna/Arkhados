@@ -49,16 +49,20 @@ class IgniteEffect extends BuffEffect {
     }
 
     public void addToCharacter(CCharacterBuff buffControl) {
-        fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 50);
-        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
+        fire = new ParticleEmitter("fire-emitter",
+                ParticleMesh.Type.Triangle, 50);
+        Material materialRed = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
-        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Y.mult(9f));
+        fire.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_Y.mult(9f));
         fire.setStartSize(6.5f);
         fire.setEndSize(0.5f);
         fire.setGravity(Vector3f.ZERO);
@@ -76,7 +80,6 @@ class IgniteEffect extends BuffEffect {
     @Override
     public void destroy() {
         super.destroy();
-        assert fire != null;
         fire.removeFromParent();
     }
 }

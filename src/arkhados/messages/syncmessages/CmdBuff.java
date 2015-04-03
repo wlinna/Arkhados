@@ -29,12 +29,13 @@ public class CmdBuff extends StateData {
     private short buffTypeId;
     private int buffId;
     private float duration;
-    private boolean added;    
+    private boolean added;
 
     public CmdBuff() {
     }
 
-    public CmdBuff(int entityId, int buffTypeId, int buffId, float duration, boolean added) {
+    public CmdBuff(int entityId, int buffTypeId, int buffId, float duration,
+            boolean added) {
         super(entityId);
         this.buffTypeId = (short) buffTypeId;
         this.buffId = buffId;
@@ -44,12 +45,12 @@ public class CmdBuff extends StateData {
 
     @Override
     public void applyData(Object target) {
-        final Node casterNode = (Node) target;
-        final CCharacterBuff buffControl = casterNode.getControl(CCharacterBuff.class);
+        Node node = (Node) target;
+        CCharacterBuff buffControl = node.getControl(CCharacterBuff.class);
         // TODO: Add to InfluenceInterfaceControl so that its non-visual effects
         // can be simulated
-        if (this.added) {
-            buffControl.addBuff(this.buffId, this.buffTypeId, duration);
+        if (added) {
+            buffControl.addBuff(buffId, buffTypeId, duration);
         } else {
             buffControl.removeBuff(buffId);
         }

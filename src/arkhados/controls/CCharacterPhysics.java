@@ -58,7 +58,7 @@ public class CCharacterPhysics extends BetterCharacterControl {
     @Override
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
         // Most of this code is taken from BetterCharacterControl (BSD-licensed)
-        
+
         checkOnGround();
         if (wantToUnDuck && checkCanUnDuck()) {
             setHeightPercent(1);
@@ -101,7 +101,8 @@ public class CCharacterPhysics extends BetterCharacterControl {
             //TODO: precalculate jump force
             Vector3f rotatedJumpForce = vars.vect1;
             rotatedJumpForce.set(jumpForce);
-            rigidBody.applyImpulse(localForwardRotation.multLocal(rotatedJumpForce), Vector3f.ZERO);
+            rigidBody.applyImpulse(localForwardRotation
+                    .multLocal(rotatedJumpForce), Vector3f.ZERO);
             jump = false;
         }
         vars.release();

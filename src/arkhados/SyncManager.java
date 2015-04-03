@@ -31,7 +31,6 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.util.PlayerDataStrings;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -177,16 +176,19 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
         }
 
         final int playerId = ServerClientData.getPlayerId(source.getId());
-        final int syncId = PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
+        final int syncId = PlayerData.getIntData(playerId,
+                PlayerDataStrings.ENTITY_ID);
         if (syncId != -1) {
             app.enqueue(new Callable<Void>() {
+                @Override
                 public Void call() throws Exception {
                     doMessage(syncId, command);
                     return null;
                 }
             });
         } else {
-            System.out.println("Entity id for player " + playerId + " does not exist");
+            System.out.println("Entity id for player " + playerId + 
+                    " does not exist");
         }
     }
 }

@@ -55,7 +55,7 @@ public class CCharacterBuff extends AbstractControl {
     }
 
     public void addBuff(int buffId, int buffTypeId, float duration) {
-        final BuffInformation buffInfo =
+        BuffInformation buffInfo =
                 BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
             logger.log(Level.WARNING,
@@ -63,9 +63,15 @@ public class CCharacterBuff extends AbstractControl {
                     new Object[]{buffTypeId, buffId});
             return;
         }
-        final BuffEffect buff = buffInfo.createBuffEffect(this, duration);
+
+        BuffEffect buff = buffInfo.createBuffEffect(this, duration);
 
         if (buff != null) {
+            BuffEffect get = buffs.get(buffId);
+            if (get != null) {
+                logger.log(Level.WARNING, "Buffs already has buff with id {0}",
+                        buffId);
+            }
             buffs.put(buffId, buff);
         }
 
@@ -85,9 +91,9 @@ public class CCharacterBuff extends AbstractControl {
     }
 
     public void removeBuff(int buffId) {
-        final BuffEffect buffEffect = buffs.remove(buffId);
+        BuffEffect buffEffect = buffs.remove(buffId);
         // FIXME: Investigate why buffEffect is sometimes null
-        // NOTE: It seems that this happens only with Ignite
+        // NOTE: This seems to happen at least with Slow and Ignite
         if (buffEffect != null) {
             buffEffect.destroy();
         } else {
@@ -103,7 +109,7 @@ public class CCharacterBuff extends AbstractControl {
         Element buffIcon = buffIcons.get(buffId);
         // FIXME: NullPointerException here. This is only workaround.
         if (buffIcon != null) {
-            buffIcon.markForRemoval();            
+            buffIcon.markForRemoval();
         }
 
         buffIcons.remove(buffId);
