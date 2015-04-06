@@ -17,7 +17,6 @@ package arkhados.messages;
 import arkhados.PlayerData;
 import arkhados.characters.EliteSoldierSyncData;
 import com.jme3.network.serializing.Serializer;
-import arkhados.messages.roundprotocol.CmdRoundStartCountdown;
 import arkhados.messages.syncmessages.CmdAction;
 import arkhados.messages.syncmessages.CmdAddEntity;
 import arkhados.messages.syncmessages.CmdBuff;
@@ -62,11 +61,6 @@ public class MessageUtils {
         Serializer.registerClass(ChatMessage.class);
         Serializer.registerClass(CmdClientSelectHero.class);
         // </Lobby>
-
-        // <RoundProtocol>
-        Serializer.registerClass(CmdRoundStartCountdown.class);
-        // </RoundProtocol>
-
 
         // <Sync>
         Serializer.registerClass(CmdAddEntity.class);
