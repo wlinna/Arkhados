@@ -24,6 +24,7 @@ import arkhados.controls.CTimedExistence;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.math.Quaternion;
@@ -97,9 +98,9 @@ class SpiritStoneCastAction extends EntityAction {
 class SpiritStoneBuilder extends AbstractNodeBuilder {
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Node node = (Node) assetManager.loadModel("Models/SpiritStone.j3o");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
 
         for (Spatial childToScale : node.getChildren()) {
             childToScale.scale(3f);

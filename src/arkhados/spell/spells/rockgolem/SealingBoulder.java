@@ -23,6 +23,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.PetrifyCC;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -70,9 +71,9 @@ public class SealingBoulder extends Spell {
 class SealingBoulderBuilder extends AbstractNodeBuilder {
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Node node = (Node) assetManager.loadModel("Models/SealingBoulder.j3o");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
         node.setUserData(UserDataStrings.MASS, 10f);

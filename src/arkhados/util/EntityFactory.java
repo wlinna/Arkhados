@@ -15,15 +15,11 @@
 package arkhados.util;
 
 import arkhados.EffectHandler;
-import arkhados.ui.hud.ClientHudManager;
-import arkhados.WorldManager;
 import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
 import arkhados.characters.RockGolem;
 import arkhados.characters.Venator;
 import arkhados.effects.EffectBox;
-import com.jme3.asset.AssetManager;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 
@@ -34,57 +30,42 @@ import java.util.ArrayList;
  */
 public class EntityFactory {
 
-    private AssetManager assetManager;
-    private WorldManager worldManager;
-    private ClientHudManager clientHudManager = null;
     private int runningId = -1;
     private ArrayList<NodeBuilder> nodeBuilders = new ArrayList<>(40);
     private EffectHandler effectHandler;
 
     /**
      * Server side EntityFactory constructor. Should be called only once
-     *
-     * @param assetManager
-     * @param worldManager
      */
-    public EntityFactory(AssetManager assetManager, WorldManager worldManager) {
-        this.assetManager = assetManager;
-        this.worldManager = worldManager;
+    public EntityFactory() {
         addNodeBuilders();
     }
-
+    
     /**
      * Client side EntityFactory constructor. Should be called once per game
-     *
-     * @param assetManager
-     * @param worldManager
-     * @param clientHudManager
+     * @param effectHandler 
      */
-    public EntityFactory(AssetManager assetManager, WorldManager worldManager,
-            ClientHudManager clientHudManager, EffectHandler effectHandler) {
-        this.assetManager = assetManager;
-        this.worldManager = worldManager;
-        this.clientHudManager = clientHudManager;
+    public EntityFactory(EffectHandler effectHandler) {
         this.effectHandler = effectHandler;
         addNodeBuilders();
     }
 
-    public Node createEntityById(int id, Object parameter) {
+    public Node build(int id, BuildParameters params) {
         if (nodeBuilders.size() <= id) {
             return null;
         }
-        Node node = nodeBuilders.get(id).build(parameter);
+        Node node = nodeBuilders.get(id).build(params);
         node.setUserData(UserDataStrings.NODE_BUILDER_ID, id);
         return node;
     }
 
     private void addNodeBuilders() {
-        int mageId = addNodeBuilder(new EmberMage(clientHudManager));
-        int venatorId = addNodeBuilder(new Venator(clientHudManager));        
-        int soldierId = addNodeBuilder(new EliteSoldier(clientHudManager));
-        int golemId = addNodeBuilder(new RockGolem(clientHudManager));
+        int mageId = addNodeBuilder(new EmberMage());
+        int venatorId = addNodeBuilder(new Venator());
+        int soldierId = addNodeBuilder(new EliteSoldier());
+        int golemId = addNodeBuilder(new RockGolem());
 
-        NodeBuilderIdHeroNameMatcherSingleton mappings = 
+        NodeBuilderIdHeroNameMatcherSingleton mappings =
                 NodeBuilderIdHeroNameMatcherSingleton.get();
         mappings.addMapping("EmberMage", mageId);
         mappings.addMapping("Venator", venatorId);

@@ -23,6 +23,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -65,10 +66,10 @@ public class Dagger extends Spell {
     private static class DaggerBuilder extends AbstractNodeBuilder {
 
         @Override
-        public Node build(Object location) {
+        public Node build(BuildParameters params) {
             Node node =
                     (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
-            node.setLocalTranslation((Vector3f) location);
+            node.setLocalTranslation(params.location);
 
             node.setUserData(UserDataStrings.SPEED_MOVEMENT, 170f);
             node.setUserData(UserDataStrings.MASS, 30f);

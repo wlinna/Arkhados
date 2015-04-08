@@ -22,6 +22,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -48,12 +49,12 @@ public class PelletBuilder extends AbstractNodeBuilder {
     }
     
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Sphere sphere = new Sphere(8, 8, 0.3f);
 
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         Node node = new Node("projectile");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
         Material material = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
@@ -110,12 +111,6 @@ class PelletRemovalAction implements RemovalEventAction {
         this.assetManager = assetManager;
     }
 
-//    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
-//        whiteTrail.setParticlesPerSec(0);
-//        worldRoot.attachChild(this.whiteTrail);
-//        whiteTrail.setLocalTranslation(worldTranslation);
-//        whiteTrail.addControl(new TimedExistenceControl(0.5F));
-//    }
     private void createSmallExplosion(Node root, Vector3f location) {
         ParticleEmitter fire = new ParticleEmitter("shotgun-explosion",
                 ParticleMesh.Type.Triangle, 20);

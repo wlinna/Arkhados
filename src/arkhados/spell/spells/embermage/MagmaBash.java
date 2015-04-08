@@ -25,6 +25,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -40,8 +41,8 @@ import com.jme3.scene.shape.Sphere;
 import java.util.Iterator;
 
 /**
- * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage or knockback but
- * incapacitates enemy for specified time.
+ * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage or
+ * knockback but incapacitates enemy for specified time.
  */
 public class MagmaBash extends Spell {
 
@@ -58,12 +59,14 @@ public class MagmaBash extends Spell {
         final float range = 120f;
         final float castTime = 0.3f;
 
-        final MagmaBash spell = new MagmaBash("Magma Bash", cooldown, range, castTime);
+        final MagmaBash spell = new MagmaBash("Magma Bash", cooldown, range,
+                castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastProjectileAction action = new CastProjectileAction(spell, worldManager);
+                CastProjectileAction action =
+                        new CastProjectileAction(spell, worldManager);
                 return action;
             }
         };
@@ -76,15 +79,17 @@ public class MagmaBash extends Spell {
 
 class MagmaBashBuilder extends AbstractNodeBuilder {
 
-    public Node build(Object location) {
+    @Override
+    public Node build(BuildParameters params) {
         Sphere sphere = new Sphere(32, 32, 1.0f);
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         Node node = new Node("projectile");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 180f);
@@ -94,9 +99,12 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 7.4f);
 
         if (AbstractNodeBuilder.worldManager.isClient()) {
-            final ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 80);
-            Material materialRed = new Material(AbstractNodeBuilder.assetManager, "Common/MatDefs/Misc/Particle.j3md");
-            materialRed.setTexture("Texture", AbstractNodeBuilder.assetManager.loadTexture("Effects/flame.png"));
+            ParticleEmitter fire = new ParticleEmitter("fire-emitter",
+                    ParticleMesh.Type.Triangle, 80);
+            Material materialRed = new Material(assetManager,
+                    "Common/MatDefs/Misc/Particle.j3md");
+            materialRed.setTexture("Texture",
+                    assetManager.loadTexture("Effects/flame.png"));
             fire.setMaterial(materialRed);
             fire.setImagesX(2);
             fire.setImagesY(2);
@@ -113,20 +121,23 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
             fire.getParticleInfluencer().setVelocityVariation(0.2f);
             fire.setRandomAngle(true);
             node.attachChild(fire);
-            
-            AudioNode sound = new AudioNode(AbstractNodeBuilder.assetManager, "Effects/Sound/MagmaBash.wav");
+
+            AudioNode sound = new AudioNode(assetManager,
+                    "Effects/Sound/MagmaBash.wav");
             node.attachChild(sound);
             sound.setPositional(true);
             sound.setReverbEnabled(false);
-            sound.setVolume(1f);            
+            sound.setVolume(1f);
             sound.play();
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(3);
-        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape, (Float) node.getUserData(UserDataStrings.MASS));
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
+                (float) node.getUserData(UserDataStrings.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS | CollisionGroups.WALLS);
+        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
+                | CollisionGroups.WALLS);
         node.addControl(physicsBody);
 
         node.addControl(new CProjectile());
@@ -149,7 +160,8 @@ class BrimstoneIncapacitate extends IncapacitateCC {
     public void attachToCharacter(CInfluenceInterface influenceInterface) {
         BrimstoneBuff brimstone = null;
 
-        for (Iterator<AbstractBuff> it = influenceInterface.getBuffs().iterator(); it.hasNext();) {
+        for (Iterator<AbstractBuff> it =
+                influenceInterface.getBuffs().iterator(); it.hasNext();) {
             AbstractBuff buff = it.next();
             if (buff instanceof BrimstoneBuff) {
                 brimstone = (BrimstoneBuff) buff;

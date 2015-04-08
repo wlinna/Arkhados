@@ -33,10 +33,10 @@ import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
-import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -54,11 +54,9 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_RIGHT = 2;
     public static final int ANIM_SWIPE_LEFT = 3;
     public static final int ACTION_FERALSCREAM = 4;
-    private ClientHudManager clientHudManager;
     private WorldEffect rendEffect;
 
-    public Venator(ClientHudManager clientHudManager) {
-        this.clientHudManager = clientHudManager;
+    public Venator() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FERALSCREAM,
                 new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
@@ -74,7 +72,7 @@ public class Venator extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object irrelevant) {
+    public Node build(BuildParameters params) {
         Node entity = (Node) assetManager.loadModel("Models/Warwolf.j3o");
         float movementSpeed = 36.3f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
@@ -85,6 +83,9 @@ public class Venator extends AbstractNodeBuilder {
         float health = 1850f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (params.age < 0f) {
+            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
+        }
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
 
         // Note: This works now but later life steal is set by buffs.

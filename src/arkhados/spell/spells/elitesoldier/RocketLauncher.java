@@ -29,6 +29,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -157,14 +158,14 @@ class RocketBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Sphere sphere = new Sphere(32, 32, 1);
 
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
         Node node = new Node("projectile");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
@@ -187,7 +188,7 @@ class RocketBuilder extends AbstractNodeBuilder {
 
             ParticleEmitter smokePuff = createSmokePuff();
             worldManager.getWorldRoot().attachChild(smokePuff);
-            smokePuff.setLocalTranslation((Vector3f) location);
+            smokePuff.setLocalTranslation(params.location);
             smokePuff.addControl(new CTimedExistence(5f));
             smokePuff.emitAllParticles();
 

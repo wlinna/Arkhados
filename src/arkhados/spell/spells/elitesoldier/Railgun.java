@@ -27,6 +27,7 @@ import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -108,13 +109,13 @@ class RailgunBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Sphere sphere = new Sphere(32, 32, 0.5f);
 
         Geometry projectileGeom = new Geometry("rail-geom", sphere);
 
         Node node = new Node("rail");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material

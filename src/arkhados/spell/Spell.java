@@ -45,6 +45,7 @@ import arkhados.spell.spells.venator.Rend;
 import arkhados.spell.spells.venator.SurvivalInstinct;
 import arkhados.util.EntityFactory;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -193,19 +194,19 @@ public abstract class Spell {
      * @return EntityAction that will cast the spell
      */
     public EntityAction buildCastAction(Node caster, Vector3f vec) {
-        return this.castSpellActionBuilder.newAction(caster, vec);
+        return castSpellActionBuilder.newAction(caster, vec);
     }
 
-    public Node buildNode(Vector3f location) {
-        return this.nodeBuilder.build(location);
+    public Node buildNode(BuildParameters params) {
+        return nodeBuilder.build(params);
     }
 
     public boolean canMoveWhileCasting() {
-        return this.canMoveWhileCasting;
+        return canMoveWhileCasting;
     }
 
     public void setCanMoveWhileCasting(boolean canMoveWhileCasting) {
-        this.canMoveWhileCasting = canMoveWhileCasting;
+        canMoveWhileCasting = canMoveWhileCasting;
     }
 
     public boolean moveTowardsTarget() {
@@ -213,7 +214,7 @@ public abstract class Spell {
     }
 
     public void setMoveTowardsTarget(boolean mustMoveTowardsViewDirection) {
-        this.moveTowardsTarget = mustMoveTowardsViewDirection;
+        moveTowardsTarget = mustMoveTowardsViewDirection;
     }
 
     public boolean isMultipart() {
@@ -224,7 +225,7 @@ public abstract class Spell {
         return id;
     }
 
-    public void setId(int nodeBuilderId) {
-        this.id = nodeBuilderId;
+    public void setId(int id) {
+        this.id = id;
     }
 }

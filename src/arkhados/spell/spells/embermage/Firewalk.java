@@ -32,6 +32,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -199,11 +200,11 @@ public class Firewalk extends Spell {
         }
 
         @Override
-        public Node build(Object location) {
+        public Node build(BuildParameters params) {
             Sphere sphere = new Sphere(16, 16, 0.2f);
             Geometry projectileGeom = new Geometry("projectile-geom", sphere);
             Node node = new Node("firewalk");
-            node.setLocalTranslation((Vector3f) location);
+            node.setLocalTranslation(params.location);
             node.attachChild(projectileGeom);
 
             node.addControl(new CSyncInterpolation());

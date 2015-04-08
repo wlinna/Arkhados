@@ -12,16 +12,18 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+
 package arkhados.util;
 
-import arkhados.effects.EffectBox;
-import com.jme3.scene.Node;
+import com.jme3.math.Vector3f;
 
-/**
- *
- * @author william
- */
-public interface NodeBuilder {
-    public Node build(BuildParameters params);
-    public EffectBox getEffectBox();
+
+public class BuildParameters {
+    public float age;
+    public Vector3f location;
+
+    public BuildParameters(float age, Vector3f location) {
+        this.age = age;
+        this.location = location;
+    }        
 }

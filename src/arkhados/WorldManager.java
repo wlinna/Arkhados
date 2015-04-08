@@ -45,6 +45,7 @@ import arkhados.messages.syncmessages.CmdRemoveEntity;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
+import arkhados.util.BuildParameters;
 import arkhados.util.EntityFactory;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
@@ -103,6 +104,7 @@ public class WorldManager extends AbstractAppState {
     private EntityFactory entityFactory;
     private ServerWorldCollisionListener serverCollisionListener = null;
     private ClientMain clientMain;
+    private float worldTime = 0f;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -125,12 +127,10 @@ public class WorldManager extends AbstractAppState {
             serverCollisionListener =
                     new ServerWorldCollisionListener(this, syncManager);
             space.addCollisionListener(serverCollisionListener);
-            entityFactory = new EntityFactory(assetManager, this);
+            entityFactory = new EntityFactory();
         } else if (isClient()) {
             clientMain = (ClientMain) app;
-            entityFactory = new EntityFactory(assetManager, this,
-                    app.getStateManager().getState(ClientHudManager.class),
-                    effectHandler);
+            entityFactory = new EntityFactory(effectHandler);
 
             // FIXME: Shader linking error happens here with Intel GPU's. 
 //            try {
@@ -219,16 +219,17 @@ public class WorldManager extends AbstractAppState {
     public int addNewEntity(int nodeBuilderId, Vector3f location,
             Quaternion rotation, int playerId) {
         ++idCounter;
-        addEntity(idCounter, nodeBuilderId, location, rotation, playerId);
+        addEntity(idCounter, nodeBuilderId, location, rotation, playerId, 0f);
         return idCounter;
     }
 
     public void addEntity(int id, int nodeBuilderId, Vector3f location,
-            Quaternion rotation, int playerId) {
+            Quaternion rotation, int playerId, float age) {
         Sender sender = app.getStateManager().getState(Sender.class);
+        Spatial entity = entityFactory.build(nodeBuilderId,
+                new BuildParameters(age, location));
 
-        Spatial entity =
-                entityFactory.createEntityById(nodeBuilderId, location);
+        entity.setUserData(UserDataStrings.NODE_BUILDER_ID, nodeBuilderId);
         setEntityTranslation(entity, location, rotation);
         entity.setUserData(UserDataStrings.PLAYER_ID, playerId);
         entity.setUserData(UserDataStrings.ENTITY_ID, id);
@@ -236,6 +237,11 @@ public class WorldManager extends AbstractAppState {
         entity.setUserData(UserDataStrings.INVISIBLE_TO_ENEMY, false);
         int teamId = PlayerData.getIntData(playerId, PlayerDataStrings.TEAM_ID);
         entity.setUserData(UserDataStrings.TEAM_ID, teamId);
+        if (isServer()) {
+            entity.setUserData(UserDataStrings.BIRTHTIME, worldTime);
+        } else {
+            entity.setUserData(UserDataStrings.BIRTHTIME, age);
+        }
 
         entities.put(id, entity);
         syncManager.addObject(id, entity);
@@ -393,8 +399,9 @@ public class WorldManager extends AbstractAppState {
 
                 if (reason == RemovalReasons.DISAPPEARED) {
                     logger.log(Level.INFO, "Entity {0} disappeared", id);
-                    UserCommandManager userCommandManager = app.
-                            getStateManager().getState(UserCommandManager.class);
+                    UserCommandManager userCommandManager =
+                            app.getStateManager()
+                            .getState(UserCommandManager.class);
                     if (id == userCommandManager.getCharacterId()) {
                         userCommandManager.nullifyCharacter();
                     }
@@ -420,7 +427,7 @@ public class WorldManager extends AbstractAppState {
             }
         }
         space.removeAll(spatial);
-        final GhostControl ghostControl = spatial.getControl(GhostControl.class);
+        GhostControl ghostControl = spatial.getControl(GhostControl.class);
         if (ghostControl != null) {
             space.remove(ghostControl);
         }
@@ -429,6 +436,7 @@ public class WorldManager extends AbstractAppState {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        worldTime += tpf;
     }
 
     public SyncManager getSyncManager() {
@@ -492,5 +500,9 @@ public class WorldManager extends AbstractAppState {
 
     public PhysicsSpace getSpace() {
         return space;
+    }
+
+    public float getWorldTime() {
+        return worldTime;
     }
 }

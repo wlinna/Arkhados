@@ -16,6 +16,7 @@ package arkhados.controls;
 
 import arkhados.spell.Spell;
 import arkhados.util.AnimationData;
+import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -28,8 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Original animation control for Mage. Most likely each character needs its own custom character
- * animation control and this will be changed to abstract class
+ * Original animation control for Mage. Most likely each character needs its own
+ * custom character animation control and this will be changed to abstract class
  *
  * @author william
  */
@@ -40,8 +41,10 @@ public class CCharacterAnimation extends AbstractControl {
     private CCharacterMovement cMovement;
     private AnimChannel channel;
     private float actionTime = 0f;
-    private final HashMap<String, AnimationData> spellAnimationMap = new HashMap<>(6);
-    private final ArrayList<AnimationData> actionAnimations = new ArrayList<>(8);
+    private final HashMap<String, AnimationData> spellAnimationMap =
+            new HashMap<>(6);
+    private final ArrayList<AnimationData> actionAnimations =
+            new ArrayList<>(8);
     // TODO: Allow mapping of animations to specific AnimChannels
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
@@ -56,8 +59,16 @@ public class CCharacterAnimation extends AbstractControl {
         cPhysics = spatial.getControl(CCharacterPhysics.class);
         cMovement = spatial.getControl(CCharacterMovement.class);
         channel = animControl.createChannel();
-        channel.setAnim(walkAnimation.getName());
-        channel.setSpeed(walkAnimation.getSpeed());
+        float health = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        if (health > 0f) {
+            channel.setAnim(walkAnimation.getName());
+            channel.setSpeed(walkAnimation.getSpeed());
+        } else {
+            channel.setAnim(deathAnimation.getName());
+            channel.setTime(Float.MAX_VALUE);
+            channel.setLoopMode(LoopMode.DontLoop);
+            setEnabled(false);
+        }
     }
 
     @Override
@@ -70,11 +81,12 @@ public class CCharacterAnimation extends AbstractControl {
         if (!cMovement.getWalkDirection().equals(Vector3f.ZERO)
                 && !cPhysics.isMotionControlled()) {
             if (!walkAnimation.getName().equals(channel.getAnimationName())) {
-                channel.setAnim(walkAnimation.getName(), walkAnimation.getSpeed());
+                channel.setAnim(walkAnimation.getName(),
+                        walkAnimation.getSpeed());
             }
             channel.setSpeed(walkAnimation.getSpeed());
         } else {
-            channel.setSpeed(0.0f);
+            channel.setSpeed(0f);
         }
     }
 
@@ -108,7 +120,8 @@ public class CCharacterAnimation extends AbstractControl {
         channel.setSpeed(data.getSpeed());
         channel.setLoopMode(data.getLoopMode());
         if ((data.getLoopMode() == LoopMode.Loop
-                || data.getLoopMode() == LoopMode.Cycle) && actionDuration != -1) {
+                || data.getLoopMode() == LoopMode.Cycle)
+                && actionDuration != -1) {
             actionTime = actionDuration;
         } else {
             actionTime = channel.getAnimMaxTime() / data.getSpeed();
@@ -129,10 +142,6 @@ public class CCharacterAnimation extends AbstractControl {
 
     public void addActionAnimation(AnimationData data) {
         actionAnimations.add(data);
-    }
-
-    public AnimationData getWalkAnimation() {
-        return walkAnimation;
     }
 
     public void setWalkAnimation(AnimationData walkAnimation) {

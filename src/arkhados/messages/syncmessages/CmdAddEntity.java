@@ -32,23 +32,30 @@ public class CmdAddEntity extends StateData {
     private Vector3f location;
     private Quaternion rotation;
     private byte playerId;
+    private float age;
 
     public CmdAddEntity() {
     }
 
     public CmdAddEntity(int entityId, int nodeBuilderId, Vector3f location,
             Quaternion rotation, int playerId) {
+        this(entityId, nodeBuilderId, location, rotation, playerId, 0f);
+    }
+
+    public CmdAddEntity(int entityId, int nodeBuilderId, Vector3f location,
+            Quaternion rotation, int playerId, float age) {
         this.entityId = entityId;
         this.nodeBuilderId = (short) nodeBuilderId;
         this.location = location;
         this.rotation = rotation;
         this.playerId = (byte) playerId;
+        this.age = age;
     }
 
     @Override
     public void applyData(Object target) {
         WorldManager worldManager = (WorldManager) target;
         worldManager.addEntity(entityId, nodeBuilderId, location,
-                rotation, playerId);
+                rotation, playerId, age);
     }
 }

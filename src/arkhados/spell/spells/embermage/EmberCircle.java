@@ -28,6 +28,7 @@ import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.spell.influences.SlowInfluence;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
@@ -46,42 +47,46 @@ import com.jme3.scene.Node;
  * over time in certain area. Has small activation delay.
  */
 public class EmberCircle extends Spell {
-    
+
     {
         iconName = "ember_circle.png";
     }
-    
-    public EmberCircle(String name, float cooldown, float range, float castTime) {
+
+    public EmberCircle(String name, float cooldown, float range, 
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
-    
+
     public static EmberCircle create() {
         final float cooldown = 6f;
         final float range = 100f;
         final float castTime = 0.4f;
-        
-        final EmberCircle spell = new EmberCircle("Ember Circle", cooldown, range, castTime);
-        
+
+        final EmberCircle spell = new EmberCircle("Ember Circle", cooldown,
+                range, castTime);
+
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastOnGroundAction castOnGround = new CastOnGroundAction(worldManager, spell);
-                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                final CastOnGroundAction castOnGround =
+                        new CastOnGroundAction(worldManager, spell);
+                DamageOverTimeBuff ignite =
+                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     castOnGround.addEnterBuff(ignite);
                 }
                 return castOnGround;
             }
         };
-        
+
         spell.nodeBuilder = new EmberCircleBuilder();
-        
+
         return spell;
     }
 }
 
 class EmberCircleBuilder extends AbstractNodeBuilder {
-    
+
     private ParticleEmitter createFire(float radius) {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 50 * (int) radius);
@@ -105,14 +110,14 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         fire.setParticlesPerSec((int) (0.5 * radius * radius));
         fire.getParticleInfluencer().setVelocityVariation(0.2f);
         fire.setRandomAngle(true);
-        
+
         EmitterCircleShape emitterShape =
                 new EmitterCircleShape(Vector3f.ZERO, 1f);
         fire.setShape(emitterShape);
-        
+
         return fire;
     }
-    
+
     private ParticleEmitter createSmoke(float radius) {
         ParticleEmitter smoke = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, (int) radius * 10);
@@ -139,17 +144,17 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         smoke.setParticlesPerSec((int) (0.5 * radius * radius));
         smoke.setRandomAngle(true);
         smoke.setShape(new EmitterCircleShape(Vector3f.ZERO, radius));
-        
+
         return smoke;
     }
-    
+
     @Override
-    public Node build(Object location) {
+    public Node build(final BuildParameters params) {
         final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         final float radius = 15f;
         node.scale(radius, 1f, radius);
-        
+
         Material material =
                 assetManager.loadMaterial("Materials/EmberCircleGround.j3m");
         material.getAdditionalRenderState()
@@ -158,22 +163,23 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         material.setTexture("AlphaMap",
                 assetManager.loadTexture("Textures/EmberCircleAlphaMap.png"));
         node.setMaterial(material);
-        
+
         node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
         CActionQueue actionQueue = new CActionQueue();
         node.addControl(actionQueue);
-        
-        actionQueue.enqueueAction(new DelayAction(0.8f));
-        
+
+        float delay = Math.max(0.8f - params.age, 0f);
+        actionQueue.enqueueAction(new DelayAction(delay));
+
         if (worldManager.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
                     new Vector3f(radius, 0.05f, radius), 1));
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
             node.addControl(ghost);
-            
+
             final CAreaEffect areaEffectControl = new CAreaEffect(ghost);
             node.addControl(areaEffectControl);
-            
+
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {
@@ -184,43 +190,42 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     SlowInfluence slowInfluence = new SlowInfluence();
                     slowInfluence.setSlowFactor(0.67f);
                     areaEffectControl.addInfluence(slowInfluence);
-                    
+
                     node.addControl(new CTimedExistence(5f, true));
-                    
+
                     return false;
                 }
             });
-        }
-        
-        if (worldManager.isClient()) {
+        } else if (worldManager.isClient()) {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {
                     ParticleEmitter fire = createFire(radius);
-                    
+
                     Node node = (Node) spatial;
-                    
+
                     node.attachChild(fire);
                     fire.setLocalTranslation(Vector3f.ZERO);
-                    
+
                     Vector3f worldTranslation = node.getWorldTranslation();
-                    
+
                     final ParticleEmitter smoke = createSmoke(radius);
                     worldManager.getWorldRoot().attachChild(smoke);
                     smoke.setLocalTranslation(worldTranslation.add(0, 1f, 0));
                     smoke.addControl(new CTimedExistence(10f));
-                    
+
                     CActionQueue smokeActions = new CActionQueue();
                     smoke.addControl(smokeActions);
-                    smokeActions.enqueueAction(new DelayAction(5f));
+                    float smokeDelay = Math.max(0, 5f - params.age);
+                    smokeActions.enqueueAction(new DelayAction(smokeDelay));
                     smokeActions.enqueueAction(new EntityAction() {
                         @Override
                         public boolean update(float tpf) {
-                            smoke.setParticlesPerSec(0);                            
+                            smoke.setParticlesPerSec(0);
                             return false;
                         }
                     });
-                    
+
                     AudioNode sound = new AudioNode(assetManager,
                             "Effects/Sound/EmberCircle.wav");
                     node.attachChild(sound);
@@ -228,11 +233,12 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     sound.setReverbEnabled(false);
                     sound.setVolume(1f);
                     sound.play();
-                    
+
                     return false;
                 }
             });
         }
+
         return node;
     }
 }

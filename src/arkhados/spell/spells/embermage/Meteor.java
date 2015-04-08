@@ -31,6 +31,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
@@ -78,8 +79,10 @@ public class Meteor extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastMeteorAction action = new CastMeteorAction(worldManager, spell);
-                DamageOverTimeBuff ignite = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+                final CastMeteorAction action =
+                        new CastMeteorAction(worldManager, spell);
+                DamageOverTimeBuff ignite =
+                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     action.addAdditionalBuff(ignite);
                 }
@@ -111,9 +114,10 @@ class CastMeteorAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final Vector3f startingPoint = spatial.getLocalTranslation().add(0f, 60f, 0f);
+        final Vector3f startingPoint =
+                spatial.getLocalTranslation().add(0f, 60f, 0f);
 
-        final Vector3f target = 
+        final Vector3f target =
                 spatial.getControl(CSpellCast.class).getClosestPointToTarget(spell);
         raySelectPoint(startingPoint, target);
 
@@ -135,14 +139,16 @@ class CastMeteorAction extends EntityAction {
 
         path.addListener(new MotionPathListener() {
             @Override
-            public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
+            public void onWayPointReach(MotionEvent motionControl,
+                    int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
-                    final float baseDamage = meteor.getUserData(UserDataStrings.DAMAGE);
+                    final float baseDamage =
+                            meteor.getUserData(UserDataStrings.DAMAGE);
 
                     CSpellBuff buffControl = meteor.getControl(CSpellBuff.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
-                    SplashAction splash = 
-                            new SplashAction(25f, baseDamage, DistanceScaling.LINEAR, null);
+                    SplashAction splash = new SplashAction(25f, baseDamage,
+                            DistanceScaling.LINEAR, null);
                     splash.setCasterInterface(casterInterface);
                     int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
                     splash.setExcludedTeam(teamId);
@@ -179,15 +185,18 @@ class CastMeteorAction extends EntityAction {
 class MeteorNodeBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createFireEmitter() {
-        ParticleEmitter fire = new ParticleEmitter("fire-emitter", ParticleMesh.Type.Triangle, 100);
-        Material materialRed = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
+        ParticleEmitter fire = new ParticleEmitter("fire-emitter",
+                ParticleMesh.Type.Triangle, 100);
+        Material materialRed = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                assetManager.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
-        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
-        fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0f, 1f));
+        fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
         fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         fire.setStartSize(6.5f);
         fire.setEndSize(0.5f);
@@ -201,14 +210,15 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Sphere sphere = new Sphere(32, 32, 2.0f);
         Geometry meteorGeom = new Geometry("meteor-geom", sphere);
         Node node = new Node("meteor");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         node.attachChild(meteorGeom);
 
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
@@ -226,7 +236,8 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            MeteorRemovalAction removalAction = new MeteorRemovalAction(assetManager);
+            MeteorRemovalAction removalAction =
+                    new MeteorRemovalAction(assetManager);
             removalAction.setEmitter(fire);
 
             node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
@@ -263,13 +274,14 @@ class MeteorRemovalAction implements RemovalEventAction {
 
         emitter.setLocalTranslation(worldTranslation);
         emitter.addControl(new CTimedExistence(4f));
-        emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(1f, 0.01f, 1f).mult(16.0f));
+        emitter.getParticleInfluencer()
+                .setInitialVelocity(new Vector3f(1f, 0.01f, 1f).mult(16.0f));
         emitter.getParticleInfluencer().setVelocityVariation(1f);
         emitter.setStartSize(6f);
         emitter.setEndSize(40f);
         emitter.setLowLife(2f);
         emitter.setHighLife(2f);
-        emitter.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.01f));
+        emitter.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.01f));
         emitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 6.0f));
 
         emitter.setNumParticles(20);

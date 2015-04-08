@@ -17,7 +17,6 @@ package arkhados.util;
 import arkhados.WorldManager;
 import arkhados.effects.EffectBox;
 import com.jme3.asset.AssetManager;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -31,7 +30,7 @@ public abstract class AbstractNodeBuilder implements NodeBuilder {
     private EffectBox effectBox = null;
 
     @Override
-    public abstract Node build(Object parameter);
+    public abstract Node build(BuildParameters params);
 
     public static void setWorldManager(WorldManager worldManager) {
         AbstractNodeBuilder.worldManager = worldManager;

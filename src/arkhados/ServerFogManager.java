@@ -57,11 +57,13 @@ public class ServerFogManager extends AbstractAppState {
             new LinkedHashMap<>();
     private Node walls;
     private float checkTimer = 0;
+    private WorldManager world;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
+        world = stateManager.getState(WorldManager.class);        
     }
 
     @Override
@@ -153,6 +155,16 @@ public class ServerFogManager extends AbstractAppState {
             int nodeBuilderId =
                     target.getUserData(UserDataStrings.NODE_BUILDER_ID);
             int playerId = target.getUserData(UserDataStrings.PLAYER_ID);
+            float birthTime = target.getUserData(UserDataStrings.BIRTHTIME);
+            float age = world.getWorldTime() - birthTime;
+            Object healthMaybe =
+                    target.getUserData(UserDataStrings.HEALTH_CURRENT);
+            if (healthMaybe != null) {
+                float health = (float) healthMaybe;
+                if (health <= 0f) {
+                    age = -1f;                    
+                }
+            }
 
             Vector3f location;
             Quaternion rotation;
@@ -166,7 +178,7 @@ public class ServerFogManager extends AbstractAppState {
                 rotation = target.getLocalRotation();
             }
             Command command = new CmdAddEntity(entityId, nodeBuilderId,
-                    location, rotation, playerId);
+                    location, rotation, playerId, age);
             sender.addCommandForSingle(command,
                     awarenessConnectionMap.get(awareness));
 

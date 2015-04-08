@@ -119,7 +119,7 @@ public class CInfluenceInterface extends AbstractControl {
         float healthBefore = spatial
                 .getUserData(UserDataStrings.HEALTH_CURRENT);
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
-        if (health == 0f && !dead) {
+        if (healthBefore > 0f && health == 0f && !dead) {
             death();
         } else if (health < healthBefore && !isServer && health > 0f) {
             spatial.getControl(CCharacterSound.class)

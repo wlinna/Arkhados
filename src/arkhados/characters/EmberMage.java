@@ -35,10 +35,10 @@ import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -49,31 +49,34 @@ import com.jme3.scene.Node;
 public class EmberMage extends AbstractNodeBuilder {
 
     public static final int ACTION_FIREWALK = 0;
-    private ClientHudManager clientHudManager;
 
-    public EmberMage(ClientHudManager clientHudManager) {
-        this.clientHudManager = clientHudManager;
+    public EmberMage() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FIREWALK,
                 new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
     }
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Node entity = (Node) assetManager.loadModel("Models/Mage.j3o");
         float movementSpeed = 35.8f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
-        float radius = 5.0f;
+        float radius = 5f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
         float health = 1700f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
+
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (params.age < 0f) {
+            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
+        }
+
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
-        entity.addControl(new CCharacterPhysics(radius, 20.0f, 75.0f));
+        entity.addControl(new CCharacterPhysics(radius, 20f, 75f));
 
         /**
          * By setting physics damping to low value, we can effectively apply
@@ -109,15 +112,19 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
 
-        CCharacterAnimation characterAnimControl = new CCharacterAnimation(animControl);
-        AnimationData deathAnim = new AnimationData("Die", 1f, LoopMode.DontLoop);
-        AnimationData walkAnim = new AnimationData("Walk", 1f, LoopMode.DontLoop);
+        CCharacterAnimation characterAnimControl =
+                new CCharacterAnimation(animControl);
+        AnimationData deathAnim =
+                new AnimationData("Die", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim =
+                new AnimationData("Walk", 1f, LoopMode.DontLoop);
 
         characterAnimControl.setDeathAnimation(deathAnim);
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-        AnimationData animationData = new AnimationData("Idle", 1f, LoopMode.Loop);
+        AnimationData animationData =
+                new AnimationData("Idle", 1f, LoopMode.Loop);
 
         characterAnimControl.addSpellAnimation("Fireball", animationData);
         characterAnimControl.addSpellAnimation("Magma Bash", animationData);

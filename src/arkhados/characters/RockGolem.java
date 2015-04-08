@@ -31,13 +31,12 @@ import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EarthQuakeEffect;
 import arkhados.effects.EffectBox;
-import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.TossHitEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
-import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.AnimationData;
+import arkhados.util.BuildParameters;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
@@ -54,10 +53,8 @@ public class RockGolem extends AbstractNodeBuilder {
 
     public static final int ACTION_EARTHQUAKE = 0;
     public static int WORLDEFFECT_TOSS_HIT;
-    private final ClientHudManager clientHudManager;
 
-    public RockGolem(ClientHudManager clientHudManager) {
-        this.clientHudManager = clientHudManager;
+    public RockGolem() {
         setEffectBox(new EffectBox());
         WorldEffect earthQuake =
                 new EarthQuakeEffect();
@@ -69,7 +66,7 @@ public class RockGolem extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object irrelevant) {
+    public Node build(BuildParameters params) {
         Node entity = (Node) assetManager.loadModel("Models/RockGolem.j3o");
         float movementSpeed = 34.7f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
@@ -80,6 +77,9 @@ public class RockGolem extends AbstractNodeBuilder {
         float health = 2400f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (params.age < 0f) {
+            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
+        }
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 

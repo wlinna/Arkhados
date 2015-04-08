@@ -34,10 +34,10 @@ import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
-import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -63,10 +63,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
     public static final int ACTION_LIKE_A_PRO = 3;
     public static final int ACTION_PLASMAGUN = 4;
     public static final int ACTION_ROCKET_LAUNCHER = 5;
-    private ClientHudManager clientHudManager;
 
-    public EliteSoldier(ClientHudManager clientHudManager) {
-        this.clientHudManager = clientHudManager;
+    public EliteSoldier() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_ROCKET_JUMP,
                 new RocketExplosionEffect());
@@ -83,9 +81,9 @@ public class EliteSoldier extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Node entity = new Node("elite-soldier");
-        entity.setLocalTranslation((Vector3f) location);
+        entity.setLocalTranslation(params.location);
         Node real = (Node) assetManager.loadModel("Models/EliteSoldier.j3o");
         entity.attachChild(real);
         real.scale(11f);
@@ -114,6 +112,9 @@ public class EliteSoldier extends AbstractNodeBuilder {
         float health = 1675f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
         entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        if (params.age < 0f) {
+            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
+        }
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 

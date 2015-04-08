@@ -31,6 +31,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -116,14 +117,14 @@ class PlasmaBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(Object location) {
+    public Node build(BuildParameters params) {
         Sphere sphere = new Sphere(32, 32, 1.0f);
 
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
         Node node = new Node("projectile");
-        node.setLocalTranslation((Vector3f) location);
+        node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
         Material material = new Material(assetManager,
