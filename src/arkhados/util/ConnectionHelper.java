@@ -32,7 +32,7 @@ public class ConnectionHelper {
 
         for (HostedConnection hostedConnection : connections) {
             if (hostedConnection.getAttribute(ServerClientDataStrings.PLAYER_ID)
-                    == playerId) {
+                    .equals(playerId)) {
                 return hostedConnection;
             }
         }
