@@ -40,7 +40,8 @@ public class ServerMain extends SimpleApplication {
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
-            FileHandler fileHandler = new FileHandler("./Arkhados_Server_%u_gen_%g.log", 0, 10);
+            FileHandler fileHandler =
+                    new FileHandler("./Arkhados_Server_%u_gen_%g.log", 0, 10);
             fileHandler.setLevel(Level.INFO);
             fileHandler.setFormatter(new SimpleFormatter());
             Logger.getLogger("").addHandler(fileHandler);
@@ -97,7 +98,8 @@ public class ServerMain extends SimpleApplication {
         listenerManager = new ServerNetListener(this, server);
         syncManager = new SyncManager(this);
 
-        ServerPlayerInputHandler serverPlayerInputHandler = ServerPlayerInputHandler.get();
+        ServerPlayerInputHandler serverPlayerInputHandler =
+                ServerPlayerInputHandler.get();
         serverPlayerInputHandler.setApp(this);
 
         receiver.registerCommandHandler(listenerManager);
@@ -111,12 +113,14 @@ public class ServerMain extends SimpleApplication {
         stateManager.attach(gameManager);
         stateManager.attach(physicsState);
 
-        physicsState.getPhysicsSpace().setAccuracy(1.0f / 30.0f);        
+        // Accuracy should be > 45 or projectiles might "disappear" before
+        // exploding. This is because of FogOfWar
+        physicsState.getPhysicsSpace().setAccuracy(1f / 52f);        
     }
 
     public void startGame() {
         flyCam.setEnabled(true);
-        flyCam.setMoveSpeed(25.0f);
+        flyCam.setMoveSpeed(25f);
         inputManager.setCursorVisible(true);
         enqueue(new Callable<Void>() {
             @Override
