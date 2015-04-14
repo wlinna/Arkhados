@@ -16,6 +16,7 @@ package arkhados;
 
 import arkhados.gamemode.DeathMatch;
 import arkhados.messages.MessageUtils;
+import arkhados.net.DefaultReceiver;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.network.Network;
@@ -63,8 +64,8 @@ public class ServerMain extends SimpleApplication {
     private Server server;
     private ServerNetListener listenerManager;
     private ServerGameManager gameManager;
-    private WorldManager worldManager;
-    private BulletAppState physicsState;
+    private WorldManager world;
+    private BulletAppState physics;
     private SyncManager syncManager;
     private Sender sender;
     private Receiver receiver;
@@ -73,19 +74,20 @@ public class ServerMain extends SimpleApplication {
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
         Globals.app = this;
-        worldManager = new WorldManager();
+        world = new WorldManager();
         gameManager = new ServerGameManager(new DeathMatch());
-        physicsState = new BulletAppState();
-        physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        physics = new BulletAppState();
+        physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         flyCam.setEnabled(false);
 
         try {
             server = Network.createServer(Globals.PORT, Globals.PORT);
             server.start();
         } catch (IOException ex) {
+            System.exit(1);
         }
 
-        receiver = new Receiver();
+        receiver = new DefaultReceiver();
         server.addMessageListener(receiver, OneTrueMessage.class);
 
         sender = new ServerSender(server);
@@ -109,13 +111,13 @@ public class ServerMain extends SimpleApplication {
         stateManager.attach(sender);
         stateManager.attach(receiver);
         stateManager.attach(syncManager);
-        stateManager.attach(worldManager);
+        stateManager.attach(world);
         stateManager.attach(gameManager);
-        stateManager.attach(physicsState);
-
+        stateManager.attach(physics);
+        
         // Accuracy should be > 45 or projectiles might "disappear" before
         // exploding. This is because of FogOfWar
-        physicsState.getPhysicsSpace().setAccuracy(1f / 52f);        
+        physics.getPhysicsSpace().setAccuracy(1f / 52f);
     }
 
     public void startGame() {

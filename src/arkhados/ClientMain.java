@@ -20,6 +20,7 @@ import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.MessageUtils;
 import arkhados.net.ClientSender;
+import arkhados.net.DefaultReceiver;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.ui.Menu;
@@ -146,7 +147,7 @@ public class ClientMain extends SimpleApplication {
         stateManager.attach(worldManager);
 
         sender = new ClientSender();
-        Receiver receiver = new Receiver();
+        Receiver receiver = new DefaultReceiver();
         receiver.registerCommandHandler(effectHandler);
 
         UserCommandManager userCommandManager =
