@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -28,14 +27,15 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class IgniteInformation extends BuffInformation {
+
     {
         setIconPath("Interface/Images/BuffIcons/ignite.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
-        IgniteEffect effect = new IgniteEffect(duration);
-        effect.addToCharacter(buffControl);
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        IgniteEffect effect = new IgniteEffect(params.duration);
+        effect.addToCharacter(params);
         return effect;
     }
 }
@@ -48,7 +48,7 @@ class IgniteEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CCharacterBuff buffControl) {
+    public void addToCharacter(BuffInfoParameters params) {
         fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 50);
         Material materialRed = new Material(assetManager,
@@ -72,7 +72,7 @@ class IgniteEffect extends BuffEffect {
         fire.getParticleInfluencer().setVelocityVariation(0.2f);
         fire.setRandomAngle(true);
 
-        Node characterNode = (Node) buffControl.getSpatial();
+        Node characterNode = (Node) params.buffControl.getSpatial();
         characterNode.attachChild(fire);
         fire.move(0f, 15f, 0);
     }

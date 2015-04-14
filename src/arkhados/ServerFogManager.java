@@ -208,6 +208,7 @@ public class ServerFogManager extends AbstractAppState {
         for (AbstractBuff abstractBuff : buffs) {
             CmdBuff command = abstractBuff.generateBuffCommand(true);
             if (command != null) {
+                command.setJustCreated(false);
                 sender.addCommandForSingle(command,
                         awarenessConnectionMap.get(awareness));
             }
@@ -287,5 +288,9 @@ public class ServerFogManager extends AbstractAppState {
         }
 
         awarenessConnectionMap.clear();
+    }
+    
+    public void removeConnection(HostedConnection connection) {
+        awarenessConnectionMap.values().remove(connection);
     }
 }

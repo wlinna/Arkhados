@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import arkhados.util.BuffTypeIds;
 import com.jme3.asset.AssetManager;
@@ -74,8 +73,7 @@ public abstract class BuffInformation {
     private float duration;
     private String iconPath = null;
 
-    public abstract BuffEffect createBuffEffect(
-            CCharacterBuff buffControl, float duration);
+    public abstract BuffEffect createBuffEffect(BuffInfoParameters params);
 
     public float getDuration() {
         return duration;

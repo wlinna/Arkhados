@@ -12,22 +12,22 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.effects.BuffEffect;
+import arkhados.controls.CCharacterBuff;
 
-/**
- *
- * @author william
- */
-public class MineralArmorInformation extends BuffInformation {
 
-    {
-        setIconPath("Interface/Images/SpellIcons/MineralArmor.png");
+public class BuffInfoParameters {
+    public final CCharacterBuff buffControl;
+    public final float duration;
+    public final boolean justCreated;
+
+    public BuffInfoParameters(CCharacterBuff buffControl, float duration,
+            boolean justCreated) {
+        this.buffControl = buffControl;
+        this.duration = duration;
+        this.justCreated = justCreated;
     }
-
-    @Override
-    public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        return new BuffEffect(params.duration);
-    }
+            
 }

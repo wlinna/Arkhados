@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CCharacterBuff;
 import arkhados.controls.CRotation;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
@@ -27,16 +26,16 @@ import com.jme3.scene.shape.Sphere;
  *
  * @author william
  */
-public class IncapacitateInformation extends BuffInformation 
-{
+public class IncapacitateInformation extends BuffInformation {
+
     {
         setIconPath("Interface/Images/BuffIcons/Incapacitate.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
-        IncapacitateEffect effect = new IncapacitateEffect(duration);
-        effect.addToCharacter(buffControl);
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        IncapacitateEffect effect = new IncapacitateEffect(params.duration);
+        effect.addToCharacter(params);
         return effect;
     }
 }
@@ -49,12 +48,13 @@ class IncapacitateEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CCharacterBuff buffControl) {
+    public void addToCharacter(BuffInfoParameters params) {
         Sphere sphere = new Sphere(8, 8, 0.7f);
 
         Geometry geom1 = new Geometry("sphere", sphere);
 
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.White);
         geom1.setMaterial(material);
 
@@ -67,10 +67,10 @@ class IncapacitateEffect extends BuffEffect {
         geom1.setLocalTranslation(-2.5f, 0f, 0f);
         geom2.setLocalTranslation(2.5f, 0f, 0f);
 
-        Node characterNode = (Node) buffControl.getSpatial();
+        Node characterNode = (Node) params.buffControl.getSpatial();
         characterNode.attachChild(centralNode);
 
-        centralNode.setLocalTranslation(0f, 20f, 0f);        
+        centralNode.setLocalTranslation(0f, 20f, 0f);
         centralNode.addControl(new CRotation(0f, 2f, 0f));
     }
 

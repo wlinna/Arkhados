@@ -15,7 +15,6 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.Globals;
-import arkhados.controls.CCharacterBuff;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
@@ -37,9 +36,9 @@ public class DeepWoundsInformation extends BuffInformation {
     }
 
     @Override
-    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
-        DeepWoundsEffect effect = new DeepWoundsEffect(duration);
-        effect.addToCharacter(buffControl);
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        DeepWoundsEffect effect = new DeepWoundsEffect(params.duration);
+        effect.addToCharacter(params);
         return effect;
     }
 }
@@ -54,19 +53,23 @@ class DeepWoundsEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CCharacterBuff buffControl) {
-        emitter = new ParticleEmitter("blood-emitter", ParticleMesh.Type.Triangle, 100);
+    public void addToCharacter(BuffInfoParameters params) {
+        emitter = new ParticleEmitter("blood-emitter",
+                ParticleMesh.Type.Triangle, 100);
 
-        Material bloodMat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+        Material bloodMat = new Material(assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
         // TODO: Change blood texture!
-        bloodMat.setTexture("Texture", assetManager.loadTexture("Effects/debris.png"));
+        bloodMat.setTexture("Texture",
+                assetManager.loadTexture("Effects/debris.png"));
         emitter.setMaterial(bloodMat);
         emitter.setImagesX(3);
         emitter.setImagesY(3);
         emitter.setSelectRandomImage(true);
         emitter.setStartColor(new ColorRGBA(0.3f, 0f, 0f, 1f));
         emitter.setStartColor(new ColorRGBA(0.3f, 0f, 0f, 1f));
-        emitter.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(-0.1f));
+        emitter.getParticleInfluencer()
+                .setInitialVelocity(Vector3f.UNIT_Z.mult(-0.1f));
         emitter.getParticleInfluencer().setVelocityVariation(0.9f);
         emitter.setStartSize(2f);
         emitter.setEndSize(1f);
@@ -76,19 +79,21 @@ class DeepWoundsEffect extends BuffEffect {
         emitter.setParticlesPerSec(10f);
         emitter.setRandomAngle(true);
 
-        Node characterNode = (Node) buffControl.getSpatial();
+        Node characterNode = (Node) params.buffControl.getSpatial();
         characterNode.attachChild(emitter);
         emitter.move(0f, 7f, 0f);
 
         physics = characterNode.getControl(CCharacterPhysics.class);
 
-        AudioNode sound = new AudioNode(Globals.assetManager,
-                "Effects/Sound/DeepWounds.wav");
-        sound.setPositional(true);
-        sound.setReverbEnabled(false);
-        sound.setVolume(1f);
-        characterNode.attachChild(sound);
-        sound.play();
+        if (params.justCreated) {
+            AudioNode sound = new AudioNode(Globals.assetManager,
+                    "Effects/Sound/DeepWounds.wav");
+            sound.setPositional(true);
+            sound.setReverbEnabled(false);
+            sound.setVolume(1f);
+            characterNode.attachChild(sound);
+            sound.play();
+        }
     }
 
     @Override

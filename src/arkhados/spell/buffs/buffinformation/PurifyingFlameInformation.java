@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.Material;
@@ -32,13 +31,13 @@ import com.jme3.scene.shape.Sphere;
 public class PurifyingFlameInformation extends BuffInformation {
 
     {
-        super.setIconPath("Interface/Images/SpellIcons/purifying_flame.png");
+        setIconPath("Interface/Images/SpellIcons/purifying_flame.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
-        final FlameShield flameShield = new FlameShield(duration);
-        flameShield.addToCharacter(buffControl);
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        FlameShield flameShield = new FlameShield(params.duration);
+        flameShield.addToCharacter(params);
         return flameShield;
     }
 }
@@ -48,33 +47,36 @@ class FlameShield extends BuffEffect {
     public FlameShield(float timeLeft) {
         super(timeLeft);
     }
-    private Node node = null;
-    private AudioNode sound = null;
+    private Node node;
+    private AudioNode sound;
 
-    public void addToCharacter(final CCharacterBuff buffControl) {
-        final Node characterNode = (Node) buffControl.getSpatial();
+    public void addToCharacter(BuffInfoParameters params) {
+        Node characterNode = (Node) params.buffControl.getSpatial();
 
-        final float radius = 12f;
-        final Sphere sphere = new Sphere(32, 32, radius);
-        final Geometry geometry = new Geometry("shield-geom", sphere);
+        float radius = 12f;
+        Sphere sphere = new Sphere(32, 32, radius);
+        Geometry geometry = new Geometry("shield-geom", sphere);
         node = new Node("shield-node");
         node.attachChild(geometry);
 
 //        final Material material = BuffEffect.assetManager.loadMaterial("Materials/PurifyingMaterial.j3m");
-        final Material material = new Material(BuffEffect.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        final ColorRGBA color = ColorRGBA.Orange.clone();
+        Material material = new Material(BuffEffect.assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        ColorRGBA color = ColorRGBA.Orange.clone();
         color.a = 0.2f;
         material.setColor("Color", color);
 
-        material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        material.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
 
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);;
         geometry.setMaterial(material);
 
         characterNode.attachChild(node);
         node.move(0f, 10f, 0f);
-        
-        sound = new AudioNode(BuffEffect.assetManager, "Effects/Sound/PurifyingFlame.wav");
+
+        sound = new AudioNode(BuffEffect.assetManager,
+                "Effects/Sound/PurifyingFlame.wav");
         node.attachChild(sound);
         sound.setLooping(true);
         sound.setPositional(true);

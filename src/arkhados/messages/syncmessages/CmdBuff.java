@@ -29,7 +29,7 @@ public class CmdBuff extends StateData {
     private short buffTypeId;
     private int buffId;
     private float duration;
-    private boolean added;
+    private byte flags = 0;
 
     public CmdBuff() {
     }
@@ -40,7 +40,8 @@ public class CmdBuff extends StateData {
         this.buffTypeId = (short) buffTypeId;
         this.buffId = buffId;
         this.duration = duration;
-        this.added = added;
+        setAdded(added);
+        setJustCreated(true);
     }
 
     @Override
@@ -49,10 +50,26 @@ public class CmdBuff extends StateData {
         CCharacterBuff buffControl = node.getControl(CCharacterBuff.class);
         // TODO: Add to InfluenceInterfaceControl so that its non-visual effects
         // can be simulated
-        if (added) {
-            buffControl.addBuff(buffId, buffTypeId, duration);
+        if (getAdded()) {
+            buffControl.addBuff(buffId, buffTypeId, duration, getJustCreated());
         } else {
             buffControl.removeBuff(buffId);
         }
+    }
+
+    private boolean getAdded() {
+        return (flags & 1) == 1;
+    }
+
+    private void setAdded(boolean value) {
+        flags = (byte) (value ? (flags | 1) : (flags & ~1));
+    }
+
+    private boolean getJustCreated() {
+        return (flags & 2) == 2;
+    }
+    
+    public final void setJustCreated(boolean value) {
+        flags = (byte) (value ? (flags | 2) : (flags & ~2));
     }
 }

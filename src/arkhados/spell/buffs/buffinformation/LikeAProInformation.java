@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 
 /**
@@ -22,12 +21,13 @@ import arkhados.effects.BuffEffect;
  * @author william
  */
 public class LikeAProInformation extends BuffInformation {
+
     {
-        super.setIconPath("Interface/Images/SpellIcons/like_a_pro.png");
+        setIconPath("Interface/Images/SpellIcons/like_a_pro.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(CCharacterBuff buffControl, float duration) {
-        return new BuffEffect(duration);
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        return new BuffEffect(params.duration);
     }
 }

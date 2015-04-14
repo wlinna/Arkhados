@@ -33,6 +33,7 @@ import arkhados.net.Receiver;
 import arkhados.net.ServerSender;
 import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.PlayerDataStrings;
+import com.jme3.app.state.AppStateManager;
 import java.util.List;
 
 /**
@@ -43,9 +44,11 @@ public class ServerNetListener implements ConnectionListener,
         CommandHandler, ServerClientDataStrings {
 
     private ServerMain app;
+    private AppStateManager stateManager;
 
     public ServerNetListener(ServerMain app, Server server) {
         this.app = app;
+        stateManager = app.getStateManager();
         server.addConnectionListener(this);
     }
 
@@ -54,10 +57,9 @@ public class ServerNetListener implements ConnectionListener,
         final int clientId = conn.getId();
         if (!ServerClientData.exists(clientId)) {
             ServerClientData.add(clientId);
-            ServerSender sender =
-                    app.getStateManager().getState(ServerSender.class);
+            ServerSender sender = stateManager.getState(ServerSender.class);
             sender.addConnection(conn);
-            app.getStateManager().getState(Receiver.class).addConnection(conn);
+            stateManager.getState(Receiver.class).addConnection(conn);
 
             CmdTopicOnly connectionEstablishendCommand =
                     new CmdTopicOnly(Topic.CONNECTION_ESTABLISHED);
@@ -71,12 +73,18 @@ public class ServerNetListener implements ConnectionListener,
 
     @Override
     public void connectionRemoved(Server server, HostedConnection conn) {
+        int playerId = conn.getAttribute(PLAYER_ID);
+        ServerSender sender = stateManager.getState(ServerSender.class);
+        sender.removeConnection(conn);
+        ServerFogManager fog = stateManager.getState(ServerFogManager.class);
+        fog.removeConnection(conn);
+        ServerClientData.removeConnection(playerId);
+        ServerClientData.remove(conn.getId());
     }
 
     @Override
     public void readGuaranteed(Object source, Command command) {
-        ServerSender sender =
-                app.getStateManager().getState(ServerSender.class);
+        ServerSender sender = stateManager.getState(ServerSender.class);
 
         if (command instanceof CmdTopicOnly) {
             handleTopicOnlyCommand((HostedConnection) source,
@@ -96,9 +104,9 @@ public class ServerNetListener implements ConnectionListener,
 
     }
 
-    private void handleTopicOnlyCommand(HostedConnection source, CmdTopicOnly topicCommand) {
-        ServerSender sender =
-                app.getStateManager().getState(ServerSender.class);
+    private void handleTopicOnlyCommand(HostedConnection source,
+            CmdTopicOnly topicCommand) {
+        ServerSender sender = stateManager.getState(ServerSender.class);
 
         switch (topicCommand.getTopicId()) {
             case Topic.BATTLE_STATISTICS_REQUEST:
@@ -117,9 +125,8 @@ public class ServerNetListener implements ConnectionListener,
 
     private void handleClientLoginCommand(HostedConnection source,
             CmdClientLogin commmand) {
-        ServerSender sender =
-                app.getStateManager().getState(ServerSender.class);
-        final int clientId = source.getId();
+        ServerSender sender = stateManager.getState(ServerSender.class);
+        int clientId = source.getId();
 
         if (!ServerClientData.exists(clientId)) {
             Logger.getLogger(ServerNetListener.class.getName()).log(
@@ -142,7 +149,7 @@ public class ServerNetListener implements ConnectionListener,
         ServerClientData.addConnection(playerId, source);
 
         ServerGameManager gameManager =
-                app.getStateManager().getState(ServerGameManager.class);
+                stateManager.getState(ServerGameManager.class);
         gameManager.playerJoined(playerId);
 
         String modeKey = gameManager.getGameMode().getClass().getSimpleName();

@@ -15,6 +15,7 @@
 package arkhados.controls;
 
 import arkhados.effects.BuffEffect;
+import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.ui.hud.BuffIconBuilder;
 import arkhados.ui.hud.ClientHudManager;
@@ -54,7 +55,8 @@ public class CCharacterBuff extends AbstractControl {
         }
     }
 
-    public void addBuff(int buffId, int buffTypeId, float duration) {
+    public void addBuff(int buffId, int buffTypeId, float duration,
+            boolean justCreated) {
         BuffInformation buffInfo =
                 BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
@@ -64,7 +66,10 @@ public class CCharacterBuff extends AbstractControl {
             return;
         }
 
-        BuffEffect buff = buffInfo.createBuffEffect(this, duration);
+        BuffInfoParameters infoParams =
+                new BuffInfoParameters(this, duration, justCreated);
+
+        BuffEffect buff = buffInfo.createBuffEffect(infoParams);
 
         if (buff != null) {
             BuffEffect get = buffs.get(buffId);

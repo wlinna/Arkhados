@@ -15,7 +15,6 @@
 package arkhados.spell.buffs.buffinformation;
 
 import arkhados.Globals;
-import arkhados.controls.CCharacterBuff;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.MatParam;
@@ -33,16 +32,16 @@ import java.util.List;
  * @author william
  */
 public class PetrifyInformation extends BuffInformation {
+
     {
         // TODO: Find / make unique icon for Petrify
         setIconPath("Interface/Images/SpellIcons/SealingBoulder.png");
     }
 
     @Override
-    public BuffEffect createBuffEffect(
-            CCharacterBuff buffControl, float duration) {
-        PetrifyEffect effect = new PetrifyEffect(duration);
-        effect.addToCharacter(buffControl);
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        PetrifyEffect effect = new PetrifyEffect(params.duration);
+        effect.addToCharacter(params);
         return effect;
     }
 }
@@ -57,8 +56,8 @@ class PetrifyEffect extends BuffEffect {
         super(timeLeft);
     }
 
-    public void addToCharacter(CCharacterBuff buffControl) {
-        characterNode = (Node) buffControl.getSpatial();
+    public void addToCharacter(BuffInfoParameters params) {
+        characterNode = (Node) params.buffControl.getSpatial();
 
         SceneGraphVisitor visitor = new SceneGraphVisitorAdapter() {
             @Override
@@ -74,13 +73,15 @@ class PetrifyEffect extends BuffEffect {
 
         characterNode.depthFirstTraversal(visitor);
 
-        AudioNode sound = new AudioNode(Globals.assetManager,
-                "Effects/Sound/Petrify.wav");
-        sound.setPositional(true);
-        sound.setReverbEnabled(false);
-        sound.setVolume(1f);
-        characterNode.attachChild(sound);
-        sound.play();
+        if (params.justCreated) {
+            AudioNode sound = new AudioNode(Globals.assetManager,
+                    "Effects/Sound/Petrify.wav");
+            sound.setPositional(true);
+            sound.setReverbEnabled(false);
+            sound.setVolume(1f);
+            characterNode.attachChild(sound);
+            sound.play();
+        }
     }
 
     @Override

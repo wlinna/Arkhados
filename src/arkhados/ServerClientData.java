@@ -94,8 +94,13 @@ public class ServerClientData {
         return ServerClientData.players.get(id).getAverageLatency();
     }
 
-    public static synchronized void addConnection(int playerId, HostedConnection connection) {
+    public static synchronized void addConnection(int playerId,
+            HostedConnection connection) {
         connections.put(playerId, connection);
+    }
+    
+    public static synchronized void removeConnection(int playerId) {
+        connections.remove(playerId);
     }
     
     public static synchronized HostedConnection getConnection(int playerId) {
@@ -126,7 +131,8 @@ public class ServerClientData {
     }
     
     public void addLatencySample(float latency) {
-        averageLatency = (averageLatency * latencySampleCount + latency) / (latencySampleCount + 1);
+        averageLatency = (averageLatency * latencySampleCount + latency)
+                / (latencySampleCount + 1);
         latestLatency = latency;
         ++latencySampleCount;
     }
