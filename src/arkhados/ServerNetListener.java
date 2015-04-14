@@ -45,6 +45,7 @@ public class ServerNetListener implements ConnectionListener,
 
     private ServerMain app;
     private AppStateManager stateManager;
+    private boolean someoneJoined = false;
 
     public ServerNetListener(ServerMain app, Server server) {
         this.app = app;
@@ -89,6 +90,10 @@ public class ServerNetListener implements ConnectionListener,
         
         PlayerData.remove(playerId);
         CharacterInteraction.removePlayer(playerId);
+        
+        if (!server.hasConnections() && someoneJoined) {
+            app.stop();
+        }
     }
 
     @Override
@@ -165,6 +170,7 @@ public class ServerNetListener implements ConnectionListener,
         CmdServerLogin serverLoginMessage =
                 new CmdServerLogin(commmand.getName(), playerId,
                 true, modeKey);
+        someoneJoined = true;
         sender.addCommandForSingle(serverLoginMessage, source);
         sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
     }

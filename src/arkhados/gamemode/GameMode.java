@@ -30,6 +30,7 @@ import java.util.concurrent.Callable;
  * @author william
  */
 public abstract class GameMode {
+
     private Application app;
     private boolean running = false;
 
@@ -62,8 +63,21 @@ public abstract class GameMode {
                 }
             });
         } else {
-            getApp().getStateManager().getState(ServerSender.class).addCommand(
-                    new CmdTopicOnly(Topic.GAME_ENDED));
+            getApp().getStateManager().getState(ServerSender.class)
+                    .addCommand(new CmdTopicOnly(Topic.GAME_ENDED));
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    app.enqueue(new Callable<Void>() {
+
+                        @Override
+                        public Void call() throws Exception {
+                            app.stop();
+                            return null;
+                        }
+                    });
+                }
+            }, 4000);
         }
     }
 
