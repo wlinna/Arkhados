@@ -28,7 +28,7 @@ import com.jme3.util.TempVars;
  * @author william
  */
 public class CCharacterPhysics extends BetterCharacterControl {
-
+    private static final float BASE_DAMPING = 1 / 30f;
     private Vector3f impulseToApply = null;
     private Vector3f queuedLinearVelocity = null;
     private Vector3f targetLocation = new Vector3f();
@@ -59,6 +59,8 @@ public class CCharacterPhysics extends BetterCharacterControl {
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
         // Most of this code is taken from BetterCharacterControl (BSD-licensed)
 
+        float dampScale =  space.getAccuracy()  / BASE_DAMPING;
+        
         checkOnGround();
         if (wantToUnDuck && checkCanUnDuck()) {
             setHeightPercent(1);
@@ -71,8 +73,9 @@ public class CCharacterPhysics extends BetterCharacterControl {
         float existingLeftVelocity = velocity.dot(localLeft);
         float existingForwardVelocity = velocity.dot(localForward);
         Vector3f counter = vars.vect1;
-        existingLeftVelocity *= physicsDamping;
-        existingForwardVelocity *= physicsDamping;
+        float damping = physicsDamping * dampScale;
+        existingLeftVelocity *= damping;
+        existingForwardVelocity *= damping;
         counter.set(-existingLeftVelocity, 0, -existingForwardVelocity);
         localForwardRotation.multLocal(counter);
         velocity.addLocal(counter);
