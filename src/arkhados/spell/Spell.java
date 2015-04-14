@@ -18,7 +18,6 @@ import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
-import arkhados.spell.spells.elitesoldier.Machinegun;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
 import arkhados.spell.spells.elitesoldier.Railgun;
 import arkhados.spell.spells.elitesoldier.RocketJump;
@@ -206,7 +205,7 @@ public abstract class Spell {
     }
 
     public void setCanMoveWhileCasting(boolean canMoveWhileCasting) {
-        canMoveWhileCasting = canMoveWhileCasting;
+        this.canMoveWhileCasting = canMoveWhileCasting;
     }
 
     public boolean moveTowardsTarget() {
@@ -214,7 +213,7 @@ public abstract class Spell {
     }
 
     public void setMoveTowardsTarget(boolean mustMoveTowardsViewDirection) {
-        moveTowardsTarget = mustMoveTowardsViewDirection;
+        this.moveTowardsTarget = mustMoveTowardsViewDirection;
     }
 
     public boolean isMultipart() {
