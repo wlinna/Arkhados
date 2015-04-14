@@ -128,6 +128,11 @@ public class CharacterInteraction {
         RoundStats round = roundStatList.get(roundStatList.size() - 1);
         round.addPlayer(playerId);
     }
+    
+    public static void removePlayer(int playerId) {
+        RoundStats round = roundStatList.get(roundStatList.size() - 1);
+        round.removePlayer(playerId);
+    }
 
     public static RoundStats getCurrentRoundStats() {
         return roundStatList.get(roundStatList.size() - 1);

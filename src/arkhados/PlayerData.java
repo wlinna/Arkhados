@@ -138,7 +138,8 @@ public final class PlayerData {
 
     public static synchronized int getIntData(int id, String key) {
         if (!players.containsKey(id)) return -1;
-        return players.get(id).getIntData(key);
+        Integer data = players.get(id).getIntData(key);        
+        return data != null ? data.intValue() : -1;
     }
 
     public static synchronized void setData(int id, String key, int data) {

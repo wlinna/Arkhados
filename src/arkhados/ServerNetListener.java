@@ -33,8 +33,8 @@ import arkhados.net.Receiver;
 import arkhados.net.ServerSender;
 import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.PlayerDataStrings;
+import arkhados.util.RemovalReasons;
 import com.jme3.app.state.AppStateManager;
-import java.util.List;
 
 /**
  *
@@ -80,6 +80,15 @@ public class ServerNetListener implements ConnectionListener,
         fog.removeConnection(conn);
         ServerClientData.removeConnection(playerId);
         ServerClientData.remove(conn.getId());
+        int entityId =
+                PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
+        if (entityId > -1) {
+            WorldManager world = stateManager.getState(WorldManager.class);
+            world.removeEntity(entityId, RemovalReasons.DISCONNECT);
+        }
+        
+        PlayerData.remove(playerId);
+        CharacterInteraction.removePlayer(playerId);
     }
 
     @Override

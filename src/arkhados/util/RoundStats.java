@@ -38,6 +38,10 @@ public class RoundStats {
         playerStats.put(playerId, new PlayerRoundStats(playerId));
     }
     
+    public void removePlayer(int playerId) {
+        playerStats.remove(playerId);
+    }
+    
     public void addDamageForPlayer(Integer playerId, float damage) {
         PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {

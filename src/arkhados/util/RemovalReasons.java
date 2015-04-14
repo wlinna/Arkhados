@@ -24,4 +24,5 @@ public class RemovalReasons {
     public static final int ABSORBED = 2;
     public static final int DISAPPEARED = 3;
     public static final int DEATH = 4;
+    public static final int DISCONNECT = 5;
 }
