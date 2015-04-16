@@ -47,7 +47,7 @@ public class MusicManager extends AbstractAppState {
     private final InputManager inputManager;
     private String currentMusicCategory = "";
 
-    public MusicManager(Application app, InputManager inputManager, 
+    public MusicManager(Application app, InputManager inputManager,
             AssetManager assetManager) {
         this.assetManager = assetManager;
         this.app = app;
@@ -111,7 +111,13 @@ public class MusicManager extends AbstractAppState {
         }
 
         if (musicPlayer != null) {
-            musicPlayer.stop();
+            app.enqueue(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    musicPlayer.stop();
+                    return null;
+                }
+            });
         }
 
         music.clear();
@@ -124,7 +130,7 @@ public class MusicManager extends AbstractAppState {
                 break;
             case "EmberMage":
                 music.add(generateHeroMusicPath(category, "TheDarkAmulet"));
-                music.add(generateHeroMusicPath(category,  "SteepsOfDestiny"));
+                music.add(generateHeroMusicPath(category, "SteepsOfDestiny"));
                 break;
             case "EliteSoldier":
                 music.add(generateHeroMusicPath(category, "Carmack"));
@@ -140,7 +146,7 @@ public class MusicManager extends AbstractAppState {
             case "RockGolem":
                 music.add(generateHeroMusicPath(category, "GodsWar"));
                 music.add(generateHeroMusicPath(category, "Olympus"));
-                music.add(generateHeroMusicPath(category,  "DwarvesGathering"));
+                music.add(generateHeroMusicPath(category, "DwarvesGathering"));
                 break;
             default:
                 break;
@@ -166,7 +172,7 @@ public class MusicManager extends AbstractAppState {
             return;
         }
 
-        if (musicPlayer == null 
+        if (musicPlayer == null
                 || musicPlayer.getStatus() == AudioSource.Status.Stopped) {
             playNext();
         }
