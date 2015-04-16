@@ -14,10 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
-import arkhados.MusicManager;
-import arkhados.messages.CmdClientSelectHero;
+import arkhados.messages.CmdSelectHero;
 import arkhados.net.Sender;
-import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
@@ -36,15 +34,15 @@ public class DeathMatchHeroSelectionLayerController implements Controller {
     private AppStateManager stateManager;
     private Element element;
 
-
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element, Properties parameter,
-            Attributes controlDefinitionAttributes) {
+    public void bind(Nifty nifty, Screen screen, Element element,
+            Properties parameter, Attributes controlDefinitionAttributes) {
         this.element = element;
     }
 
     @Override
-    public void init(Properties parameter, Attributes controlDefinitionAttributes) {
+    public void init(Properties parameter,
+            Attributes controlDefinitionAttributes) {
     }
 
     @Override
@@ -61,9 +59,8 @@ public class DeathMatchHeroSelectionLayerController implements Controller {
     }
 
     public void selectHero(String heroName) {
-        stateManager.getState(MusicManager.class).setMusicCategory(heroName);
-        stateManager.getState(MusicManager.class).setPlaying(true);
-        stateManager.getState(Sender.class).addCommand(new CmdClientSelectHero(heroName));
+        stateManager.getState(Sender.class).addCommand(
+                new CmdSelectHero(heroName));
         element.hide();
     }
 

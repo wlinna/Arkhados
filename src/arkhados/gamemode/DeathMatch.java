@@ -25,7 +25,7 @@ import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.WorldManager;
 import arkhados.controls.PlayerEntityAwareness;
-import arkhados.messages.CmdClientSelectHero;
+import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.CmdTopicOnly;
@@ -379,11 +379,13 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     private void serverReadGuaranteed(HostedConnection source,
             Command command) {
-        if (command instanceof CmdClientSelectHero) {
+        if (command instanceof CmdSelectHero) {
             int playerId =
                     source.getAttribute(ServerClientDataStrings.PLAYER_ID);
             playerChoseHero(playerId,
-                    ((CmdClientSelectHero) command).getHeroName());
+                    ((CmdSelectHero) command).getHeroName());
+            stateManager.getState(ServerSender.class)
+                    .addCommandForSingle(command, source);
         } else if (command instanceof CmdTopicOnly) {
             serverHandleTopicOnlyCommand(source, (CmdTopicOnly) command);
         }
@@ -397,8 +399,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     pkCommand.getCombo(), pkCommand.getEndedSpree());
         } else if (command instanceof CmdTopicOnly) {
             clientHandleTopicOnlyCommand((CmdTopicOnly) command);
+        } else if (command instanceof CmdSelectHero) {
+            String hero = ((CmdSelectHero) command).getHeroName();
+            stateManager.getState(MusicManager.class).setMusicCategory(hero);
         }
-
     }
 
     @Override
@@ -489,7 +493,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    ((ClientSender) sender).getClient().close();
+                    if (sender instanceof ClientSender) {
+                        ((ClientSender) sender).getClient().close();
+                    }
 
                     PlayerData.destroyAllData();
                     hudManager.endGame();

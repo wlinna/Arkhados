@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.messages.ChatMessage;
 import arkhados.messages.CmdClientLogin;
-import arkhados.messages.CmdClientSelectHero;
+import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdClientSettings;
 import arkhados.messages.CmdPlayerDataTable;
 import arkhados.messages.CmdServerLogin;
@@ -74,23 +74,29 @@ public class ServerNetListener implements ConnectionListener,
 
     @Override
     public void connectionRemoved(Server server, HostedConnection conn) {
-        int playerId = conn.getAttribute(PLAYER_ID);
+        Integer playerId = conn.getAttribute(PLAYER_ID);
         ServerSender sender = stateManager.getState(ServerSender.class);
         sender.removeConnection(conn);
         ServerFogManager fog = stateManager.getState(ServerFogManager.class);
         fog.removeConnection(conn);
-        ServerClientData.removeConnection(playerId);
         ServerClientData.remove(conn.getId());
+        
+        if (playerId == null) {
+            return;
+        }
+
+        ServerClientData.removeConnection(playerId);
+
         int entityId =
                 PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
         if (entityId > -1) {
             WorldManager world = stateManager.getState(WorldManager.class);
             world.removeEntity(entityId, RemovalReasons.DISCONNECT);
         }
-        
+
         PlayerData.remove(playerId);
         CharacterInteraction.removePlayer(playerId);
-        
+
         if (!server.hasConnections() && someoneJoined) {
             app.stop();
         }
@@ -108,9 +114,9 @@ public class ServerNetListener implements ConnectionListener,
         } else if (command instanceof CmdClientLogin) {
             handleClientLoginCommand((HostedConnection) source,
                     (CmdClientLogin) command);
-        } else if (command instanceof CmdClientSelectHero) {
+        } else if (command instanceof CmdSelectHero) {
             handleClientSelectHeroCommand((HostedConnection) source,
-                    (CmdClientSelectHero) command);
+                    (CmdSelectHero) command);
         } else if (command instanceof CmdClientSettings) {
             handleClientSettingsCommand((HostedConnection) source,
                     (CmdClientSettings) command);
@@ -176,7 +182,7 @@ public class ServerNetListener implements ConnectionListener,
     }
 
     private void handleClientSelectHeroCommand(HostedConnection source,
-            CmdClientSelectHero command) {
+            CmdSelectHero command) {
         int playerId = ServerClientData.getPlayerId(
                 ((HostedConnection) source).getId());
 

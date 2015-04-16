@@ -59,7 +59,7 @@ public class MessageUtils {
         Serializer.registerClass(CmdClientSettings.class);
         Serializer.registerClass(CmdPlayerDataTable.class);
         Serializer.registerClass(ChatMessage.class);
-        Serializer.registerClass(CmdClientSelectHero.class);
+        Serializer.registerClass(CmdSelectHero.class);
         // </Lobby>
 
         // <Sync>
