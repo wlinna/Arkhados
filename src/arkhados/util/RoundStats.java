@@ -25,23 +25,24 @@ import java.util.List;
  */
 public class RoundStats {
 
-    private HashMap<Integer, PlayerRoundStats> playerStats = new HashMap<>();    
-    
+    private HashMap<Integer, PlayerRoundStats> playerStats = new HashMap<>();
+
     public void initialize() {
         List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
-            playerStats.put(playerData.getId(), new PlayerRoundStats(playerData.getId()));
+            playerStats.put(playerData.getId(),
+                    new PlayerRoundStats(playerData.getId()));
         }
     }
-    
+
     public void addPlayer(int playerId) {
         playerStats.put(playerId, new PlayerRoundStats(playerId));
     }
-    
+
     public void removePlayer(int playerId) {
         playerStats.remove(playerId);
     }
-    
+
     public void addDamageForPlayer(Integer playerId, float damage) {
         PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
@@ -52,7 +53,8 @@ public class RoundStats {
         player.damageDone += damage;
     }
 
-    public void addHealthRestorationForPlayer(final Integer playerId, float restoration) {
+    public void addHealthRestorationForPlayer(final Integer playerId,
+            float restoration) {
         PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
@@ -61,12 +63,12 @@ public class RoundStats {
 
         player.healthRestored += restoration;
     }
-    
+
     public void addKill(int playerId) {
         if (playerId == -1) {
             return;
         }
-        
+
         PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
             // TODO: Consider throwing exception here
@@ -75,21 +77,26 @@ public class RoundStats {
 
         player.kills++;
     }
-    
+
     public int getKills(int playerId) {
         if (playerId == -1) {
             return -1;
         }
-        
+
         PlayerRoundStats player = playerStats.get(playerId);
         if (player == null) {
             return -1;
         }
-        
+
         return player.kills;
     }
-    
-    public ArrayList<PlayerRoundStats> buildCurrentPlayerRoundStatsList() {
-        return new ArrayList<>(playerStats.values());
+
+    public ArrayList<PlayerRoundStats> cloneCurrentPlayerRoundStatsList() {
+        ArrayList<PlayerRoundStats> list = new ArrayList<>(playerStats.size());
+        for (PlayerRoundStats stats : playerStats.values()) {
+            list.add(new PlayerRoundStats(stats));
+        }
+
+        return list;
     }
 }

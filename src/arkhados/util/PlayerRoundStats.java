@@ -35,4 +35,11 @@ public class PlayerRoundStats {
     public PlayerRoundStats(int playerId) {
         this.playerId = (byte) playerId;
     }
+
+    public PlayerRoundStats(PlayerRoundStats original) {
+        playerId = original.playerId;
+        damageDone = original.damageDone;
+        healthRestored = original.healthRestored;
+        kills = original.kills;
+    }        
 }
