@@ -3,6 +3,7 @@
 *.log
 *.so
 *.patch
+*.rep
 
 build
 dist

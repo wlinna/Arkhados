@@ -20,10 +20,22 @@
         </panel>
     </controlDefinition>
 
-    <screen id="null" controller="arkhados.ui.Menu">
-    </screen>    
+    <popup id="select_player" childLayout="center" width="400px" height="50%">
+        <panel childLayout="vertical" style="nifty-panel" width="400px" height="70%">
+            <text style="nifty-label" text="Select player"/>
+            <control id="player_list" name="listBox" vertical="optional" horizontal="off" displayItems="10" forceSelection="true" />                    
 
-    <screen id="main_menu" controller="arkhados.ui.Menu">
+            <text style="nifty-label" text=""/>
+            <control id="select_player" name="button" label="Select" align="center" width="200px">
+                <interact onClick="selectPlayer()" />
+            </control>
+            <control id="gotoMenu(main_menu)" name="button" label="Back" align="center" width="200px">
+                <interact onClick="gotoMenu(main_menu)" />
+            </control>
+        </panel>            
+    </popup>
+
+    <screen id="main_menu" controller="arkhados.ui.MainMenu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
@@ -43,6 +55,10 @@
                     <interact onClick="gotoMenu(join_server)" />
                 </control>
                 <text style="nifty-label" text=""/>
+                <control id="goto_replays" name="button" label="Replays" align="center">
+                    <interact onClick="gotoMenu(replay)" />
+                </control>
+                <text style="nifty-label" text=""/>
                 <control id="goto_settings" name="button" label="Settings" align="center">
                     <interact onClick="gotoMenu(settings)" />
                 </control>
@@ -58,8 +74,25 @@
             </panel>
         </layer>
     </screen>
+        
+    <screen id="replay" controller="arkhados.ui.ReplayMenu">
+        <layer childLayout="center">
+            <panel childLayout="vertical" style="nifty-panel" width="400px" height="70%">
+                <text style="nifty-label" text="Select replay"/>
+                <control id="replay_list" name="listBox" vertical="optional" horizontal="off" displayItems="15" forceSelection="true" />                    
 
-    <screen id="settings" controller="arkhados.ui.Menu">
+                <text style="nifty-label" text=""/>
+                <control id="select_replay" name="button" label="Play" align="center" width="200px">
+                    <interact onClick="selectReplay()" />
+                </control>
+                <control id="goto_main_menu" name="button" label="Back" align="center" width="200px">
+                    <interact onClick="gotoMenu(main_menu)" />
+                </control>
+            </panel>            
+        </layer>
+    </screen>
+
+    <screen id="settings" controller="arkhados.ui.MainMenu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
@@ -93,7 +126,7 @@
                 </control>
             </panel>
         </layer>
-    </screen>
+    </screen>   
 
     <screen id="input_settings" controller="arkhados.ui.KeySetter">
         <layer childLayout="horizontal">            
@@ -197,7 +230,7 @@
         </layer>
     </screen>
 
-    <screen id="join_server" controller="arkhados.ui.Menu">
+    <screen id="join_server" controller="arkhados.ui.ConnectionMenu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
@@ -297,7 +330,7 @@
         </layer>
     </screen>
     
-    <screen id="credits" controller="arkhados.ui.Menu">
+    <screen id="credits" controller="arkhados.ui.MainMenu">
         <layer childLayout="horizontal">            
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>

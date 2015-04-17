@@ -31,7 +31,6 @@ import arkhados.replay.ReplayHeader;
 import arkhados.replay.ReplayReader;
 import arkhados.ui.ConnectionMenu;
 import arkhados.ui.MainMenu;
-import arkhados.ui.Menu;
 import arkhados.ui.ReplayMenu;
 import arkhados.util.ValueWrapper;
 import com.jme3.app.SimpleApplication;
