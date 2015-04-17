@@ -31,7 +31,6 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -105,9 +104,7 @@ public class VisualStatistics implements ActionListener {
     }
 
     void clean() {
-        for (Iterator<Element> it = statisticsPanels.iterator();
-                it.hasNext();) {
-            Element element = it.next();
+        for (Element element : statisticsPanels) {                    
             element.markForRemoval();
         }
         statisticsPanels.clear();
