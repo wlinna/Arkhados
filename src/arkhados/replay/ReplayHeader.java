@@ -12,21 +12,31 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.ui.hud;
 
-import arkhados.ui.HeroSelectionBuilder;
-import de.lessvoid.nifty.builder.LayerBuilder;
+package arkhados.replay;
 
-/**
- *
- * @author william
- */
+import com.jme3.network.serializing.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@Serializable
+public class ReplayHeader {
+    private Date date = new Date();
+    private Map<Integer, String> players = new HashMap<>();
 
-public class DeathMatchHeroSelectionLayerBuilder extends LayerBuilder {
-    public DeathMatchHeroSelectionLayerBuilder() {
-        childLayoutCenter();        
-        panel(new HeroSelectionBuilder());
-        controller(new DeathMatchHeroSelectionLayerController());
+    public ReplayHeader() {
+    }        
+        
+    public Map<Integer, String> getPlayers() {
+        return players;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

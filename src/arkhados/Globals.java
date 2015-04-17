@@ -26,7 +26,8 @@ public class Globals {
     public static String SERVER = "localhost";
     public static int PORT = 12345;
     public static float DEFAULT_SYNC_FREQUENCY = 0.05f;
-
+    public static boolean replayMode = false;
+    
     public static void setPacketsPerSecond(float packets) {
         DEFAULT_SYNC_FREQUENCY = 1f / packets;
     }

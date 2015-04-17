@@ -78,7 +78,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
         }
         SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserDataStrings.MASS));       
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that

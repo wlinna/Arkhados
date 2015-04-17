@@ -12,21 +12,23 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.ui.hud;
+package arkhados.ui;
 
-import arkhados.ui.HeroSelectionBuilder;
-import de.lessvoid.nifty.builder.LayerBuilder;
+public class ReplayPlayerLBModel {
+    private final int playerId;
+    private final String playerName;
 
-/**
- *
- * @author william
- */
+    public ReplayPlayerLBModel(int playerId, String playerName) {
+        this.playerId = playerId;
+        this.playerName = playerName;
+    }
 
+    public int getPlayerId() {
+        return playerId;
+    }
 
-public class DeathMatchHeroSelectionLayerBuilder extends LayerBuilder {
-    public DeathMatchHeroSelectionLayerBuilder() {
-        childLayoutCenter();        
-        panel(new HeroSelectionBuilder());
-        controller(new DeathMatchHeroSelectionLayerController());
+    @Override
+    public String toString() {
+        return playerName;
     }
 }

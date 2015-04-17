@@ -26,6 +26,7 @@ import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
+import arkhados.ui.ConnectionMenu;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
@@ -47,14 +48,16 @@ public class ClientNetListener extends AbstractAppState
     private String name = "";
     private Timer udpHandshakeAckTimer = new Timer(1f);
     private boolean handshakeComplete = false;
+    private final ConnectionMenu connectionMenu;
 
-    public ClientNetListener(ValueWrapper<NetworkClient> client) {
+    public ClientNetListener(ConnectionMenu connectionMenu) {
+        this.connectionMenu = connectionMenu;
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        this.app = (ClientMain) app;
+        this.app = (ClientMain) app;     
     }
 
     public void reset() {
@@ -168,7 +171,7 @@ public class ClientNetListener extends AbstractAppState
             CmdClientLogin command = new CmdClientLogin(name);
             sender.addCommand(command);
             handshakeComplete = true;
-            app.getMenu().setStatusText("");
+            connectionMenu.setStatusText("");
         }
     }
 }

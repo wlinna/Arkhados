@@ -30,14 +30,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
-import arkhados.net.Sender;
-import arkhados.net.ServerSender;
+import arkhados.net.RecordingServerSender;
+import arkhados.replay.ReplayCmdData;
+import arkhados.replay.ReplayData;
+import arkhados.replay.ReplayHeader;
 import arkhados.spell.buffs.AbstractBuff;
+import com.jme3.network.serializing.Serializer;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 
-public class ServerMain extends SimpleApplication {
-
+public class ServerMain extends SimpleApplication {    
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
@@ -67,7 +69,7 @@ public class ServerMain extends SimpleApplication {
     private WorldManager world;
     private BulletAppState physics;
     private SyncManager syncManager;
-    private Sender sender;
+    private RecordingServerSender sender;
     private Receiver receiver;
 
     @Override
@@ -90,13 +92,18 @@ public class ServerMain extends SimpleApplication {
         receiver = new DefaultReceiver();
         server.addMessageListener(receiver, OneTrueMessage.class);
 
-        sender = new ServerSender(server);
+        sender = new RecordingServerSender(server);
         AbstractBuff.setSender(sender);
 
         receiver.registerCommandHandler(sender);
 
         MessageUtils.registerDataClasses();
         MessageUtils.registerMessages();
+
+        Serializer.registerClass(ReplayHeader.class);
+        Serializer.registerClass(ReplayCmdData.class);
+        Serializer.registerClass(ReplayData.class);
+
         listenerManager = new ServerNetListener(this, server);
         syncManager = new SyncManager(this);
 
@@ -114,7 +121,8 @@ public class ServerMain extends SimpleApplication {
         stateManager.attach(world);
         stateManager.attach(gameManager);
         stateManager.attach(physics);
-        
+
+        sender.setWorld(world);
         // Accuracy should be > 45 or projectiles might "disappear" before
         // exploding. This is because of FogOfWar
         physics.getPhysicsSpace().setAccuracy(1f / 52f);
@@ -144,6 +152,7 @@ public class ServerMain extends SimpleApplication {
     @Override
     public void destroy() {
         server.close();
+        sender.saveToFile();
         super.destroy();
     }
 }

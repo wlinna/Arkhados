@@ -12,21 +12,25 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.ui.hud;
 
-import arkhados.ui.HeroSelectionBuilder;
-import de.lessvoid.nifty.builder.LayerBuilder;
+package arkhados.ui;
 
-/**
- *
- * @author william
- */
+import arkhados.ClientMain;
+import arkhados.Globals;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.screen.Screen;
 
 
-public class DeathMatchHeroSelectionLayerBuilder extends LayerBuilder {
-    public DeathMatchHeroSelectionLayerBuilder() {
-        childLayoutCenter();        
-        panel(new HeroSelectionBuilder());
-        controller(new DeathMatchHeroSelectionLayerController());
+public class MainMenu extends Menu {
+
+    @Override
+    public void onStartScreen() {
+        super.onStartScreen();
+        ((ClientMain)Globals.app).cleanAppStatesAndHandlers();
     }
+
+    @Override
+    public void bind(Nifty nifty, Screen screen) {
+        super.bind(nifty, screen);
+    }        
 }

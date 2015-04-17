@@ -136,7 +136,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
                 Sender sender = stateManager.getState(Sender.class);
 
-                if (sender.isClient()) {
+                if (sender.isClient() && !Globals.replayMode) {
                     nifty.gotoScreen("default_hud");
                     heroSelectionLayer.show();
                     sender.addCommand(
@@ -362,7 +362,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
                         stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButCharactersInfo();
                 hudManager.showStatistics();
-                heroSelectionLayer.showWithoutEffects();
+                if (!Globals.replayMode) {
+                    heroSelectionLayer.showWithoutEffects();
+                }
                 return null;
             }
         });
@@ -411,6 +413,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
+
+        if (Globals.replayMode) {
+            return;
+        }
 
         DeathMatchHeroSelectionLayerBuilder layerBuilder =
                 new DeathMatchHeroSelectionLayerBuilder();

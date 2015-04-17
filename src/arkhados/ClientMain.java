@@ -23,12 +23,23 @@ import arkhados.net.ClientSender;
 import arkhados.net.DefaultReceiver;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
+import arkhados.net.Sender;
+import arkhados.replay.FakeSender;
+import arkhados.replay.ReplayCmdData;
+import arkhados.replay.ReplayData;
+import arkhados.replay.ReplayHeader;
+import arkhados.replay.ReplayReader;
+import arkhados.ui.ConnectionMenu;
+import arkhados.ui.MainMenu;
 import arkhados.ui.Menu;
+import arkhados.ui.ReplayMenu;
 import arkhados.util.ValueWrapper;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.network.Network;
 import com.jme3.network.NetworkClient;
+import com.jme3.network.serializing.Serializer;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
@@ -36,6 +47,8 @@ import de.lessvoid.nifty.Nifty;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -50,10 +63,10 @@ public class ClientMain extends SimpleApplication {
 
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.INFO);
-        Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
+        Logger.getLogger("de.lessvoid.nifty").setLevel(Level.ALL);
         Logger.getLogger("com.jme3.system.lwjgl.LwjglContext")
                 .setLevel(Level.SEVERE);
-        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.SEVERE);
+        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.ALL);
 
         AppSettings settings = new AppSettings(true);
 
@@ -90,6 +103,7 @@ public class ClientMain extends SimpleApplication {
         }
 
         settings.setSettingsDialogImage("Interface/Images/Splash.png");
+
         ClientMain app = new ClientMain();
         app.setSettings(settings);
         ClientSettings.setAppSettings(settings);
@@ -101,13 +115,18 @@ public class ClientMain extends SimpleApplication {
     private NiftyJmeDisplay niftyDisplay;
     private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
     private ClientHudManager clientHudManager;
-    private ClientSender sender;
+    private Sender sender;
     private GameMode gameMode = null;
-    private Menu menu;
     private InputSettings inputSettings;
+    private List<AppState> swappableStates = new ArrayList<>();
 
     @Override
     public void simpleInitApp() {
+        File replayDir = new File("replays");
+        if (!replayDir.exists()) {
+            replayDir.mkdir();
+        }
+
         Globals.assetManager = getAssetManager();
         Globals.app = this;
         setDisplayStatView(false);
@@ -130,43 +149,18 @@ public class ClientMain extends SimpleApplication {
         flyCam.setEnabled(false);
         startNifty();
 
-        SyncManager syncManager = new SyncManager(this);
-        stateManager.attach(syncManager);
-
-        EffectHandler effectHandler = new EffectHandler(this);
-        WorldManager worldManager = new WorldManager(effectHandler);
-        effectHandler.setWorldManager(worldManager);
-
-        MessageUtils.registerDataClasses();
-        MessageUtils.registerMessages();
-
-        ClientNetListener listenerManager =
-                new ClientNetListener(clientWrapper);
-        stateManager.attach(listenerManager);
-
-        stateManager.attach(worldManager);
-
-        sender = new ClientSender();
-        Receiver receiver = new DefaultReceiver();
-        receiver.registerCommandHandler(effectHandler);
-
-        UserCommandManager userCommandManager =
-                new UserCommandManager(sender, inputManager);
-
-        stateManager.attach(userCommandManager);
-
-        stateManager.attach(sender);
-        stateManager.attach(receiver);
-
-        receiver.registerCommandHandler(sender);
-        receiver.registerCommandHandler(syncManager);
-        receiver.registerCommandHandler(listenerManager);
-
         MusicManager musicManager =
                 new MusicManager(this, getInputManager(), getAssetManager());
         musicManager.setMusicCategory("Menu");
         musicManager.setPlaying(true);
         stateManager.attach(musicManager);
+
+        MessageUtils.registerDataClasses();
+        MessageUtils.registerMessages();
+
+        Serializer.registerClass(ReplayHeader.class);
+        Serializer.registerClass(ReplayCmdData.class);
+        Serializer.registerClass(ReplayData.class);
     }
 
     @Override
@@ -184,11 +178,12 @@ public class ClientMain extends SimpleApplication {
         guiNode.detachAllChildren();
         niftyDisplay = new NiftyJmeDisplay(assetManager,
                 inputManager, audioRenderer, guiViewPort);
-
-        menu = new Menu();
         nifty = niftyDisplay.getNifty();
+
         nifty.fromXml("Interface/ClientUI.xml", "main_menu",
-                menu,
+                new MainMenu(),
+                new ConnectionMenu(),
+                new ReplayMenu(),
                 new KeySetter(this, inputManager, inputSettings),
                 clientHudManager,
                 ClientSettings.getClientSettings());
@@ -210,7 +205,8 @@ public class ClientMain extends SimpleApplication {
         clientWrapper.get().addMessageListener(receiver, OneTrueMessage.class);
         sender.reset();
         receiver.reset();
-        sender.setClient(clientWrapper.get());
+
+        ((ClientSender) sender).setClient(clientWrapper.get());
 
         listenerManager.setName(username);
 
@@ -218,6 +214,8 @@ public class ClientMain extends SimpleApplication {
             clientWrapper.get().connectToServer(address, port, port);
             clientWrapper.get().start();
         } catch (IOException ex) {
+            ConnectionMenu menu = (ConnectionMenu) nifty
+                    .findScreenController("arkhados.ui.ConnectionMenu");
             menu.setStatusText(ex.getMessage());
             Logger.getLogger(ClientMain.class.getName())
                     .log(Level.SEVERE, null, ex);
@@ -273,10 +271,65 @@ public class ClientMain extends SimpleApplication {
     @Override
     public void loseFocus() {
         super.loseFocus();
-        stateManager.getState(UserCommandManager.class).onLoseFocus();
+        UserCommandManager state =
+                stateManager.getState(UserCommandManager.class);
+        if (state != null) {
+            state.onLoseFocus();
+        }
     }
 
-    public Menu getMenu() {
-        return menu;
+    public void cleanAppStatesAndHandlers() {
+        for (AppState appState : swappableStates) {
+            stateManager.detach(appState);
+        }
+
+        swappableStates.clear();
+
+        sender = null;
+    }
+
+    public void prepareForGame() {
+        sender = new ClientSender();
+        prepareAppStatesAndHandlers(new DefaultReceiver());
+    }
+
+    public void prepareForReplay() {
+        sender = new FakeSender();
+        ReplayReader reader = new ReplayReader();
+        reader.setEnabled(false);
+        prepareAppStatesAndHandlers(reader);
+    }
+
+    private void prepareAppStatesAndHandlers(Receiver receiver) {
+        ConnectionMenu connectionMenu = (ConnectionMenu) nifty
+                .findScreenController("arkhados.ui.ConnectionMenu");
+        ClientNetListener netListener = new ClientNetListener(connectionMenu);
+
+        swappableStates.add(netListener);
+        receiver.registerCommandHandler(netListener);
+
+        EffectHandler effectHandler = new EffectHandler(this);
+        WorldManager worldManager = new WorldManager(effectHandler);
+        effectHandler.setWorldManager(worldManager);
+        swappableStates.add(worldManager);
+
+        receiver.registerCommandHandler(effectHandler);
+
+        SyncManager syncManager = new SyncManager(this);
+        swappableStates.add(syncManager);
+        receiver.registerCommandHandler(syncManager);
+
+        UserCommandManager userCommandManager =
+                new UserCommandManager(inputManager);
+
+        swappableStates.add(userCommandManager);
+        swappableStates.add(sender);
+        swappableStates.add(receiver);
+
+        for (AppState appState : swappableStates) {
+            stateManager.attach(appState);
+        }
+
+        receiver.registerCommandHandler(sender);
     }
 }

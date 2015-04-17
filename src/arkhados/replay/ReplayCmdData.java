@@ -12,21 +12,36 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.ui.hud;
 
-import arkhados.ui.HeroSelectionBuilder;
-import de.lessvoid.nifty.builder.LayerBuilder;
+package arkhados.replay;
 
-/**
- *
- * @author william
- */
+import arkhados.net.Command;
+import com.jme3.network.serializing.Serializable;
 
+@Serializable
+public class ReplayCmdData {
+    private byte playerId;
+    private Command command;
+    private float time;
 
-public class DeathMatchHeroSelectionLayerBuilder extends LayerBuilder {
-    public DeathMatchHeroSelectionLayerBuilder() {
-        childLayoutCenter();        
-        panel(new HeroSelectionBuilder());
-        controller(new DeathMatchHeroSelectionLayerController());
+    public ReplayCmdData() {
+    }
+
+    public ReplayCmdData(int playerId, Command command, float time) {
+        this.playerId = (byte) playerId;
+        this.command = command;
+        this.time = time;
+    }
+
+    public Command getCommand() {
+        return command;
+    }
+
+    public float getTime() {
+        return time;
+    }        
+
+    public int getPlayerId() {
+        return playerId;
     }
 }

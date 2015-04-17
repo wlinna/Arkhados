@@ -30,7 +30,6 @@ import java.util.Properties;
  * @author william
  */
 public class DeathMatchHeroSelectionLayerController implements Controller {
-
     private AppStateManager stateManager;
     private Element element;
 

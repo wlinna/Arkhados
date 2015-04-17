@@ -47,7 +47,6 @@ import java.util.HashMap;
 public class UserCommandManager extends AbstractAppState {
 
     private InputManager inputManager;
-    private Sender sender;
     private WorldManager worldManager;
     private Application app;
     private Camera cam;
@@ -64,8 +63,7 @@ public class UserCommandManager extends AbstractAppState {
     private boolean characterChanged = false;
     private Listener listener;
 
-    public UserCommandManager(Sender sender, InputManager inputManager) {
-        this.sender = sender;
+    public UserCommandManager(InputManager inputManager) {
         this.inputManager = inputManager;
         clearMovementFlags();
     }
@@ -105,7 +103,7 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
             if (name != null) {
-                sender.addCommand(
+                app.getStateManager().getState(Sender.class).addCommand(
                         new CmdUcCastSpell(InputMappingStrings.getId(name),
                         mouseGroundPosition));
             }
@@ -167,7 +165,8 @@ public class UserCommandManager extends AbstractAppState {
         mouseTargetUpdateTimer -= tpf;
         if (mouseTargetUpdateTimer <= 0f) {
             calculateMouseGroundPosition();
-            sender.addCommand(new CmdUcMouseTarget(mouseGroundPosition));
+            app.getStateManager().getState(Sender.class).addCommand(
+                    new CmdUcMouseTarget(mouseGroundPosition));
             mouseTargetUpdateTimer = 0.075f;
         }
     }
@@ -182,8 +181,9 @@ public class UserCommandManager extends AbstractAppState {
                 .getControl(CFreeCamera.class).setCharacter(spatial);
     }
 
-    public void sendWalkDirection() {
-        sender.addCommand(new CmdUcWalkDirection(down, right));
+    private void sendWalkDirection() {
+        app.getStateManager().getState(Sender.class)
+                .addCommand(new CmdUcWalkDirection(down, right));
     }
 
     @Override
@@ -288,6 +288,7 @@ public class UserCommandManager extends AbstractAppState {
             return;
         }
 
-        sender.addCommand(new CmdUcWalkDirection(down, right));
+        app.getStateManager().getState(Sender.class)
+                .addCommand(new CmdUcWalkDirection(down, right));
     }
 }

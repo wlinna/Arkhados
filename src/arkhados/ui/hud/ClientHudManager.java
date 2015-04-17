@@ -65,8 +65,6 @@ public class ClientHudManager extends AbstractAppState
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        messageHandler.initialize(nifty);
-        messageHandler.createRows(10);
         statistics.initialize(app);
     }
 
@@ -97,6 +95,7 @@ public class ClientHudManager extends AbstractAppState
     }
 
     public void clear() {
+
         characterInfo.clean();
 
         clearAllButCharactersInfo();
@@ -107,7 +106,7 @@ public class ClientHudManager extends AbstractAppState
 
         NiftyUtils.removeChildren(screen, "panel_buffs");
         spellBar.clean();
-        
+
         hideStatistics();
     }
 
@@ -126,6 +125,8 @@ public class ClientHudManager extends AbstractAppState
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
+        messageHandler.initialize(nifty);
+        messageHandler.createRows(10);
     }
 
     @Override
@@ -150,7 +151,7 @@ public class ClientHudManager extends AbstractAppState
     }
 
     public void clearBuffIcons() {
-        NiftyUtils.removeChildren(screen, "panel_buffs");        
+        NiftyUtils.removeChildren(screen, "panel_buffs");
     }
 
     public Nifty getNifty() {
@@ -163,13 +164,12 @@ public class ClientHudManager extends AbstractAppState
 
     public void setLatestStatsList(final List<PlayerRoundStats> statsList) {
         Globals.app.enqueue(new Callable<Void>() {
-
             @Override
             public Void call() throws Exception {
                 statistics.setLatestStatsList(statsList);
                 return null;
             }
-        });        
+        });
     }
 
     public void disableCharacterHudControl() {
