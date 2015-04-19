@@ -15,6 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
@@ -52,6 +53,8 @@ import com.jme3.scene.shape.Sphere;
  * deals high damage and small splash damage. Has big knockback effect on hit.
  */
 public class RocketLauncher extends Spell {
+
+    public static final float SPLASH_RADIUS = 25f;
 
     {
         iconName = "rocket_launcher.png";
@@ -124,9 +127,9 @@ class RocketBuilder extends AbstractNodeBuilder {
         smokePuff.getParticleInfluencer()
                 .setInitialVelocity(Vector3f.UNIT_Y.mult(15f));
         smokePuff.getParticleInfluencer().setVelocityVariation(0.6f);
-        
+
         smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 3f));
-        
+
         return smokePuff;
     }
 
@@ -266,6 +269,32 @@ class RocketRemovalAction implements RemovalEventAction {
         smokeTrail.addControl(new CTimedExistence(5f));
     }
 
+    private ParticleEmitter createShockwave() {
+        ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
+                ParticleMesh.Type.Triangle, 2);
+        Material materialRed = new Material(Globals.assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                Globals.assetManager.loadTexture("Effects/shockwave.png"));
+        wave.setMaterial(materialRed);
+        wave.setImagesX(1);
+        wave.setImagesY(1);
+
+        wave.setGravity(Vector3f.ZERO);
+
+        wave.setStartColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 1f));
+        wave.setEndColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 0f));
+        wave.setLowLife(0.5f);
+        wave.setHighLife(0.5f);
+        wave.setStartSize(0.50f);
+        wave.setEndSize(RocketLauncher.SPLASH_RADIUS + 7f);
+        wave.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        wave.getParticleInfluencer().setVelocityVariation(0f);
+        wave.setParticlesPerSec(0f);
+
+        return wave;
+    }
+
     private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
@@ -330,6 +359,12 @@ class RocketRemovalAction implements RemovalEventAction {
 //        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
+
+        ParticleEmitter wave = createShockwave();
+        worldManager.getWorldRoot().attachChild(wave);
+        wave.setLocalTranslation(worldTranslation);
+        wave.emitAllParticles();
+        wave.addControl(new CTimedExistence(4f));
 
 //        sound.setLocalTranslation(worldTranslation);        
         sound.setVolume(5f);

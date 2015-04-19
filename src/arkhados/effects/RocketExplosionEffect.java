@@ -16,6 +16,8 @@ package arkhados.effects;
 
 import arkhados.Globals;
 import arkhados.controls.CTimedExistence;
+import arkhados.spell.spells.elitesoldier.RocketLauncher;
+import arkhados.spell.spells.embermage.Meteor;
 import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -95,34 +97,66 @@ public class RocketExplosionEffect implements WorldEffect {
         return fire;
     }
 
+    private ParticleEmitter createShockwave() {
+        ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
+                ParticleMesh.Type.Triangle, 2);
+        Material materialRed = new Material(Globals.assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                Globals.assetManager.loadTexture("Effects/shockwave.png"));
+        wave.setMaterial(materialRed);
+        wave.setImagesX(1);
+        wave.setImagesY(1);
+
+        wave.setGravity(Vector3f.ZERO);
+
+        wave.setStartColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 1f));
+        wave.setEndColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 0f));
+        wave.setLowLife(0.5f);
+        wave.setHighLife(0.5f);
+        wave.setStartSize(0.50f);
+        wave.setEndSize(RocketLauncher.SPLASH_RADIUS + 7f);
+        wave.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        wave.getParticleInfluencer().setVelocityVariation(0f);
+        wave.setParticlesPerSec(0f);
+
+        return wave;
+    }
+
     @Override
     public void execute(Node root, Vector3f location, String parameter) {
-        ParticleEmitter fire = this.createFire();
-        ParticleEmitter smoke = this.createSmokePuff();
+        ParticleEmitter fire = createFire();
+        ParticleEmitter smoke = createSmokePuff();
+        ParticleEmitter wave = createShockwave();
+
         Node explosion = new Node("explosion");
+        root.attachChild(explosion);
+        explosion.setLocalTranslation(location);
+        explosion.move(0f, 3f, 0f);
 
         AudioNode sound = new AudioNode(Globals.assetManager,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
-        sound.setVolume(1f);
+        sound.setVolume(5f);
 
         explosion.attachChild(fire);
         explosion.attachChild(smoke);
-        explosion.attachChild(sound);
+        explosion.attachChild(wave);
+        explosion.attachChild(sound);        
 
-        root.attachChild(explosion);
-        explosion.setLocalTranslation(location);
 
+        
         explosion.addControl(new CTimedExistence(5f));
 
         fire.emitAllParticles();
         smoke.emitAllParticles();
+        wave.emitAllParticles();
 
         fire.setParticlesPerSec(0);
         smoke.setParticlesPerSec(0);
 
-        sound.setVolume(5f);
+
         sound.play();
     }
 }

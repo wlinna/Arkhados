@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
@@ -60,6 +61,8 @@ import java.util.List;
  * @author william
  */
 public class Meteor extends Spell {
+
+    static final float SPLASH_RADIUS = 25f;
 
     {
         iconName = "meteor.png";
@@ -147,8 +150,9 @@ class CastMeteorAction extends EntityAction {
 
                     CSpellBuff buffControl = meteor.getControl(CSpellBuff.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
-                    SplashAction splash = new SplashAction(25f, baseDamage,
-                            DistanceScaling.LINEAR, null);
+                    SplashAction splash =
+                            new SplashAction(Meteor.SPLASH_RADIUS,
+                            baseDamage, DistanceScaling.LINEAR, null);
                     splash.setCasterInterface(casterInterface);
                     int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
                     splash.setExcludedTeam(teamId);
@@ -259,6 +263,32 @@ class MeteorRemovalAction implements RemovalEventAction {
         sound.setVolume(5f);
     }
 
+    private ParticleEmitter createShockwave() {
+        ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
+                ParticleMesh.Type.Triangle, 3);
+        Material materialRed = new Material(Globals.assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        materialRed.setTexture("Texture",
+                Globals.assetManager.loadTexture("Effects/shockwave.png"));
+        wave.setMaterial(materialRed);
+        wave.setImagesX(1);
+        wave.setImagesY(1);
+
+        wave.setGravity(Vector3f.ZERO);
+
+        wave.setStartColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 1f));
+        wave.setEndColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 0f));
+        wave.setLowLife(0.5f);
+        wave.setHighLife(0.5f);
+        wave.setStartSize(0.50f);
+        wave.setEndSize(Meteor.SPLASH_RADIUS + 7f);
+        wave.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        wave.getParticleInfluencer().setVelocityVariation(0f);
+        wave.setParticlesPerSec(0f);
+
+        return wave;
+    }
+
     @Override
     public void exec(WorldManager worldManager, int reason) {
         if (reason != RemovalReasons.COLLISION) {
@@ -286,7 +316,13 @@ class MeteorRemovalAction implements RemovalEventAction {
 
         emitter.setNumParticles(20);
         emitter.emitAllParticles();
-        emitter.setParticlesPerSec(0.0f);
+        emitter.setParticlesPerSec(0f);
+        ParticleEmitter wave = createShockwave();
+        worldManager.getWorldRoot().attachChild(wave);
+        wave.setLocalTranslation(worldTranslation);
+        wave.emitAllParticles();
+        wave.addControl(new CTimedExistence(4f));
+
     }
 
     void setEmitter(ParticleEmitter emitter) {
