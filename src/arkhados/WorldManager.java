@@ -393,7 +393,8 @@ public class WorldManager extends AbstractAppState {
             if (reason != -1) {
                 CEntityEvent eventControl =
                         spatial.getControl(CEntityEvent.class);
-                if (eventControl != null) {
+                if (eventControl != null
+                        && reason != RemovalReasons.DISAPPEARED) {
                     eventControl.getOnRemoval().exec(this, reason);
                 }
 
