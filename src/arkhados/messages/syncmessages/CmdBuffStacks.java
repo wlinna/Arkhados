@@ -12,44 +12,32 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.usercommands;
 
-import com.jme3.math.Vector3f;
-import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Spatial;
-import arkhados.controls.CSpellCast;
+package arkhados.messages.syncmessages;
+
+import arkhados.controls.CCharacterBuff;
 import arkhados.messages.syncmessages.statedata.StateData;
+import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 @Serializable
-public class CmdUcCastSpell extends StateData {
+public class CmdBuffStacks extends StateData{
+    private int buffId;
+    private byte stacks;
 
-    private byte input;
-    private Vector3f direction;
-
-    public CmdUcCastSpell() {
+    public CmdBuffStacks() {
     }
 
-    public CmdUcCastSpell(int input, boolean modifier, Vector3f location) {
-        this.input = (byte) (modifier ? -input : input);
-        this.direction = location;
+    public CmdBuffStacks(int entityId, int buffId, int stacks) {
+        super(entityId);
+        this.buffId = buffId;
+        this.stacks = (byte) stacks;
     }
 
     @Override
     public void applyData(Object target) {
-        Spatial character = (Spatial) target;
-        character.getControl(CSpellCast.class)
-                .castIfDifferentSpell(input, direction);
+        Node node = (Node) target;
+        node.getControl(CCharacterBuff.class).changeStacks(buffId, stacks);
+        
     }
-
-    public int getInput() {
-        return input;
-    }
-
-    public Vector3f getLocation() {
-        return direction;
-    }    
 }

@@ -28,6 +28,7 @@ import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.Firewalk;
 import arkhados.spell.spells.embermage.Ignite;
 import arkhados.spell.spells.embermage.MagmaBash;
+import arkhados.spell.spells.embermage.MagmaRelease;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
 import arkhados.spell.spells.rockgolem.EarthQuake;
@@ -88,6 +89,7 @@ public abstract class Spell {
 
         addSpell(entityFactory, Fireball.create());
         addSpell(entityFactory, MagmaBash.create());
+        addSpell(entityFactory, MagmaRelease.create());
         addSpell(entityFactory, EmberCircle.create());
         addSpell(entityFactory, Meteor.create());
         addSpell(entityFactory, PurifyingFlame.create());

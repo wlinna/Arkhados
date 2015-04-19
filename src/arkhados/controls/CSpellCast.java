@@ -205,6 +205,12 @@ public class CSpellCast extends AbstractControl {
 
         globalCooldown();
         putOnCooldown(spell);
+        
+        // Spell might have primary and secondary
+        Spell otherSpell = keySpellMappings.get(-input);
+        if (otherSpell != null) {
+            putOnCooldown(otherSpell);
+        }
 
         for (SpellCastListener spellCastListener : castListeners) {
             spellCastListener.spellCasted(this, spell);

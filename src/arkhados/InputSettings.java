@@ -26,7 +26,7 @@ import com.jme3.input.controls.Trigger;
 import com.jme3.system.AppSettings;
 import java.util.HashMap;
 
-public class InputSettings {
+public final class InputSettings {
 
     public static void setInputDefaultSettings(AppSettings settings) {
         setKey(settings, InputMappingStrings.M1, false, MouseInput.BUTTON_LEFT);
@@ -41,8 +41,8 @@ public class InputSettings {
         setKey(settings, InputMappingStrings.Q, true, KeyInput.KEY_Q);
         setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
         setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
-        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
-
+        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);        
+        
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
             settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
                     false);
@@ -86,6 +86,9 @@ public class InputSettings {
         inputManager.addMapping(SimpleApplication.INPUT_MAPPING_EXIT,
                 new KeyTrigger(KeyInput.KEY_F4));
 
+        inputManager.addMapping(InputMappingStrings.MODIFIER,
+                new KeyTrigger(KeyInput.KEY_LSHIFT));
+        
         for (String inputMapping : buttonIdInputMappingMap.values()) {
             Trigger trigger = loadInput(inputMapping).trigger;
             inputManager.addMapping(inputMapping, trigger);
@@ -119,7 +122,8 @@ public class InputSettings {
                 .putString(inputMappingString, inputString);
     }
 
-    public void saveInput(String inputMappingString, MouseButtonTrigger trigger) {
+    public void saveInput(String inputMappingString,
+            MouseButtonTrigger trigger) {
         String inputString = "mouse::"
                 + Integer.toString(trigger.getMouseButton());
         Globals.app.getContext().getSettings()

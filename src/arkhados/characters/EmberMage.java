@@ -92,10 +92,12 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
+        int m2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+        
         spellCastControl.putSpell(Spell.getSpell("Fireball"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(Spell.getSpell("Magma Bash"),
-                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), m2Id);
+        spellCastControl.putSpell(Spell.getSpell("Magma Release"), -m2Id);
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),

@@ -17,6 +17,7 @@ package arkhados.controls;
 import arkhados.effects.BuffEffect;
 import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
+import arkhados.spell.buffs.buffinformation.FakeBuff;
 import arkhados.ui.hud.BuffIconBuilder;
 import arkhados.ui.hud.ClientHudManager;
 import com.jme3.renderer.RenderManager;
@@ -39,8 +40,9 @@ public class CCharacterBuff extends AbstractControl {
 
     private static final Logger logger =
             Logger.getLogger(CCharacterBuff.class.getName());
-    private HashMap<Integer, BuffEffect> buffs = new HashMap<>();
-    private HashMap<Integer, Element> buffIcons = new HashMap<>();
+    private Map<Integer, BuffEffect> effects = new HashMap<>();
+    private Map<Integer, Element> buffIcons = new HashMap<>();
+    private Map<Integer, FakeBuff> buffs = new HashMap<>();
     private ClientHudManager hudManager = null;
     private Element buffPanel = null;
 
@@ -49,7 +51,7 @@ public class CCharacterBuff extends AbstractControl {
         super.setSpatial(spatial);
 
         if (spatial == null) {
-            for (BuffEffect buffEffect : buffs.values()) {
+            for (BuffEffect buffEffect : effects.values()) {
                 buffEffect.destroy();
             }
         }
@@ -57,10 +59,13 @@ public class CCharacterBuff extends AbstractControl {
 
     public void addBuff(int buffId, int buffTypeId, float duration,
             boolean justCreated) {
+
+        buffs.put(buffId, new FakeBuff(buffTypeId));
+
         BuffInformation buffInfo =
                 BuffInformation.getBuffInformation(buffTypeId);
         if (buffInfo == null) {
-            logger.log(Level.WARNING,
+            logger.log(Level.FINE,
                     "No buffinfo for type {0} . BuffId is {1}",
                     new Object[]{buffTypeId, buffId});
             return;
@@ -72,12 +77,13 @@ public class CCharacterBuff extends AbstractControl {
         BuffEffect buff = buffInfo.createBuffEffect(infoParams);
 
         if (buff != null) {
-            BuffEffect get = buffs.get(buffId);
+            BuffEffect get = effects.get(buffId);
             if (get != null) {
                 logger.log(Level.WARNING, "Buffs already has buff with id {0}",
                         buffId);
             }
-            buffs.put(buffId, buff);
+
+            effects.put(buffId, buff);
         }
 
         if (hudManager == null) {
@@ -95,8 +101,16 @@ public class CCharacterBuff extends AbstractControl {
         buffIcons.put(buffId, icon);
     }
 
+    public void changeStacks(int buffId, int stacks) {
+        FakeBuff buff = buffs.get(buffId);
+        if (buff != null) {
+            buff.stacks = stacks;
+        }
+    }
+    
     public void removeBuff(int buffId) {
-        BuffEffect buffEffect = buffs.remove(buffId);
+        buffs.remove(buffId);
+        BuffEffect buffEffect = effects.remove(buffId);
         // FIXME: Investigate why buffEffect is sometimes null
         // NOTE: This seems to happen at least with Slow and Ignite
         if (buffEffect != null) {
@@ -122,13 +136,13 @@ public class CCharacterBuff extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (hudManager == null) {
-            return;
-        }
-
-        for (Map.Entry<Integer, BuffEffect> entry : buffs.entrySet()) {
+        for (Map.Entry<Integer, BuffEffect> entry : effects.entrySet()) {
             BuffEffect buffEffect = entry.getValue();
             buffEffect.update(tpf);
+
+            if (hudManager == null) {
+                continue;
+            }
 
             float cooldown = buffEffect.getTimeLeft();
             // FIXME: java.lang.IndexOutOfBoundsException
@@ -161,5 +175,9 @@ public class CCharacterBuff extends AbstractControl {
     void setHudManager(ClientHudManager hudManager) {
         this.hudManager = hudManager;
         buffPanel = hudManager.getScreen().findElementByName("panel_buffs");
+    }
+
+    public Map<Integer, FakeBuff> getBuffs() {
+        return buffs;
     }
 }

@@ -14,19 +14,22 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.CEntityEvent;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.BrimstoneBuff;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
+import arkhados.spell.buffs.MagmaReleaseBuff;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
@@ -46,28 +49,30 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+import java.util.Iterator;
 
 /**
  * Embermage's Fireball (M1) spell. Projectile has moderate speed and deals
  * moderate damage. Has small knockback effect on hit.
  */
-public class Fireball extends Spell {
+public class MagmaRelease extends Spell {
 
     {
         iconName = "fireball.png";
     }
 
-    public Fireball(String name, float cooldown, float range, float castTime) {
+    public MagmaRelease(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
     public static Spell create() {
-        final float cooldown = 0.9f;
-        final float range = 85f;
-        final float castTime = 0.37f;
+        final float cooldown = 5f;
+        final float range = 120f;
+        final float castTime = 0.3f;
 
-        final Fireball spell =
-                new Fireball("Fireball", cooldown, range, castTime);
+        final MagmaRelease spell =
+                new MagmaRelease("Magma Release", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -83,13 +88,13 @@ public class Fireball extends Spell {
             }
         };
 
-        spell.nodeBuilder = new FireballBuilder();
+        spell.nodeBuilder = new MagmaReleaseBuilder();
 
         return spell;
     }
 }
 
-class FireballBuilder extends AbstractNodeBuilder {
+class MagmaReleaseBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createSmokeEmitter() {
         ParticleEmitter smoke = new ParticleEmitter("smoke-emitter",
@@ -102,7 +107,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         smoke.setImagesX(2);
         smoke.setImagesY(2);
         smoke.setSelectRandomImage(true);
-        smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
+        smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 1f));
         smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
         smoke.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
 //        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
@@ -120,7 +125,7 @@ class FireballBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
-                ParticleMesh.Type.Triangle, 200);
+                ParticleMesh.Type.Triangle, 300);
         Material materialRed = new Material(assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture",
@@ -129,17 +134,17 @@ class FireballBuilder extends AbstractNodeBuilder {
         fire.setImagesX(2);
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
-        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
-        fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+        fire.setStartColor(new ColorRGBA(0.95f, 0.15f, 0f, 1f));
+        fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
         fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
 //        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
 //        fire.getParticleInfluencer().setVelocityVariation(0.5f);
-        fire.setStartSize(2.5f);
-        fire.setEndSize(1.0f);
+        fire.setStartSize(3.5f);
+        fire.setEndSize(1f);
         fire.setGravity(Vector3f.ZERO);
         fire.setLowLife(0.1f);
         fire.setHighLife(0.1f);
-        fire.setParticlesPerSec(100);
+        fire.setParticlesPerSec(150);
 
         fire.setRandomAngle(true);
         return fire;
@@ -147,7 +152,7 @@ class FireballBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Sphere sphere = new Sphere(32, 32, 1.0f);
+        Sphere sphere = new Sphere(32, 32, 1f);
 
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
@@ -162,10 +167,10 @@ class FireballBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
-        node.setUserData(UserDataStrings.MASS, 0.30f);
+        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 180f);
+        node.setUserData(UserDataStrings.MASS, 10f);
         node.setUserData(UserDataStrings.DAMAGE, 170f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);                
 
         if (worldManager.isClient()) {
             ParticleEmitter fire = createFireEmitter();
@@ -183,7 +188,6 @@ class FireballBuilder extends AbstractNodeBuilder {
                     new FireballRemovalAction(assetManager);
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smoke);
-
 
             node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
@@ -213,20 +217,20 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BrimstoneBuff(-1, 8f));
+        buffControl.addBuff(new MagmaReleaseBuff(-1, 999999f));
 
         return node;
     }
 }
 
-class FireballRemovalAction implements RemovalEventAction {
+class MagmaReleaseRemovalAction implements RemovalEventAction {
 
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
     private AssetManager assetManager;
     private AudioNode sound;
 
-    public FireballRemovalAction(AssetManager assetManager) {
+    public MagmaReleaseRemovalAction(AssetManager assetManager) {
         this.assetManager = assetManager;
         sound = new AudioNode(assetManager,
                 "Effects/Sound/FireballExplosion.wav");
@@ -264,8 +268,8 @@ class FireballRemovalAction implements RemovalEventAction {
                 .setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
         smokePuff.getParticleInfluencer().setVelocityVariation(1f);
 
-        smokePuff.setStartSize(2.0f);
-        smokePuff.setEndSize(6.0f);
+        smokePuff.setStartSize(2f);
+        smokePuff.setEndSize(6f);
         smokePuff.setGravity(Vector3f.ZERO);
         smokePuff.setLowLife(0.75f);
         smokePuff.setHighLife(1f);
@@ -273,7 +277,7 @@ class FireballRemovalAction implements RemovalEventAction {
 
         smokePuff.setRandomAngle(true);
 
-        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4.0f));
+        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4f));
         worldRoot.attachChild(smokePuff);
         smokePuff.setLocalTranslation(worldTranslation);
         smokePuff.emitAllParticles();
@@ -294,18 +298,18 @@ class FireballRemovalAction implements RemovalEventAction {
         fire.setLocalTranslation(worldTranslation);
         fire.addControl(new CTimedExistence(1f));
 
-        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
-        fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.0f));
+        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0f, 0.40f));
+        fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0f));
         fire.setLowLife(0.1f);
         fire.setHighLife(0.3f);
         fire.setNumParticles(100);
         fire.setStartSize(0.50f);
-        fire.setEndSize(3.0f);
+        fire.setEndSize(3f);
         fire.getParticleInfluencer()
-                .setInitialVelocity(Vector3f.UNIT_X.mult(15.0f));
+                .setInitialVelocity(Vector3f.UNIT_X.mult(15f));
         fire.getParticleInfluencer().setVelocityVariation(1f);
 
-        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
+        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2f));
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
@@ -317,3 +321,4 @@ class FireballRemovalAction implements RemovalEventAction {
         smokeTrail = smoke;
     }
 }
+

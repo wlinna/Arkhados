@@ -23,6 +23,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.BrimstoneBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;

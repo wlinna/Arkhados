@@ -32,7 +32,10 @@ public class InputMappingStrings {
     public final static String E = "e";
     public final static String R = "r";
     public final static String SPACE = "space";
-    private final static HashMap<String, Integer> StringNumberMap = new HashMap<>(10);
+    public final static String MODIFIER = "modifier";
+    private final static HashMap<String, Integer> StringNumberMap =
+            new HashMap<>(10);
+
     static {
         StringNumberMap.put(MOVE_RIGHT, 0);
         StringNumberMap.put(MOVE_LEFT, 1);
@@ -45,14 +48,11 @@ public class InputMappingStrings {
         StringNumberMap.put(R, 8);
         StringNumberMap.put(SPACE, 9);
     }
-    
     public final static String VOLUME_DOWN = "volume-down";
     public final static String VOLUME_UP = "volume-up";
-    
     public final static String TOGGLE_STATS = "toggle-stats";
-    
-    public static Integer getId(String name) {        
+
+    public static Integer getId(String name) {
         return StringNumberMap.get(name);
     }
-    
 }

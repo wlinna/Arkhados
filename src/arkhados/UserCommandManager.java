@@ -62,6 +62,7 @@ public class UserCommandManager extends AbstractAppState {
     private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private boolean characterChanged = false;
     private Listener listener;
+    private boolean modifierFlag = false;
 
     public UserCommandManager(InputManager inputManager) {
         this.inputManager = inputManager;
@@ -79,6 +80,9 @@ public class UserCommandManager extends AbstractAppState {
         inputManager.addListener(actionMoveDirection,
                 InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
                 InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+        
+        inputManager
+                .addListener(modifierListener, InputMappingStrings.MODIFIER);
     }
 
     public void createCameraControl() {
@@ -89,6 +93,12 @@ public class UserCommandManager extends AbstractAppState {
         camNode.addControl(cameraControl);
         cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
+    private ActionListener modifierListener = new ActionListener() {
+        @Override
+        public void onAction(String name, boolean isPressed, float tpf) {
+            modifierFlag = isPressed;
+        }
+    };
     private ActionListener actionCastSpell = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
@@ -103,9 +113,10 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
             if (name != null) {
-                app.getStateManager().getState(Sender.class).addCommand(
+                CmdUcCastSpell uc =
                         new CmdUcCastSpell(InputMappingStrings.getId(name),
-                        mouseGroundPosition));
+                        modifierFlag, mouseGroundPosition);
+                app.getStateManager().getState(Sender.class).addCommand(uc);
             }
         }
     };

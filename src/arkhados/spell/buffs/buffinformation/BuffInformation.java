@@ -37,6 +37,9 @@ public abstract class BuffInformation {
 
         BuffInformation ignite = new IgniteInformation();
         addBuff(BuffTypeIds.IGNITE, ignite);
+        
+        BuffInformation magmaRelease = new MagmaReleaseInformation();
+        addBuff(BuffTypeIds.MAGMA_RELEASE, magmaRelease);
 
         BuffInformation survivalInstinct = new SurvivalInstinctInformation();
         addBuff(BuffTypeIds.SURVIVAL_INSTINCT, survivalInstinct);
