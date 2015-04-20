@@ -54,7 +54,6 @@ public abstract class AbstractBuff {
 
     public void attachToCharacter(CInfluenceInterface targetInterface) {
         this.targetInterface = targetInterface;
-        targetInterface.addBuff(this);
 
         CmdBuff buffCommand = generateBuffCommand(true);
         if (buffCommand != null) {

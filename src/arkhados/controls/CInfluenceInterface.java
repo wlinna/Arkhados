@@ -70,6 +70,7 @@ public class CInfluenceInterface extends AbstractControl {
         }
 
         buffs.add(buff);
+        buff.attachToCharacter(this);
 
         if (!buff.isFriendly()) {
             getSpatial().getControl(CResting.class).stopRegen();
