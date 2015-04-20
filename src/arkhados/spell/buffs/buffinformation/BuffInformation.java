@@ -61,6 +61,9 @@ public abstract class BuffInformation {
 
         MineralArmorInformation mineralArmor = new MineralArmorInformation();
         addBuff(BuffTypeIds.MINERAL_ARMOR, mineralArmor);
+        
+        BedrockInformation bedrock = new BedrockInformation();
+        addBuff(BuffTypeIds.BEDROCK, bedrock);
     }
 
     public static BuffInformation getBuffInformation(int typeId) {

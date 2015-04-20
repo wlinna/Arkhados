@@ -98,13 +98,17 @@ public class RockGolem extends AbstractNodeBuilder {
         Spell spirit = Spell.getSpell("SpiritStone");
         Spell toss = Spell.getSpell("Toss");
         Spell mineral = Spell.getSpell("MineralArmor");
+        Spell bedrock = Spell.getSpell("Bedrock");
         Spell quake = Spell.getSpell("EarthQuake");
 
+        int RId = InputMappingStrings.getId(InputMappingStrings.R);
+        
         spellCastControl.putSpell(stoneFist, InputMappingStrings.getId(InputMappingStrings.M1));
         spellCastControl.putSpell(seal, InputMappingStrings.getId(InputMappingStrings.M2));
         spellCastControl.putSpell(spirit, InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(toss, InputMappingStrings.getId(InputMappingStrings.E));
-        spellCastControl.putSpell(mineral, InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(mineral, RId);
+        spellCastControl.putSpell(bedrock, -RId);
         spellCastControl.putSpell(quake, InputMappingStrings.getId(InputMappingStrings.SPACE));
 
         AnimControl animControl = entity.getControl(AnimControl.class);
