@@ -33,15 +33,6 @@ public class SlowInfluence extends AbstractInfluence {
 
     @Override
     public void affect(CInfluenceInterface targetInterface, float tpf) {
-        if (targetInterface.isSpeedConstant()) {
-            return;
-        }
-
-        Spatial spatial = targetInterface.getSpatial();
-
-        float msCurrent = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
-        msCurrent *= slowFactor;
-        spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msCurrent);
     }
 
     public float getSlowFactor() {

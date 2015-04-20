@@ -21,10 +21,10 @@ import arkhados.util.BuffTypeIds;
  * @author william
  */
 public class SlowCC extends CrowdControlBuff {
-       {
+
+    {
         setTypeId(BuffTypeIds.SLOW);
     }
-
     private float slowFactor;
 
     public SlowCC(int id, float duration, float slow) {

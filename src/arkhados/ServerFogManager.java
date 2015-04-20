@@ -184,17 +184,10 @@ public class ServerFogManager extends AbstractAppState {
 
             CInfluenceInterface influenceInterface =
                     target.getControl(CInfluenceInterface.class);
-            if (influenceInterface != null) {
+            if (influenceInterface != null) {                
                 informAboutBuffs(sender, awareness,
-                        influenceInterface.getBuffs());
-                informAboutBuffs(sender, awareness,
-                        influenceInterface.getCrowdControlBuffs());
-                informAboutBuffs(sender, awareness,
-                        influenceInterface.getSlows());
-                informAboutBuffs(sender, awareness,
-                        influenceInterface.getSpeedBuffs());
+                        influenceInterface.getBuffs());                
             }
-
         } else {
             Command command = new CmdRemoveEntity(entityId,
                     RemovalReasons.DISAPPEARED);

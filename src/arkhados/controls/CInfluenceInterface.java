@@ -39,12 +39,7 @@ import java.util.List;
  */
 public class CInfluenceInterface extends AbstractControl {
 
-    private final List<CrowdControlBuff> crowdControlBuffs = new ArrayList<>();
-    private final List<AbstractBuff> otherBuffs = new ArrayList<>();
-    // This buff separation needs to be thinked about. There's lots of annoying
-    // ifs around which are easy to forget     
-    private final List<SlowCC> slowBuffs = new ArrayList<>();
-    private final List<SpeedBuff> speedBuffs = new ArrayList<>();
+    private final List<AbstractBuff> buffs = new ArrayList<>();
     private final List<Influence> influences = new ArrayList<>();
     private final List<SlowInfluence> slowInfluences = new ArrayList<>();
     private boolean dead = false;
@@ -56,16 +51,12 @@ public class CInfluenceInterface extends AbstractControl {
 
     public float mitigateDamage(float damage) {
         // TODO: Generic damage mitigation by shields, petrify etc.
-        for (CrowdControlBuff cc : crowdControlBuffs) {
-            if (cc instanceof PetrifyCC) {
-                damage = ((PetrifyCC) cc).damage(damage);
-                break;
-            }
-        }
-
-        for (AbstractBuff buff : getBuffs()) {
+        for (AbstractBuff buff : buffs) {
             if (buff instanceof ArmorBuff) {
                 damage = ((ArmorBuff) buff).mitigate(damage);
+                break;
+            } else if (buff instanceof PetrifyCC) {
+                damage = ((PetrifyCC) buff).damage(damage);
                 break;
             }
         }
@@ -73,21 +64,22 @@ public class CInfluenceInterface extends AbstractControl {
         return damage;
     }
 
-    public void addCrowdControlBuff(CrowdControlBuff cc) {
-        if (cc == null) {
+    public void addBuff(AbstractBuff buff) {
+        if (buff == null) {
             return;
         }
 
-        if (cc instanceof SlowCC) {
-            slowBuffs.add((SlowCC) cc);
-        } else {
-            crowdControlBuffs.add(cc);
+        buffs.add(buff);
+
+        if (!buff.isFriendly()) {
+            getSpatial().getControl(CResting.class).stopRegen();
         }
 
-        getSpatial().getControl(CResting.class).stopRegen();
+        if (!(buff instanceof CrowdControlBuff)) {
+            return;
+        }
 
-        // TODO: Check whether other buffs stop casting or not
-        // TODO: Remove this ugly repetition
+        CrowdControlBuff cc = (CrowdControlBuff) buff;
 
         if (cc.preventsMoving()) {
             spatial.getControl(CCharacterMovement.class).stop();
@@ -96,22 +88,6 @@ public class CInfluenceInterface extends AbstractControl {
         if (cc.preventsCasting()) {
             spatial.getControl(CSpellCast.class).setCasting(false);
             spatial.getControl(CActionQueue.class).clear();
-        }
-    }
-
-    public void addOtherBuff(AbstractBuff buff) {
-        if (buff == null) {
-            return;
-        }
-
-        if (buff instanceof SpeedBuff) {
-            speedBuffs.add((SpeedBuff) buff);
-        } else {
-            otherBuffs.add(buff);
-        }
-
-        if (!buff.isFriendly()) {
-            getSpatial().getControl(CResting.class).stopRegen();
         }
     }
 
@@ -128,11 +104,14 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     public boolean canMove() {
-        for (CrowdControlBuff cc : crowdControlBuffs) {
-            if (cc.preventsMoving()) {
-                return false;
+        for (AbstractBuff buff : buffs) {
+            if (buff instanceof CrowdControlBuff) {
+                if (((CrowdControlBuff) buff).preventsMoving()) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
@@ -151,11 +130,14 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     public boolean canCast() {
-        for (CrowdControlBuff crowdControlBuff : crowdControlBuffs) {
-            if (crowdControlBuff.preventsCasting()) {
-                return false;
+        for (AbstractBuff buff : buffs) {
+            if (buff instanceof CrowdControlBuff) {
+                if (((CrowdControlBuff) buff).preventsCasting()) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
@@ -190,9 +172,9 @@ public class CInfluenceInterface extends AbstractControl {
          */
         cMovement.setSpeedToBase();
 
-        applySlowsAndSpeedBuffs(tpf);
-
         applyBuffs(tpf);
+        applySlowsAndSpeedBuffs();
+
         applyInfluences(tpf);
 
         // Why is this here?
@@ -201,38 +183,19 @@ public class CInfluenceInterface extends AbstractControl {
         }
     }
 
-    private void applySlowsAndSpeedBuffs(float tpf) {
+    private void applySlowsAndSpeedBuffs() {
         if (!spatial.getControl(CCharacterMovement.class).isSpeedConstant()) {
             float speedFactor = 1f;
-
-            for (Iterator<SlowCC> it = slowBuffs.iterator(); it.hasNext();) {
-                SlowCC slow = it.next();
-                slow.update(tpf);
-
-                if (!slow.shouldContinue()) {
-                    slow.destroy();
-                    it.remove();
-                    continue;
-                }
-
-                speedFactor *= slow.getSlowFactor();
-            }
-
             float constantSpeedAddition = 0f;
 
-            for (Iterator<SpeedBuff> it = speedBuffs.iterator();
-                    it.hasNext();) {
-                SpeedBuff speedBuff = it.next();
-                speedBuff.update(tpf);
-
-                if (!speedBuff.shouldContinue()) {
-                    speedBuff.destroy();
-                    it.remove();
-                    continue;
+            for (AbstractBuff buff : buffs) {
+                if (buff instanceof SlowCC) {
+                    speedFactor *= ((SlowCC) buff).getSlowFactor();
+                } else if (buff instanceof SpeedBuff) {
+                    SpeedBuff speedBuff = (SpeedBuff) buff;
+                    speedFactor *= speedBuff.getFactor();
+                    constantSpeedAddition += speedBuff.getConstant();
                 }
-
-                speedFactor *= speedBuff.getFactor();
-                constantSpeedAddition += speedBuff.getConstant();
             }
 
             for (SlowInfluence slow : slowInfluences) {
@@ -250,34 +213,22 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     private void applyBuffs(float tpf) {
-        for (Iterator<AbstractBuff> it = otherBuffs.iterator(); it.hasNext();) {
+        for (Iterator<AbstractBuff> it = buffs.iterator(); it.hasNext();) {
             AbstractBuff buff = it.next();
             buff.update(tpf);
             if (!buff.shouldContinue()) {
                 buff.destroy();
                 it.remove();
-                continue;
-            }
-        }
-
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
-                it.hasNext();) {
-            CrowdControlBuff cc = it.next();
-            cc.update(tpf);
-            if (!cc.shouldContinue()) {
-                cc.destroy();
-                it.remove();
-                continue;
             }
         }
     }
 
     private void applyInfluences(float tpf) {
-        for (Iterator<Influence> it = influences.iterator(); it.hasNext();) {
-            Influence influence = it.next();
+        for (Influence influence : influences) {
             influence.affect(this, tpf);
-            it.remove();
         }
+
+        influences.clear();
     }
 
     @Override
@@ -293,21 +244,10 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     public void removeDamageSensitiveBuffs() {
-        for (Iterator<AbstractBuff> it = otherBuffs.iterator(); it.hasNext();) {
+        for (Iterator<AbstractBuff> it = buffs.iterator(); it.hasNext();) {
             AbstractBuff buff = it.next();
-
             if (buff.isDamageSensitive()) {
                 buff.destroy();
-                it.remove();
-            }
-        }
-
-        for (Iterator<CrowdControlBuff> it = crowdControlBuffs.iterator();
-                it.hasNext();) {
-            CrowdControlBuff cc = it.next();
-
-            if (cc.isDamageSensitive()) {
-                cc.destroy();
                 it.remove();
             }
         }
@@ -330,47 +270,28 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     public List<AbstractBuff> getBuffs() {
-        return otherBuffs;
+        return buffs;
     }
 
     private <T extends AbstractBuff> boolean hasBuff(Class<T> buffClass) {
-        if (buffClass.isAssignableFrom(CrowdControlBuff.class)) {
-            for (AbstractBuff buff : crowdControlBuffs) {
-                if (buffClass.isAssignableFrom(buff.getClass())) {
-                    return true;
-                }
-            }
-        } else {
-            for (AbstractBuff buff : getBuffs()) {
-                if (buffClass.isAssignableFrom(buff.getClass())) {
-                    return true;
-                }
+        for (AbstractBuff buff : buffs) {
+            if (buffClass.isAssignableFrom(buff.getClass())) {
+                return true;
             }
         }
+
         return false;
     }
 
     public void addInfluence(Influence influence) {
+        influences.add(influence);
+
         if (influence instanceof SlowInfluence) {
             slowInfluences.add((SlowInfluence) influence);
-        } else {
-            influences.add(influence);
         }
     }
 
     public boolean isAbleToCastWhileMoving() {
         return hasBuff(AbleToCastWhileMovingBuff.class);
-    }
-
-    public List<CrowdControlBuff> getCrowdControlBuffs() {
-        return crowdControlBuffs;
-    }
-
-    public List<SpeedBuff> getSpeedBuffs() {
-        return speedBuffs;
-    }
-
-    public List<SlowCC> getSlows() {
-        return slowBuffs;
     }
 }

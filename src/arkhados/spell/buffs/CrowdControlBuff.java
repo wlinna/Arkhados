@@ -14,13 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-import arkhados.ServerFogManager;
-import arkhados.controls.CEntityVariable;
-import arkhados.controls.CInfluenceInterface;
-import arkhados.messages.syncmessages.CmdBuff;
-import arkhados.util.UserDataStrings;
-import com.jme3.scene.Spatial;
-
 /**
  * Base class for all buffs that somehow restricts or limits the entity that is
  * carrying the buff. Some examples of crowd control buffs are stun, silence,
@@ -37,28 +30,7 @@ public abstract class CrowdControlBuff extends AbstractBuff {
      */
     public CrowdControlBuff(int id, float duration) {
         super(id, duration);
-    }
-
-    @Override
-    public void attachToCharacter(CInfluenceInterface influenceInterface) {
-        targetInterface = influenceInterface;
-        influenceInterface.addCrowdControlBuff(this);
-
-        if (getTypeId() == -1) {
-            return;
-        }
-
-        int entityId = targetInterface.getSpatial()
-                .getUserData(UserDataStrings.ENTITY_ID);
-
-        Spatial spatial = targetInterface.getSpatial();
-        ServerFogManager fogManager = spatial
-                .getControl(CEntityVariable.class)
-                .getAwareness().getFogManager();
-
-        fogManager.addCommand(spatial, new CmdBuff(entityId,
-                getTypeId(), getBuffId(), duration, true));
-    }
+    }    
 
     public boolean preventsCasting() {
         return false;

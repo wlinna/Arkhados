@@ -25,18 +25,19 @@ import java.util.List;
  * @author william
  */
 public class CastSelfBuffAction extends EntityAction {
-    private List<AbstractBuff> buffs = new ArrayList<AbstractBuff>();
+    private List<AbstractBuff> buffs = new ArrayList<>();
 
     @Override
     public boolean update(float tpf) {
-        CInfluenceInterface influenceInterface = super.spatial.getControl(CInfluenceInterface.class);
-        for (AbstractBuff abstractBuff : this.buffs) {
+        CInfluenceInterface influenceInterface =
+                spatial.getControl(CInfluenceInterface.class);
+        for (AbstractBuff abstractBuff : buffs) {
             abstractBuff.attachToCharacter(influenceInterface);
         }
         return false;
     }
 
-    public void addBuff(AbstractBuff abstractBuff) {
-        this.buffs.add(abstractBuff);
+    public void addBuff(AbstractBuff buff) {
+        buffs.add(buff);
     }
 }
