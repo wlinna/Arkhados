@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.effects.BlindManager;
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.ui.hud.ClientHudManager;
@@ -303,6 +304,7 @@ public class ClientMain extends SimpleApplication {
         ConnectionMenu connectionMenu = (ConnectionMenu) nifty
                 .findScreenController("arkhados.ui.ConnectionMenu");
         ClientNetListener netListener = new ClientNetListener(connectionMenu);
+        swappableStates.add(new BlindManager());
 
         swappableStates.add(netListener);
         receiver.registerCommandHandler(netListener);

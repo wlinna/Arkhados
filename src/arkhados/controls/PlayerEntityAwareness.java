@@ -51,17 +51,20 @@ import java.util.logging.Logger;
  */
 public class PlayerEntityAwareness {
 
-    private static final Logger logger = Logger.getLogger(PlayerEntityAwareness.class.getName());
+    private static final float BLIND_RANGE_SQUARED = FastMath.sqr(40f);
+    private static final Logger logger =
+            Logger.getLogger(PlayerEntityAwareness.class.getName());
     private Spatial ownSpatial;
     private Map<Spatial, Boolean> entityFlags = new HashMap<>(6);
     private final int playerId;
     private Node walls;
     private Ray ray = new Ray();
-    private float rangeSquared = FastMath.sqr(170);
+    private float rangeSquared = FastMath.sqr(170f);
     private Vector3f _reUsableVec = new Vector3f();
     private ServerFogManager fogManager;
 
-    public PlayerEntityAwareness(int playerId, Node walls, ServerFogManager fogManager) {
+    public PlayerEntityAwareness(int playerId, Node walls,
+            ServerFogManager fogManager) {
         this.playerId = playerId;
         this.walls = walls;
         this.fogManager = fogManager;
@@ -95,7 +98,8 @@ public class PlayerEntityAwareness {
             return false;
         }
         if (getOwnSpatial() == null) {
-            logger.log(Level.WARNING, "Player {0} tried testVisibility without owning spatial",
+            logger.log(Level.WARNING,
+                    "Player {0} tried testVisibility without owning spatial",
                     playerId);
             return false;
         }
@@ -112,9 +116,18 @@ public class PlayerEntityAwareness {
             otherLocation = other.getLocalTranslation();
         }
 
-        float distanceSquared = otherLocation.distanceSquared(getOwnSpatial().getLocalTranslation());
+        float distanceSquared = otherLocation
+                .distanceSquared(getOwnSpatial().getLocalTranslation());
 
         if (distanceSquared > rangeSquared) {
+            return false;
+        }
+
+        CInfluenceInterface influenceInterface =
+                getOwnSpatial().getControl(CInfluenceInterface.class);
+        if (influenceInterface != null
+                && influenceInterface.isBlind()
+                && distanceSquared > BLIND_RANGE_SQUARED) {
             return false;
         }
 
@@ -124,7 +137,8 @@ public class PlayerEntityAwareness {
     private boolean wallTest(Spatial other, float distance) {
         Vector3f direction = _reUsableVec;
         direction.set(other.getLocalTranslation());
-        direction.subtractLocal(getOwnSpatial().getLocalTranslation()).normalizeLocal();
+        direction.subtractLocal(getOwnSpatial().getLocalTranslation())
+                .normalizeLocal();
 
         CollisionResults collisionResults = new CollisionResults();
 
@@ -134,7 +148,8 @@ public class PlayerEntityAwareness {
         walls.collideWith(ray, collisionResults);
 
         if (collisionResults.size() == 0
-                || collisionResults.getClosestCollision().getDistance() > distance) {
+                || collisionResults.getClosestCollision()
+                .getDistance() > distance) {
             return true;
         }
 

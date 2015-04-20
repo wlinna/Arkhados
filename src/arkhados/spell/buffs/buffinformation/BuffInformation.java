@@ -64,6 +64,9 @@ public abstract class BuffInformation {
         
         BedrockInformation bedrock = new BedrockInformation();
         addBuff(BuffTypeIds.BEDROCK, bedrock);
+        
+        BlindInformation blind = new BlindInformation();
+        addBuff(BuffTypeIds.BLIND, blind);
     }
 
     public static BuffInformation getBuffInformation(int typeId) {

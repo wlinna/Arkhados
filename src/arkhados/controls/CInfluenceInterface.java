@@ -18,6 +18,7 @@ import arkhados.Globals;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.ArmorBuff;
+import arkhados.spell.buffs.BlindCC;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.PetrifyCC;
 import arkhados.spell.buffs.SlowCC;
@@ -40,6 +41,7 @@ import java.util.List;
 public class CInfluenceInterface extends AbstractControl {
 
     private final List<AbstractBuff> buffs = new ArrayList<>();
+    private final List<BlindCC> blinds = new ArrayList<>();
     private final List<Influence> influences = new ArrayList<>();
     private final List<SlowInfluence> slowInfluences = new ArrayList<>();
     private boolean dead = false;
@@ -294,5 +296,13 @@ public class CInfluenceInterface extends AbstractControl {
 
     public boolean isAbleToCastWhileMoving() {
         return hasBuff(AbleToCastWhileMovingBuff.class);
+    }
+
+    public List<BlindCC> getBlinds() {
+        return blinds;
+    }
+    
+    public boolean isBlind() {
+        return !blinds.isEmpty();
     }
 }

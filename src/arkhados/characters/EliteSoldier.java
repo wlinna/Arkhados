@@ -140,11 +140,11 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
-
+        int M2id = InputMappingStrings.getId(InputMappingStrings.M2);
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(Spell.getSpell("Railgun"),
-                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(Spell.getSpell("Railgun"), M2id);
+        spellCastControl.putSpell(Spell.getSpell("Blinding Ray"), -M2id);
         spellCastControl.putSpell(Spell.getSpell("Plasmagun"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"),
