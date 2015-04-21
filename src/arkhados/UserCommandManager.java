@@ -18,6 +18,7 @@ import arkhados.controls.CCharacterHud;
 import arkhados.controls.CFreeCamera;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
+import arkhados.effects.DeathManager;
 import arkhados.messages.usercommands.CmdUcCastSpell;
 import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
@@ -274,6 +275,7 @@ public class UserCommandManager extends AbstractAppState {
             return false;
         }
 
+        app.getStateManager().getState(DeathManager.class).revive();
         character = (Node) spatial;
 
         if (characterChanged) {
