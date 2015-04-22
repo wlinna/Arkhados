@@ -32,9 +32,11 @@ import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
 import arkhados.net.ServerSender;
 import arkhados.ui.hud.ServerClientDataStrings;
+import static arkhados.ui.hud.ServerClientDataStrings.PLAYER_ID;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import com.jme3.app.state.AppStateManager;
+import java.util.concurrent.Callable;
 
 /**
  *
@@ -73,33 +75,44 @@ public class ServerNetListener implements ConnectionListener,
     }
 
     @Override
-    public void connectionRemoved(Server server, HostedConnection conn) {
-        Integer playerId = conn.getAttribute(PLAYER_ID);
-        ServerSender sender = stateManager.getState(ServerSender.class);
-        sender.removeConnection(conn);
-        ServerFogManager fog = stateManager.getState(ServerFogManager.class);
-        fog.removeConnection(conn);
-        ServerClientData.remove(conn.getId());
-        
-        if (playerId == null) {
-            return;
-        }
+    public void connectionRemoved(final Server server,
+            final HostedConnection conn) {
+        app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Integer playerId = conn.getAttribute(PLAYER_ID);
+                ServerSender sender = stateManager.getState(ServerSender.class);
+                sender.removeConnection(conn);
+                ServerFogManager fog =
+                        stateManager.getState(ServerFogManager.class);
+                fog.removeConnection(conn);
+                ServerClientData.remove(conn.getId());
 
-        ServerClientData.removeConnection(playerId);
+                if (playerId == null) {
+                    return null;
+                }
 
-        int entityId =
-                PlayerData.getIntData(playerId, PlayerDataStrings.ENTITY_ID);
-        if (entityId > -1) {
-            WorldManager world = stateManager.getState(WorldManager.class);
-            world.removeEntity(entityId, RemovalReasons.DISCONNECT);
-        }
+                ServerClientData.removeConnection(playerId);
 
-        PlayerData.remove(playerId);
-        CharacterInteraction.removePlayer(playerId);
+                int entityId = PlayerData.getIntData(playerId,
+                        PlayerDataStrings.ENTITY_ID);
+                if (entityId > -1) {
+                    WorldManager world =
+                            stateManager.getState(WorldManager.class);
+                    world.removeEntity(entityId, RemovalReasons.DISCONNECT);
+                }
 
-        if (!server.hasConnections() && someoneJoined) {
-            app.stop();
-        }
+                PlayerData.remove(playerId);
+                CharacterInteraction.removePlayer(playerId);
+
+                if (!server.hasConnections() && someoneJoined) {
+                    app.stop();
+                }
+
+                return null;
+            }
+        });
+
     }
 
     @Override
