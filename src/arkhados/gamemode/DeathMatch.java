@@ -25,6 +25,7 @@ import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.WorldManager;
 import arkhados.controls.PlayerEntityAwareness;
+import arkhados.effects.DeathManager;
 import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
@@ -362,6 +363,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
                         stateManager.getState(ClientHudManager.class);
                 hudManager.clearAllButCharactersInfo();
                 hudManager.showStatistics();
+                stateManager.getState(DeathManager.class).death();
                 if (!Globals.replayMode) {
                     heroSelectionLayer.showWithoutEffects();
                 }

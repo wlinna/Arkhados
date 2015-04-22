@@ -15,6 +15,7 @@
 package arkhados;
 
 import arkhados.effects.BlindManager;
+import arkhados.effects.DeathManager;
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.ui.hud.ClientHudManager;
@@ -305,6 +306,7 @@ public class ClientMain extends SimpleApplication {
                 .findScreenController("arkhados.ui.ConnectionMenu");
         ClientNetListener netListener = new ClientNetListener(connectionMenu);
         swappableStates.add(new BlindManager());
+        swappableStates.add(new DeathManager());
 
         swappableStates.add(netListener);
         receiver.registerCommandHandler(netListener);
