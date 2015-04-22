@@ -32,8 +32,8 @@ public class CastSelfBuffAction extends EntityAction {
     public boolean update(float tpf) {
         CInfluenceInterface target =
                 spatial.getControl(CInfluenceInterface.class);
-        for (AbstractBuff abstractBuff : buffs) {
-            target.addBuff(abstractBuff);
+        for (AbstractBuff buff : buffs) {
+            buff.attachToCharacter(target);
         }
         return false;
     }
