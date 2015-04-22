@@ -52,7 +52,7 @@ public class EmberCircle extends Spell {
         iconName = "ember_circle.png";
     }
 
-    public EmberCircle(String name, float cooldown, float range, 
+    public EmberCircle(String name, float cooldown, float range,
             float castTime) {
         super(name, cooldown, range, castTime);
     }
@@ -89,7 +89,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createFire(float radius) {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
-                ParticleMesh.Type.Triangle, 50 * (int) radius);
+                ParticleMesh.Type.Triangle, 10 * (int) radius);
         Material material =
                 new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
@@ -98,21 +98,21 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         fire.setImagesX(2);
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
-        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
-        fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+        fire.setStartColor(new ColorRGBA(0.95f, 0.15f, 0f, 1f));
+        fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
         fire.getParticleInfluencer()
                 .setInitialVelocity(Vector3f.UNIT_Y.mult(2f));
         fire.setStartSize(6.5f);
-        fire.setEndSize(0.5f);
+        fire.setEndSize(1.5f);
         fire.setGravity(Vector3f.ZERO);
         fire.setLowLife(1f);
         fire.setHighLife(2f);
-        fire.setParticlesPerSec((int) (0.5 * radius * radius));
+        fire.setParticlesPerSec((int) (0.4 * radius * radius));
         fire.getParticleInfluencer().setVelocityVariation(0.2f);
         fire.setRandomAngle(true);
 
         EmitterCircleShape emitterShape =
-                new EmitterCircleShape(Vector3f.ZERO, 1f);
+                new EmitterCircleShape(Vector3f.ZERO, radius);
         fire.setShape(emitterShape);
 
         return fire;
@@ -199,25 +199,38 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         } else if (worldManager.isClient()) {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
-                public boolean update(float tpf) {
-                    ParticleEmitter fire = createFire(radius);
-
-                    Node node = (Node) spatial;
-
-                    node.attachChild(fire);
-                    fire.setLocalTranslation(Vector3f.ZERO);
-
-                    Vector3f worldTranslation = node.getWorldTranslation();
-
+                public boolean update(float tpf) {                    
+                    Vector3f worldTranslation = spatial.getWorldTranslation();
+                                        
+                    final ParticleEmitter fire = createFire(radius);
+                    worldManager.getWorldRoot().attachChild(fire);
+                    fire.setLocalTranslation(worldTranslation);
+                    fire.move(0f, 1f, 0f);
+                    fire.addControl(new CTimedExistence(10f));
+                    
                     final ParticleEmitter smoke = createSmoke(radius);
                     worldManager.getWorldRoot().attachChild(smoke);
-                    smoke.setLocalTranslation(worldTranslation.add(0, 1f, 0));
+                    smoke.setLocalTranslation(worldTranslation);
+                    smoke.move(0f, 1f, 0f);
                     smoke.addControl(new CTimedExistence(10f));
 
+                    float removalDelay = Math.max(0, 5f - params.age);
+                                        
+                    CActionQueue fireActions = new CActionQueue();
+                    fire.addControl(fireActions);
+                    fireActions.enqueueAction(new DelayAction(removalDelay));
+                    fireActions.enqueueAction(new EntityAction() {
+                        @Override
+                        public boolean update(float tpf) {
+                            fire.setParticlesPerSec(0);
+                            return false;
+                        }
+                    });
+                    
                     CActionQueue smokeActions = new CActionQueue();
                     smoke.addControl(smokeActions);
-                    float smokeDelay = Math.max(0, 5f - params.age);
-                    smokeActions.enqueueAction(new DelayAction(smokeDelay));
+
+                    smokeActions.enqueueAction(new DelayAction(removalDelay));
                     smokeActions.enqueueAction(new EntityAction() {
                         @Override
                         public boolean update(float tpf) {
@@ -228,7 +241,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 
                     AudioNode sound = new AudioNode(assetManager,
                             "Effects/Sound/EmberCircle.wav");
-                    node.attachChild(sound);
+                    ((Node) spatial).attachChild(sound);
                     sound.setPositional(true);
                     sound.setReverbEnabled(false);
                     sound.setVolume(1f);
