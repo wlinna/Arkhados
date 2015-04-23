@@ -34,6 +34,7 @@ import arkhados.effects.EffectBox;
 import arkhados.effects.TossHitEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
+import arkhados.spell.spells.rockgolem.TossValidator;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.AnimationData;
 import arkhados.util.BuildParameters;
@@ -103,13 +104,21 @@ public class RockGolem extends AbstractNodeBuilder {
 
         int RId = InputMappingStrings.getId(InputMappingStrings.R);
         
-        spellCastControl.putSpell(stoneFist, InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(seal, InputMappingStrings.getId(InputMappingStrings.M2));
-        spellCastControl.putSpell(spirit, InputMappingStrings.getId(InputMappingStrings.Q));
-        spellCastControl.putSpell(toss, InputMappingStrings.getId(InputMappingStrings.E));
+        spellCastControl.putSpell(stoneFist,
+                InputMappingStrings.getId(InputMappingStrings.M1));
+        spellCastControl.putSpell(seal,
+                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(spirit,
+                InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(toss,
+                InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(mineral, RId);
         spellCastControl.putSpell(bedrock, -RId);
-        spellCastControl.putSpell(quake, InputMappingStrings.getId(InputMappingStrings.SPACE));
+        spellCastControl.putSpell(quake,
+                InputMappingStrings.getId(InputMappingStrings.SPACE));
+        
+        TossValidator tossValidator = new TossValidator(toss);
+        spellCastControl.addCastValidator(tossValidator);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CCharacterAnimation characterAnimControl = new CCharacterAnimation(animControl);

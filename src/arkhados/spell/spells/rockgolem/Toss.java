@@ -16,7 +16,6 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
 import arkhados.ServerFogManager;
-import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
 import arkhados.characters.RockGolem;
@@ -29,9 +28,6 @@ import arkhados.messages.CmdWorldEffect;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
-import arkhados.util.Predicate;
-import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -39,8 +35,6 @@ import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -49,6 +43,7 @@ import java.util.List;
 public class Toss extends Spell {
 
     public static final float SPLASH_RADIUS = 20f;
+    public static final float PICK_RANGE = 20f;
 
     {
         iconName = "Toss.png";
@@ -68,7 +63,7 @@ public class Toss extends Spell {
         toss.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastTossAction(toss, 20f);
+                return new CastTossAction(toss);
             }
         };
 
@@ -82,18 +77,16 @@ public class Toss extends Spell {
 class CastTossAction extends EntityAction {
 
     private Spell spell;
-    private float range;
 
-    public CastTossAction(Spell spell, float throwRange) {
+    public CastTossAction(Spell spell) {
         this.spell = spell;
-        this.range = throwRange;
     }
 
     @Override
     public boolean update(float tpf) {
         CActionQueue actionQueue = spatial.getControl(CActionQueue.class);
 
-        TossAction tossAction = new TossAction(spell, range);
+        TossAction tossAction = new TossAction(spell);
         actionQueue.enqueueAction(tossAction);
         return false;
     }
@@ -102,65 +95,15 @@ class CastTossAction extends EntityAction {
 class TossAction extends EntityAction {
 
     private Spell spell;
-    private float range;
     private final float forwardSpeed = 105f;
 
-    public TossAction(Spell spell, float range) {
+    public TossAction(Spell spell) {
         this.spell = spell;
-        this.range = range;
     }
 
     @Override
     public boolean update(float tpf) {
-        final CCharacterPhysics physicsControl =
-                spatial.getControl(CCharacterPhysics.class);
-        Vector3f hitDirection = physicsControl.calculateTargetDirection()
-                .normalize().multLocal(range);
-
-        physicsControl.setViewDirection(hitDirection);
-
-        Predicate<SpatialDistancePair> predicate =
-                new Predicate<SpatialDistancePair>() {
-            @Override
-            public boolean test(SpatialDistancePair value) {
-                CInfluenceInterface targetInfluenceControl = value.spatial
-                        .getControl(CInfluenceInterface.class);
-                if (targetInfluenceControl == null) {
-                    SpiritStonePhysicsControl stone =
-                            value.spatial
-                            .getControl(SpiritStonePhysicsControl.class);
-                    if (stone != null) {
-                        int myTeamId = spatial
-                                .getUserData(UserDataStrings.TEAM_ID);
-                        if (value.spatial.getUserData(UserDataStrings.TEAM_ID)
-                                .equals(myTeamId)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                if (value.spatial == spatial) {
-                    return false;
-                }
-
-                return true;
-            }
-        };
-
-        List<SpatialDistancePair> targets = Selector.coneSelect(
-                new ArrayList<SpatialDistancePair>(), predicate,
-                spatial.getLocalTranslation(), hitDirection, range, 90f);
-
-        Spatial closest = null;
-        float smallestDistance = 9999f;
-
-        for (SpatialDistancePair target : targets) {
-            if (target.distance < smallestDistance) {
-                smallestDistance = target.distance;
-                closest = target.spatial;
-            }
-        }
+        Spatial closest = TossSelect.select(spatial);
 
         if (closest != null) {
             toss(closest);

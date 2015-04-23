@@ -79,11 +79,10 @@ public class CSpellCast extends AbstractControl {
     /**
      * Add listener that is notified anytime that spell is cast
      *
-     * @param ammunitionControl
+     * @param listener
      */
-    public void addCastListeners(
-            CEliteSoldierAmmunition ammunitionControl) {
-        castListeners.add(ammunitionControl);
+    public void addCastListeners(SpellCastListener listener) {
+        castListeners.add(listener);
     }
 
     public Spell getSpell(int id) {
