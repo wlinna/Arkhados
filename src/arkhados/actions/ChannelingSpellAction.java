@@ -17,6 +17,7 @@ package arkhados.actions;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CInfluenceInterface;
+import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import com.jme3.scene.Spatial;
 
@@ -35,6 +36,7 @@ public class ChannelingSpellAction extends EntityAction {
     private CCharacterMovement cMovement;
     private CInfluenceInterface inluenceControl;
     private CActionQueue actionQueue;
+    private CSpellCast cSpellCast;
 
     public ChannelingSpellAction(Spell spell, float maxTime,
             float actionFrequency, EntityAction action) {
@@ -62,12 +64,13 @@ public class ChannelingSpellAction extends EntityAction {
         cMovement = spatial.getControl(CCharacterMovement.class);
         inluenceControl = spatial.getControl(CInfluenceInterface.class);
         actionQueue = spatial.getControl(CActionQueue.class);
+        cSpellCast = spatial.getControl(CSpellCast.class);
     }
 
     @Override
     public boolean update(float tpf) {
         timeLeft -= tpf;
-        timer += tpf;
+        timer += tpf * cSpellCast.getCastSpeedFactor();
         if (timer >= actionFrequency) {
             timer = 0;
             action.update(tpf); // tpf should not matter for action

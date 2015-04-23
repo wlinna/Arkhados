@@ -97,16 +97,16 @@ public class CCharacterAnimation extends AbstractControl {
         setEnabled(false);
     }
 
-    public void castSpell(Spell spell) {
+    public void castSpell(Spell spell, float castSpeedFactor) {
         AnimationData animationData = spellAnimationMap.get(spell.getName());
         if (animationData == null) {
             return;
         }
 
-        actionTime = spell.getCastTime();
+        actionTime = spell.getCastTime() / castSpeedFactor;
 
         channel.setAnim(animationData.getName());
-        channel.setSpeed(animationData.getSpeed());
+        channel.setSpeed(animationData.getSpeed() * castSpeedFactor);
         channel.setLoopMode(animationData.getLoopMode());
     }
 

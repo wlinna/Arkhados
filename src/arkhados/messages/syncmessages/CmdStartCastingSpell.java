@@ -33,14 +33,17 @@ import arkhados.spell.Spell;
 public class CmdStartCastingSpell extends StateData {
     private short spellId;
     private Vector3f direction = new Vector3f();
+    private float castSpeedFactor;
 
     public CmdStartCastingSpell() {
     }
 
-    public CmdStartCastingSpell(int id, int spellId, Vector3f direction) {
+    public CmdStartCastingSpell(int id, int spellId, Vector3f direction,
+            float castSpeedFactor) {
         super(id);
         this.spellId = (short)spellId;
         this.direction.set(direction);
+        this.castSpeedFactor = castSpeedFactor;
     }
 
     @Override
@@ -48,7 +51,8 @@ public class CmdStartCastingSpell extends StateData {
         Spatial character = (Spatial) target;
         Spell spell =
                 character.getControl(CSpellCast.class).getSpell(spellId);
-        character.getControl(CCharacterAnimation.class).castSpell(spell);
+        character.getControl(CCharacterAnimation.class)
+                .castSpell(spell, castSpeedFactor);
         character.getControl(CCharacterPhysics.class)
                 .setViewDirection(direction);
         

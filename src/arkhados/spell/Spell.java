@@ -44,6 +44,7 @@ import arkhados.spell.spells.venator.DeepWounds;
 import arkhados.spell.spells.venator.FeralScream;
 import arkhados.spell.spells.venator.Leap;
 import arkhados.spell.spells.venator.Rend;
+import arkhados.spell.spells.venator.NumbingDagger;
 import arkhados.spell.spells.venator.SurvivalInstinct;
 import arkhados.util.EntityFactory;
 import arkhados.util.AbstractNodeBuilder;
@@ -100,6 +101,7 @@ public abstract class Spell {
 
         addSpell(entityFactory, Rend.create());
         addSpell(entityFactory, Dagger.create());
+        addSpell(entityFactory, NumbingDagger.create());
         addSpell(entityFactory, Leap.create());
         addSpell(entityFactory, FeralScream.create());
         addSpell(entityFactory, DeepWounds.create());

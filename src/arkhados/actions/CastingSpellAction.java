@@ -33,6 +33,7 @@ public class CastingSpellAction extends EntityAction {
     private Vector3f movementDirection = null;
     private boolean followedByAnotherAnimation = false;
     private CInfluenceInterface influenceInterface;
+    private CSpellCast cSpellCast;
 
     public CastingSpellAction(Spell spell) {
         this.spell = spell;
@@ -47,15 +48,15 @@ public class CastingSpellAction extends EntityAction {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        influenceInterface =
-                spatial.getControl(CInfluenceInterface.class);
+        influenceInterface = spatial.getControl(CInfluenceInterface.class);
+        cSpellCast = spatial.getControl(CSpellCast.class);
     }
 
     @Override
     public boolean update(float tpf) {
         // TODO: Refactor and / or comment logic
 
-        delay -= tpf;
+        delay -= tpf * cSpellCast.getCastSpeedFactor();
 
         if (delay <= 0f) { // Go inside when casting is over
             if (!spell.canMoveWhileCasting() && !followedByAnotherAnimation) {
@@ -64,11 +65,11 @@ public class CastingSpellAction extends EntityAction {
             }
 
             if (!followedByAnotherAnimation) {
-                spatial.getControl(CSpellCast.class).setCasting(false);
+                cSpellCast.setCasting(false);
             }
             return false;
         }
-        spatial.getControl(CSpellCast.class).setCasting(true);
+        cSpellCast.setCasting(true);
         CCharacterMovement cMovement =
                 spatial.getControl(CCharacterMovement.class);
 

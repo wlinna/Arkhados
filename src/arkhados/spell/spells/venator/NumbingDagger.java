@@ -25,12 +25,13 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class Dagger extends Spell {
+public class NumbingDagger extends Spell {
     {
         iconName = "damaging_dagger.png";
     }
 
-    public Dagger(String name, float cooldown, float range, float castTime) {
+    public NumbingDagger(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -39,8 +40,8 @@ public class Dagger extends Spell {
         final float range = 100f;
         final float castTime = 0.35f;
 
-        final Dagger spell = new Dagger("Damaging Dagger", cooldown,
-                range, castTime);
+        final NumbingDagger spell = new NumbingDagger("Numbing Dagger",
+                cooldown, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -49,8 +50,8 @@ public class Dagger extends Spell {
             }
         };
 
-        spell.nodeBuilder = new DaggerBuilder(true);
+        spell.nodeBuilder = new DaggerBuilder(false);
 
         return spell;
-    }
+    }  
 }

@@ -29,6 +29,7 @@ import arkhados.messages.syncmessages.CmdStartCastingSpell;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
+import arkhados.spell.buffs.CastSpeedBuff;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ import java.util.List;
  * @author william
  */
 public class CSpellCast extends AbstractControl {
+
     private static HashMap<Integer, Float> clientCooldowns;
-    
     private HashMap<Integer, Spell> spells = new HashMap<>();
     private HashMap<Integer, Float> cooldowns = new HashMap<>();
     private HashMap<Integer, Spell> keySpellMappings = new HashMap<>();
@@ -48,15 +49,16 @@ public class CSpellCast extends AbstractControl {
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
     private final List<SpellCastListener> castListeners = new ArrayList<>();
+    private float castSpeedFactor = 1f;
 
     public void thisIsOwnedByClient() {
         clientCooldowns = cooldowns;
     }
-    
+
     public void restoreClientCooldowns() {
         cooldowns = clientCooldowns;
     }
-    
+
     public void putSpell(Spell spell, Integer key) {
         spells.put(spell.getId(), spell);
         cooldowns.put(spell.getId(), 0f);
@@ -162,6 +164,17 @@ public class CSpellCast extends AbstractControl {
         return true;
     }
 
+    private float calculateCastSpeedFactor() {
+        List<CastSpeedBuff> buffs = spatial
+                .getControl(CInfluenceInterface.class).getCastSpeedBuffs();
+        float newFactor = 1f;
+        for (CastSpeedBuff buff : buffs) {
+            newFactor *= buff.getFactor();
+        }
+
+        return newFactor;
+    }
+
     private boolean validateCast(final Spell spell) {
         if (!basicValidation(spell)) {
             return false;
@@ -185,7 +198,7 @@ public class CSpellCast extends AbstractControl {
                     spatial.getControl(CCharacterPhysics.class);
             physics.setViewDirection(physics.calculateTargetDirection());
             spatial.getControl(CCharacterAnimation.class)
-                    .castSpell(spell);
+                    .castSpell(spell, castSpeedFactor);
             spatial.getControl(CActionQueue.class)
                     .enqueueAction(new CastingSpellAction(spell,
                     spell.isMultipart()));
@@ -199,13 +212,13 @@ public class CSpellCast extends AbstractControl {
             awareness.getFogManager().addCommand(spatial,
                     new CmdStartCastingSpell(
                     (int) spatial.getUserData(UserDataStrings.ENTITY_ID),
-                    spell.getId(), direction));
+                    spell.getId(), direction, castSpeedFactor));
             getSpatial().getControl(CResting.class).stopRegen();
         }
 
         globalCooldown();
         putOnCooldown(spell);
-        
+
         // Spell might have primary and secondary
         Spell otherSpell = keySpellMappings.get(-input);
         if (otherSpell != null) {
@@ -274,6 +287,8 @@ public class CSpellCast extends AbstractControl {
         for (Map.Entry<Integer, Float> entry : cooldowns.entrySet()) {
             entry.setValue(entry.getValue() - tpf);
         }
+
+        castSpeedFactor = calculateCastSpeedFactor();
     }
 
     @Override
@@ -316,5 +331,9 @@ public class CSpellCast extends AbstractControl {
 
     public void setCooldowns(HashMap<Integer, Float> cooldowns) {
         this.cooldowns = cooldowns;
+    }
+
+    public float getCastSpeedFactor() {
+        return castSpeedFactor;
     }
 }

@@ -104,15 +104,18 @@ public class Venator extends AbstractNodeBuilder {
         entity.addControl(spellCastControl);
         Spell rend = Spell.getSpell("Rend");
         Spell dagger = Spell.getSpell("Damaging Dagger");
+        Spell numb = Spell.getSpell("Numbing Dagger");
         Spell leap = Spell.getSpell("Leap");
         Spell scream = Spell.getSpell("Feral Scream");
         Spell deepWounds = Spell.getSpell("Deep Wounds");
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
 
+        int m2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+
         spellCastControl.putSpell(rend,
                 InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(dagger,
-                InputMappingStrings.getId(InputMappingStrings.M2));
+        spellCastControl.putSpell(dagger, m2Id);
+        spellCastControl.putSpell(numb, -m2Id);
         spellCastControl.putSpell(leap,
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(scream,
@@ -164,6 +167,7 @@ public class Venator extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation("Rend", swipeLeftAnim);
         characterAnimControl.addSpellAnimation("Damaging Dagger", throwAnim);
+        characterAnimControl.addSpellAnimation("Numbing Dagger", throwAnim);
         characterAnimControl.addSpellAnimation("Leap", jumpAnim);
         characterAnimControl.addSpellAnimation("Feral Scream", roarAnim);
         characterAnimControl.addSpellAnimation("Deep Wounds", chargeAnim);
