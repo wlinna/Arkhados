@@ -17,8 +17,9 @@ It's programmed in Java using jMonkeyEngine 3.
 
 ## Dependencies ##
 
-In order to compile, you need stable release of jMonkeyEngine 3. You
-also need to meet all dependencies of jMonkeyEngine 3.
+In order to compile, you need stable release of jMonkeyEngine 3 and
+shaderblowlib. You also need to meet all dependencies of jMonkeyEngine
+3.
 
 ## ToDos and contribution ideas ##
 
