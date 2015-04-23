@@ -50,16 +50,12 @@ class FlameShield extends BuffEffect {
     private Node node;
     private AudioNode sound;
 
-    public void addToCharacter(BuffInfoParameters params) {
-        Node characterNode = (Node) params.buffControl.getSpatial();
-
+    private Geometry createShield() {
         float radius = 12f;
         Sphere sphere = new Sphere(32, 32, radius);
         Geometry geometry = new Geometry("shield-geom", sphere);
-        node = new Node("shield-node");
-        node.attachChild(geometry);
 
-//        final Material material = BuffEffect.assetManager.loadMaterial("Materials/PurifyingMaterial.j3m");
+        // Material material = BuffEffect.assetManager.loadMaterial("Materials/PurifyingMaterial.j3m");
         Material material = new Material(BuffEffect.assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         ColorRGBA color = ColorRGBA.Orange.clone();
@@ -71,6 +67,17 @@ class FlameShield extends BuffEffect {
 
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);;
         geometry.setMaterial(material);
+
+        return geometry;
+    }
+
+    public void addToCharacter(BuffInfoParameters params) {
+        Node characterNode = (Node) params.buffControl.getSpatial();
+
+        Geometry geometry = createShield();
+
+        node = new Node("shield-node");
+        node.attachChild(geometry);
 
         characterNode.attachChild(node);
         node.move(0f, 10f, 0f);
