@@ -58,12 +58,11 @@ public class GameMessageHandler {
         }
     }
 
-    public void addMessage(String newMessage, Color color) {
-        messages.add(newMessage);
-
+    public void addMessage(final String newMessage, Color color) {        
         Globals.app.enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
+                messages.add(newMessage);
                 int index = messages.size() - 1;
                 for (int i = rows.size() - 1; i >= 0;) {
                     TextRenderer text = rows.get(i)

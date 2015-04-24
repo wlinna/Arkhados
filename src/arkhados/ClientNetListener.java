@@ -20,6 +20,7 @@ import com.jme3.network.ClientStateListener;
 import arkhados.messages.CmdClientLogin;
 import arkhados.messages.CmdClientSettings;
 import arkhados.messages.CmdPlayerDataTable;
+import arkhados.messages.CmdPlayerStatusChange;
 import arkhados.messages.CmdServerLogin;
 import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.CmdTopicOnly;
@@ -57,7 +58,7 @@ public class ClientNetListener extends AbstractAppState
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        this.app = (ClientMain) app;     
+        this.app = (ClientMain) app;
     }
 
     public void reset() {
@@ -112,6 +113,8 @@ public class ClientNetListener extends AbstractAppState
                     .setLatestStatsList(response.getPlayerRoundStatsList());
         } else if (command instanceof CmdSetPlayersCharacter) {
             handleSetPlayersCharacter((CmdSetPlayersCharacter) command);
+        } else if (command instanceof CmdPlayerStatusChange) {
+            handlePlayerStatusChange((CmdPlayerStatusChange) command);
         }
     }
 
@@ -172,6 +175,22 @@ public class ClientNetListener extends AbstractAppState
             sender.addCommand(command);
             handshakeComplete = true;
             connectionMenu.setStatusText("");
+        }
+    }
+
+    private void handlePlayerStatusChange(CmdPlayerStatusChange command) {
+        ClientHudManager hud =
+                app.getStateManager().getState(ClientHudManager.class);
+
+        if (command.joined()) {
+            String newPlayer = PlayerData.getStringData(command.getPlayerId(),
+                    PlayerDataStrings.NAME);
+            hud.addMessage(newPlayer + " has joined the game");
+        } else if (command.left()) {
+            String leaver = PlayerData.getStringData(command.getPlayerId(),
+                    PlayerDataStrings.NAME);
+            PlayerData.remove(command.getPlayerId());
+            hud.addMessage(leaver + " has left the game");
         }
     }
 }

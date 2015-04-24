@@ -25,6 +25,7 @@ import arkhados.messages.CmdClientLogin;
 import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdClientSettings;
 import arkhados.messages.CmdPlayerDataTable;
+import arkhados.messages.CmdPlayerStatusChange;
 import arkhados.messages.CmdServerLogin;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Command;
@@ -109,6 +110,8 @@ public class ServerNetListener implements ConnectionListener,
                     app.stop();
                 }
 
+                sender.addCommand(
+                        new CmdPlayerStatusChange(playerId).setLeft());
                 return null;
             }
         });
@@ -156,10 +159,9 @@ public class ServerNetListener implements ConnectionListener,
         }
     }
 
-    private void handleClientLoginCommand(HostedConnection source,
-            CmdClientLogin commmand) {
-        ServerSender sender = stateManager.getState(ServerSender.class);
-        int clientId = source.getId();
+    private void handleClientLoginCommand(final HostedConnection source,
+            final CmdClientLogin commmand) {
+        final int clientId = source.getId();
 
         if (!ServerClientData.exists(clientId)) {
             Logger.getLogger(ServerNetListener.class.getName()).log(
@@ -169,29 +171,41 @@ public class ServerNetListener implements ConnectionListener,
             return;
         }
 
-        final int playerId = PlayerData.getNew(commmand.getName());
-        PlayerData.setData(playerId, PlayerDataStrings.HERO, "EmberMage");
-        PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
+        app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                final int playerId = PlayerData.getNew(commmand.getName());
+                PlayerData
+                        .setData(playerId, PlayerDataStrings.HERO, "EmberMage");
+                PlayerData
+                        .setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
 
-        source.setAttribute(PLAYER_ID, playerId);
+                source.setAttribute(PLAYER_ID, playerId);
 
-        ServerPlayerInputHandler.get().addPlayerInputState(playerId);
+                ServerPlayerInputHandler.get().addPlayerInputState(playerId);
 
-        ServerClientData.setConnected(clientId, true);
-        ServerClientData.setPlayerId(clientId, playerId);
-        ServerClientData.addConnection(playerId, source);
+                ServerClientData.setConnected(clientId, true);
+                ServerClientData.setPlayerId(clientId, playerId);
+                ServerClientData.addConnection(playerId, source);
 
-        ServerGameManager gameManager =
-                stateManager.getState(ServerGameManager.class);
-        gameManager.playerJoined(playerId);
+                ServerGameManager gameManager =
+                        stateManager.getState(ServerGameManager.class);
+                gameManager.playerJoined(playerId);
 
-        String modeKey = gameManager.getGameMode().getClass().getSimpleName();
-        CmdServerLogin serverLoginMessage =
-                new CmdServerLogin(commmand.getName(), playerId,
-                true, modeKey);
-        someoneJoined = true;
-        sender.addCommandForSingle(serverLoginMessage, source);
-        sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
+                String modeKey =
+                        gameManager.getGameMode().getClass().getSimpleName();
+                CmdServerLogin serverLoginMessage =
+                        new CmdServerLogin(commmand.getName(), playerId,
+                        true, modeKey);
+                someoneJoined = true;
+                ServerSender sender = stateManager.getState(ServerSender.class);
+                sender.addCommandForSingle(serverLoginMessage, source);
+                sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
+                sender.addCommand(
+                        new CmdPlayerStatusChange(playerId).setJoined());
+                return null;
+            }
+        });
     }
 
     private void handleClientSelectHeroCommand(HostedConnection source,
