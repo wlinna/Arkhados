@@ -29,14 +29,15 @@ import com.jme3.scene.Node;
  *
  * @author william
  */
-public class SpiritStonePhysicsControl extends RigidBodyControl implements CSync {
+public class CSpiritStonePhysics extends RigidBodyControl implements CSync {
 
     private Vector3f tempVector = new Vector3f();
     private Vector3f punchDirection = null;
-    private SpiritStoneCollisionListener collisionListener;    
+    private SpiritStoneCollisionListener collisionListener;
     private WorldManager worldManager;
 
-    public SpiritStonePhysicsControl(CollisionShape shape, float mass, WorldManager worldManager) {
+    public CSpiritStonePhysics(CollisionShape shape, float mass,
+            WorldManager worldManager) {
         super(shape, mass);
         setKinematic(true);
         this.worldManager = worldManager;
@@ -48,11 +49,12 @@ public class SpiritStonePhysicsControl extends RigidBodyControl implements CSync
         if (worldManager.isClient()) {
             return;
         }
-        
-        if (space != null) {  
+
+        if (space != null) {
             setGravity(Vector3f.ZERO);
             setDamping(0.1f, 0.9f);
-            collisionListener = new SpiritStoneCollisionListener((Node)spatial, worldManager);
+            collisionListener = new SpiritStoneCollisionListener((Node) spatial,
+                    worldManager);
             space.addCollisionListener(collisionListener);
         } else if (space == null && this.space != null) {
             this.space.removeCollisionListener(collisionListener);
@@ -75,7 +77,8 @@ public class SpiritStonePhysicsControl extends RigidBodyControl implements CSync
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        return new GenericSyncData((int) spatial.getUserData(UserDataStrings.ENTITY_ID), spatial);
+        return new GenericSyncData(
+                (int) spatial.getUserData(UserDataStrings.ENTITY_ID), spatial);
     }
 
     public Vector3f getLocation() {

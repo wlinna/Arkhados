@@ -21,7 +21,7 @@ import arkhados.controls.CSkyDrop;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.buffs.AbsorbingShieldBuff;
 import arkhados.spell.buffs.AbstractBuff;
-import arkhados.spell.spells.embermage.PurifyingFlame;
+import arkhados.spell.spells.rockgolem.CSpiritStonePhysics;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
@@ -37,11 +37,9 @@ import com.jme3.scene.Spatial;
 public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
     private WorldManager worldManager;
-    private SyncManager syncManager;
 
-    public ServerWorldCollisionListener(WorldManager worldManager, SyncManager syncManager) {
+    public ServerWorldCollisionListener(WorldManager worldManager) {
         this.worldManager = worldManager;
-        this.syncManager = syncManager;
     }
 
     @Override
@@ -61,11 +59,19 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             wallB = event.getNodeB();
         }
 
-        CInfluenceInterface characterA = event.getNodeA().getControl(CInfluenceInterface.class);
-        CInfluenceInterface characterB = event.getNodeB().getControl(CInfluenceInterface.class);
+        CInfluenceInterface characterA =
+                event.getNodeA().getControl(CInfluenceInterface.class);
+        CInfluenceInterface characterB =
+                event.getNodeB().getControl(CInfluenceInterface.class);
 
         CProjectile projectileA = event.getNodeA().getControl(CProjectile.class);
         CProjectile projectileB = event.getNodeB().getControl(CProjectile.class);
+        
+        CSpiritStonePhysics ssPhysicsA =
+                event.getNodeA().getControl(CSpiritStonePhysics.class);
+        CSpiritStonePhysics ssPhysicsB =
+                event.getNodeB().getControl(CSpiritStonePhysics.class);
+        
 
         CSkyDrop skyDrop = event.getNodeA().getControl(CSkyDrop.class);
         if (skyDrop == null) {
@@ -84,6 +90,9 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                 projectileCharacterCollision(projectileA, characterB);
             } else if (wallB != null) {
                 projectileWallCollision(projectileA, wallB);
+            } else if (ssPhysicsB != null) {
+                projectileWallCollision(projectileA,
+                        (Spatial) ssPhysicsB.getUserObject());
             }
         }
         if (projectileB != null) {
@@ -95,6 +104,9 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                 projectileCharacterCollision(projectileB, characterA);
             } else if (wallA != null) {
                 projectileWallCollision(projectileB, wallA);
+            } else if (ssPhysicsA != null) {
+                projectileWallCollision(projectileB,
+                        (Spatial) ssPhysicsA.getUserObject());
             }
         }
 

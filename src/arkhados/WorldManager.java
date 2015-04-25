@@ -124,8 +124,7 @@ public class WorldManager extends AbstractAppState {
         Sender sender = stateManager.getState(Sender.class);
 
         if (sender.isServer()) {
-            serverCollisionListener =
-                    new ServerWorldCollisionListener(this, syncManager);
+            serverCollisionListener = new ServerWorldCollisionListener(this);
             space.addCollisionListener(serverCollisionListener);
             entityFactory = new EntityFactory();
         } else if (isClient()) {

@@ -61,8 +61,8 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         PhysicsCollisionObject otherPhysics = isA ? event.getObjectB() : event.getObjectA();
         int otherCollisionGroup = otherPhysics.getCollisionGroup();
 
-        SpiritStonePhysicsControl stonePhysics =
-                myStone.getControl(SpiritStonePhysicsControl.class);
+        CSpiritStonePhysics stonePhysics =
+                myStone.getControl(CSpiritStonePhysics.class);
         
         int stoneId = myStone.getUserData(UserDataStrings.ENTITY_ID);
 

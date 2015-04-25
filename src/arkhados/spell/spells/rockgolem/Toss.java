@@ -132,8 +132,8 @@ class TossAction extends EntityAction {
                 .distance(startLocation) / forwardSpeed);
         motionControl.setSpeed(1.6f);
 
-        final SpiritStonePhysicsControl stonePhysics =
-                target.getControl(SpiritStonePhysicsControl.class);
+        final CSpiritStonePhysics stonePhysics =
+                target.getControl(CSpiritStonePhysics.class);
 
         MotionPathListener motionPathListener = new MotionPathListener() {
             @Override

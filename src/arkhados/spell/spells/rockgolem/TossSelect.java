@@ -67,9 +67,9 @@ class TossPredicate implements Predicate<SpatialDistancePair> {
         CInfluenceInterface targetInfluenceControl = value.spatial
                 .getControl(CInfluenceInterface.class);
         if (targetInfluenceControl == null) {
-            SpiritStonePhysicsControl stone =
+            CSpiritStonePhysics stone =
                     value.spatial
-                    .getControl(SpiritStonePhysicsControl.class);
+                    .getControl(CSpiritStonePhysics.class);
             if (stone != null) {
                 int myTeamId = spatial
                         .getUserData(UserDataStrings.TEAM_ID);

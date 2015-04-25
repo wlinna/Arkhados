@@ -123,8 +123,8 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 //        }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
-        SpiritStonePhysicsControl physicsBody =
-                new SpiritStonePhysicsControl(collisionShape,
+        CSpiritStonePhysics physicsBody =
+                new CSpiritStonePhysics(collisionShape,
                 (float) node.getUserData(UserDataStrings.MASS), worldManager);
         node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);

@@ -119,8 +119,8 @@ class StoneFistAction extends EntityAction {
                     return true;
                 }
 
-                SpiritStonePhysicsControl stonePhysics = value.spatial
-                        .getControl(SpiritStonePhysicsControl.class);
+                CSpiritStonePhysics stonePhysics = value.spatial
+                        .getControl(CSpiritStonePhysics.class);
 
                 if (stonePhysics != null && nullableTeamId.equals(myTeamId)) {
                     return true;
@@ -156,8 +156,8 @@ class StoneFistAction extends EntityAction {
     }
 
     private void pushSpiritStone(Spatial stone, Vector3f hitDirection) {
-        SpiritStonePhysicsControl physics =
-                stone.getControl(SpiritStonePhysicsControl.class);
+        CSpiritStonePhysics physics =
+                stone.getControl(CSpiritStonePhysics.class);
 
         Vector3f direction = hitDirection.normalize();
         physics.punch(direction.multLocal(160f));
