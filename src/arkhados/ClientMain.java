@@ -307,20 +307,15 @@ public class ClientMain extends SimpleApplication {
         ClientNetListener netListener = new ClientNetListener(connectionMenu);
         swappableStates.add(new BlindManager());
         swappableStates.add(new DeathManager());
-
         swappableStates.add(netListener);
-        receiver.registerCommandHandler(netListener);
 
         EffectHandler effectHandler = new EffectHandler(this);
         WorldManager worldManager = new WorldManager(effectHandler);
         effectHandler.setWorldManager(worldManager);
         swappableStates.add(worldManager);
 
-        receiver.registerCommandHandler(effectHandler);
-
         SyncManager syncManager = new SyncManager(this);
         swappableStates.add(syncManager);
-        receiver.registerCommandHandler(syncManager);
 
         UserCommandManager userCommandManager =
                 new UserCommandManager(inputManager);
@@ -333,6 +328,9 @@ public class ClientMain extends SimpleApplication {
             stateManager.attach(appState);
         }
 
+        receiver.registerCommandHandler(netListener);
+        receiver.registerCommandHandler(effectHandler);
+        receiver.registerCommandHandler(syncManager);
         receiver.registerCommandHandler(sender);
     }
 }
