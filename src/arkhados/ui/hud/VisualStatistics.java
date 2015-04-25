@@ -92,8 +92,11 @@ public class VisualStatistics implements ActionListener {
             Element damage = root.findElementByName(stats.playerId + "-damage");
             Element restoration = root.findElementByName(
                     stats.playerId + "-restoration");
-            Element kills = root.findElementByName(stats.playerId + "-kills");
+            Element kills = root.findElementByName(stats.playerId + "-kills");            
 
+            // FIXME: NullPointerError happens here
+            // Possibly related problem is that after this nifty complains
+            // about possibly conflicting ids.
             damage.getRenderer(TextRenderer.class).setText(
                     String.format("%d", (int) stats.damageDone));
             restoration.getRenderer(TextRenderer.class).setText(
