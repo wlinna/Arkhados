@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  */
 public class PlayerEntityAwareness {
 
-    private static final float BLIND_RANGE_SQUARED = FastMath.sqr(40f);
+    private static final float BLIND_RANGE_SQUARED = FastMath.sqr(20f);
     private static final Logger logger =
             Logger.getLogger(PlayerEntityAwareness.class.getName());
     private Spatial ownSpatial;
