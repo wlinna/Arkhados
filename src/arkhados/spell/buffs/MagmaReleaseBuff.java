@@ -25,7 +25,7 @@ public class MagmaReleaseBuff extends AbstractBuff {
     }
 
     public static final float TICK_LENGTH = 0.2f;
-    private static final float DAMAGE = 50f;
+    private static final float DAMAGE = 60f;
     private float currentTime = 0f;
     private int count = 0;
 

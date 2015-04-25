@@ -14,20 +14,17 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
-import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.CastProjectileAction;
 import arkhados.controls.CEntityEvent;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.MagmaReleaseBuff;
 import arkhados.util.AbstractNodeBuilder;
@@ -49,7 +46,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import java.util.Iterator;
 
 /**
  * Embermage's Fireball (M1) spell. Projectile has moderate speed and deals
@@ -110,10 +106,8 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
         smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 1f));
         smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
         smoke.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
-        smoke.setStartSize(2.0f);
-        smoke.setEndSize(6.0f);
+        smoke.setStartSize(2f);
+        smoke.setEndSize(6f);
         smoke.setGravity(Vector3f.ZERO);
         smoke.setLowLife(1f);
         smoke.setHighLife(1.3f);
@@ -137,8 +131,6 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
         fire.setStartColor(new ColorRGBA(0.95f, 0.15f, 0f, 1f));
         fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
         fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
         fire.setStartSize(3.5f);
         fire.setEndSize(1f);
         fire.setGravity(Vector3f.ZERO);
@@ -298,7 +290,7 @@ class MagmaReleaseRemovalAction implements RemovalEventAction {
         fire.setLocalTranslation(worldTranslation);
         fire.addControl(new CTimedExistence(1f));
 
-        fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0f, 0.40f));
+        fire.setStartColor(new ColorRGBA(0.95f, 0.15f, 0f, 0.4f));
         fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0f));
         fire.setLowLife(0.1f);
         fire.setHighLife(0.3f);
@@ -311,7 +303,7 @@ class MagmaReleaseRemovalAction implements RemovalEventAction {
 
         fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2f));
         fire.emitAllParticles();
-        fire.setParticlesPerSec(0.0f);
+        fire.setParticlesPerSec(0f);
 
         sound.setLocalTranslation(worldTranslation);
         sound.play();
