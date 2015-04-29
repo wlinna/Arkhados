@@ -85,7 +85,7 @@ public class WorldManager extends AbstractAppState {
     private AbstractArena arena = new BasicSquareArena();
     private HashMap<Integer, Spatial> entities = new HashMap<>();
     private SyncManager syncManager;
-    private int idCounter = 0;
+    private short idCounter = 0;
     private boolean isClient = false;
     private EffectHandler effectHandler = null;
 
@@ -206,6 +206,13 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
+    private int giveNewId() {        
+        while (entities.containsKey(++idCounter)) {            
+        }
+        
+        return idCounter;
+    }
+    
     /**
      * Adds new entity on server
      *
@@ -216,9 +223,8 @@ public class WorldManager extends AbstractAppState {
      * @return entity id
      */
     public int addNewEntity(int nodeBuilderId, Vector3f location,
-            Quaternion rotation, int playerId) {
-        ++idCounter;
-        addEntity(idCounter, nodeBuilderId, location, rotation, playerId, 0f);
+            Quaternion rotation, int playerId) {        
+        addEntity(giveNewId(), nodeBuilderId, location, rotation, playerId, 0f);
         return idCounter;
     }
 

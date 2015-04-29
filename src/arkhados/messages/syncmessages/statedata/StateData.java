@@ -25,13 +25,13 @@ import com.jme3.network.serializing.Serializable;
 
 @Serializable
 public abstract class StateData implements Command {
-    private int syncId = -1;
+    private short syncId = -1;
     
     public StateData() {
     }
 
     public StateData(int syncId) {
-        this.syncId = syncId;
+        this.syncId = (short) syncId;
     }
             
     public abstract void applyData(Object target);
@@ -46,6 +46,6 @@ public abstract class StateData implements Command {
     }
     
     public void setSyncId(int syncId) {
-        this.syncId = syncId;
+        this.syncId = (short) syncId;
     }
 }

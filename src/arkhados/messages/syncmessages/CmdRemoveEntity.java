@@ -26,7 +26,7 @@ import arkhados.messages.syncmessages.statedata.StateData;
 @Serializable
 public class CmdRemoveEntity extends StateData {
 
-    private int entityId;
+    private short entityId;
     private byte reason;
 
     public CmdRemoveEntity() {
@@ -34,7 +34,7 @@ public class CmdRemoveEntity extends StateData {
 
     public CmdRemoveEntity(int entityId, int reason) {
         super(-1);
-        this.entityId = entityId;
+        this.entityId = (short) entityId;
         this.reason = (byte) reason;
     }
 
