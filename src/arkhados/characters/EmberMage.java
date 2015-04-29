@@ -130,6 +130,7 @@ public class EmberMage extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation("Fireball", animationData);
         characterAnimControl.addSpellAnimation("Magma Bash", animationData);
+        characterAnimControl.addSpellAnimation("Magma Release", animationData);
         characterAnimControl.addSpellAnimation("Ember Circle", animationData);
         characterAnimControl.addSpellAnimation("Meteor", animationData);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
