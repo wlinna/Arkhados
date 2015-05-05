@@ -1,0 +1,8 @@
+Material My Material : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        DiffuseMap : Flip Textures/Wall/mage_wall.png
+        SpecularMap : Flip Textures/Wall/mage_wall_SPEC.png
+     }
+    AdditionalRenderState {
+    }
+}
