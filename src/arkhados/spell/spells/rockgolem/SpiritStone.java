@@ -17,16 +17,20 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
+import arkhados.controls.CAreaEffect;
 import arkhados.controls.CRotation;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.influences.SpeedInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -136,6 +140,22 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         node.addControl(new CTimedExistence(8f, true));
         node.addControl(new CRotation(0f, 2f, 0f));
         node.addControl(new CSyncInterpolation());
+
+        final float radius = 30f;
+
+        if (worldManager.isServer()) {
+            GhostControl ghost = new GhostControl(new CylinderCollisionShape(
+                    new Vector3f(radius, 0.05f, radius), 1));
+            ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);           
+            node.addControl(ghost);
+            
+            CAreaEffect cAreaOfEffect = new CAreaEffect(ghost);
+            node.addControl(cAreaOfEffect);
+
+            SpeedInfluence speedInfluence = new SpeedInfluence();
+            speedInfluence.setConstant(1f);
+            cAreaOfEffect.addInfluence(speedInfluence);
+        }
 
         return node;
     }

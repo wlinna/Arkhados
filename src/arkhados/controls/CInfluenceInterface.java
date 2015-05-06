@@ -26,6 +26,7 @@ import arkhados.spell.buffs.SlowCC;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.spell.influences.SlowInfluence;
+import arkhados.spell.influences.SpeedInfluence;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -46,6 +47,7 @@ public class CInfluenceInterface extends AbstractControl {
     private final List<CastSpeedBuff> numbs = new ArrayList<>();
     private final List<Influence> influences = new ArrayList<>();
     private final List<SlowInfluence> slowInfluences = new ArrayList<>();
+    private final List<SpeedInfluence> speedInfluences = new ArrayList<>();
     private boolean dead = false;
     private boolean canControlMovement = true;
     private boolean speedConstant = false;
@@ -207,7 +209,14 @@ public class CInfluenceInterface extends AbstractControl {
             }
 
             slowInfluences.clear();
+            
+            for (SpeedInfluence speed : speedInfluences) {
+                speedFactor *= speed.getSpeedFactor();
+                constantSpeedAddition += speed.getConstant();
+            }
 
+            speedInfluences.clear();
+            
             float msCurrent =
                     spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
 
@@ -292,6 +301,8 @@ public class CInfluenceInterface extends AbstractControl {
 
         if (influence instanceof SlowInfluence) {
             slowInfluences.add((SlowInfluence) influence);
+        } else if (influence instanceof SpeedInfluence) {
+            speedInfluences.add((SpeedInfluence) influence);
         }
     }
 
