@@ -64,10 +64,10 @@ public class ClientMain extends SimpleApplication {
 
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.INFO);
-        Logger.getLogger("de.lessvoid.nifty").setLevel(Level.ALL);
+        Logger.getLogger("de.lessvoid.nifty").setLevel(Level.WARNING);
         Logger.getLogger("com.jme3.system.lwjgl.LwjglContext")
                 .setLevel(Level.SEVERE);
-        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.ALL);
+        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.WARNING);
 
         AppSettings settings = new AppSettings(true);
 
