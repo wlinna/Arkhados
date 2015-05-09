@@ -31,13 +31,13 @@ import java.util.List;
  *
  * @author william
  */
-public class MeleeAttackAction extends EntityAction {
+public class AMeleeAttack extends EntityAction {
 
     private List<AbstractBuff> buffs = new ArrayList<>();
     private float damage;
     private float range;
 
-    public MeleeAttackAction(float damage, float range) {
+    public AMeleeAttack(float damage, float range) {
         this.damage = damage;
         this.range = range;
     }

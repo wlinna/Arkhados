@@ -15,7 +15,7 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
-import arkhados.actions.ChargeAction;
+import arkhados.actions.ACharge;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
@@ -57,7 +57,7 @@ public class DeepWounds extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastDeepWoundsAction(spell);
+                return new ACastDeepWounds(spell);
             }
         };
 
@@ -65,18 +65,18 @@ public class DeepWounds extends Spell {
     }
 }
 
-class CastDeepWoundsAction extends EntityAction {
+class ACastDeepWounds extends EntityAction {
 
     private final DeepWounds spell;
 
-    public CastDeepWoundsAction(DeepWounds spell) {
+    public ACastDeepWounds(DeepWounds spell) {
         this.spell = spell;
         setTypeId(Venator.ANIM_SWIPE_UP);
     }
 
     @Override
     public boolean update(float tpf) {
-        ChargeAction charge = new ChargeAction(spell.getRange());
+        ACharge charge = new ACharge(spell.getRange());
         charge.setHitDamage(100f);
         charge.setChargeSpeed(255f);
         spatial.getControl(CActionQueue.class).enqueueAction(charge);

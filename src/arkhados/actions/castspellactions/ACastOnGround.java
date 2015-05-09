@@ -32,14 +32,14 @@ import java.util.List;
  *
  * @author william
  */
-public class CastOnGroundAction extends EntityAction {
+public class ACastOnGround extends EntityAction {
 
     private WorldManager worldManager;
     private Spell spell;
     private final List<AbstractBuff> additionalEnterBuffs = new ArrayList<>();
     // NOTE: Add additionalExitBuffs -list if needed
 
-    public CastOnGroundAction(WorldManager worldManager, Spell spell) {
+    public ACastOnGround(WorldManager worldManager, Spell spell) {
         this.worldManager = worldManager;
         this.spell = spell;
     }

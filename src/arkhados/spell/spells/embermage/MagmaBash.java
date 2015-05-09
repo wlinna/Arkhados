@@ -16,7 +16,7 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -66,8 +66,8 @@ public class MagmaBash extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastProjectileAction action =
-                        new CastProjectileAction(spell, worldManager);
+                ACastProjectile action =
+                        new ACastProjectile(spell, worldManager);
                 return action;
             }
         };

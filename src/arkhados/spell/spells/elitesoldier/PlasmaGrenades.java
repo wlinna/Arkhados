@@ -16,10 +16,10 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
 import arkhados.Globals;
-import arkhados.actions.ChannelingSpellAction;
+import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
-import arkhados.actions.castspellactions.CastGrenadeAction;
+import arkhados.actions.ASplash;
+import arkhados.actions.castspellactions.ACastGrenade;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CGenericSync;
@@ -60,9 +60,9 @@ public class PlasmaGrenades extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastGrenadeAction action = new CastGrenadeAction(spell);
+                ACastGrenade action = new ACastGrenade(spell);
                 action.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
-                ChannelingSpellAction channel = new ChannelingSpellAction(spell,
+                AChannelingSpell channel = new AChannelingSpell(spell,
                         3, 0.12f, action, true);
                 return channel;
             }
@@ -131,8 +131,8 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when plasmaball is
              * removed. In this case we want explosion effect.
              */
-            PlasmaRemovalAction removalAction =
-                    new PlasmaRemovalAction(assetManager);
+            APlasmaRemoval removalAction =
+                    new APlasmaRemoval(assetManager);
             removalAction.setPlasmaEmitter(plasma);
 
             node.getControl(CEntityEvent.class)
@@ -177,7 +177,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
             space.addCollisionListener(cGrenade);
 
             cGrenade.setDetonationTime(3f);
-            SplashAction splash = new SplashAction(20f, 23f,
+            ASplash splash = new ASplash(20f, 23f,
                     DistanceScaling.CONSTANT, null);
             splash.setSpatial(node);
             cGrenade.setSplashAction(splash);

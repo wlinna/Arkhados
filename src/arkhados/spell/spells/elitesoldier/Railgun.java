@@ -17,13 +17,13 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
@@ -67,7 +67,7 @@ public class Railgun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastProjectileAction action = new CastProjectileAction(spell, worldManager);
+                ACastProjectile action = new ACastProjectile(spell, worldManager);
                 action.setTypeId(EliteSoldier.ACTION_RAILGUN);
                 return action;
             }
@@ -138,8 +138,8 @@ class RailgunBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            final RailgunRemovalAction removalAction =
-                    new RailgunRemovalAction(assetManager);
+            final ARailgunRemoval removalAction =
+                    new ARailgunRemoval(assetManager);
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
@@ -177,13 +177,13 @@ class RailgunBuilder extends AbstractNodeBuilder {
     }
 }
 
-class RailgunRemovalAction implements RemovalEventAction {
+class ARailgunRemoval implements ARemovalEvent {
 
     private Node bullet;
     private ParticleEmitter smokeTrail;
     private AssetManager assetManager;
 
-    public RailgunRemovalAction(AssetManager assetManager) {
+    public ARailgunRemoval(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
 

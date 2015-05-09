@@ -62,7 +62,7 @@ public class Leap extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastLeapAction(spell);
+                return new ACastLeap(spell);
             }
         };
         spell.nodeBuilder = null;
@@ -71,7 +71,7 @@ public class Leap extends Spell {
     }
 }
 
-class CastLeapAction extends EntityAction {
+class ACastLeap extends EntityAction {
 
     private float forwardSpeed = 105f;
     private final Spell spell;
@@ -79,7 +79,7 @@ class CastLeapAction extends EntityAction {
     private Vector3f direction;
     private boolean motionPending = true;
 
-    public CastLeapAction(final Spell spell) {
+    public ACastLeap(final Spell spell) {
         this.spell = spell;
     }
 
@@ -153,7 +153,7 @@ class CastLeapAction extends EntityAction {
                 } else if (wayPointIndex == path.getNbWayPoints() - 1) {
                     physics.switchToNormalPhysicsMode();
                     spatial.getControl(CActionQueue.class).enqueueAction(
-                            new ChangeAnimationAction(Venator.ANIM_LAND));
+                            new AChangeAnimation(Venator.ANIM_LAND));
                     landingEffect();
                     motionPending = false;
                 }
@@ -179,9 +179,9 @@ class CastLeapAction extends EntityAction {
  *
  * @author william
  */
-class ChangeAnimationAction extends EntityAction {
+class AChangeAnimation extends EntityAction {
 
-    public ChangeAnimationAction(int id) {
+    public AChangeAnimation(int id) {
         setTypeId(id);
     }
 

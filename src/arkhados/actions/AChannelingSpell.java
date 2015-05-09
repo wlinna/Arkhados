@@ -25,7 +25,7 @@ import com.jme3.scene.Spatial;
  *
  * @author william
  */
-public class ChannelingSpellAction extends EntityAction {
+public class AChannelingSpell extends EntityAction {
 
     private Spell spell;
     private float timer = 0;
@@ -38,7 +38,7 @@ public class ChannelingSpellAction extends EntityAction {
     private CActionQueue actionQueue;
     private CSpellCast cSpellCast;
 
-    public ChannelingSpellAction(Spell spell, float maxTime,
+    public AChannelingSpell(Spell spell, float maxTime,
             float actionFrequency, EntityAction action) {
         timeLeft = maxTime;
         this.actionFrequency = actionFrequency;
@@ -48,7 +48,7 @@ public class ChannelingSpellAction extends EntityAction {
         repeatsLeft = 0;
     }
 
-    public ChannelingSpellAction(Spell spell, int repeatCount,
+    public AChannelingSpell(Spell spell, int repeatCount,
             float actionFrequency, EntityAction action, boolean whatever) {
         this.spell = spell;
         repeatsLeft = repeatCount;

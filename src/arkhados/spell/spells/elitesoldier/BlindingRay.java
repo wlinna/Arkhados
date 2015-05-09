@@ -17,14 +17,14 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
-import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.BlindCC;
@@ -71,8 +71,8 @@ public class BlindingRay extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastProjectileAction action =
-                        new CastProjectileAction(spell, worldManager);
+                ACastProjectile action =
+                        new ACastProjectile(spell, worldManager);
                 action.setTypeId(EliteSoldier.ACTION_RAILGUN);                
                 return action;
             }
@@ -142,8 +142,8 @@ class RayBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            RailgunRemovalAction removalAction =
-                    new RailgunRemovalAction(assetManager);
+            ARailgunRemoval removalAction =
+                    new ARailgunRemoval(assetManager);
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
@@ -182,13 +182,13 @@ class RayBuilder extends AbstractNodeBuilder {
     }
 }
 
-class RayRemovalAction implements RemovalEventAction {
+class ARayRemoval implements ARemovalEvent {
 
     private Node bullet;
     private ParticleEmitter smokeTrail;
     private AssetManager assetManager;
 
-    public RayRemovalAction(AssetManager assetManager) {
+    public ARayRemoval(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
 

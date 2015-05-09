@@ -15,9 +15,9 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.SpatialDistancePair;
-import arkhados.actions.ChargeAction;
+import arkhados.actions.ACharge;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.characters.RockGolem;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
@@ -64,7 +64,7 @@ public class EarthQuake extends Spell {
         quake.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastEarthQuakeAction();
+                return new ACastEarthQuake();
             }
         };
 
@@ -72,16 +72,16 @@ public class EarthQuake extends Spell {
     }
 }
 
-class CastEarthQuakeAction extends EntityAction {
+class ACastEarthQuake extends EntityAction {
 
     private final float chargeRange = 90f;
 
-    public CastEarthQuakeAction() {
+    public ACastEarthQuake() {
     }
 
     @Override
     public boolean update(float tpf) {
-        ChargeAction charge = new ChargeAction(chargeRange);
+        ACharge charge = new ACharge(chargeRange);
         charge.setChargeSpeed(150f);
         charge.setHitDamage(190f);
 
@@ -91,7 +91,7 @@ class CastEarthQuakeAction extends EntityAction {
 
         final float splashRadius = EarthQuake.RADIUS;
         
-        SplashAction splash = new SplashAction(splashRadius, 180f, 0f,
+        ASplash splash = new ASplash(splashRadius, 180f, 0f,
                 DistanceScaling.CONSTANT, buffs);
         final int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
         splash.setExcludedTeam(teamId);
@@ -122,7 +122,7 @@ class CastEarthQuakeAction extends EntityAction {
                     }
 
                     pair.spatial.getControl(CActionQueue.class)
-                            .enqueueAction(new KnockupAction());
+                            .enqueueAction(new AKnockup());
                 }
                 
                 return false;
@@ -136,7 +136,7 @@ class CastEarthQuakeAction extends EntityAction {
 /**
  * @author william
  */
-class KnockupAction extends EntityAction {
+class AKnockup extends EntityAction {
 
     private boolean firstTime = true;
     private boolean shouldContinue = true;

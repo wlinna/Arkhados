@@ -16,7 +16,7 @@ package arkhados.controls;
 
 import arkhados.CharacterInteraction;
 import arkhados.PlayerData;
-import arkhados.actions.DelayAction;
+import arkhados.actions.ADelay;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.util.PlayerDataStrings;
@@ -55,7 +55,7 @@ public class CAreaEffect extends AbstractControl {
     protected void controlUpdate(float tpf) {
         // HACK
         CActionQueue actionQueue = getSpatial().getControl(CActionQueue.class);
-        if (actionQueue != null && actionQueue.getCurrent() instanceof DelayAction) {
+        if (actionQueue != null && actionQueue.getCurrent() instanceof ADelay) {
             return;
         }
 

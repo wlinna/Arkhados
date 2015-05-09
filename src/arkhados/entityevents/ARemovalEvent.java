@@ -21,7 +21,7 @@ import arkhados.WorldManager;
  *
  * @author william
  */
-public interface RemovalEventAction {
+public interface ARemovalEvent {
 
     public void exec(WorldManager worldManager, int reason);
 }

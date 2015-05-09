@@ -22,7 +22,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import arkhados.WorldManager;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.RemovalReasons;
@@ -45,7 +45,7 @@ public class CProjectile extends AbstractControl implements CSync {
     private float range = 0f;
     private float speed = 0f;
     private CInfluenceInterface ownerInterface;
-    private SplashAction splashAction = null;
+    private ASplash splashAction = null;
     private boolean needsSync = true;
     // This is if we want spatial to behave like projectile without certain properties
     private boolean isProjectile = true;
@@ -146,7 +146,7 @@ public class CProjectile extends AbstractControl implements CSync {
         this.ownerInterface = ownerInterface;
     }
 
-    public void setSplashAction(SplashAction splashAction) {
+    public void setSplashAction(ASplash splashAction) {
         this.splashAction = splashAction;
     }
 
@@ -162,7 +162,7 @@ public class CProjectile extends AbstractControl implements CSync {
         return null;
     }
 
-    public SplashAction getSplashAction() {
+    public ASplash getSplashAction() {
         return splashAction;
     }
 

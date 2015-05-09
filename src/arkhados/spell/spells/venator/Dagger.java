@@ -15,7 +15,7 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
@@ -45,7 +45,7 @@ public class Dagger extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastProjectileAction(spell, worldManager);
+                return new ACastProjectile(spell, worldManager);
             }
         };
 

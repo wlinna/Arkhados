@@ -38,7 +38,7 @@ import java.util.concurrent.Callable;
  *
  * @author william
  */
-public class ChargeAction extends EntityAction
+public class ACharge extends EntityAction
         implements PhysicsCollisionListener {
 
     private boolean isCharging = false;
@@ -53,7 +53,7 @@ public class ChargeAction extends EntityAction
     private Spatial collidedWith = null;
     private float hitDamage;
 
-    public ChargeAction(float range) {
+    public ACharge(float range) {
         this.range = range;
     }
 
@@ -137,7 +137,7 @@ public class ChargeAction extends EntityAction
             @Override
             public Void call() throws Exception {
                 ghost.getPhysicsSpace()
-                        .removeCollisionListener(ChargeAction.this);
+                        .removeCollisionListener(ACharge.this);
                 ghost.getPhysicsSpace().remove(ghost);
                 ghostNode.removeFromParent();
                 ghostNode.removeControl(ghost);

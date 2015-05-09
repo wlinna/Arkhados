@@ -26,7 +26,7 @@ import com.jme3.scene.Spatial;
  *
  * @author william
  */
-public class CastingSpellAction extends EntityAction {
+public class ACastingSpell extends EntityAction {
 
     private float delay;
     private final Spell spell;
@@ -35,12 +35,12 @@ public class CastingSpellAction extends EntityAction {
     private CInfluenceInterface influenceInterface;
     private CSpellCast cSpellCast;
 
-    public CastingSpellAction(Spell spell) {
+    public ACastingSpell(Spell spell) {
         this.spell = spell;
         delay = spell.getCastTime();
     }
 
-    public CastingSpellAction(Spell spell, boolean followedByAnother) {
+    public ACastingSpell(Spell spell, boolean followedByAnother) {
         this(spell);
         this.followedByAnotherAnimation = followedByAnother;
     }

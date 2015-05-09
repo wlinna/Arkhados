@@ -18,14 +18,14 @@ import arkhados.CollisionGroups;
 import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.ASplash;
+import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
@@ -76,8 +76,8 @@ public class RocketLauncher extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                CastProjectileAction castProjectile =
-                        new CastProjectileAction(spell, worldManager);
+                ACastProjectile castProjectile =
+                        new ACastProjectile(spell, worldManager);
                 castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
                 return castProjectile;
             }
@@ -200,8 +200,8 @@ class RocketBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            RocketRemovalAction removalAction =
-                    new RocketRemovalAction(assetManager);
+            ARocketRemoval removalAction =
+                    new ARocketRemoval(assetManager);
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smokeTrail);
 
@@ -230,8 +230,8 @@ class RocketBuilder extends AbstractNodeBuilder {
 
         CProjectile projectileControl = new CProjectile();
 
-        SplashAction splash =
-                new SplashAction(25f, 120f, DistanceScaling.LINEAR, null);
+        ASplash splash =
+                new ASplash(25f, 120f, DistanceScaling.LINEAR, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
 
@@ -242,14 +242,14 @@ class RocketBuilder extends AbstractNodeBuilder {
     }
 }
 
-class RocketRemovalAction implements RemovalEventAction {
+class ARocketRemoval implements ARemovalEvent {
 
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
     private AssetManager assetManager;
     private AudioNode sound;
 
-    public RocketRemovalAction(AssetManager assetManager) {
+    public ARocketRemoval(AssetManager assetManager) {
         this.assetManager = assetManager;
         sound = new AudioNode(assetManager,
                 "Effects/Sound/FireballExplosion.wav");

@@ -28,11 +28,11 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
-public class CastGrenadeAction extends EntityAction {
+public class ACastGrenade extends EntityAction {
 
     private Spell spell;
 
-    public CastGrenadeAction(Spell spell) {
+    public ACastGrenade(Spell spell) {
         this.spell = spell;
     }
 

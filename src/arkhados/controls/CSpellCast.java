@@ -21,8 +21,8 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import java.util.HashMap;
 import java.util.Map;
-import arkhados.actions.CastingSpellAction;
-import arkhados.actions.ChannelingSpellAction;
+import arkhados.actions.ACastingSpell;
+import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.CmdSetCooldown;
 import arkhados.messages.syncmessages.CmdStartCastingSpell;
@@ -95,13 +95,13 @@ public class CSpellCast extends AbstractControl {
     public void safeInterrupt() {
         EntityAction action =
                 spatial.getControl(CActionQueue.class).getCurrent();
-        if (action != null && action instanceof CastingSpellAction) {
+        if (action != null && action instanceof ACastingSpell) {
             casting = false;
-            Spell spell = ((CastingSpellAction) action).getSpell();
+            Spell spell = ((ACastingSpell) action).getSpell();
             spatial.getControl(CActionQueue.class).clear();
             setCooldown(spell.getId(), 0f);
-        } else if (action != null && action instanceof ChannelingSpellAction) {
-            ChannelingSpellAction channeling = (ChannelingSpellAction) action;
+        } else if (action != null && action instanceof AChannelingSpell) {
+            AChannelingSpell channeling = (AChannelingSpell) action;
             putOnCooldown(channeling.getSpell());
             spatial.getControl(CActionQueue.class).clear();
         }
@@ -120,14 +120,14 @@ public class CSpellCast extends AbstractControl {
 
         EntityAction action =
                 spatial.getControl(CActionQueue.class).getCurrent();
-        if (action != null && ((action instanceof CastingSpellAction)
-                || (action instanceof ChannelingSpellAction))) {
+        if (action != null && ((action instanceof ACastingSpell)
+                || (action instanceof AChannelingSpell))) {
 
             Spell currentSpell;
-            if (action instanceof CastingSpellAction) {
-                currentSpell = ((CastingSpellAction) action).getSpell();
+            if (action instanceof ACastingSpell) {
+                currentSpell = ((ACastingSpell) action).getSpell();
             } else {
-                currentSpell = ((ChannelingSpellAction) action).getSpell();
+                currentSpell = ((AChannelingSpell) action).getSpell();
             }
 
             int currentSpellId = currentSpell.getId();
@@ -137,7 +137,7 @@ public class CSpellCast extends AbstractControl {
             }
 
             spatial.getControl(CActionQueue.class).clear();
-            if (action instanceof CastingSpellAction) {
+            if (action instanceof ACastingSpell) {
                 setCooldown(currentSpellId, 0f);
             }
             action = null;
@@ -199,7 +199,7 @@ public class CSpellCast extends AbstractControl {
             spatial.getControl(CCharacterAnimation.class)
                     .castSpell(spell, castSpeedFactor);
             spatial.getControl(CActionQueue.class)
-                    .enqueueAction(new CastingSpellAction(spell,
+                    .enqueueAction(new ACastingSpell(spell,
                     spell.isMultipart()));
 
             EntityAction castingAction =
@@ -317,7 +317,7 @@ public class CSpellCast extends AbstractControl {
     public boolean isChanneling() {
         EntityAction action =
                 spatial.getControl(CActionQueue.class).getCurrent();
-        return action instanceof ChannelingSpellAction;
+        return action instanceof AChannelingSpell;
     }
 
     public void setCasting(boolean casting) {

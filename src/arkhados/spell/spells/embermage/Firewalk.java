@@ -83,8 +83,8 @@ public class Firewalk extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastFirewalkAction castAction =
-                        new CastFirewalkAction(spell, Spell.worldManager);
+                ACastFirewalk castAction =
+                        new ACastFirewalk(spell, Spell.worldManager);
                 DamageOverTimeBuff ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -98,13 +98,13 @@ public class Firewalk extends Spell {
         return spell;
     }
 
-    private static class CastFirewalkAction extends EntityAction {
+    private static class ACastFirewalk extends EntityAction {
 
         private final Spell spell;
         private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
         private final WorldManager world;
 
-        public CastFirewalkAction(Spell spell, WorldManager world) {
+        public ACastFirewalk(Spell spell, WorldManager world) {
             this.spell = spell;
             this.world = world;
             super.setTypeId(EmberMage.ACTION_FIREWALK);

@@ -16,7 +16,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -47,7 +47,7 @@ public class Bedrock extends Spell{
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastSelfBuffAction action = new CastSelfBuffAction();
+                ACastSelfBuff action = new ACastSelfBuff();
                 ArmorBuff armor = new ArmorBuff(500f, 0.55f, -1, 4f);
                 armor.setTypeId(BuffTypeIds.BEDROCK);
                 armor.setOwnerInterface(caster

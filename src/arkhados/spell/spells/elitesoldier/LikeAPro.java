@@ -15,7 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEliteSoldierAmmunition;
 import arkhados.spell.CastSpellActionBuilder;
@@ -54,7 +54,7 @@ public class LikeAPro extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastSelfBuffAction buffAction = new CastSelfBuffAction();
+                ACastSelfBuff buffAction = new ACastSelfBuff();
                 buffAction.setTypeId(EliteSoldier.ACTION_LIKE_A_PRO);
                 AbleToCastWhileMovingBuff likeAPro =
                         new AbleToCastWhileMovingBuff(-1, 5);

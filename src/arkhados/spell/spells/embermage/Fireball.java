@@ -17,12 +17,12 @@ package arkhados.spell.spells.embermage;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.BrimstoneBuff;
@@ -72,8 +72,8 @@ public class Fireball extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                CastProjectileAction castProjectile =
-                        new CastProjectileAction(spell, Spell.worldManager);
+                ACastProjectile castProjectile =
+                        new ACastProjectile(spell, Spell.worldManager);
                 DamageOverTimeBuff ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -179,8 +179,8 @@ class FireballBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            FireballRemovalAction removalAction =
-                    new FireballRemovalAction(assetManager);
+            AFireballRemoval removalAction =
+                    new AFireballRemoval(assetManager);
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smoke);
 
@@ -219,14 +219,14 @@ class FireballBuilder extends AbstractNodeBuilder {
     }
 }
 
-class FireballRemovalAction implements RemovalEventAction {
+class AFireballRemoval implements ARemovalEvent {
 
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
     private AssetManager assetManager;
     private AudioNode sound;
 
-    public FireballRemovalAction(AssetManager assetManager) {
+    public AFireballRemoval(AssetManager assetManager) {
         this.assetManager = assetManager;
         sound = new AudioNode(assetManager,
                 "Effects/Sound/FireballExplosion.wav");

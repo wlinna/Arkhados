@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.buffinformation;
 
-import arkhados.actions.DelayAction;
+import arkhados.actions.ADelay;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CTimedExistence;
@@ -73,7 +73,7 @@ class MagmaReleaseEffect extends BuffEffect {
             CActionQueue actionQueue = new CActionQueue();
             node.addControl(actionQueue);
             float delay = MagmaReleaseBuff.TICK_LENGTH * i;
-            actionQueue.enqueueAction(new DelayAction(delay));
+            actionQueue.enqueueAction(new ADelay(delay));
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {

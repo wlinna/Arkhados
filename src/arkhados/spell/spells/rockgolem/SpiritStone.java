@@ -46,7 +46,8 @@ public class SpiritStone extends Spell {
         iconName = "SpiritStone.png";
     }
 
-    public SpiritStone(String name, float cooldown, float range, float castTime) {
+    public SpiritStone(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -61,7 +62,7 @@ public class SpiritStone extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new SpiritStoneCastAction(spell, worldManager);
+                return new ASpiritStoneCast(spell, worldManager);
             }
         };
 
@@ -71,18 +72,19 @@ public class SpiritStone extends Spell {
     }
 }
 
+
 /**
  * SpiritStoneCastAction. NOTE: This is very much like CastOnGroundAction.
  * Consider reusing that one
  *
  * @author william
  */
-class SpiritStoneCastAction extends EntityAction {
+class ASpiritStoneCast extends EntityAction {
 
     private Spell spell;
     private WorldManager worldManager;
 
-    public SpiritStoneCastAction(Spell spell, WorldManager worldManager) {
+    public ASpiritStoneCast(Spell spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
     }

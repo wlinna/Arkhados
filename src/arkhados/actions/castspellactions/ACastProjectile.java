@@ -16,7 +16,7 @@ package arkhados.actions.castspellactions;
 
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
@@ -34,13 +34,13 @@ import java.util.List;
  * CastProjectileAction is proper action for basic projectile spells like Magma Bash, Fireball etc.
  * @author william
  */
-public class CastProjectileAction extends EntityAction {
+public class ACastProjectile extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
     private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
 
-    public CastProjectileAction(Spell spell, WorldManager worldManager) {
+    public ACastProjectile(Spell spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
@@ -81,7 +81,7 @@ public class CastProjectileAction extends EntityAction {
         
         projectileControl.setOwnerInterface(influenceInterface);
         
-        SplashAction splashAction = projectileControl.getSplashAction();
+        ASplash splashAction = projectileControl.getSplashAction();
         if (splashAction != null) {
             int teamId = projectile.getUserData(UserDataStrings.TEAM_ID);
             splashAction.setExcludedTeam(teamId);

@@ -15,7 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
@@ -55,7 +55,7 @@ public class RocketJump extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                EntityAction action = new CastRocketJumpAction(spell);
+                EntityAction action = new ACastRocketJump(spell);
                 return action;
             }
         };
@@ -66,12 +66,12 @@ public class RocketJump extends Spell {
     }
 }
 
-class CastRocketJumpAction extends EntityAction {
+class ACastRocketJump extends EntityAction {
 
     private static final float forwardSpeed = 105;
     private final Spell spell;
 
-    public CastRocketJumpAction(Spell spell) {
+    public ACastRocketJump(Spell spell) {
         this.spell = spell;
         setTypeId(EliteSoldier.ACTION_ROCKET_JUMP);
     }
@@ -98,7 +98,7 @@ class CastRocketJumpAction extends EntityAction {
 
         MotionEvent motionControl = new MotionEvent(spatial, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation)
-                / CastRocketJumpAction.forwardSpeed);
+                / ACastRocketJump.forwardSpeed);
         motionControl.setSpeed(1f);
 
         physics.setViewDirection(finalLocation.subtract(startLocation));
@@ -119,7 +119,7 @@ class CastRocketJumpAction extends EntityAction {
     @Override
     public boolean update(float tpf) {
         motionPath();
-        SplashAction splash = new SplashAction(30, 100, 23000,
+        ASplash splash = new ASplash(30, 100, 23000,
                 DistanceScaling.CONSTANT, null);
         splash.setSpatial(spatial);
         int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);

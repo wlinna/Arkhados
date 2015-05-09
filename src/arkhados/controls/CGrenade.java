@@ -18,7 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.WorldManager;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.PlayerDataStrings;
@@ -40,7 +40,7 @@ import java.util.concurrent.Callable;
 public class CGrenade extends AbstractControl
         implements PhysicsTickListener, PhysicsCollisionListener, CSync {
 
-    private SplashAction splashAction;
+    private ASplash splashAction;
     private float age = 0f;
     private float detonationTime;
     private float launchSpeed;
@@ -201,11 +201,11 @@ public class CGrenade extends AbstractControl
         this.ownerInterface = ownerInterface;
     }
             
-    public SplashAction getSplashAction() {
+    public ASplash getSplashAction() {
         return splashAction;
     }
     
-    public void setSplashAction(SplashAction action) {
+    public void setSplashAction(ASplash action) {
         this.splashAction = action;
     }
 

@@ -15,9 +15,9 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
-import arkhados.actions.DelayAction;
+import arkhados.actions.ADelay;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastOnGroundAction;
+import arkhados.actions.castspellactions.ACastOnGround;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CTimedExistence;
@@ -68,8 +68,8 @@ public class EmberCircle extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastOnGroundAction castOnGround =
-                        new CastOnGroundAction(worldManager, spell);
+                final ACastOnGround castOnGround =
+                        new ACastOnGround(worldManager, spell);
                 DamageOverTimeBuff ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -169,7 +169,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         node.addControl(actionQueue);
 
         float delay = Math.max(0.8f - params.age, 0f);
-        actionQueue.enqueueAction(new DelayAction(delay));
+        actionQueue.enqueueAction(new ADelay(delay));
 
         if (worldManager.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
@@ -218,7 +218,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                                         
                     CActionQueue fireActions = new CActionQueue();
                     fire.addControl(fireActions);
-                    fireActions.enqueueAction(new DelayAction(removalDelay));
+                    fireActions.enqueueAction(new ADelay(removalDelay));
                     fireActions.enqueueAction(new EntityAction() {
                         @Override
                         public boolean update(float tpf) {
@@ -230,7 +230,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     CActionQueue smokeActions = new CActionQueue();
                     smoke.addControl(smokeActions);
 
-                    smokeActions.enqueueAction(new DelayAction(removalDelay));
+                    smokeActions.enqueueAction(new ADelay(removalDelay));
                     smokeActions.enqueueAction(new EntityAction() {
                         @Override
                         public boolean update(float tpf) {

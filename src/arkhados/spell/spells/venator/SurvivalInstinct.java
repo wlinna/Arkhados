@@ -15,7 +15,7 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -53,7 +53,7 @@ public class SurvivalInstinct extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastSelfBuffAction buffAction = new CastSelfBuffAction();
+                ACastSelfBuff buffAction = new ACastSelfBuff();
                 buffAction.addBuff(new DamagePerHealthPercentBuff(-1, 6f));
                 buffAction
                         .addBuff(new MovementSpeedPerHealthMissingBuff(-1, 5f));

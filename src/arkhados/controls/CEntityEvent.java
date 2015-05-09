@@ -24,14 +24,14 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 
 /**
  *
  * @author william
  */
 public class CEntityEvent extends AbstractControl {
-    private RemovalEventAction onRemoval = null;
+    private ARemovalEvent onRemoval = null;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -59,11 +59,11 @@ public class CEntityEvent extends AbstractControl {
         OutputCapsule out = ex.getCapsule(this);
     }
 
-    public RemovalEventAction getOnRemoval() {
+    public ARemovalEvent getOnRemoval() {
         return this.onRemoval;
     }
 
-    public void setOnRemoval(RemovalEventAction onRemoval) {
+    public void setOnRemoval(ARemovalEvent onRemoval) {
         this.onRemoval = onRemoval;
     }
 }

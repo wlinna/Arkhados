@@ -16,7 +16,7 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
@@ -61,7 +61,7 @@ public class PurifyingFlame extends Spell {
 
                 // TODO: Get this from BuffInformation
                 final float duration = 3f;
-                final CastSelfBuffAction action = new CastSelfBuffAction();
+                final ACastSelfBuff action = new ACastSelfBuff();
                 final Node aoeContainer = new Node("purifying-flame");
 
                 if (worldManager.isServer()) {

@@ -15,7 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.WorldManager;
-import arkhados.actions.ChannelingSpellAction;
+import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
@@ -36,12 +36,14 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class Machinegun extends Spell {
+
     {
-        this.iconName = "machine_gun.png";
-        this.setMoveTowardsTarget(false);
+        iconName = "machine_gun.png";
+        setMoveTowardsTarget(false);
     }
 
-    public Machinegun(String name, float cooldown, float range, float castTime) {
+    public Machinegun(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -50,13 +52,15 @@ public class Machinegun extends Spell {
         final float range = 105f;
         final float castTime = 0.3f;
 
-        final Machinegun spell = new Machinegun("Machinegun", cooldown, range, castTime);
+        final Machinegun spell = new Machinegun("Machinegun", cooldown,
+                range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                ShootBulletAction shoot = new ShootBulletAction(spell, worldManager);                
-                ChannelingSpellAction channeling = new ChannelingSpellAction(spell, 10, 0.16f, shoot);
+                AShootBullet shoot = new AShootBullet(spell, worldManager);
+                AChannelingSpell channeling =
+                        new AChannelingSpell(spell, 10, 0.16f, shoot);
                 return channeling;
             }
         };
@@ -66,50 +70,57 @@ public class Machinegun extends Spell {
     }
 }
 
-class ShootBulletAction extends EntityAction {
+class AShootBullet extends EntityAction {
 
     private Spell spell;
     private WorldManager worldManager;
 
-    public ShootBulletAction(Spell spell, WorldManager worldManager) {
+    public AShootBullet(Spell spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
 
     @Override
     public boolean update(float tpf) {
-        final CEliteSoldierAmmunition ammunitionControl = super.spatial.getControl(CEliteSoldierAmmunition.class);
-        if (!ammunitionControl.validateSpellCast(null, spell)) {
-            EntityAction current = super.spatial.getControl(CActionQueue.class).getCurrent();
-            if (current instanceof ChannelingSpellAction) {
-                ((ChannelingSpellAction) current).signalEnd();
-            }            
+        CEliteSoldierAmmunition cAmmunition =
+                spatial.getControl(CEliteSoldierAmmunition.class);
+        if (!cAmmunition.validateSpellCast(null, spell)) {
+            EntityAction current =
+                    spatial.getControl(CActionQueue.class).getCurrent();
+            if (current instanceof AChannelingSpell) {
+                ((AChannelingSpell) current).signalEnd();
+            }
             return false;
         }
-        
-        ammunitionControl.spellCasted(null, spell);
-        final CCharacterPhysics physicsControl = super.spatial.getControl(CCharacterPhysics.class);
+
+        cAmmunition.spellCasted(null, spell);
+        CCharacterPhysics physicsControl =
+                spatial.getControl(CCharacterPhysics.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(super.spatial.getLocalTranslation()).normalizeLocal();
-        super.spatial.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
+        Vector3f viewDirection = targetLocation
+                .subtract(spatial.getLocalTranslation()).normalizeLocal();
+        spatial.getControl(CCharacterPhysics.class)
+                .setViewDirection(viewDirection);
 
-        final Integer playerId = super.spatial.getUserData(UserDataStrings.PLAYER_ID);
-        final Vector3f pelletDirection = viewDirection.clone();
-        Vector3f spawnLocation = super.spatial.getLocalTranslation();
+        Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        Vector3f pelletDirection = viewDirection.clone();
+        Vector3f spawnLocation = spatial.getLocalTranslation();
 
-        final int projectileId = this.worldManager.addNewEntity(spell.getId(),
+        int projectileId = worldManager.addNewEntity(spell.getId(),
                 spawnLocation, Quaternion.IDENTITY, playerId);
-        final Spatial projectile = this.worldManager.getEntity(projectileId);
+        Spatial projectile = worldManager.getEntity(projectileId);
 
-        final Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
-        final Float damageFactor = super.spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        Float damage = projectile.getUserData(UserDataStrings.DAMAGE);
+        Float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
 
-        final CProjectile projectileControl = projectile.getControl(CProjectile.class);
-        projectileControl.setRange(this.spell.getRange());
+        CProjectile projectileControl =
+                projectile.getControl(CProjectile.class);
+        projectileControl.setRange(spell.getRange());
         projectileControl.setDirection(pelletDirection);
-        projectileControl.setOwnerInterface(super.spatial.getControl(CInfluenceInterface.class));
+        projectileControl.setOwnerInterface(spatial
+                .getControl(CInfluenceInterface.class));
         return false;
     }
 }

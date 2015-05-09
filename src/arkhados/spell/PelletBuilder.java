@@ -20,7 +20,7 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserDataStrings;
@@ -70,8 +70,8 @@ public class PelletBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when pellet is
              * removed. In this case we want explosion effect.
              */
-            PelletRemovalAction removalAction =
-                    new PelletRemovalAction(assetManager);
+            APelletRemoval removalAction =
+                    new APelletRemoval(assetManager);
             removalAction.setPellet(node);
             node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
@@ -101,12 +101,12 @@ public class PelletBuilder extends AbstractNodeBuilder {
     }
 }
 
-class PelletRemovalAction implements RemovalEventAction {
+class APelletRemoval implements ARemovalEvent {
 
     private AssetManager assetManager;
     private Spatial pellet;
 
-    public PelletRemovalAction(AssetManager assetManager) {
+    public APelletRemoval(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
     }

@@ -17,7 +17,7 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CharacterInteraction;
 import arkhados.ServerFogManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.characters.RockGolem;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
@@ -63,7 +63,7 @@ public class Toss extends Spell {
         toss.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new CastTossAction(toss);
+                return new ACastToss(toss);
             }
         };
 
@@ -74,11 +74,11 @@ public class Toss extends Spell {
     }
 }
 
-class CastTossAction extends EntityAction {
+class ACastToss extends EntityAction {
 
     private Spell spell;
 
-    public CastTossAction(Spell spell) {
+    public ACastToss(Spell spell) {
         this.spell = spell;
     }
 
@@ -86,18 +86,18 @@ class CastTossAction extends EntityAction {
     public boolean update(float tpf) {
         CActionQueue actionQueue = spatial.getControl(CActionQueue.class);
 
-        TossAction tossAction = new TossAction(spell);
+        AToss tossAction = new AToss(spell);
         actionQueue.enqueueAction(tossAction);
         return false;
     }
 }
 
-class TossAction extends EntityAction {
+class AToss extends EntityAction {
 
     private Spell spell;
     private final float forwardSpeed = 105f;
 
-    public TossAction(Spell spell) {
+    public AToss(Spell spell) {
         this.spell = spell;
     }
 
@@ -150,8 +150,8 @@ class TossAction extends EntityAction {
             }
 
             private void landingEffect() {
-                SplashAction splashAction =
-                        new SplashAction(Toss.SPLASH_RADIUS, 350, 0,
+                ASplash splashAction =
+                        new ASplash(Toss.SPLASH_RADIUS, 350, 0,
                         DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);

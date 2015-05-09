@@ -16,16 +16,16 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
-import arkhados.actions.ChannelingSpellAction;
+import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.ASplash;
+import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
@@ -73,10 +73,10 @@ public class Plasmagun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                CastProjectileAction projectileAction = 
-                        new CastProjectileAction(spell, worldManager);
+                ACastProjectile projectileAction = 
+                        new ACastProjectile(spell, worldManager);
                 projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
-                ChannelingSpellAction channel = new ChannelingSpellAction(spell,
+                AChannelingSpell channel = new AChannelingSpell(spell,
                         3, 0.12f, projectileAction, true);
                 return channel;
             }
@@ -145,8 +145,8 @@ class PlasmaBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when plasmaball is
              * removed. In this case we want explosion effect.
              */
-            PlasmaRemovalAction removalAction =
-                    new PlasmaRemovalAction(assetManager);
+            APlasmaRemoval removalAction =
+                    new APlasmaRemoval(assetManager);
             removalAction.setPlasmaEmitter(plasma);
 
             node.getControl(CEntityEvent.class)
@@ -172,7 +172,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         node.addControl(physicsBody);
 
         CProjectile projectileControl = new CProjectile();
-        SplashAction splash = new SplashAction(23f, 23f,
+        ASplash splash = new ASplash(23f, 23f,
                 DistanceScaling.CONSTANT, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
@@ -185,11 +185,11 @@ class PlasmaBuilder extends AbstractNodeBuilder {
     }
 }
 
-class PlasmaRemovalAction implements RemovalEventAction {
+class APlasmaRemoval implements ARemovalEvent {
     private ParticleEmitter plasma;
     private AudioNode sound;
 
-    public PlasmaRemovalAction(AssetManager assetManager) {
+    public APlasmaRemoval(AssetManager assetManager) {
         sound = new AudioNode(assetManager,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);

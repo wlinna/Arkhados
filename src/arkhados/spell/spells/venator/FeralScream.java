@@ -57,19 +57,19 @@ public class FeralScream extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new FeralScreamAction(range, 45f);
+                return new AFeralScream(range, 45f);
             }
         };
         return spell;
     }
 }
 
-class FeralScreamAction extends EntityAction {
+class AFeralScream extends EntityAction {
 
     private final float range;
     private final float maxRotationalDifference;
 
-    public FeralScreamAction(float range, float maxRotationalDifference) {
+    public AFeralScream(float range, float maxRotationalDifference) {
         this.range = range;
         if (maxRotationalDifference > 90f) {
             throw new InvalidParameterException("Does not support "

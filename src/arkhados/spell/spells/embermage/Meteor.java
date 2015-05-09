@@ -17,7 +17,7 @@ package arkhados.spell.spells.embermage;
 import arkhados.Globals;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
-import arkhados.actions.SplashAction;
+import arkhados.actions.ASplash;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CGenericSync;
 import arkhados.controls.CInfluenceInterface;
@@ -25,7 +25,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -82,8 +82,8 @@ public class Meteor extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final CastMeteorAction action =
-                        new CastMeteorAction(worldManager, spell);
+                final ACastMeteor action =
+                        new ACastMeteor(worldManager, spell);
                 DamageOverTimeBuff ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -98,13 +98,13 @@ public class Meteor extends Spell {
     }
 }
 
-class CastMeteorAction extends EntityAction {
+class ACastMeteor extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
     private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
 
-    public CastMeteorAction(WorldManager worldManager, Spell spell) {
+    public ACastMeteor(WorldManager worldManager, Spell spell) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
@@ -150,8 +150,8 @@ class CastMeteorAction extends EntityAction {
 
                     CSpellBuff buffControl = meteor.getControl(CSpellBuff.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
-                    SplashAction splash =
-                            new SplashAction(Meteor.SPLASH_RADIUS,
+                    ASplash splash =
+                            new ASplash(Meteor.SPLASH_RADIUS,
                             baseDamage, DistanceScaling.LINEAR, null);
                     splash.setCasterInterface(casterInterface);
                     int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
@@ -240,8 +240,8 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            MeteorRemovalAction removalAction =
-                    new MeteorRemovalAction(assetManager);
+            AMeteorRemoval removalAction =
+                    new AMeteorRemoval(assetManager);
             removalAction.setEmitter(fire);
 
             node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
@@ -251,12 +251,12 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
     }
 }
 
-class MeteorRemovalAction implements RemovalEventAction {
+class AMeteorRemoval implements ARemovalEvent {
 
     private ParticleEmitter emitter;
     private AudioNode sound;
 
-    MeteorRemovalAction(AssetManager assetManager) {
+    AMeteorRemoval(AssetManager assetManager) {
         sound = new AudioNode(assetManager, "Effects/Sound/MeteorBoom.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);

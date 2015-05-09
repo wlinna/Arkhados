@@ -16,7 +16,7 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.CastSelfBuffAction;
+import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -50,7 +50,7 @@ public class MineralArmor extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                CastSelfBuffAction action = new CastSelfBuffAction();
+                ACastSelfBuff action = new ACastSelfBuff();
                 MineralArmorBuff armor =
                         new MineralArmorBuff(200f, 0.75f, -1, 4f);
                 armor.setOwnerInterface(caster

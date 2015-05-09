@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author william
  */
-public class CastSelfBuffAction extends EntityAction {
+public class ACastSelfBuff extends EntityAction {
 
     private List<AbstractBuff> buffs = new ArrayList<>();
 

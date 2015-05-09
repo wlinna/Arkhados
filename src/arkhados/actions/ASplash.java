@@ -34,7 +34,7 @@ import java.util.List;
  * @author william TODO: Currently SplashAction seems to be meant for negative things only. There
  * could be healing splash too or something like that.
  */
-public class SplashAction extends EntityAction {
+public class ASplash extends EntityAction {
 
     private float radius;
     private float baseDamage;
@@ -47,7 +47,7 @@ public class SplashAction extends EntityAction {
     
     private CInfluenceInterface casterInterface;
 
-    public SplashAction(float radius, float baseDamage, DistanceScaling damageDistanceScaling,
+    public ASplash(float radius, float baseDamage, DistanceScaling damageDistanceScaling,
             List<AbstractBuff> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;
@@ -57,7 +57,7 @@ public class SplashAction extends EntityAction {
         this.customImpulse = null;
     }
 
-    public SplashAction(float radius, float baseDamage, float impulse,
+    public ASplash(float radius, float baseDamage, float impulse,
             DistanceScaling damageDistance, List<AbstractBuff> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;

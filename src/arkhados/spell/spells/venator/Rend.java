@@ -14,9 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
-import arkhados.actions.CastingSpellAction;
+import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.MeleeAttackAction;
+import arkhados.actions.castspellactions.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CSpellCast;
@@ -51,8 +51,8 @@ public class Rend extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                DoubleMeleeAttackAction action =
-                        new DoubleMeleeAttackAction(spell);
+                ADoubleMeleeAttack action =
+                        new ADoubleMeleeAttack(spell);
                 action.setTypeId(Venator.ANIM_SWIPE_LEFT);
                 return action;
             }
@@ -63,10 +63,10 @@ public class Rend extends Spell {
     }
 }
 
-class DoubleMeleeAttackAction extends EntityAction {
+class ADoubleMeleeAttack extends EntityAction {
     private final Spell spell;
 
-    public DoubleMeleeAttackAction(Spell spell) {
+    public ADoubleMeleeAttack(Spell spell) {
         this.spell = spell;
     }
 
@@ -75,9 +75,9 @@ class DoubleMeleeAttackAction extends EntityAction {
         // TODO: Make an attack start with different animation than previous one
         float range = spell.getRange();
         CActionQueue queue = spatial.getControl(CActionQueue.class);
-        final MeleeAttackAction action1 = new MeleeAttackAction(75f, range);
-        CastingSpellAction action2Anim = new CastingSpellAction(spell, true);
-        MeleeAttackAction action2 = new MeleeAttackAction(85f, range);
+        final AMeleeAttack action1 = new AMeleeAttack(75f, range);
+        ACastingSpell action2Anim = new ACastingSpell(spell, true);
+        AMeleeAttack action2 = new AMeleeAttack(85f, range);
         
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);

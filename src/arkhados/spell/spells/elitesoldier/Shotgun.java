@@ -54,7 +54,8 @@ public class Shotgun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
-                CastShotgunAction castShotgun = new CastShotgunAction(spell, Spell.worldManager);
+                ACastShotgun castShotgun =
+                        new ACastShotgun(spell, Spell.worldManager);
                 return castShotgun;
             }
         };
@@ -65,7 +66,7 @@ public class Shotgun extends Spell {
     }
 }
 
-class CastShotgunAction extends EntityAction {
+class ACastShotgun extends EntityAction {
 
     private static final int PELLETS = 6;
     private static final float SPREAD = 13f * FastMath.DEG_TO_RAD;
@@ -73,7 +74,7 @@ class CastShotgunAction extends EntityAction {
     private WorldManager world;
     private final Shotgun spell;
 
-    CastShotgunAction(Shotgun spell, WorldManager world) {
+    ACastShotgun(Shotgun spell, WorldManager world) {
         this.spell = spell;
         this.world = world;
         setTypeId(EliteSoldier.ACTION_SHOTGUN);
@@ -81,12 +82,15 @@ class CastShotgunAction extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CCharacterPhysics physicsControl = spatial.getControl(CCharacterPhysics.class);
+        CCharacterPhysics physicsControl =
+                spatial.getControl(CCharacterPhysics.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
-        final Vector3f viewDirection = targetLocation.subtract(spatial.getLocalTranslation())
+        final Vector3f viewDirection =
+                targetLocation.subtract(spatial.getLocalTranslation())
                 .normalizeLocal();
-        spatial.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
+        spatial.getControl(CCharacterPhysics.class)
+                .setViewDirection(viewDirection);
 
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
@@ -94,24 +98,30 @@ class CastShotgunAction extends EntityAction {
         Quaternion currentRotation = new Quaternion();
 
         for (int i = 0; i < PELLETS; ++i) {
-            currentRotation.fromAngleAxis(SPREAD / 2f - i * STEP, Vector3f.UNIT_Y);
+            currentRotation.fromAngleAxis(SPREAD / 2f - i * STEP,
+                    Vector3f.UNIT_Y);
 
-            Vector3f pelletDirection = currentRotation.mult(viewDirection).normalizeLocal();
+            Vector3f pelletDirection = currentRotation.mult(viewDirection)
+                    .normalizeLocal();
 
-            int projectileId = world.addNewEntity(spell.getId(), spawnLocation, Quaternion.IDENTITY,
-                    playerId);
+            int projectileId = world.addNewEntity(spell.getId(),
+                    spawnLocation, Quaternion.IDENTITY, playerId);
             Spatial projectile = world.getEntity(projectileId);
 
-            final float damage = projectile.getUserData(UserDataStrings.DAMAGE);
-            final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-            projectile.setUserData(UserDataStrings.DAMAGE, damage * damageFactor);
+            float damage = projectile.getUserData(UserDataStrings.DAMAGE);
+            float damageFactor =
+                    spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+            projectile.setUserData(UserDataStrings.DAMAGE,
+                    damage * damageFactor);
 
-            CProjectile projectileControl = projectile.getControl(CProjectile.class);
+            CProjectile projectileControl =
+                    projectile.getControl(CProjectile.class);
             projectileControl.setRange(spell.getRange());
             projectileControl.setDirection(pelletDirection);
-            projectileControl.setOwnerInterface(spatial.getControl(CInfluenceInterface.class));
+            projectileControl.setOwnerInterface(spatial
+                    .getControl(CInfluenceInterface.class));
         }
-        
+
         return false;
     }
 }

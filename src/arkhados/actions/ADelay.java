@@ -18,10 +18,10 @@ package arkhados.actions;
  *
  * @author william
  */
-public class DelayAction extends EntityAction {
+public class ADelay extends EntityAction {
     private float delay;
 
-    public DelayAction(float delay) {
+    public ADelay(float delay) {
         this.delay = delay;
     }
 

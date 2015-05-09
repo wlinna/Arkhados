@@ -58,7 +58,7 @@ public class StoneFist extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                StoneFistAction action = new StoneFistAction(130, range);
+                AStoneFist action = new AStoneFist(130, range);
                 return action;
             }
         };
@@ -69,13 +69,13 @@ public class StoneFist extends Spell {
     }
 }
 
-class StoneFistAction extends EntityAction {
+class AStoneFist extends EntityAction {
 
     private List<AbstractBuff> buffs = new ArrayList<>();
     private float damage;
     private float range;
 
-    public StoneFistAction(float damage, float range) {
+    public AStoneFist(float damage, float range) {
         this.damage = damage;
         this.range = range;
     }
