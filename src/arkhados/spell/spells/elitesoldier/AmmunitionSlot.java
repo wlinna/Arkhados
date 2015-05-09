@@ -18,13 +18,10 @@ package arkhados.spell.spells.elitesoldier;
  *
  * @author william
  */
-
-
 public enum AmmunitionSlot {
     SHOTGUN(0),
-    MACHINEGUN(1),
-    PLASMAGUN(2),
-    ROCKETS(3);
+    PLASMAGUN(1),
+    ROCKETS(2);
     
     private final int slot;
    
