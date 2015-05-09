@@ -109,8 +109,10 @@ public class CGrenade extends AbstractControl
 
     @Override
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
-        RigidBodyControl body = spatial.getControl(RigidBodyControl.class);
+        // TODO: It seems that for some reason this function gets called
+        // "inappropriately"
         if (direction != null) {
+            RigidBodyControl body = spatial.getControl(RigidBodyControl.class);
             body.setLinearVelocity(direction);
             direction = null;
         }
@@ -168,8 +170,6 @@ public class CGrenade extends AbstractControl
             otherInterface.reducePurifyingFlame(damage);
             removalReason = RemovalReasons.ABSORBED;
         } else {
-
-
             CActionQueue actionQueue = other.getControl(CActionQueue.class);
             EntityAction currentAction = actionQueue.getCurrent();
 
