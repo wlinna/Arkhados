@@ -15,31 +15,30 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.Globals;
 import arkhados.actions.ChannelingSpellAction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.SplashAction;
-import arkhados.actions.castspellactions.CastProjectileAction;
+import arkhados.actions.castspellactions.CastGrenadeAction;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
-import arkhados.controls.CProjectile;
+import arkhados.controls.CGenericSync;
+import arkhados.controls.CGrenade;
 import arkhados.controls.CSpellBuff;
-import arkhados.controls.CTimedExistence;
-import arkhados.entityevents.RemovalEventAction;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
-import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
+import arkhados.util.DistanceScaling;
 import arkhados.util.UserDataStrings;
-import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioNode;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -48,47 +47,34 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
-/**
- * EliteSoldiers's Plasmagun (Q) spell. Projectile has moderate speed and deals
- * moderate damage and small amout of splash damage. Slows on hit.
- */
-public class Plasmagun extends Spell {
-    public static final float COOLDOWN = 1.5f;
-    public static final float RANGE = 80f;
-    public static final float CAST_TIME = 0.4f;
+public class PlasmaGrenades extends Spell {
 
-    {
-        iconName = "plasma.png";
-        setMoveTowardsTarget(false);
-    }
-
-    public Plasmagun(String name, float cooldown, float range, float castTime) {
+    public PlasmaGrenades(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
     }
 
     public static Spell create() {
-        final Plasmagun spell =
-                new Plasmagun("Plasmagun", COOLDOWN, RANGE, CAST_TIME);
+        final PlasmaGrenades spell = new PlasmaGrenades("Plasma Grenades",
+                Plasmagun.COOLDOWN, Plasmagun.RANGE, Plasmagun.CAST_TIME);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                CastProjectileAction projectileAction = 
-                        new CastProjectileAction(spell, worldManager);
-                projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
+            public EntityAction newAction(Node caster, Vector3f vec) {
+                CastGrenadeAction action = new CastGrenadeAction(spell);
+                action.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
                 ChannelingSpellAction channel = new ChannelingSpellAction(spell,
-                        3, 0.12f, projectileAction, true);
+                        3, 0.12f, action, true);
                 return channel;
             }
         };
 
-        spell.nodeBuilder = new PlasmaBuilder();
+        spell.nodeBuilder = new PlasmaGrenadeBuilder();
 
         return spell;
     }
 }
 
-class PlasmaBuilder extends AbstractNodeBuilder {
+class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createPlasmaEmitter() {
         ParticleEmitter plasma = new ParticleEmitter("plasma-emitter",
@@ -132,7 +118,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         node.setMaterial(material);
 
         node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
-        node.setUserData(UserDataStrings.MASS, 0.30f);
+        node.setUserData(UserDataStrings.MASS, 0.20f);
         node.setUserData(UserDataStrings.DAMAGE, 60f);
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
@@ -156,6 +142,10 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         SphereCollisionShape collisionShape = new SphereCollisionShape(5);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserDataStrings.MASS));
+
+        physicsBody.setFriction(1f);
+        physicsBody.setAngularDamping(1f);
+
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that
@@ -167,64 +157,42 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         /**
          * Add collision group of characters
          */
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
+        physicsBody.addCollideWithGroup(CollisionGroups.WALLS);
+        physicsBody.addCollideWithGroup(CollisionGroups.SPIRIT_STONE);
 
         node.addControl(physicsBody);
 
-        CProjectile projectileControl = new CProjectile();
-        SplashAction splash = new SplashAction(23f, 23f,
-                DistanceScaling.CONSTANT, null);
-        splash.setSpatial(node);
-        projectileControl.setSplashAction(splash);
-        node.addControl(projectileControl);
-        CSpellBuff buffControl = new CSpellBuff();
-        node.addControl(buffControl);
+        PhysicsSpace space = Globals.app.getStateManager()
+                .getState(BulletAppState.class).getPhysicsSpace();
 
-        buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
+        Vector3f gravity = new Vector3f();
+
+        space.getGravity(gravity);
+        physicsBody.setGravity(gravity);
+
+        if (worldManager.isServer()) {
+            CGrenade cGrenade = new CGrenade();
+            node.addControl(cGrenade);
+            space.addTickListener(cGrenade);
+            space.addCollisionListener(cGrenade);
+
+            cGrenade.setDetonationTime(3f);
+            SplashAction splash = new SplashAction(20f, 23f,
+                    DistanceScaling.CONSTANT, null);
+            splash.setSpatial(node);
+            cGrenade.setSplashAction(splash);
+
+            CSpellBuff buffControl = new CSpellBuff();
+            node.addControl(buffControl);
+
+            buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
+
+            GhostControl characterCollision = new GhostControl(collisionShape);
+            characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+            characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+            node.addControl(characterCollision);
+        }
+
         return node;
-    }
-}
-
-class PlasmaRemovalAction implements RemovalEventAction {
-    private ParticleEmitter plasma;
-    private AudioNode sound;
-
-    public PlasmaRemovalAction(AssetManager assetManager) {
-        sound = new AudioNode(assetManager,
-                "Effects/Sound/FireballExplosion.wav");
-        sound.setPositional(true);
-        sound.setReverbEnabled(false);
-        sound.setVolume(1f);
-    }
-
-    public void setPlasmaEmitter(ParticleEmitter plasma) {
-        this.plasma = plasma;
-    }
-
-    @Override
-    public void exec(WorldManager worldManager, int reason) {
-        Vector3f worldTranslation = plasma.getParent().getLocalTranslation();
-
-        plasma.removeFromParent();
-        worldManager.getWorldRoot().attachChild(plasma);
-        plasma.setLocalTranslation(worldTranslation);
-        plasma.addControl(new CTimedExistence(1f));
-        plasma.setStartColor(new ColorRGBA(0.5f, 0.150f, 0.9f, 1.0f));
-        plasma.setEndColor(new ColorRGBA(0.60f, 0.10f, 0.9f, 0.8f));
-        plasma.setLowLife(0.1f);
-        plasma.setHighLife(0.3f);
-        plasma.setNumParticles(15);
-        plasma.setStartSize(5.5f);
-        plasma.setEndSize(10.0f);
-        plasma.getParticleInfluencer()
-                .setInitialVelocity(Vector3f.UNIT_X.mult(.0f));
-        plasma.getParticleInfluencer().setVelocityVariation(1f);
-
-        plasma.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
-        plasma.emitAllParticles();
-        plasma.setParticlesPerSec(0.0f);
-
-        sound.setLocalTranslation(worldTranslation);
-        sound.play();
     }
 }

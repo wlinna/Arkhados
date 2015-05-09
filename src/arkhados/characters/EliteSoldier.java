@@ -140,13 +140,16 @@ public class EliteSoldier extends AbstractNodeBuilder {
         entity.addControl(spellCastControl);
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
+
         int M2id = InputMappingStrings.getId(InputMappingStrings.M2);
+        int Qid = InputMappingStrings.getId(InputMappingStrings.Q);
+
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
         spellCastControl.putSpell(Spell.getSpell("Railgun"), M2id);
         spellCastControl.putSpell(Spell.getSpell("Blinding Ray"), -M2id);
-        spellCastControl.putSpell(Spell.getSpell("Plasmagun"),
-                InputMappingStrings.getId(InputMappingStrings.Q));
+        spellCastControl.putSpell(Spell.getSpell("Plasmagun"), Qid);
+        spellCastControl.putSpell(Spell.getSpell("Plasma Grenades"), -Qid);
         spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"),
                 InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(Spell.getSpell("Like a Pro"),
@@ -176,7 +179,10 @@ public class EliteSoldier extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Shotgun", animationData);
         characterAnimControl.addSpellAnimation("Railgun", animationData);
         characterAnimControl.addSpellAnimation("Plasmagun", animationData);
-        characterAnimControl.addSpellAnimation("Rocket Launcher", animationData);
+        characterAnimControl
+                .addSpellAnimation("Plasma Grenades", animationData);
+        characterAnimControl
+                .addSpellAnimation("Rocket Launcher", animationData);
         characterAnimControl.addSpellAnimation("Like a Pro", null);
         characterAnimControl.addSpellAnimation("Rocket Jump", animationData);
 

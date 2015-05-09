@@ -19,6 +19,7 @@ import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
 import arkhados.spell.spells.elitesoldier.BlindingRay;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
+import arkhados.spell.spells.elitesoldier.PlasmaGrenades;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
 import arkhados.spell.spells.elitesoldier.Railgun;
 import arkhados.spell.spells.elitesoldier.RocketJump;
@@ -112,6 +113,7 @@ public abstract class Spell {
         addSpell(entityFactory, Railgun.create());
         addSpell(entityFactory, BlindingRay.create());
         addSpell(entityFactory, Plasmagun.create());
+        addSpell(entityFactory, PlasmaGrenades.create());
         addSpell(entityFactory, RocketLauncher.create());
         addSpell(entityFactory, LikeAPro.create());
         addSpell(entityFactory, RocketJump.create());

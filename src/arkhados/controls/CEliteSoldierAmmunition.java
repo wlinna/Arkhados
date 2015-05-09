@@ -67,7 +67,8 @@ public class CEliteSoldierAmmunition extends AbstractControl
         } else if ("Machinegun".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
                     .hasEnough(1);
-        } else if ("Plasmagun".equals(spell.getName())) {
+        } else if ("Plasmagun".equals(spell.getName())
+                || "Plasma Grenades".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
                     .hasEnough(3);
         } else if ("Rocket Launcher".equals(spell.getName())
@@ -87,7 +88,8 @@ public class CEliteSoldierAmmunition extends AbstractControl
         } else if ("Machinegun".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
                     .consumeAmmo(1);
-        } else if ("Plasmagun".equals(spell.getName())) {
+        } else if ("Plasmagun".equals(spell.getName())
+                || "Plasma Grenades".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
                     .consumeAmmo(3);
         } else if ("Rocket Launcher".equals(spell.getName())

@@ -36,6 +36,7 @@ import java.util.HashMap;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CEntityVariable;
+import arkhados.controls.CGrenade;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
 import arkhados.controls.CUserInput;
@@ -206,13 +207,13 @@ public class WorldManager extends AbstractAppState {
         }
     }
 
-    private int giveNewId() {        
-        while (entities.containsKey(++idCounter)) {            
+    private int giveNewId() {
+        while (entities.containsKey((int) (++idCounter))) {
         }
-        
+
         return idCounter;
     }
-    
+
     /**
      * Adds new entity on server
      *
@@ -223,7 +224,7 @@ public class WorldManager extends AbstractAppState {
      * @return entity id
      */
     public int addNewEntity(int nodeBuilderId, Vector3f location,
-            Quaternion rotation, int playerId) {        
+            Quaternion rotation, int playerId) {
         addEntity(giveNewId(), nodeBuilderId, location, rotation, playerId, 0f);
         return idCounter;
     }
@@ -417,7 +418,7 @@ public class WorldManager extends AbstractAppState {
             app.getStateManager().getState(ClientHudManager.class)
                     .entityDisappeared(spatial);
 
-            // TODO: Consider doing this to all controls to generalize destruction
+//             TODO: Consider doing this to all controls to generalize destruction
             CCharacterBuff buffControl =
                     spatial.getControl(CCharacterBuff.class);
             spatial.removeControl(buffControl);
@@ -436,6 +437,21 @@ public class WorldManager extends AbstractAppState {
         GhostControl ghostControl = spatial.getControl(GhostControl.class);
         if (ghostControl != null) {
             space.remove(ghostControl);
+        }
+
+
+        // The reason this code can't be activated is that some controls cause
+        // problems when removed like this (GhostControl)
+//                           
+//        while (spatial.getNumControls() > 0) {
+//            Control control = spatial.getControl(0);
+//            spatial.removeControl(control);
+//        }
+
+        // FIXME: Ugly hack. Generalize cleaning controls
+        CGrenade grenade = spatial.getControl(CGrenade.class);
+        if (grenade != null) {
+            spatial.removeControl(grenade);
         }
     }
 
