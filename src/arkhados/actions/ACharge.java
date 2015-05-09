@@ -189,6 +189,14 @@ public class ACharge extends EntityAction
                 && otherCollisionGroup != CollisionGroups.SPIRIT_STONE) {
             return;
         }
+        
+        // This filters away shields
+        if (otherCollisionGroup == CollisionGroups.CHARACTERS) {
+            Spatial targetSpatial = (Spatial) otherObject.getUserObject();
+            if (targetSpatial.getControl(CCharacterPhysics.class) == null) {
+                return;
+            }
+        }
 
         hasCollided = true;
 
