@@ -17,6 +17,7 @@ package arkhados.actions;
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
@@ -119,11 +120,20 @@ public class ACharge extends EntityAction
     }
 
     private void collided(Spatial target) {
+        EntityAction aCurrent =
+                target.getControl(CActionQueue.class).getCurrent();
+
+        if (aCurrent instanceof ATrance) {
+            ((ATrance) aCurrent).activate(spatial);
+            return;
+        }
+
         float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
         float rawDamage = hitDamage * damageFactor;
 
         CInfluenceInterface targetInfluenceControl =
                 target.getControl(CInfluenceInterface.class);
+
         CharacterInteraction
                 .harm(spatial.getControl(CInfluenceInterface.class),
                 targetInfluenceControl, rawDamage, buffs, true);
@@ -152,7 +162,7 @@ public class ACharge extends EntityAction
                 spatial.getControl(CCharacterPhysics.class);
 
         physics.getDictatedDirection().zero();
-        
+
         spatial.getControl(CCharacterMovement.class).stop();
         physics.enqueueSetLinearVelocity(Vector3f.ZERO);
     }

@@ -26,6 +26,7 @@ import arkhados.spell.spells.elitesoldier.RocketJump;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
 import arkhados.spell.spells.elitesoldier.Shotgun;
 import arkhados.spell.spells.embermage.EmberCircle;
+import arkhados.spell.spells.embermage.EtherealFlame;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.spell.spells.embermage.Firewalk;
 import arkhados.spell.spells.embermage.Ignite;
@@ -97,6 +98,7 @@ public abstract class Spell {
         addSpell(entityFactory, EmberCircle.create());
         addSpell(entityFactory, Meteor.create());
         addSpell(entityFactory, PurifyingFlame.create());
+        addSpell(entityFactory, EtherealFlame.create());
         addSpell(entityFactory, Firewalk.create());
         addSpell(entityFactory, Ignite.create());
 

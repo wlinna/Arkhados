@@ -37,6 +37,7 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class PurifyingFlame extends Spell {
+    public static final float COOLDOWN = 12f;
 
     {
         iconName = "purifying_flame.png";
@@ -48,12 +49,11 @@ public class PurifyingFlame extends Spell {
     }
 
     public static PurifyingFlame create() {
-        final float cooldown = 12f;
-        final float range = 200f;
+        final float range = 200f; // TODO: Does this make sense?
         final float castTime = 0f;
 
         final PurifyingFlame spell = new PurifyingFlame("Purifying Flame",
-                cooldown, range, castTime);
+                COOLDOWN, range, castTime);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override

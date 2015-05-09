@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.AChannelingSpell;
+import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.CmdSetCooldown;
 import arkhados.messages.syncmessages.CmdStartCastingSpell;
@@ -92,17 +93,25 @@ public class CSpellCast extends AbstractControl {
     /**
      * Interrupt spell casting so that spell's cooldown is not resetted.
      */
+    // FIXME: safeInterrupt isn't safe anymore
     public void safeInterrupt() {
         EntityAction action =
                 spatial.getControl(CActionQueue.class).getCurrent();
-        if (action != null && action instanceof ACastingSpell) {
+        
+        if (action == null) {
+            return;
+        }
+        
+        if (action instanceof ACastingSpell) {
             casting = false;
             Spell spell = ((ACastingSpell) action).getSpell();
             spatial.getControl(CActionQueue.class).clear();
             setCooldown(spell.getId(), 0f);
-        } else if (action != null && action instanceof AChannelingSpell) {
+        } else if (action instanceof AChannelingSpell) {
             AChannelingSpell channeling = (AChannelingSpell) action;
             putOnCooldown(channeling.getSpell());
+            spatial.getControl(CActionQueue.class).clear();
+        } else if (action instanceof ATrance) { // TODO: Refactor
             spatial.getControl(CActionQueue.class).clear();
         }
     }

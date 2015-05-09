@@ -14,13 +14,14 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.actions.ATrance;
+import arkhados.actions.EntityAction;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSkyDrop;
 import arkhados.controls.CSpellBuff;
-import arkhados.spell.buffs.AbsorbingShieldBuff;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.spells.rockgolem.CSpiritStonePhysics;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
@@ -66,12 +67,12 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
         CProjectile projectileA = event.getNodeA().getControl(CProjectile.class);
         CProjectile projectileB = event.getNodeB().getControl(CProjectile.class);
-        
+
         CSpiritStonePhysics ssPhysicsA =
                 event.getNodeA().getControl(CSpiritStonePhysics.class);
         CSpiritStonePhysics ssPhysicsB =
                 event.getNodeB().getControl(CSpiritStonePhysics.class);
-        
+
 
         CSkyDrop skyDrop = event.getNodeA().getControl(CSkyDrop.class);
         if (skyDrop == null) {
@@ -126,13 +127,28 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         if (projectile.getHurted().contains(target.getSpatial())) {
             return;
         }
-        
+
         final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
         int removalReason = RemovalReasons.COLLISION;
         if (target.isImmuneToProjectiles() && projectile.isProjectile()) {
             target.reducePurifyingFlame(damage);
             removalReason = RemovalReasons.ABSORBED;
         } else {
+            CActionQueue actionQueue =
+                    target.getSpatial().getControl(CActionQueue.class);
+            EntityAction currentAction = actionQueue.getCurrent();
+
+            if (currentAction instanceof ATrance) {
+                ATrance trance = (ATrance) currentAction;
+                trance.activate(projectile.getOwnerInterface().getSpatial());
+
+                if (projectile.isProjectile()) {
+                    int entityId = projectile.getSpatial()
+                            .getUserData(UserDataStrings.ENTITY_ID);
+                    worldManager.removeEntity(entityId, removalReason);
+                }
+                return;
+            }
 
             final CSpellBuff buffControl = projectile.getSpatial()
                     .getControl(CSpellBuff.class);
@@ -159,8 +175,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             }
         }
 
-        int entityId = projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
-
+        int entityId = projectile.getSpatial()
+                .getUserData(UserDataStrings.ENTITY_ID);
         if (projectile.isProjectile()) {
             worldManager.removeEntity(entityId, removalReason);
         } else {

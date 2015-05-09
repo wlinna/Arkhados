@@ -16,7 +16,9 @@ package arkhados.actions.castspellactions;
 
 import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
+import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
@@ -94,6 +96,15 @@ public class AMeleeAttack extends EntityAction {
         CInfluenceInterface targetInterface =
                 closest.spatial.getControl(CInfluenceInterface.class);
         if (targetInterface != null) {
+            CActionQueue cQueue = 
+                    targetInterface.getSpatial().getControl(CActionQueue.class);
+            EntityAction aCurrent = cQueue.getCurrent();
+            
+            if (aCurrent instanceof ATrance) {
+                ((ATrance) aCurrent).activate(spatial);
+                return false;
+            }
+            
             final float damageFactor =
                     spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             final float rawDamage = damage * damageFactor;

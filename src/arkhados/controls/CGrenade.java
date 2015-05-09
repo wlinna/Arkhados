@@ -19,6 +19,8 @@ import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.WorldManager;
 import arkhados.actions.ASplash;
+import arkhados.actions.ATrance;
+import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.PlayerDataStrings;
@@ -155,6 +157,9 @@ public class CGrenade extends AbstractControl
             return;
         }
 
+        WorldManager world =
+                Globals.app.getStateManager().getState(WorldManager.class);
+
         RigidBodyControl body = spatial.getControl(RigidBodyControl.class);
 
         final float damage = spatial.getUserData(UserDataStrings.DAMAGE);
@@ -163,6 +168,20 @@ public class CGrenade extends AbstractControl
             otherInterface.reducePurifyingFlame(damage);
             removalReason = RemovalReasons.ABSORBED;
         } else {
+
+
+            CActionQueue actionQueue = other.getControl(CActionQueue.class);
+            EntityAction currentAction = actionQueue.getCurrent();
+
+            if (currentAction instanceof ATrance) {
+                ATrance trance = (ATrance) currentAction;
+                trance.activate(other);
+
+                int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                world.removeEntity(entityId, removalReason);
+
+                return;
+            }
 
             CSpellBuff buffControl = spatial.getControl(CSpellBuff.class);
 
@@ -188,9 +207,7 @@ public class CGrenade extends AbstractControl
         }
 
         int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
-        Globals.app.getStateManager().getState(WorldManager.class)
-                .removeEntity(entityId, removalReason);
-
+        world.removeEntity(entityId, removalReason);
     }
 
     public CInfluenceInterface getOwnerInterface() {
@@ -200,13 +217,12 @@ public class CGrenade extends AbstractControl
     public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         this.ownerInterface = ownerInterface;
     }
-            
+
     public ASplash getSplashAction() {
         return splashAction;
     }
-    
+
     public void setSplashAction(ASplash action) {
         this.splashAction = action;
     }
-
 }

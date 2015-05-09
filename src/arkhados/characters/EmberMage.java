@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.controls.CActionPlayer;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
@@ -31,7 +32,7 @@ import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.spell.spells.embermage.EtherealFlame;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
@@ -49,11 +50,14 @@ import com.jme3.scene.Node;
 public class EmberMage extends AbstractNodeBuilder {
 
     public static final int ACTION_FIREWALK = 0;
+    public static final int ACTION_FIRE_TRANCE = 1;
 
     public EmberMage() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FIREWALK,
                 new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
+        getEffectBox().addActionEffect(ACTION_FIRE_TRANCE, 
+                new EtherealFlame.Effect());
     }
 
     @Override
@@ -94,6 +98,8 @@ public class EmberMage extends AbstractNodeBuilder {
         entity.addControl(spellCastControl);
         int m2Id = InputMappingStrings.getId(InputMappingStrings.M2);
         
+        int Rid = InputMappingStrings.getId(InputMappingStrings.R);
+        
         spellCastControl.putSpell(Spell.getSpell("Fireball"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
         spellCastControl.putSpell(Spell.getSpell("Magma Bash"), m2Id);
@@ -102,8 +108,8 @@ public class EmberMage extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
                 InputMappingStrings.getId(InputMappingStrings.E));
-        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"),
-                InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), Rid);
+        spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -Rid);
         spellCastControl.putSpell(Spell.getSpell("Firewalk"),
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
@@ -125,16 +131,21 @@ public class EmberMage extends AbstractNodeBuilder {
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-        AnimationData animationData =
+        AnimationData idleAnim =
                 new AnimationData("Idle", 1f, LoopMode.Loop);
+        
+        AnimationData hitAnim = new AnimationData("Hit", 1f, LoopMode.DontLoop);
+        AnimationData attackAnim =
+                new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
-        characterAnimControl.addSpellAnimation("Fireball", animationData);
-        characterAnimControl.addSpellAnimation("Magma Bash", animationData);
-        characterAnimControl.addSpellAnimation("Magma Release", animationData);
-        characterAnimControl.addSpellAnimation("Ember Circle", animationData);
-        characterAnimControl.addSpellAnimation("Meteor", animationData);
+        characterAnimControl.addSpellAnimation("Fireball", attackAnim);
+        characterAnimControl.addSpellAnimation("Magma Bash", attackAnim);
+        characterAnimControl.addSpellAnimation("Magma Release", attackAnim);
+        characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
+        characterAnimControl.addSpellAnimation("Meteor", idleAnim);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
-        characterAnimControl.addSpellAnimation("Firewalk", animationData);
+        characterAnimControl.addSpellAnimation("Ethereal Flame", hitAnim);
+        characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
 
         entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
