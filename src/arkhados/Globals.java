@@ -17,6 +17,7 @@ package arkhados;
 
 import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
 
 /**
  * This has static references to few instances that are used globally.
@@ -34,6 +35,7 @@ public class Globals {
     
     public static AssetManager assetManager = null;
     public static Application app = null;
+    public static PhysicsSpace space = null;
     
     // FIXME: Make own class for variables that describe world state
     public static boolean worldRunning = false;

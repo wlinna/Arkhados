@@ -126,6 +126,8 @@ public class ServerMain extends SimpleApplication {
         // Accuracy should be > 45 or projectiles might "disappear" before
         // exploding. This is because of FogOfWar
         physics.getPhysicsSpace().setAccuracy(1f / 52f);
+        
+        Globals.space = physics.getPhysicsSpace();
     }
 
     public void startGame() {
