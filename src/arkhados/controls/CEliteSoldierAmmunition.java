@@ -38,7 +38,6 @@ public class CEliteSoldierAmmunition extends AbstractControl
 
     {
         ammunitionLoaders.add(AmmunitionLoader.Shotgun());
-        ammunitionLoaders.add(AmmunitionLoader.Machinegun());
         ammunitionLoaders.add(AmmunitionLoader.Plasmagun());
         ammunitionLoaders.add(AmmunitionLoader.Rocket());
     }
@@ -64,9 +63,6 @@ public class CEliteSoldierAmmunition extends AbstractControl
         if ("Shotgun".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
                     .hasEnough(8);
-        } else if ("Machinegun".equals(spell.getName())) {
-            return ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
-                    .hasEnough(1);
         } else if ("Plasmagun".equals(spell.getName())
                 || "Plasma Grenades".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
@@ -85,9 +81,6 @@ public class CEliteSoldierAmmunition extends AbstractControl
         if ("Shotgun".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
                     .consumeAmmo(8);
-        } else if ("Machinegun".equals(spell.getName())) {
-            ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
-                    .consumeAmmo(1);
         } else if ("Plasmagun".equals(spell.getName())
                 || "Plasma Grenades".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
@@ -100,25 +93,19 @@ public class CEliteSoldierAmmunition extends AbstractControl
 
     public EliteSoldierSyncData addAmmoSynchronizationData(
             EliteSoldierSyncData syncData, float towardsFuture) {
-        syncData.setBullets(ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
+        syncData.setPellets(ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
                 .predictAmmoAmount(towardsFuture));
-        syncData.setBullets(ammunitionLoaders
-                .get(AmmunitionSlot.MACHINEGUN.slot())
-                .predictAmmoAmount(towardsFuture));
-        syncData.setBullets(ammunitionLoaders
+        syncData.setPlasmas(ammunitionLoaders
                 .get(AmmunitionSlot.PLASMAGUN.slot())
                 .predictAmmoAmount(towardsFuture));
-        syncData.setBullets(ammunitionLoaders
+        syncData.setRockets(ammunitionLoaders
                 .get(AmmunitionSlot.ROCKETS.slot())
                 .predictAmmoAmount(towardsFuture));
         return syncData;
     }
 
-    public void synchronizeAmmunition(int pellets, int bullets, int plasmas,
-            int rockets) {
+    public void synchronizeAmmunition(int pellets, int plasmas, int rockets) {
         ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).setAmount(pellets);
-        ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
-                .setAmount(bullets);
         ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
                 .setAmount(plasmas);
         ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).setAmount(rockets);
@@ -126,8 +113,6 @@ public class CEliteSoldierAmmunition extends AbstractControl
 
     public void likeAPro() {
         ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).addAmmunition(16);
-        ammunitionLoaders.get(AmmunitionSlot.MACHINEGUN.slot())
-                .addAmmunition(10);
         ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).addAmmunition(3);
         ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).addAmmunition(2);
     }
@@ -193,10 +178,6 @@ class AmmunitionLoader {
 
     public static AmmunitionLoader Shotgun() {
         return new AmmunitionLoader(4, 1, 36, 36);
-    }
-
-    public static AmmunitionLoader Machinegun() {
-        return new AmmunitionLoader(1, 1, 10, 25);
     }
 
     public static AmmunitionLoader Plasmagun() {
