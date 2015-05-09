@@ -130,7 +130,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
         int removalReason = RemovalReasons.COLLISION;
         if (target.isImmuneToProjectiles() && projectile.isProjectile()) {
-            reducePurifyingFlame(target, damage);
+            target.reducePurifyingFlame(damage);
             removalReason = RemovalReasons.ABSORBED;
         } else {
 
@@ -175,14 +175,5 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
         int entityId = projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
         worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
-    }
-
-    private void reducePurifyingFlame(CInfluenceInterface target, float dmg) {
-        for (AbstractBuff abstractBuff : target.getBuffs()) {
-            if (abstractBuff instanceof AbsorbingShieldBuff) {
-                ((AbsorbingShieldBuff) abstractBuff).reduce(dmg);
-                return;
-            }
-        }
     }
 }

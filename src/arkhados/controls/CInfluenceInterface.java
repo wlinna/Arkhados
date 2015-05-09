@@ -16,6 +16,7 @@ package arkhados.controls;
 
 import arkhados.Globals;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
+import arkhados.spell.buffs.AbsorbingShieldBuff;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.BlindCC;
@@ -209,14 +210,14 @@ public class CInfluenceInterface extends AbstractControl {
             }
 
             slowInfluences.clear();
-            
+
             for (SpeedInfluence speed : speedInfluences) {
                 speedFactor *= speed.getSpeedFactor();
                 constantSpeedAddition += speed.getConstant();
             }
 
             speedInfluences.clear();
-            
+
             float msCurrent =
                     spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
 
@@ -303,6 +304,15 @@ public class CInfluenceInterface extends AbstractControl {
             slowInfluences.add((SlowInfluence) influence);
         } else if (influence instanceof SpeedInfluence) {
             speedInfluences.add((SpeedInfluence) influence);
+        }
+    }
+
+    public void reducePurifyingFlame(float dmg) {
+        for (AbstractBuff abstractBuff : buffs) {
+            if (abstractBuff instanceof AbsorbingShieldBuff) {
+                ((AbsorbingShieldBuff) abstractBuff).reduce(dmg);
+                return;
+            }
         }
     }
 
