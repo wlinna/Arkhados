@@ -30,19 +30,23 @@ import arkhados.effects.WorldEffect;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.audio.AudioNode;
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.MotionPathListener;
+import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.concurrent.Callable;
 
-
 public class EtherealFlame extends Spell {
 
-    public static final float DURATION = 1.5f;
+    public static final float DURATION = 2f;
+    static final float SPEED = 300f;
 
     public EtherealFlame(String name, float cooldown, float range,
             float castTime) {
@@ -50,7 +54,7 @@ public class EtherealFlame extends Spell {
     }
 
     public static Spell create() {
-        final float range = 60f;
+        final float range = 70f;
         final float castTime = 0.2f;
 
         final EtherealFlame spell = new EtherealFlame("Ethereal Flame",
@@ -64,7 +68,6 @@ public class EtherealFlame extends Spell {
         };
 
         return spell;
-
     }
 
     public static class Effect implements WorldEffect {
@@ -144,11 +147,10 @@ public class EtherealFlame extends Spell {
                     return null;
                 }
             });
-
-
         }
     }
 }
+
 class AFireTrance extends EntityAction implements ATrance {
 
     {
@@ -187,9 +189,41 @@ class AFireTrance extends EntityAction implements ATrance {
     @Override
     public void activate(Spatial activator) {
         CSpellCast spellCast = spatial.getControl(CSpellCast.class);
-        Vector3f actualTarget = spellCast.getClosestPointToTarget(spell);
+        Vector3f target = spellCast.getClosestPointToTarget(spell);        
 
-        spatial.getControl(CCharacterPhysics.class).warp(actualTarget);
+        motion(target);
         timeLeft = 0f;
+    }
+
+    private void motion(final Vector3f target) {
+        Vector3f start = spatial.getLocalTranslation();
+
+        final MotionPath path = new MotionPath();
+        path.setPathSplineType(Spline.SplineType.Linear);
+        path.addWayPoint(start);
+        path.addWayPoint(target);
+
+        MotionEvent motionControl = new MotionEvent(spatial, path);
+        motionControl.setSpeed(1f);
+        motionControl.setInitialDuration(
+                target.distance(start) / EtherealFlame.SPEED);
+        
+        final CCharacterPhysics body =
+                spatial.getControl(CCharacterPhysics.class);
+        body.lookAt(target);
+        body.switchToMotionCollisionMode();
+        
+        path.addListener(new MotionPathListener() {
+            @Override
+            public void onWayPointReach(MotionEvent motionControl,
+                    int wayPointIndex) {
+                if (path.getNbWayPoints() == wayPointIndex + 1) {
+                    body.switchToNormalPhysicsMode();
+                    body.warp(target);
+                }
+            }
+        });
+        
+        motionControl.play();
     }
 }
