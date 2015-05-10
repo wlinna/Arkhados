@@ -117,6 +117,8 @@ public class RockGolem extends AbstractNodeBuilder {
         spellCastControl.putSpell(quake,
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
+        
         TossValidator tossValidator = new TossValidator(toss);
         spellCastControl.addCastValidator(tossValidator);
 

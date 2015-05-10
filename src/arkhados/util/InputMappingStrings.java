@@ -32,6 +32,8 @@ public class InputMappingStrings {
     public final static String E = "e";
     public final static String R = "r";
     public final static String SPACE = "space";
+    public final static String SEC1 = "sec1";
+    public final static String SEC2 = "sec2";
     public final static String MODIFIER = "modifier";
     private final static HashMap<String, Integer> StringNumberMap =
             new HashMap<>(10);
@@ -47,6 +49,8 @@ public class InputMappingStrings {
         StringNumberMap.put(E, 7);
         StringNumberMap.put(R, 8);
         StringNumberMap.put(SPACE, 9);
+        StringNumberMap.put(SEC1, 10);
+        StringNumberMap.put(SEC2, 11);
     }
     public final static String VOLUME_DOWN = "volume-down";
     public final static String VOLUME_UP = "volume-up";

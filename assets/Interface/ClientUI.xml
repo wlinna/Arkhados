@@ -149,6 +149,8 @@
                         <text style="nifty-label" text="Spell 4" align="center" />
                         <text style="nifty-label" text="Spell 5" align="center" />
                         <text style="nifty-label" text="Spell 6" align="center" />
+                        <text style="nifty-label" text="Secondary 1" align="center" />
+                        <text style="nifty-label" text="Secondary 2" align="center" />
                         
                         <text style="nifty-label" text=""/>
                         
@@ -186,6 +188,13 @@
                             <interact onClick="waitAndSetKey(button_space, space)" />
                         </control>
                         
+                        <control id="button_sec1" name="button" label="Secondary 1" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_sec1, sec1)" />
+                        </control>
+                        
+                        <control id="button_sec2" name="button" label="Secondary 2" align="center" width="120px">
+                            <interact onClick="waitAndSetKey(button_sec2, sec2)" />
+                        </control>
                         
                         <text style="nifty-label" text=""/>
                         <control id="cbox_move_interrupts" name="checkbox" checked="true" align="center">

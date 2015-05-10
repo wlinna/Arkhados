@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -42,10 +41,11 @@ import java.util.List;
  */
 public class CSpellCast extends AbstractControl {
 
-    private static HashMap<Integer, Float> clientCooldowns;
-    private HashMap<Integer, Spell> spells = new HashMap<>();
-    private HashMap<Integer, Float> cooldowns = new HashMap<>();
-    private HashMap<Integer, Spell> keySpellMappings = new HashMap<>();
+    private static Map<Integer, Float> clientCooldowns;
+    private Map<Integer, Spell> spells = new HashMap<>();
+    private Map<Integer, Float> cooldowns = new HashMap<>();
+    private Map<Integer, Spell> keySpellMappings = new HashMap<>();
+    private Map<String, Integer> secondaryInputMapping = new HashMap<>(2);
     private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
@@ -311,6 +311,14 @@ public class CSpellCast extends AbstractControl {
         }
     }
 
+    public Integer getInput(String key) {
+        return secondaryInputMapping.get(key);
+    }
+    
+    public void putSecondaryMapping(String key, int spellInputId) {
+        secondaryInputMapping.put(key, spellInputId);
+    }
+    
     public Spell getKeySpellNameMapping(int key) {
         return keySpellMappings.get(key);
     }
@@ -333,7 +341,7 @@ public class CSpellCast extends AbstractControl {
         this.casting = casting;
     }
 
-    public HashMap<Integer, Float> getCooldowns() {
+    public Map<Integer, Float> getCooldowns() {
         return cooldowns;
     }
 

@@ -41,7 +41,10 @@ public final class InputSettings {
         setKey(settings, InputMappingStrings.Q, true, KeyInput.KEY_Q);
         setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
         setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
-        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);        
+        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
+        
+        setKey(settings, InputMappingStrings.SEC1, true, KeyInput.KEY_1);
+        setKey(settings, InputMappingStrings.SEC2, true, KeyInput.KEY_2);
         
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
             settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
@@ -77,6 +80,9 @@ public final class InputSettings {
         buttonIdInputMappingMap.put("button_e", InputMappingStrings.E);
         buttonIdInputMappingMap.put("button_r", InputMappingStrings.R);
         buttonIdInputMappingMap.put("button_space", InputMappingStrings.SPACE);
+        
+        buttonIdInputMappingMap.put("button_sec1", InputMappingStrings.SEC1);
+        buttonIdInputMappingMap.put("button_sec2", InputMappingStrings.SEC2);
     }
 
     public InputSettings(InputManager inputManager) {

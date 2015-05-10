@@ -155,7 +155,10 @@ public class EliteSoldier extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Like a Pro"),
                 InputMappingStrings.getId(InputMappingStrings.R));
         spellCastControl.putSpell(Spell.getSpell("Rocket Jump"),
-                InputMappingStrings.getId(InputMappingStrings.SPACE));
+                InputMappingStrings.getId(InputMappingStrings.SPACE));        
+        
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2id);
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -Qid);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells

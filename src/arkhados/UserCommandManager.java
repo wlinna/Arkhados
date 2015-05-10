@@ -81,7 +81,7 @@ public class UserCommandManager extends AbstractAppState {
         inputManager.addListener(actionMoveDirection,
                 InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
                 InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
-        
+
         inputManager
                 .addListener(modifierListener, InputMappingStrings.MODIFIER);
     }
@@ -113,6 +113,19 @@ public class UserCommandManager extends AbstractAppState {
             }
 
             calculateMouseGroundPosition();
+
+            if (InputMappingStrings.SEC1.equals(name)
+                    || InputMappingStrings.SEC2.equals(name)) {
+                Integer input = getCharacter().getControl(CSpellCast.class)
+                        .getInput(name);
+                if (input != null) {
+                    // In this case we just ignore the modifier
+                    CmdUcCastSpell uc = new CmdUcCastSpell(input, false,
+                            mouseGroundPosition);
+                    app.getStateManager().getState(Sender.class).addCommand(uc);
+                }
+            }
+
             if (name != null) {
                 CmdUcCastSpell uc =
                         new CmdUcCastSpell(InputMappingStrings.getId(name),
@@ -156,7 +169,8 @@ public class UserCommandManager extends AbstractAppState {
             inputManager.addListener(actionCastSpell,
                     InputMappingStrings.M1, InputMappingStrings.M2,
                     InputMappingStrings.Q, InputMappingStrings.E,
-                    InputMappingStrings.R, InputMappingStrings.SPACE);
+                    InputMappingStrings.R, InputMappingStrings.SPACE,
+                    InputMappingStrings.SEC1, InputMappingStrings.SEC2);
         }
 
         inputListenersActive = true;

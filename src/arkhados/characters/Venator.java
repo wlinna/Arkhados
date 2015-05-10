@@ -110,12 +110,12 @@ public class Venator extends AbstractNodeBuilder {
         Spell deepWounds = Spell.getSpell("Deep Wounds");
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
 
-        int m2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+        int M2Id = InputMappingStrings.getId(InputMappingStrings.M2);
 
         spellCastControl.putSpell(rend,
                 InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(dagger, m2Id);
-        spellCastControl.putSpell(numb, -m2Id);
+        spellCastControl.putSpell(dagger, M2Id);
+        spellCastControl.putSpell(numb, -M2Id);
         spellCastControl.putSpell(leap,
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(scream,
@@ -124,6 +124,8 @@ public class Venator extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(survivalInstinct,
                 InputMappingStrings.getId(InputMappingStrings.R));
+        
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2Id);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CCharacterAnimation characterAnimControl =

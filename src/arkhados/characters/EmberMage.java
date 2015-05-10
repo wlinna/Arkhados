@@ -55,7 +55,7 @@ public class EmberMage extends AbstractNodeBuilder {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FIREWALK,
                 new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
-        getEffectBox().addActionEffect(ACTION_FIRE_TRANCE, 
+        getEffectBox().addActionEffect(ACTION_FIRE_TRANCE,
                 new EtherealFlame.Effect());
     }
 
@@ -95,23 +95,26 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
-        int m2Id = InputMappingStrings.getId(InputMappingStrings.M2);
-        
-        int Rid = InputMappingStrings.getId(InputMappingStrings.R);
-        
+        int M2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+
+        int RId = InputMappingStrings.getId(InputMappingStrings.R);
+
         spellCastControl.putSpell(Spell.getSpell("Fireball"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), m2Id);
-        spellCastControl.putSpell(Spell.getSpell("Magma Release"), -m2Id);
+        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), M2Id);
+        spellCastControl.putSpell(Spell.getSpell("Magma Release"), -M2Id);
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
                 InputMappingStrings.getId(InputMappingStrings.E));
-        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), Rid);
-        spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -Rid);
+        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), RId);
+        spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -RId);
         spellCastControl.putSpell(Spell.getSpell("Firewalk"),
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
+
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2Id);
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -132,7 +135,7 @@ public class EmberMage extends AbstractNodeBuilder {
 
         AnimationData idleAnim =
                 new AnimationData("Idle", 1f, LoopMode.Loop);
-        
+
         AnimationData hitAnim = new AnimationData("Hit", 1f, LoopMode.DontLoop);
         AnimationData attackAnim =
                 new AnimationData("Attack", 1f, LoopMode.DontLoop);
