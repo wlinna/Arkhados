@@ -21,6 +21,7 @@ import arkhados.messages.syncmessages.CmdAction;
 import arkhados.messages.syncmessages.CmdAddEntity;
 import arkhados.messages.syncmessages.CmdBuff;
 import arkhados.messages.syncmessages.CmdBuffStacks;
+import arkhados.messages.syncmessages.CmdEndAction;
 import arkhados.messages.syncmessages.CmdRemoveEntity;
 import arkhados.messages.syncmessages.CmdSetCooldown;
 import arkhados.messages.syncmessages.CmdStartCastingSpell;
@@ -73,6 +74,7 @@ public class MessageUtils {
         Serializer.registerClass(CmdStartCastingSpell.class);
         Serializer.registerClass(CmdSetCooldown.class);
         Serializer.registerClass(CmdAction.class);
+        Serializer.registerClass(CmdEndAction.class);
         Serializer.registerClass(CmdBuff.class);
         Serializer.registerClass(CmdBuffStacks.class);
         // </Sync>

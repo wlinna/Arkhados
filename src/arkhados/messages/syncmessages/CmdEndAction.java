@@ -12,16 +12,30 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.effects;
+package arkhados.messages.syncmessages;
 
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import arkhados.controls.CActionPlayer;
+import arkhados.messages.syncmessages.statedata.StateData;
+import com.jme3.network.serializing.Serializable;
+import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
+@Serializable
+public class CmdEndAction extends StateData {
 
-public interface WorldEffect {
-    public EffectHandle execute(Node root, Vector3f location, String parameter);       
+    public CmdEndAction() {
+    }
+
+    public CmdEndAction(int syncId) {
+        super(syncId);
+    }
+
+    @Override
+    public void applyData(Object target) {
+        Spatial spatial = (Spatial) target;
+
+        CActionPlayer player = spatial.getControl(CActionPlayer.class);
+        if (player != null) {
+            player.endEffect();
+        }
+    }
 }

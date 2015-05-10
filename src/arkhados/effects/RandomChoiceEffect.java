@@ -24,19 +24,20 @@ import java.util.Random;
  *
  * @author william
  */
+public class RandomChoiceEffect implements WorldEffect {
 
-public class RandomChoiceEffect implements WorldEffect{
     private List<WorldEffect> choices = new ArrayList<>();
     private Random random = new Random();
 
     public void add(WorldEffect alternative) {
         choices.add(alternative);
     }
-    
+
     @Override
-    public void execute(Node root, Vector3f location, String parameter) {       
+    public EffectHandle execute(Node root, Vector3f location,
+            String parameter) {
         int i = random.nextInt(choices.size());
-        choices.get(i).execute(root, location, parameter);        
+        choices.get(i).execute(root, location, parameter);
+        return null;
     }
-    
 }

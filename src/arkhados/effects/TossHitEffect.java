@@ -19,9 +19,7 @@ import arkhados.controls.CTimedExistence;
 import arkhados.spell.spells.rockgolem.Toss;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.influencers.ParticleInfluencer;
 import com.jme3.effect.influencers.RadialParticleInfluencer;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -72,7 +70,7 @@ public class TossHitEffect implements WorldEffect {
     }
 
     @Override
-    public void execute(Node root, Vector3f location, String parameter) {
+    public EffectHandle execute(Node root, Vector3f location, String p) {
         SimpleSoundEffect earthQuake =
                 new SimpleSoundEffect("Effects/Sound/EarthQuake.wav");
         earthQuake.setVolume(1.5f);
@@ -83,5 +81,6 @@ public class TossHitEffect implements WorldEffect {
         emitter.setLocalTranslation(location.add(0, 1f, 0));
         emitter.emitAllParticles();
         emitter.addControl(new CTimedExistence(1f));
+        return null;
     }
 }

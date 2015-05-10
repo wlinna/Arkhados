@@ -17,7 +17,6 @@ package arkhados.effects;
 import arkhados.Globals;
 import arkhados.controls.CTimedExistence;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
-import arkhados.spell.spells.embermage.Meteor;
 import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -124,7 +123,7 @@ public class RocketExplosionEffect implements WorldEffect {
     }
 
     @Override
-    public void execute(Node root, Vector3f location, String parameter) {
+    public EffectHandle execute(Node root, Vector3f location, String p) {
         ParticleEmitter fire = createFire();
         ParticleEmitter smoke = createSmokePuff();
         ParticleEmitter wave = createShockwave();
@@ -158,5 +157,6 @@ public class RocketExplosionEffect implements WorldEffect {
 
 
         sound.play();
+        return null;
     }
 }

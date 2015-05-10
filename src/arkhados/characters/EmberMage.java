@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.controls.CActionPlayer;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
@@ -49,14 +50,12 @@ import com.jme3.scene.Node;
 public class EmberMage extends AbstractNodeBuilder {
 
     public static final int ACTION_FIREWALK = 0;
-    public static final int ACTION_FIRE_TRANCE = 1;
+    public static final int ACTION_ETHEREAL_FLAME = 1;
 
     public EmberMage() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FIREWALK,
                 new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
-        getEffectBox().addActionEffect(ACTION_FIRE_TRANCE,
-                new EtherealFlame.Effect());
     }
 
     @Override
@@ -165,6 +164,11 @@ public class EmberMage extends AbstractNodeBuilder {
 
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class).setIsServer(false);
+            
+            CActionPlayer actionPlayer = new CActionPlayer();
+            actionPlayer.putEffect(ACTION_ETHEREAL_FLAME,
+                    new EtherealFlame.Effect());
+            entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
             entity.addControl(restingControl);

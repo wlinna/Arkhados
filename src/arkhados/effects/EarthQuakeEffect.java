@@ -69,7 +69,7 @@ public class EarthQuakeEffect implements WorldEffect {
     }
 
     @Override
-    public void execute(Node root, Vector3f location, String parameter) {
+    public EffectHandle execute(Node root, Vector3f location, String p) {
         SimpleSoundEffect earthQuake =
                 new SimpleSoundEffect("Effects/Sound/EarthQuake.wav");
         earthQuake.setVolume(1.5f);
@@ -80,5 +80,6 @@ public class EarthQuakeEffect implements WorldEffect {
         emitter.setLocalTranslation(location);
         emitter.emitAllParticles();
         emitter.addControl(new CTimedExistence(14f));
+        return null;
     }
 }

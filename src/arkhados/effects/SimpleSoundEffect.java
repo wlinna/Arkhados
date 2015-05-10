@@ -33,7 +33,7 @@ public class SimpleSoundEffect implements WorldEffect {
     }    
     
     @Override
-    public void execute(Node root, Vector3f location, String parameter) {
+    public EffectHandle execute(Node root, Vector3f location, String parameter) {
         AudioNode sound = new AudioNode(Globals.assetManager, this.path);
         sound.setPositional(true);
         sound.setLocalTranslation(location);
@@ -41,6 +41,7 @@ public class SimpleSoundEffect implements WorldEffect {
         sound.setReverbEnabled(false);
         sound.setVolume(volume);
         sound.play();
+        return null;
     }
 
     public void setVolume(float volume) {

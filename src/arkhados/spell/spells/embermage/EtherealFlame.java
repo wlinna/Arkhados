@@ -14,17 +14,15 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
-import arkhados.Globals;
-import arkhados.actions.ADelay;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
-import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.EffectHandle;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.CastSpellActionBuilder;
@@ -41,11 +39,10 @@ import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.concurrent.Callable;
 
 public class EtherealFlame extends Spell {
 
-    public static final float DURATION = 2f;
+    public static final float DURATION = 1.6f;
     static final float SPEED = 300f;
 
     public EtherealFlame(String name, float cooldown, float range,
@@ -105,48 +102,30 @@ public class EtherealFlame extends Spell {
         }
 
         @Override
-        public void execute(final Node root, final Vector3f location,
+        public EffectHandle execute(final Node root, Vector3f location,
                 String p) {
-            Globals.app.enqueue(new Callable<Void>() {
+            final ParticleEmitter fire = createFire(5f);
+            root.attachChild(fire);
+
+            final AudioNode sound = new AudioNode(assetManager,
+                    "Effects/Sound/Firewalk.wav");
+            root.attachChild(sound);
+            sound.setPositional(true);
+            sound.setReverbEnabled(false);
+            sound.setVolume(1f);
+            sound.play();
+
+            return new EffectHandle() {
                 @Override
-                public Void call() throws Exception {
-                    final Node node = new Node("");
-                    root.attachChild(node);
-                    node.setLocalTranslation(location);
-                    final ParticleEmitter fire = createFire(5f);
-                    root.attachChild(fire);
-                    fire.setLocalTranslation(location);
+                public void end() {
+                    sound.stop();
+                    sound.removeFromParent();
+                    fire.setParticlesPerSec(0f);
 
-                    final AudioNode sound = new AudioNode(assetManager,
-                            "Effects/Sound/Firewalk.wav");
-                    node.attachChild(sound);
-                    sound.setPositional(true);
-                    sound.setReverbEnabled(false);
-                    sound.setVolume(1f);
-                    sound.play();
-
-                    CActionQueue queue = new CActionQueue();
-                    node.addControl(queue);
-
-                    queue.enqueueAction(new ADelay(DURATION));
-                    queue.enqueueAction(new EntityAction() {
-                        @Override
-                        public boolean update(float tpf) {
-                            sound.stop();
-                            node.removeFromParent();
-                            fire.setParticlesPerSec(0f);
-
-
-                            CTimedExistence timedExistence =
-                                    new CTimedExistence(1f);
-                            fire.addControl(timedExistence);
-                            return false;
-                        }
-                    });
-
-                    return null;
+                    CTimedExistence timedExistence = new CTimedExistence(1f);
+                    fire.addControl(timedExistence);
                 }
-            });
+            };
         }
     }
 }
@@ -154,7 +133,7 @@ public class EtherealFlame extends Spell {
 class AFireTrance extends EntityAction implements ATrance {
 
     {
-        setTypeId(EmberMage.ACTION_FIRE_TRANCE);
+        setTypeId(EmberMage.ACTION_ETHEREAL_FLAME);
     }
     private Spell spell;
     private float timeLeft = EtherealFlame.DURATION;
@@ -189,10 +168,11 @@ class AFireTrance extends EntityAction implements ATrance {
     @Override
     public void activate(Spatial activator) {
         CSpellCast spellCast = spatial.getControl(CSpellCast.class);
-        Vector3f target = spellCast.getClosestPointToTarget(spell);        
+        Vector3f target = spellCast.getClosestPointToTarget(spell);
+        // We set this to 10 to prevent effect from disappearing while moving
+        timeLeft = 10f;
 
         motion(target);
-        timeLeft = 0f;
     }
 
     private void motion(final Vector3f target) {
@@ -207,12 +187,12 @@ class AFireTrance extends EntityAction implements ATrance {
         motionControl.setSpeed(1f);
         motionControl.setInitialDuration(
                 target.distance(start) / EtherealFlame.SPEED);
-        
+
         final CCharacterPhysics body =
                 spatial.getControl(CCharacterPhysics.class);
         body.lookAt(target);
         body.switchToMotionCollisionMode();
-        
+
         path.addListener(new MotionPathListener() {
             @Override
             public void onWayPointReach(MotionEvent motionControl,
@@ -220,10 +200,17 @@ class AFireTrance extends EntityAction implements ATrance {
                 if (path.getNbWayPoints() == wayPointIndex + 1) {
                     body.switchToNormalPhysicsMode();
                     body.warp(target);
+                    timeLeft = 0f;
                 }
             }
         });
-        
+
         motionControl.play();
+    }
+
+    @Override
+    public void end() {
+        super.end();
+        announceEnd();
     }
 }
