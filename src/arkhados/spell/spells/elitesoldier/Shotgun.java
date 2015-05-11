@@ -46,7 +46,7 @@ public class Shotgun extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 0.8f;
+        final float cooldown = 0.7f;
         final float range = 80f;
         final float castTime = 0.35f;
 
