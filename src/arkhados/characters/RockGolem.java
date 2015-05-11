@@ -72,8 +72,8 @@ public class RockGolem extends AbstractNodeBuilder {
         float movementSpeed = 34.7f;
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
-        entity.setUserData(UserDataStrings.SPEED_ROTATION, 0.0f);
-        float radius = 5.0f;
+        entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
+        float radius = 5f;
         entity.setUserData(UserDataStrings.RADIUS, radius);
         float health = 2100f;
         entity.setUserData(UserDataStrings.HEALTH_MAX, health);
@@ -82,11 +82,12 @@ public class RockGolem extends AbstractNodeBuilder {
             entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
         }
         entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+        entity.setUserData(UserDataStrings.LIFE_STEAL_BASE, 0f);
         entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
 
         entity.getChild(0).scale(3f);
 
-        entity.addControl(new CCharacterPhysics(radius, 20.0f, 300f));
+        entity.addControl(new CCharacterPhysics(radius, 20f, 300f));
         entity.getControl(CCharacterPhysics.class).setPhysicsDamping(0.2f);
         entity.addControl(new CCharacterMovement());
         entity.addControl(new CActionQueue());

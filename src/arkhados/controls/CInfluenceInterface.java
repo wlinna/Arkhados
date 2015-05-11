@@ -169,6 +169,9 @@ public class CInfluenceInterface extends AbstractControl {
          * movement speed.
          */
         spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+        float lifeStealBase =
+                spatial.getUserData(UserDataStrings.LIFE_STEAL_BASE);
+        spatial.setUserData(UserDataStrings.LIFE_STEAL, lifeStealBase);
         immuneToProjectiles = false;
 
         CCharacterMovement cMovement =
@@ -189,7 +192,7 @@ public class CInfluenceInterface extends AbstractControl {
             cMovement.updateMovement(tpf);
         }
     }
-
+    
     private void applySlowsAndSpeedBuffs() {
         if (!spatial.getControl(CCharacterMovement.class).isSpeedConstant()) {
             float speedFactor = 1f;
