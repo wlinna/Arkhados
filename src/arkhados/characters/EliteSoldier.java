@@ -20,7 +20,6 @@ import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CCharacterAnimation;
 import arkhados.controls.CCharacterBuff;
-import arkhados.controls.CCharacterHud;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CCharacterSound;
 import arkhados.controls.CEliteSoldierAmmunition;
@@ -34,6 +33,7 @@ import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
+import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
@@ -202,7 +202,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
             soundControl.setSufferSound("Effects/Sound/EliteSoldierPain.wav");
             soundControl.setDeathSound("Effects/Sound/EliteSoldierDeath.wav");
             entity.addControl(new CCharacterBuff());
-            entity.addControl(new CCharacterHud());
+            entity.addControl(new CEliteSoldierHud());
 
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class)

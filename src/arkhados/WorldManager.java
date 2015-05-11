@@ -18,6 +18,7 @@ import arkhados.ui.hud.ClientHudManager;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
 import arkhados.controls.CCharacterBuff;
+import arkhados.controls.CCharacterHud;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -422,6 +423,9 @@ public class WorldManager extends AbstractAppState {
             CCharacterBuff buffControl =
                     spatial.getControl(CCharacterBuff.class);
             spatial.removeControl(buffControl);
+            
+            CCharacterHud cHud = spatial.getControl(CCharacterHud.class);
+            spatial.removeControl(cHud);
         }
 
 

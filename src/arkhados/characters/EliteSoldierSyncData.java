@@ -2,6 +2,7 @@ package arkhados.characters;
 
 import arkhados.controls.CEliteSoldierAmmunition;
 import arkhados.messages.syncmessages.statedata.CharacterSyncData;
+import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
@@ -33,6 +34,9 @@ public class EliteSoldierSyncData extends CharacterSyncData {
         CEliteSoldierAmmunition ammunition =
                 spatial.getControl(CEliteSoldierAmmunition.class);
         ammunition.synchronizeAmmunition(pellets, plasmas, rockets);
+        
+        CEliteSoldierHud hud = spatial.getControl(CEliteSoldierHud.class);
+        hud.updateAmmo(pellets, plasmas, rockets);
     }
 
     public void setPellets(int pellets) {

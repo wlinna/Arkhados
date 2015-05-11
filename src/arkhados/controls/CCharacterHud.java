@@ -25,7 +25,7 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class CCharacterHud extends AbstractControl {
 
-    private ClientHudManager hudManager;
+    protected ClientHudManager hudManager;
 
     @Override
     protected void controlUpdate(float tpf) {
