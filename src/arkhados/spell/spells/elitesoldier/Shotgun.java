@@ -34,6 +34,7 @@ import com.jme3.scene.Spatial;
  * EliteSoldiers's Shotgun (M1) spell. Fires 6 pellets that spread out.
  */
 public class Shotgun extends Spell {
+    public static final int PELLETS_PER_SHOT = 6;
 
     {
         iconName = "shotgun.png";
@@ -68,7 +69,7 @@ public class Shotgun extends Spell {
 
 class ACastShotgun extends EntityAction {
 
-    private static final int PELLETS = 6;
+    private static final int PELLETS = Shotgun.PELLETS_PER_SHOT;
     private static final float SPREAD = 13f * FastMath.DEG_TO_RAD;
     private static final float STEP = SPREAD / (PELLETS - 1);
     private WorldManager world;

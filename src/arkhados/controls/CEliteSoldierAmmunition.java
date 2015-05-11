@@ -19,6 +19,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
 import arkhados.spell.spells.elitesoldier.AmmunitionSlot;
+import arkhados.spell.spells.elitesoldier.Shotgun;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -62,7 +63,7 @@ public class CEliteSoldierAmmunition extends AbstractControl
     public boolean validateSpellCast(CSpellCast castControl, Spell spell) {
         if ("Shotgun".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
-                    .hasEnough(8);
+                    .hasEnough(Shotgun.PELLETS_PER_SHOT);
         } else if ("Plasmagun".equals(spell.getName())
                 || "Plasma Grenades".equals(spell.getName())) {
             return ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
@@ -80,7 +81,7 @@ public class CEliteSoldierAmmunition extends AbstractControl
     public void spellCasted(CSpellCast castControl, Spell spell) {
         if ("Shotgun".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
-                    .consumeAmmo(8);
+                    .consumeAmmo(Shotgun.PELLETS_PER_SHOT);
         } else if ("Plasmagun".equals(spell.getName())
                 || "Plasma Grenades".equals(spell.getName())) {
             ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot())
@@ -112,7 +113,8 @@ public class CEliteSoldierAmmunition extends AbstractControl
     }
 
     public void likeAPro() {
-        ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot()).addAmmunition(16);
+        ammunitionLoaders.get(AmmunitionSlot.SHOTGUN.slot())
+                .addAmmunition(2 * Shotgun.PELLETS_PER_SHOT);
         ammunitionLoaders.get(AmmunitionSlot.PLASMAGUN.slot()).addAmmunition(3);
         ammunitionLoaders.get(AmmunitionSlot.ROCKETS.slot()).addAmmunition(2);
     }
@@ -121,12 +123,12 @@ public class CEliteSoldierAmmunition extends AbstractControl
 class AmmunitionLoader {
 
     private final int amountPerTick;
-    private final int time;
+    private final float time;
     private final int maxAmount;
     private int amount;
     private float timer = 0f;
 
-    private AmmunitionLoader(int amountPerTick, int time, int startingAmount,
+    private AmmunitionLoader(int amountPerTick, float time, int startingAmount,
             int maxAmount) {
         this.amountPerTick = amountPerTick;
         this.time = time;
@@ -177,7 +179,7 @@ class AmmunitionLoader {
     }
 
     public static AmmunitionLoader Shotgun() {
-        return new AmmunitionLoader(4, 1, 36, 36);
+        return new AmmunitionLoader(6, 2f, 24, 24);
     }
 
     public static AmmunitionLoader Plasmagun() {
