@@ -83,10 +83,11 @@ class ACastShotgun extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CCharacterPhysics physicsControl =
+        CCharacterPhysics cPhysics =
                 spatial.getControl(CCharacterPhysics.class);
+        float height = cPhysics.getCapsuleShape().getHeight() * 2f / 3f;
 
-        Vector3f targetLocation = physicsControl.getTargetLocation();
+        Vector3f targetLocation = cPhysics.getTargetLocation();
         final Vector3f viewDirection =
                 targetLocation.subtract(spatial.getLocalTranslation())
                 .normalizeLocal();
@@ -95,7 +96,8 @@ class ACastShotgun extends EntityAction {
 
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
-        Vector3f spawnLocation = spatial.getLocalTranslation();
+        Vector3f spawnLocation =
+                spatial.getLocalTranslation().add(0f, height, 0f);
         Quaternion currentRotation = new Quaternion();
 
         for (int i = 0; i < PELLETS; ++i) {
