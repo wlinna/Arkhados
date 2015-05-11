@@ -67,6 +67,9 @@ public abstract class BuffInformation {
         
         BlindInformation blind = new BlindInformation();
         addBuff(BuffTypeIds.BLIND, blind);
+        
+        BloodFrenzyInformation bloodFrenzy = new BloodFrenzyInformation();
+        addBuff(BuffTypeIds.BLOOD_FRENZY, bloodFrenzy);
     }
 
     public static BuffInformation getBuffInformation(int typeId) {

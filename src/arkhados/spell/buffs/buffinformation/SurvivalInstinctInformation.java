@@ -38,19 +38,21 @@ public class SurvivalInstinctInformation extends BuffInformation {
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
         SurvivalInstinctEffect effect =
-                new SurvivalInstinctEffect(params.duration);
+                new SurvivalInstinctEffect(params.duration, true);
         effect.addToCharacter(params);
         return effect;
     }
 }
 
-class SurvivalInstinctEffect extends BuffEffect {
+class SurvivalInstinctEffect extends BuffEffect {  
 
     private Node characterNode = null;
-    private static ColorRGBA color = new ColorRGBA(0.6f, 0.1f, 0.1f, 1f);
+    private ColorRGBA color;
 
-    public SurvivalInstinctEffect(float timeLeft) {
+    public SurvivalInstinctEffect(float timeLeft, boolean primary) {
         super(timeLeft);
+        float red = primary ? 0.8f : 2f;
+        color = new ColorRGBA(red, 0.1f, 0.1f, 1f);
     }
 
     public void addToCharacter(BuffInfoParameters params) {

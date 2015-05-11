@@ -42,6 +42,7 @@ import arkhados.spell.spells.rockgolem.SealingBoulder;
 import arkhados.spell.spells.rockgolem.SpiritStone;
 import arkhados.spell.spells.rockgolem.StoneFist;
 import arkhados.spell.spells.rockgolem.Toss;
+import arkhados.spell.spells.venator.BloodFrenzy;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
 import arkhados.spell.spells.venator.FeralScream;
@@ -62,27 +63,30 @@ import java.util.HashMap;
  * @author william
  */
 /**
- * Spell contains data of spell's base data. Each Spell is created only once and their data does not
- * change.
+ * Spell contains data of spell's base data. Each Spell is created only once
+ * and their data does not change.
  */
 public abstract class Spell {
 
     protected static AssetManager assetManager = null;
     protected static WorldManager worldManager = null;
     /**
-     * Spells has all spells mapped by their name so that spell data can be retrieved from anywhere
+     * Spells has all spells mapped by their name so that spell data can be
+     * retrieved from anywhere
      */
     private static HashMap<Integer, Spell> Spells = new HashMap<>();
-    private static HashMap<String, Integer> SpellNameCreationIdMap = new HashMap<>();
+    private static HashMap<String, Integer> SpellNameCreationIdMap =
+            new HashMap<>();
 
     /**
-     * Creates each spell and saves them to Spells-map. Should be called only once
+     * Creates each spell and saves them to Spells-map. Should be called only
+     * once
      *
      * @param assetManager will be saved to static variable assetManager
      * @param worldManager will be save to static variable worldManager
      */
-    public static void initSpells(EntityFactory entityFactory, AssetManager assetManager,
-            WorldManager worldManager) {
+    public static void initSpells(EntityFactory entityFactory,
+            AssetManager assetManager, WorldManager worldManager) {
         Spell.assetManager = assetManager;
         Spell.worldManager = worldManager;
 
@@ -110,9 +114,9 @@ public abstract class Spell {
         addSpell(entityFactory, FeralScream.create());
         addSpell(entityFactory, DeepWounds.create());
         addSpell(entityFactory, SurvivalInstinct.create());
+        addSpell(entityFactory, BloodFrenzy.create());
 
-        addSpell(entityFactory, Shotgun.create());
-//        addSpell(entityFactory, Machinegun.create());                
+        addSpell(entityFactory, Shotgun.create());              
         addSpell(entityFactory, Railgun.create());
         addSpell(entityFactory, BlindingRay.create());
         addSpell(entityFactory, Plasmagun.create());

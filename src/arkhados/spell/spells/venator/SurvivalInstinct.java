@@ -32,6 +32,10 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SurvivalInstinct extends Spell {
+    static final float COOLDOWN = 12f;
+    static final float RANGE = 0f;
+    static final float CAST_TIME = 0f;
+    static final float DURATION = 6f;
 
     {
         iconName = "survival_instinct.png";
@@ -43,20 +47,17 @@ public class SurvivalInstinct extends Spell {
     }
 
     public static SurvivalInstinct create() {
-        final float cooldown = 12f;
-        final float range = 0f;
-        final float castTime = 0f;
-
         final SurvivalInstinct spell = new SurvivalInstinct("Survival Instinct",
-                cooldown, range, castTime);
+                COOLDOWN, RANGE, CAST_TIME);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
-                buffAction.addBuff(new DamagePerHealthPercentBuff(-1, 6f));
-                buffAction
-                        .addBuff(new MovementSpeedPerHealthMissingBuff(-1, 5f));
+                buffAction.addBuff(
+                        new DamagePerHealthPercentBuff(-1, DURATION));
+                buffAction.addBuff(
+                        new MovementSpeedPerHealthMissingBuff(-1, DURATION));
                 return buffAction;
             }
         };

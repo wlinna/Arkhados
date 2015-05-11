@@ -22,6 +22,8 @@ import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.BlindCC;
 import arkhados.spell.buffs.CrowdControlBuff;
 import arkhados.spell.buffs.CastSpeedBuff;
+import arkhados.spell.buffs.DamageBuff;
+import arkhados.spell.buffs.LifeStealBuff;
 import arkhados.spell.buffs.PetrifyCC;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.spell.buffs.SpeedBuff;
@@ -184,7 +186,8 @@ public class CInfluenceInterface extends AbstractControl {
 
         applyBuffs(tpf);
         applySlowsAndSpeedBuffs();
-
+        applyDamageBuffs();
+        applyLifeStealBuffs();
         applyInfluences(tpf);
 
         // Why is this here?
@@ -193,6 +196,29 @@ public class CInfluenceInterface extends AbstractControl {
         }
     }
     
+    private void applyDamageBuffs() {
+        float damageFactor = 1f;
+        for (AbstractBuff buff : buffs) {
+            if (buff instanceof DamageBuff) {
+                damageFactor *= ((DamageBuff) buff).getFactor();
+            }
+        }
+        
+        spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, damageFactor);
+    }
+    
+    private void applyLifeStealBuffs() {
+        float lifeSteal = spatial.getUserData(UserDataStrings.LIFE_STEAL_BASE);
+        for (AbstractBuff buff : buffs) {
+            if (buff instanceof LifeStealBuff) {
+                LifeStealBuff lifeStealBuff = (LifeStealBuff) buff;
+                lifeSteal += lifeStealBuff.getAmount();
+            }
+        }
+        
+        spatial.setUserData(UserDataStrings.LIFE_STEAL, lifeSteal);
+    }
+
     private void applySlowsAndSpeedBuffs() {
         if (!spatial.getControl(CCharacterMovement.class).isSpeedConstant()) {
             float speedFactor = 1f;

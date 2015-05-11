@@ -110,8 +110,10 @@ public class Venator extends AbstractNodeBuilder {
         Spell scream = Spell.getSpell("Feral Scream");
         Spell deepWounds = Spell.getSpell("Deep Wounds");
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
+        Spell bloodFrenzy = Spell.getSpell("Blood Frenzy");
 
         int M2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+        int RId = InputMappingStrings.getId(InputMappingStrings.R);
 
         spellCastControl.putSpell(rend,
                 InputMappingStrings.getId(InputMappingStrings.M1));
@@ -123,10 +125,11 @@ public class Venator extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(deepWounds,
                 InputMappingStrings.getId(InputMappingStrings.E));
-        spellCastControl.putSpell(survivalInstinct,
-                InputMappingStrings.getId(InputMappingStrings.R));
+        spellCastControl.putSpell(survivalInstinct, RId);
+        spellCastControl.putSpell(bloodFrenzy, -RId);
         
         spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2Id);
+        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CCharacterAnimation characterAnimControl =
@@ -175,6 +178,7 @@ public class Venator extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Feral Scream", roarAnim);
         characterAnimControl.addSpellAnimation("Deep Wounds", chargeAnim);
         characterAnimControl.addSpellAnimation("Survival Instinct", null);
+        characterAnimControl.addSpellAnimation("Blood Frenzy", null);
 
         AnimationData landAnim =
                 new AnimationData("Land", 1f, LoopMode.DontLoop);

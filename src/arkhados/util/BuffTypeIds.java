@@ -33,4 +33,5 @@ public class BuffTypeIds {
     public static final int BRIMSTONE = 11;
     public static final int BEDROCK = 12;
     public static final int BLIND = 13;
+    public static final int BLOOD_FRENZY = 14;
 }
