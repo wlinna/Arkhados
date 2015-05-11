@@ -63,7 +63,7 @@ public class BlindingRay extends Spell {
     public static Spell create() {
         final float cooldown = 9f;
         final float range = 130f;
-        final float castTime = 0.7f;
+        final float castTime = 0.45f;
 
         final BlindingRay spell =
                 new BlindingRay("Blinding Ray", cooldown, range, castTime);
