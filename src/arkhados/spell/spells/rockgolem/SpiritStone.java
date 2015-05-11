@@ -24,6 +24,7 @@ import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.influences.SlowInfluence;
 import arkhados.spell.influences.SpeedInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -41,6 +42,9 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SpiritStone extends Spell {
+    static final float COOLDOWN = 8f;
+    static final float RANGE = 80f;
+    static final float CAST_TIME = 0.3f;
 
     {
         iconName = "SpiritStone.png";
@@ -52,12 +56,8 @@ public class SpiritStone extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 8f;
-        final float range = 80f;
-        final float castTime = 0.3f;
-
         final SpiritStone spell =
-                new SpiritStone("SpiritStone", cooldown, range, castTime);
+                new SpiritStone("Spirit Stone", COOLDOWN, RANGE, CAST_TIME);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
@@ -66,12 +66,11 @@ public class SpiritStone extends Spell {
             }
         };
 
-        spell.nodeBuilder = new SpiritStoneBuilder();
+        spell.nodeBuilder = new SpiritStoneBuilder(true);
 
         return spell;
     }
 }
-
 
 /**
  * SpiritStoneCastAction. NOTE: This is very much like CastOnGroundAction.
@@ -103,6 +102,16 @@ class ASpiritStoneCast extends EntityAction {
 
 class SpiritStoneBuilder extends AbstractNodeBuilder {
 
+    private final boolean primary;
+    private final float duration;
+    private final float influenceRadius;
+
+    public SpiritStoneBuilder(boolean primary) {
+        this.primary = primary;
+        duration = primary ? 8f : 5f;
+        influenceRadius = primary ? 30f : 18f;
+    }
+
     @Override
     public Node build(BuildParameters params) {
         Node node = (Node) assetManager.loadModel("Models/SpiritStone.j3o");
@@ -128,7 +137,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 //            sound.play();
 //        }
 
-        SphereCollisionShape collisionShape = new SphereCollisionShape(8f);
+        SphereCollisionShape collisionShape = new SphereCollisionShape(5f);
         CSpiritStonePhysics physicsBody =
                 new CSpiritStonePhysics(collisionShape,
                 (float) node.getUserData(UserDataStrings.MASS), worldManager);
@@ -138,25 +147,31 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
                 | CollisionGroups.PROJECTILES);
         physicsBody.setAngularDamping(1f);
-
-        node.addControl(new CTimedExistence(8f, true));
+                
+        node.addControl(new CTimedExistence(duration, true));
         node.addControl(new CRotation(0f, 2f, 0f));
         node.addControl(new CSyncInterpolation());
 
-        final float radius = 30f;
-
         if (worldManager.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
-                    new Vector3f(radius, 0.05f, radius), 1));
-            ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);           
+                    new Vector3f(influenceRadius, 0.05f, influenceRadius), 1));
+            ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
+            ghost.setCollisionGroup(CollisionGroups.NONE);
             node.addControl(ghost);
-            
+
             CAreaEffect cAreaOfEffect = new CAreaEffect(ghost);
             node.addControl(cAreaOfEffect);
 
-            SpeedInfluence speedInfluence = new SpeedInfluence();
-            speedInfluence.setConstant(1f);
-            cAreaOfEffect.addInfluence(speedInfluence);
+            if (primary) {
+                SpeedInfluence speedInfluence = new SpeedInfluence();
+                speedInfluence.setConstant(1f);
+                cAreaOfEffect.addInfluence(speedInfluence);
+            } else {
+                SlowInfluence slowInfluence = new SlowInfluence();
+                slowInfluence.setSlowFactor(0.8f);
+                cAreaOfEffect.addInfluence(slowInfluence);
+            }
+
         }
 
         return node;

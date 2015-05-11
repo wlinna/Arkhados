@@ -34,6 +34,7 @@ import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.MagmaRelease;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
+import arkhados.spell.spells.rockgolem.AngrySpiritStone;
 import arkhados.spell.spells.rockgolem.Bedrock;
 import arkhados.spell.spells.rockgolem.EarthQuake;
 import arkhados.spell.spells.rockgolem.MineralArmor;
@@ -123,6 +124,7 @@ public abstract class Spell {
         addSpell(entityFactory, StoneFist.create());
         addSpell(entityFactory, SealingBoulder.create());
         addSpell(entityFactory, SpiritStone.create());
+        addSpell(entityFactory, AngrySpiritStone.create());
         addSpell(entityFactory, Toss.create());
         addSpell(entityFactory, MineralArmor.create());
         addSpell(entityFactory, Bedrock.create());
