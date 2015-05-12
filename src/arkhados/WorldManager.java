@@ -434,20 +434,6 @@ public class WorldManager extends AbstractAppState {
         }
         
         PhysicsWorkaround.removeAll(space, spatial);
-
-        // The reason this code can't be activated is that some controls cause
-        // problems when removed like this (GhostControl)
-//                           
-//        while (spatial.getNumControls() > 0) {
-//            Control control = spatial.getControl(0);
-//            spatial.removeControl(control);
-//        }
-
-        // FIXME: Ugly hack. Generalize cleaning controls
-        CGrenade grenade = spatial.getControl(CGrenade.class);
-        if (grenade != null) {
-            spatial.removeControl(grenade);
-        }
     }
 
     @Override

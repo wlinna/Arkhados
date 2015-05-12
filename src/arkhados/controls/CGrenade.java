@@ -30,6 +30,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
@@ -39,8 +40,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import java.util.concurrent.Callable;
 
-public class CGrenade extends AbstractControl
-        implements PhysicsTickListener, PhysicsCollisionListener, CSync {
+public class CGrenade extends AbstractControl implements PhysicsControl,
+        PhysicsTickListener, PhysicsCollisionListener, CSync {
 
     private ASplash splashAction;
     private float age = 0f;
@@ -48,23 +49,7 @@ public class CGrenade extends AbstractControl
     private float launchSpeed;
     private Vector3f direction = null;
     private CInfluenceInterface ownerInterface;
-
-    @Override
-    public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial);
-
-        if (spatial == null) {
-            Globals.app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    Globals.space.removeCollisionListener(CGrenade.this);
-                    Globals.space.removeTickListener(CGrenade.this);
-                    return null;
-                }
-            });
-
-        }
-    }
+    private PhysicsSpace space;
 
     public void setDirection(Vector3f direction) {
         this.direction = direction;
@@ -78,7 +63,6 @@ public class CGrenade extends AbstractControl
             if (splashAction != null) {
                 splashAction.update(tpf);
             }
-
 
             int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
             WorldManager world =
@@ -100,7 +84,6 @@ public class CGrenade extends AbstractControl
         float gravity = -body.getGravity().y / body.getMass();
 
         launchSpeed = FastMath.sqrt(range * gravity);
-
     }
 
     public float getLaunchSpeed() {
@@ -224,5 +207,30 @@ public class CGrenade extends AbstractControl
 
     public void setSplashAction(ASplash action) {
         this.splashAction = action;
+    }
+
+    @Override
+    public void setPhysicsSpace(final PhysicsSpace space) {
+        Globals.app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                if (CGrenade.this.space == null && space != null) {
+                    space.addCollisionListener(CGrenade.this);
+                    space.addTickListener(CGrenade.this);
+                } else if (CGrenade.this.space != null && space == null) {
+                    CGrenade.this.space.removeCollisionListener(CGrenade.this);
+                    CGrenade.this.space.removeTickListener(CGrenade.this);
+                }
+
+                CGrenade.this.space = space;
+                return null;
+            }
+        });
+
+    }
+
+    @Override
+    public PhysicsSpace getPhysicsSpace() {
+        return space;
     }
 }

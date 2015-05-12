@@ -22,7 +22,6 @@ import arkhados.actions.ASplash;
 import arkhados.actions.castspellactions.ACastGrenade;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
-import arkhados.controls.CGenericSync;
 import arkhados.controls.CGrenade;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
@@ -173,8 +172,6 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
         if (worldManager.isServer()) {
             CGrenade cGrenade = new CGrenade();
             node.addControl(cGrenade);
-            space.addTickListener(cGrenade);
-            space.addCollisionListener(cGrenade);
 
             cGrenade.setDetonationTime(3f);
             ASplash splash = new ASplash(20f, 23f,
