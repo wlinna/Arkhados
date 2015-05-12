@@ -262,10 +262,9 @@ class ARocketRemoval implements ARemovalEvent {
         this.fire = fire;
     }
 
-    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
+    private void leaveSmokeTrail(Node node) {
         smokeTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(smokeTrail);
-        smokeTrail.setLocalTranslation(worldTranslation);
+        node.attachChild(smokeTrail);
         smokeTrail.addControl(new CTimedExistence(5f));
     }
 
@@ -295,7 +294,7 @@ class ARocketRemoval implements ARemovalEvent {
         return wave;
     }
 
-    private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
+    private void createSmokePuff(Node node) {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
         Material material = new Material(assetManager,
@@ -325,24 +324,25 @@ class ARocketRemoval implements ARemovalEvent {
         smokePuff.setRandomAngle(true);
 
         smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4.0f));
-        worldRoot.attachChild(smokePuff);
-        smokePuff.setLocalTranslation(worldTranslation);
+        node.attachChild(smokePuff);
         smokePuff.emitAllParticles();
     }
 
     @Override
     public void exec(WorldManager worldManager, int reason) {
-        Node node = new Node("rocket-explosion");
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
-        leaveSmokeTrail(node, worldTranslation);
-        createSmokePuff(node, worldTranslation);
+
+        Node node = new Node("rocket-explosion");
+        worldManager.getWorldRoot().attachChild(node);
+        node.setLocalTranslation(worldTranslation);
+
+        leaveSmokeTrail(node);
+        createSmokePuff(node);
 
         fire.removeFromParent();
         node.attachChild(fire);
         node.attachChild(sound);
-        node.setLocalTranslation(worldTranslation);
         fire.setLocalTranslation(Vector3f.ZERO);
-        worldManager.getWorldRoot().attachChild(node);
         node.addControl(new CTimedExistence(6f));
 
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 0.40f));
