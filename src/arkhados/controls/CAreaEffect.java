@@ -21,8 +21,11 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -35,13 +38,16 @@ import java.util.List;
  *
  * @author william
  */
-public class CAreaEffect extends AbstractControl {
+public class CAreaEffect extends AbstractControl
+        implements PhysicsTickListener, PhysicsControl {
 
     private GhostControl ghostControl;
+    private PhysicsSpace space;
     private final List<Influence> influences = new ArrayList<>();
     private final List<AbstractBuff> exitBuffs = new ArrayList<>();
     private final List<AbstractBuff> enterBuffs = new ArrayList<>();
-    private final HashMap<CInfluenceInterface, Boolean> enteredPlayers = new HashMap<>();
+    private final HashMap<CInfluenceInterface, Boolean> enteredPlayers =
+            new HashMap<>();
     private CInfluenceInterface ownerInterface = null;
 
     public CAreaEffect() {
@@ -53,53 +59,12 @@ public class CAreaEffect extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        // HACK
-        CActionQueue actionQueue = getSpatial().getControl(CActionQueue.class);
-        if (actionQueue != null && actionQueue.getCurrent() instanceof ADelay) {
-            return;
-        }
-
-        int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
-        List<PhysicsCollisionObject> collisionObjects = ghostControl.getOverlappingObjects();
-
-        for (PhysicsCollisionObject collisionObject : collisionObjects) {
-            if (!(collisionObject.getUserObject() instanceof Spatial)) {
-                continue;
-            }
-            Spatial other = (Spatial) collisionObject.getUserObject();
-            CInfluenceInterface targetInterface =
-                    other.getControl(CInfluenceInterface.class);
-
-            if (targetInterface == null) {
-                continue;
-            }
-
-            int othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
-            int othersTeamId = PlayerData.getIntData(othersPlayerId, PlayerDataStrings.TEAM_ID);
-            boolean sameTeam = myTeamId == othersTeamId;
-            for (Influence influence : influences) {
-                if (sameTeam && influence.isFriendly()) {
-                    targetInterface.addInfluence(influence);
-                } else if (!sameTeam && !influence.isFriendly()) {
-                    targetInterface.addInfluence(influence);
-                }
-            }
-
-            if (!enteredPlayers.containsKey(targetInterface)) {
-                enteredPlayers.put(targetInterface, false);
-                if (!sameTeam) {
-                    CharacterInteraction.harm(ownerInterface, targetInterface, 0f,
-                            enterBuffs, false);
-                }
-            }
-        }
-
-        // TODO: Add way to inflict exitBuffs
     }
 
     public void addInfluence(Influence influence) {
         if (influence == null) {
-            throw new IllegalArgumentException("Nulls not allowed in containers");
+            throw new IllegalArgumentException(
+                    "Nulls not allowed in containers");
         }
 
         influence.setOwner(ownerInterface);
@@ -108,7 +73,8 @@ public class CAreaEffect extends AbstractControl {
 
     public void addEnterBuff(AbstractBuff buff) {
         if (buff == null) {
-            throw new IllegalArgumentException("Nulls not allowed in containers");
+            throw new IllegalArgumentException(
+                    "Nulls not allowed in containers");
         }
 
         enterBuffs.add(buff);
@@ -116,7 +82,8 @@ public class CAreaEffect extends AbstractControl {
 
     public void addExitBuff(AbstractBuff buff) {
         if (buff == null) {
-            throw new IllegalArgumentException("Nulls not allowed in containers");
+            throw new IllegalArgumentException(
+                    "Nulls not allowed in containers");
         }
 
         exitBuffs.add(buff);
@@ -132,5 +99,72 @@ public class CAreaEffect extends AbstractControl {
         }
 
         this.ownerInterface = ownerInterface;
+    }
+
+    @Override
+    public void prePhysicsTick(PhysicsSpace space, float tpf) {
+    }
+
+    @Override
+    public void physicsTick(PhysicsSpace space, float tpf) {
+        // HACK
+        CActionQueue actionQueue = getSpatial().getControl(CActionQueue.class);
+        if (actionQueue != null && actionQueue.getCurrent() instanceof ADelay) {
+            return;
+        }
+
+        int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        List<PhysicsCollisionObject> collisionObjects =
+                ghostControl.getOverlappingObjects();
+
+        for (PhysicsCollisionObject collisionObject : collisionObjects) {
+            if (!(collisionObject.getUserObject() instanceof Spatial)) {
+                continue;
+            }
+            Spatial other = (Spatial) collisionObject.getUserObject();
+            CInfluenceInterface targetInterface =
+                    other.getControl(CInfluenceInterface.class);
+
+            if (targetInterface == null) {
+                continue;
+            }
+
+            int othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+            int othersTeamId = PlayerData.getIntData(othersPlayerId,
+                    PlayerDataStrings.TEAM_ID);
+            boolean sameTeam = myTeamId == othersTeamId;
+            for (Influence influence : influences) {
+                if (sameTeam && influence.isFriendly()) {
+                    targetInterface.addInfluence(influence);
+                } else if (!sameTeam && !influence.isFriendly()) {
+                    targetInterface.addInfluence(influence);
+                }
+            }
+
+            if (!enteredPlayers.containsKey(targetInterface)) {
+                enteredPlayers.put(targetInterface, false);
+                if (!sameTeam) {
+                    CharacterInteraction.harm(ownerInterface, targetInterface,
+                            0f, enterBuffs, false);
+                }
+            }
+        }
+        // TODO: Add way to inflict exitBuffs
+    }
+
+    @Override
+    public void setPhysicsSpace(PhysicsSpace space) {
+        if (this.space != null && space == null) {
+            this.space.removeTickListener(this);
+        } else if (this.space == null && space != null) {
+            space.addTickListener(this);
+        }
+
+        this.space = space;
+    }
+
+    @Override
+    public PhysicsSpace getPhysicsSpace() {
+        return space;
     }
 }
