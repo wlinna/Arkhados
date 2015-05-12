@@ -58,6 +58,7 @@ See CREDITS.md for attributions.
 - SealingBoulder.png
 - MineralArmor.png
 - Slow.png
+- Blind.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav

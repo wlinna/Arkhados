@@ -85,8 +85,9 @@ from [OGA](http://opengameart.org/node/10483)
 Horrorpen for skull-icon (skull.png). skull.png is CC-BY 3.0 -licensed and can
 be found from [OGA](http://opengameart.org/content/random-rpg-icons-part-1)
 
-J. W. Bjerk (eleazzaar) for following spell icons:
+J. W. Bjerk (eleazzaar) for following spell and buff icons:
 - Fireball
+- Blind
 - Survival Instinct
 - Shotgun
 - Railgun

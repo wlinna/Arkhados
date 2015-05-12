@@ -19,7 +19,10 @@ import arkhados.effects.BlindEffect;
 import arkhados.effects.BuffEffect;
 
 
-public class BlindInformation extends BuffInformation{
+public class BlindInformation extends BuffInformation {
+    {
+        setIconPath("Interface/Images/BuffIcons/Blind.png");
+    }
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
