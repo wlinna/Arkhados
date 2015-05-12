@@ -49,12 +49,12 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.BuildParameters;
 import arkhados.util.EntityFactory;
+import arkhados.util.PhysicsWorkaround;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
-import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
@@ -252,13 +252,8 @@ public class WorldManager extends AbstractAppState {
 
         entities.put(id, entity);
         syncManager.addObject(id, entity);
-        space.addAll(entity);
-
-        // We need to add GhostControl separately
-        final GhostControl ghostControl = entity.getControl(GhostControl.class);
-        if (ghostControl != null) {
-            space.add(ghostControl);
-        }
+        
+        PhysicsWorkaround.addAll(space, entity);
 
         worldRoot.attachChild(entity);
         CEntityVariable variableControl =
@@ -423,7 +418,7 @@ public class WorldManager extends AbstractAppState {
             CCharacterBuff buffControl =
                     spatial.getControl(CCharacterBuff.class);
             spatial.removeControl(buffControl);
-            
+
             CCharacterHud cHud = spatial.getControl(CCharacterHud.class);
             spatial.removeControl(cHud);
         }
@@ -437,12 +432,8 @@ public class WorldManager extends AbstractAppState {
                 getWorldRoot().removeLight(light);
             }
         }
-        space.removeAll(spatial);
-        GhostControl ghostControl = spatial.getControl(GhostControl.class);
-        if (ghostControl != null) {
-            space.remove(ghostControl);
-        }
-
+        
+        PhysicsWorkaround.removeAll(space, spatial);
 
         // The reason this code can't be activated is that some controls cause
         // problems when removed like this (GhostControl)
