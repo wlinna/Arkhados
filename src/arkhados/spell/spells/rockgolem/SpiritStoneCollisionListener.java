@@ -22,6 +22,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
+import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -39,7 +40,8 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
     
     private static final float M1_COMBINATION_DAMAGE = 300f;
 
-    public SpiritStoneCollisionListener(Node myStone, WorldManager worldManager) {
+    public SpiritStoneCollisionListener(Node myStone,
+            WorldManager worldManager) {
         this.myStone = myStone;        
         this.worldManager = worldManager;                
     }
@@ -58,7 +60,15 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
             return;
         }
         
-        PhysicsCollisionObject otherPhysics = isA ? event.getObjectB() : event.getObjectA();
+        int myCollisionGroup = isA ? event.getObjectA().getCollisionGroup()
+                : event.getObjectB().getCollisionGroup();
+        
+        if (myCollisionGroup == CollisionGroups.NONE) {
+            return;
+        }
+        
+        PhysicsCollisionObject otherPhysics = isA ? event.getObjectB() :
+                event.getObjectA();
         int otherCollisionGroup = otherPhysics.getCollisionGroup();
 
         CSpiritStonePhysics stonePhysics =
