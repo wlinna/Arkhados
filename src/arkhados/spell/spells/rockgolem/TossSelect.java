@@ -16,7 +16,6 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.SpatialDistancePair;
 import arkhados.controls.CCharacterPhysics;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
@@ -56,32 +55,30 @@ public class TossSelect {
 
 class TossPredicate implements Predicate<SpatialDistancePair> {
 
-    private Spatial spatial;
+    private Spatial me;
 
-    public TossPredicate(Spatial spatial) {
-        this.spatial = spatial;
+    public TossPredicate(Spatial me) {
+        this.me = me;
     }
 
     @Override
     public boolean test(SpatialDistancePair value) {
-        CInfluenceInterface targetInfluenceControl = value.spatial
-                .getControl(CInfluenceInterface.class);
-        if (targetInfluenceControl == null) {
+        CCharacterPhysics cPhysics = 
+                value.spatial.getControl(CCharacterPhysics.class);
+        if (cPhysics == null) {
             CSpiritStonePhysics stone =
-                    value.spatial
-                    .getControl(CSpiritStonePhysics.class);
+                    value.spatial.getControl(CSpiritStonePhysics.class);
             if (stone != null) {
-                int myTeamId = spatial
-                        .getUserData(UserDataStrings.TEAM_ID);
+                int myTeamId = me.getUserData(UserDataStrings.TEAM_ID);
                 if (value.spatial.getUserData(UserDataStrings.TEAM_ID)
                         .equals(myTeamId)) {
                     return true;
                 }
             }
             return false;
-        }
-
-        if (value.spatial == spatial) {
+        } else if (cPhysics.isMotionControlled()) {
+            return false;
+        } else if (value.spatial == me) {
             return false;
         }
 
