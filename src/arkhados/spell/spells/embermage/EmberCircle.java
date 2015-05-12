@@ -208,11 +208,11 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     fire.move(0f, 1f, 0f);
                     fire.addControl(new CTimedExistence(10f));
                     
-                    final ParticleEmitter smoke = createSmoke(radius);
-                    worldManager.getWorldRoot().attachChild(smoke);
-                    smoke.setLocalTranslation(worldTranslation);
-                    smoke.move(0f, 1f, 0f);
-                    smoke.addControl(new CTimedExistence(10f));
+//                    final ParticleEmitter smoke = createSmoke(radius);
+//                    worldManager.getWorldRoot().attachChild(smoke);
+//                    smoke.setLocalTranslation(worldTranslation);
+//                    smoke.move(0f, 1f, 0f);
+//                    smoke.addControl(new CTimedExistence(10f));
 
                     float removalDelay = Math.max(0, 5f - params.age);
                                         
@@ -227,17 +227,17 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                         }
                     });
                     
-                    CActionQueue smokeActions = new CActionQueue();
-                    smoke.addControl(smokeActions);
-
-                    smokeActions.enqueueAction(new ADelay(removalDelay));
-                    smokeActions.enqueueAction(new EntityAction() {
-                        @Override
-                        public boolean update(float tpf) {
-                            smoke.setParticlesPerSec(0);
-                            return false;
-                        }
-                    });
+//                    CActionQueue smokeActions = new CActionQueue();
+//                    smoke.addControl(smokeActions);
+//
+//                    smokeActions.enqueueAction(new ADelay(removalDelay));
+//                    smokeActions.enqueueAction(new EntityAction() {
+//                        @Override
+//                        public boolean update(float tpf) {
+//                            smoke.setParticlesPerSec(0);
+//                            return false;
+//                        }
+//                    });
 
                     AudioNode sound = new AudioNode(assetManager,
                             "Effects/Sound/EmberCircle.wav");
