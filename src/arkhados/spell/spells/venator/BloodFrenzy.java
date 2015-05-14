@@ -40,7 +40,7 @@ public class BloodFrenzy extends Spell {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
                 LifeStealBuff lifeStealBuff =
-                        new LifeStealBuff(0.8f, -1, SurvivalInstinct.DURATION);
+                        new LifeStealBuff(1f, -1, SurvivalInstinct.DURATION);
                 lifeStealBuff.setTypeId(BuffTypeIds.BLOOD_FRENZY);
                 DamageBuff damageBuff =
                         new DamageBuff(-1, SurvivalInstinct.DURATION, -0.5f);
