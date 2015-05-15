@@ -103,7 +103,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new PetrifyCC(-1, 2.3f));
+        buffControl.addBuff(new PetrifyCC(-1, 1.9f));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;
