@@ -28,8 +28,13 @@ are all awesome!
   - some music (with edits)
   - Credits screen
 
-## Announcer ##
+## Documentation ##
+- William Linna
+    - How to play -guide
+- Teemu Salminen
+    - How to play -guide
 
+## Announcer ##
 Antti Saari
 
 ## Early phase testing ##
@@ -41,6 +46,7 @@ Antti Saari
 - Iivari Sassi
 - Oskari Saari
 - Ilkka Wirkkala
+- Kim Seppänen
 
 # Also thanks to #
 

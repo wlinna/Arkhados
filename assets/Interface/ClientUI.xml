@@ -344,7 +344,7 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel id="credits1" visible="true" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="credits1" visible="true" height="780px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Programming" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="William Linna (main programmer)" />
@@ -362,6 +362,10 @@
                 <text style="nifty-label" text="Antti Saari (announcer voices)" />
                 <text style="nifty-label" text="Kimmo Näveri (Arkhados logo)" />
                 <text style="nifty-label" text=""/>
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Documentation" />
+                <text style="nifty-label" text="William Linna" />
+                <text style="nifty-label" text="Teemu Salminen" />       
+                <text style="nifty-label" text=""/>         
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Early phase testing" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="William Linna" />
