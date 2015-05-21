@@ -155,7 +155,7 @@ Venator's survival instinct gives it what it needs to survive. The more health V
 Venator's lust for blood gives Venator extremely strong **lifesteal** buff but Venator's spells lose some accuracy, causing them to do less damage.
 
 #### Space: Leap ####
-Leap into the target location and stun enemies in the landing area. Long cooldown.
+Leap into the target location and **incapaciates** enemies in the landing area. Long cooldown.
 
 #### Passive: Blood drinker ####
 Venator has base lifesteal that cannot be dispelled
