@@ -34,7 +34,6 @@ public class CharacterSyncData extends StateData {
     private Vector3f location = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Vector3f viewDirection = new Vector3f();
-    private Vector3f velocity = new Vector3f();
     private float health;
 
     public CharacterSyncData() {        
@@ -43,9 +42,9 @@ public class CharacterSyncData extends StateData {
     public CharacterSyncData(int id, Spatial spatial) {
         super(id);        
         location.set(spatial.getLocalTranslation());
-        walkDirection.set(spatial.getControl(CCharacterPhysics.class).getWalkDirection());
-        velocity.set(spatial.getControl(CCharacterPhysics.class).getVelocity());
-        viewDirection.set(spatial.getControl(CCharacterPhysics.class).getViewDirection());
+        CCharacterPhysics body = spatial.getControl(CCharacterPhysics.class);
+        walkDirection.set(body.getWalkDirection());
+        viewDirection.set(body.getViewDirection());
         health = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
     }
 
@@ -54,10 +53,10 @@ public class CharacterSyncData extends StateData {
         Spatial character = (Spatial) target;
         character.getControl(CInfluenceInterface.class).setHealth(health);
         character.getControl(CSyncInterpolation.class).interpolate(location);
-        character.getControl(CCharacterPhysics.class).warp(location);
-        character.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
-        character.getControl(CCharacterPhysics.class).enqueueSetLinearVelocity(velocity);
-        character.getControl(CCharacterPhysics.class).setWalkDirection(walkDirection);
+        CCharacterPhysics body = character.getControl(CCharacterPhysics.class);
+        body.warp(location);
+        body.setViewDirection(viewDirection);
+        body.setWalkDirection(walkDirection);
     }
 
     @Override
