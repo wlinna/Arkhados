@@ -63,7 +63,7 @@ public class ServerFogManager extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
-        world = stateManager.getState(WorldManager.class);        
+        world = stateManager.getState(WorldManager.class);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ServerFogManager extends AbstractAppState {
             if (healthMaybe != null) {
                 float health = (float) healthMaybe;
                 if (health <= 0f) {
-                    age = -1f;                    
+                    age = -1f;
                 }
             }
 
@@ -184,9 +184,9 @@ public class ServerFogManager extends AbstractAppState {
 
             CInfluenceInterface influenceInterface =
                     target.getControl(CInfluenceInterface.class);
-            if (influenceInterface != null) {                
+            if (influenceInterface != null) {
                 informAboutBuffs(sender, awareness,
-                        influenceInterface.getBuffs());                
+                        influenceInterface.getBuffs());
             }
         } else {
             Command command = new CmdRemoveEntity(entityId,
@@ -223,6 +223,13 @@ public class ServerFogManager extends AbstractAppState {
                 new PlayerEntityAwareness(playerId, walls, this);
 
         HostedConnection connection = ConnectionHelper.getSource(playerId);
+        if (connection == null) {
+            NullPointerException npe = new NullPointerException(
+                    "Connection for playerId " + playerId + "is null!");
+            logger.log(Level.WARNING, "", npe);
+            throw npe;
+        }
+
         awarenessConnectionMap.put(playerAwareness, connection);
         return playerAwareness;
     }
@@ -282,7 +289,7 @@ public class ServerFogManager extends AbstractAppState {
 
         awarenessConnectionMap.clear();
     }
-    
+
     public void removeConnection(HostedConnection connection) {
         awarenessConnectionMap.values().remove(connection);
     }
