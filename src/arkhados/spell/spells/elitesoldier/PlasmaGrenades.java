@@ -107,7 +107,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
         projectileGeom.setCullHint(Spatial.CullHint.Always);
 
-        Node node = new Node("projectile");
+        Node node = new Node("grenade");
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
