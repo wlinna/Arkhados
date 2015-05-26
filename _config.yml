@@ -2,8 +2,8 @@
 title: Arkhados
 description: > # this means to ignore newlines until "baseurl:"
   Web site of Arkhados
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://dnyarri.github.io/Arkhados" # the base hostname & protocol for your site
+baseurl: "/Arkhados/" # the subpath of your site, e.g. /blog/
+url: "http://dnyarri.github.io" # the base hostname & protocol for your site
 github_username:  dnyarri
 
 # Build settings
