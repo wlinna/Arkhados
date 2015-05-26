@@ -10,7 +10,7 @@ Hero Guides
 
 ### Spell set ###
 
-While every hero is unique, their spell sets usually are divided in same way.
+While every hero is unique, usually their spell sets are divided in the same way.
 
 - **M1:** Main offensive spell. Extremely low cooldown. Bound to left mouse button by default
 - **M2:** Typically ranged spell, even for melee heroes. Bound to right mouse button by default
@@ -117,7 +117,7 @@ Ignite is small **Damage over time** debuff that is applied through any of Ember
 ### Tips ###
 - Ember Mage is fragile and has mediocre movement speed. Try to keep your distance.
 - R-primary <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" /> is your best defense against ranged characters but less useful against melee heroes.
-- When espacing from melee heroes and you have option to choose between R <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" /> and Space <img class="spell-icon" src="Images/SpellIcons/flame_walk.png" />, you might want to consider using R-secondary first since Space is more flexible
+- When escaping from melee heroes and you have option to choose between R <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" /> and Space <img class="spell-icon" src="Images/SpellIcons/flame_walk.png" />, you might want to consider using R-secondary first since Space is more flexible
 - Try to land your M2 <img class="spell-icon" src="Images/SpellIcons/magma_bash.png" /> on enemy **after** you have hit them with couple *Fireballs first*<img class="spell-icon" src="Images/SpellIcons/fireball.png" />. *Brimstone*-stacks amplify M2's effect.
 - On the other hand, if melee hero reaches you before you've stacked Brimstone on them, don't waste time with Fireballs.
 - If you hit enemy with *Magma Bash*<img class="spell-icon" src="Images/SpellIcons/magma_bash.png" />, follow it up with perfect *Meteor*<img class="spell-icon" src="Images/SpellIcons/meteor.png" /> hit. If you really need to escape then don't, because Meteor will dispel *Incapacitate*.
@@ -160,7 +160,7 @@ Venator's survival instinct gives it what it needs to survive. The more health V
 Venator's lust for blood gives Venator extremely strong **lifesteal** buff but Venator's spells lose some accuracy, causing them to do less damage.
 
 #### <img class="spell-icon" src="Images/SpellIcons/leap.png" />Space: Leap ####
-Leap into the target location and **incapaciates** enemies in the landing area. Long cooldown.
+Leap into the target location and **incapacitates** enemies in the landing area. Long cooldown.
 
 #### Passive: Blood drinker ####
 Venator has base lifesteal that cannot be dispelled
@@ -173,7 +173,7 @@ Venator has base lifesteal that cannot be dispelled
      3. Use *Deep Wounds* <img class="spell-icon" src="Images/SpellIcons/deep_wounds.png" /> to apply *Bleed* debuff on them.
      4. Use *Feral Scream* <img class="spell-icon" src="Images/SpellIcons/feral_scream.png" /> to *Fear* your enemy. Bleed DOES NOT interrupt Fear.
      5. Just before Fear ends, throw *Damaging Dagger* <img class="spell-icon" src="Images/SpellIcons/damaging_dagger.png" /> on your target.
-  - If executed succesfully, combo does lot of damage and because of your *lifesteal*, you end up healthier.
+  - If executed successfully, combo does lot of damage and because of your *lifesteal*, you end up healthier.
 
 - Variation of previous combo is to start melee attacking (M1) your target after *Deep Wounds* <img class="spell-icon" src="Images/SpellIcons/deep_wounds.png" />. Save *Feral Scream* <img class="spell-icon" src="Images/SpellIcons/feral_scream.png" /> for later. This combo might be more effective if you are healthy.
 
@@ -204,7 +204,7 @@ Hits enemies at melee range in the target direction. Short cooldown.
 Shoots a projectile with *petrify* debuff in the target direction. Medium cooldown.
 
 #### <img class="spell-icon" src="Images/SpellIcons/SpiritStone.png" />Q: Spirit Stone (primary) ####
-Creates a stone at the target location that can be either punced (M1) or tossed (E) in the target direction/location. It also blocks any attacks and gives small boost to movement speed to friendly
+Creates a stone at the target location that can be either punched (M1) or tossed (E) in the target direction/location. It also blocks any attacks and gives small boost to movement speed to friendly
 players in certain range. Long cooldown.
 
 #### <img class="spell-icon" src="Images/SpellIcons/SpiritStone.png" />Q: Angry Spirit Stone (secondary) ####
@@ -246,7 +246,7 @@ Rock Golem doesn't have passive at the moment.
 
 With his cunning, extreme speed and arsenal of weapons, Grok the Elite
 Soldier has single-handedly thwarted multiple invasions of aliens and demons
-alike. Using dimensional a doorway, he has come to stop chaos and evil once
+alike. Using a dimensional doorway, he has come to stop chaos and evil once
 again and ultimately, to prove his superior elite skills
 
 **Description**
