@@ -169,20 +169,20 @@ public class DeathMatch extends GameMode implements CommandHandler {
                 DeathMatchPlayerTracker tracker =
                         new DeathMatchPlayerTracker(0.5f);
                 trackers.put(playerId, tracker);
+
+                ServerFogManager fogManager =
+                        stateManager.getState(ServerFogManager.class);
+                if (fogManager != null) { // Same as asking for if this is server
+                    PlayerEntityAwareness awareness =
+                            fogManager.createAwarenessForPlayer(playerId);
+                    fogManager.teachAboutPrecedingEntities(awareness);
+
+                    canPickHeroMap.put(playerId, Boolean.TRUE);
+                    CharacterInteraction.addPlayer(playerId);
+                }
                 return null;
             }
         });
-
-        ServerFogManager fogManager =
-                stateManager.getState(ServerFogManager.class);
-        if (fogManager != null) { // Same as asking for if this is server
-            PlayerEntityAwareness awareness =
-                    fogManager.createAwarenessForPlayer(playerId);
-            fogManager.teachAboutPrecedingEntities(awareness);
-
-            canPickHeroMap.put(playerId, Boolean.TRUE);
-            CharacterInteraction.addPlayer(playerId);
-        }
     }
 
     private void playerChoseHero(final int playerId, final String heroName) {
