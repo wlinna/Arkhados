@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Created GitHub pages"
-date:   2015-05-22 09:52:19
+date:   2015-05-26 09:52:19
 ---
 
 Created simple website for Arkhados, using Jekyll.
