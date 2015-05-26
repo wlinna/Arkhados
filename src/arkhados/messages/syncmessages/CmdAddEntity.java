@@ -29,8 +29,8 @@ import com.jme3.network.serializing.Serializable;
 public class CmdAddEntity extends StateData {
     private short entityId;
     private short nodeBuilderId;
-    private Vector3f location;
-    private Quaternion rotation;
+    private Vector3f location = new Vector3f();
+    private Quaternion rotation = new Quaternion();
     private byte playerId;
     private float age;
 
@@ -46,8 +46,8 @@ public class CmdAddEntity extends StateData {
             Quaternion rotation, int playerId, float age) {
         this.entityId = (short) entityId;
         this.nodeBuilderId = (short) nodeBuilderId;
-        this.location = location;
-        this.rotation = rotation;
+        this.location.set(location);
+        this.rotation.set(rotation);
         this.playerId = (byte) playerId;
         this.age = age;
     }
