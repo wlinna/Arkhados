@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -93,11 +94,18 @@ public class ReplayMenu implements ScreenController {
 
         ReplayPlayerLBModel model = (ReplayPlayerLBModel) selection.get(0);
 
-        ReplayReader replayReader = Globals.app.getStateManager()
+        final ReplayReader replayReader = Globals.app.getStateManager()
                 .getState(ReplayReader.class);
         replayReader.selectPlayer(model.getPlayerId());
         nifty.gotoScreen("default_hud");
-        replayReader.setEnabled(true);
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+
+            @Override
+            public void run() {
+                replayReader.setEnabled(true);
+            }
+        }, 500);
+        
     }
 
     @Override
@@ -129,7 +137,9 @@ public class ReplayMenu implements ScreenController {
         ListBox box = screen.findNiftyControl("replay_list", ListBox.class);
         box.clear();
         File folder = new File("replays");
-        for (File file : folder.listFiles(filenameFilter)) {
+        File[] fileList = folder.listFiles(filenameFilter);        
+        Arrays.sort(fileList, Collections.reverseOrder());
+        for (File file : fileList) {
             box.addItem(file.getName());
         }
     }
