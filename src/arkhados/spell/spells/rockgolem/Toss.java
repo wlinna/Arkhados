@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.ServerFogManager;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
+import arkhados.actions.ATrance;
 import arkhados.characters.RockGolem;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
@@ -106,6 +107,14 @@ class AToss extends EntityAction {
         Spatial closest = TossSelect.select(spatial);
 
         if (closest != null) {
+            CActionQueue cQueue = closest.getControl(CActionQueue.class);
+            if (cQueue != null) {
+                EntityAction current = cQueue.getCurrent();
+                if (current != null && current instanceof ATrance) {
+                    ((ATrance) current).activate(spatial);
+                    return false;
+                }
+            }
             toss(closest);
         }
 
