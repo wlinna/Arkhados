@@ -21,6 +21,7 @@ import arkhados.actions.castspellactions.ACastOnGround;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CTimedExistence;
+import arkhados.controls.CVisibility;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -39,8 +40,12 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 
 /**
  * Embermage's Ember Circle (Q) spell. Area of Effect spell that deals damage
@@ -172,6 +177,8 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         actionQueue.enqueueAction(new ADelay(delay));
 
         if (worldManager.isServer()) {
+            node.addControl(new CEmberCircleVisibility(radius));
+
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
                     new Vector3f(radius, 0.05f, radius), 1));
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
@@ -199,15 +206,17 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         } else if (worldManager.isClient()) {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
-                public boolean update(float tpf) {                    
+                public boolean update(float tpf) {
                     Vector3f worldTranslation = spatial.getWorldTranslation();
-                                        
+
                     final ParticleEmitter fire = createFire(radius);
                     worldManager.getWorldRoot().attachChild(fire);
                     fire.setLocalTranslation(worldTranslation);
                     fire.move(0f, 1f, 0f);
                     fire.addControl(new CTimedExistence(10f));
-                    
+
+                    // Smoke causes performance problems so it's disabled now
+                    // TODO: Find a way to make smoke useable performancewise
 //                    final ParticleEmitter smoke = createSmoke(radius);
 //                    worldManager.getWorldRoot().attachChild(smoke);
 //                    smoke.setLocalTranslation(worldTranslation);
@@ -215,7 +224,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 //                    smoke.addControl(new CTimedExistence(10f));
 
                     float removalDelay = Math.max(0, 5f - params.age);
-                                        
+
                     CActionQueue fireActions = new CActionQueue();
                     fire.addControl(fireActions);
                     fireActions.enqueueAction(new ADelay(removalDelay));
@@ -226,7 +235,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                             return false;
                         }
                     });
-                    
+
 //                    CActionQueue smokeActions = new CActionQueue();
 //                    smoke.addControl(smokeActions);
 //
@@ -253,5 +262,37 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         }
 
         return node;
+    }
+}
+
+class CEmberCircleVisibility extends AbstractControl implements CVisibility {
+
+    private final float radius;
+    private final float radiusSquared;
+
+    public CEmberCircleVisibility(float radius) {
+        this.radius = radius;
+        this.radiusSquared = radius * radius;
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
+    }
+
+    @Override
+    public Vector3f giveClosestPoint(Vector3f lookerLocation) {
+        if (lookerLocation.distanceSquared(spatial.getLocalTranslation())
+                <= radiusSquared) {
+            return lookerLocation;
+        }
+        
+        Vector3f vec = new Vector3f(lookerLocation);
+        vec.subtractLocal(spatial.getLocalTranslation());
+        vec.normalizeLocal().multLocal(radius);
+        return vec.addLocal(spatial.getLocalTranslation());
     }
 }

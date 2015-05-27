@@ -110,14 +110,24 @@ public class PlayerEntityAwareness {
         Vector3f otherLocation;
 
         RigidBodyControl rigidBody = other.getControl(RigidBodyControl.class);
-        if (rigidBody != null) {
-            otherLocation = rigidBody.getPhysicsLocation();
-        } else {
-            otherLocation = other.getLocalTranslation();
-        }
+        otherLocation = rigidBody != null
+                ? rigidBody.getPhysicsLocation()
+                : other.getLocalTranslation();
 
-        float distanceSquared = otherLocation
-                .distanceSquared(getOwnSpatial().getLocalTranslation());
+        CVisibility cVisibility = other.getControl(CVisibility.class);
+        Vector3f ownLocation = getOwnSpatial().getLocalTranslation();
+        Vector3f closestPoint;
+
+        closestPoint = cVisibility == null
+                ? otherLocation
+                : cVisibility.giveClosestPoint(ownLocation);
+        
+        String closestStr = String.format("%f %f %f", closestPoint.x, closestPoint.y, closestPoint.z);
+        String otherStr = String.format("%f %f %f", otherLocation.x, otherLocation.y, otherLocation.z);
+        
+        System.out.println("closest: " + closestStr + ", other: " + otherStr);
+
+        float distanceSquared = closestPoint.distanceSquared(ownLocation);
 
         if (distanceSquared > rangeSquared) {
             return false;
@@ -131,12 +141,12 @@ public class PlayerEntityAwareness {
             return false;
         }
 
-        return wallTest(other, FastMath.sqrt(distanceSquared));
+        return wallTest(closestPoint, FastMath.sqrt(distanceSquared));
     }
 
-    private boolean wallTest(Spatial other, float distance) {
+    private boolean wallTest(Vector3f location, float distance) {
         Vector3f direction = _reUsableVec;
-        direction.set(other.getLocalTranslation());
+        direction.set(location);
         direction.subtractLocal(getOwnSpatial().getLocalTranslation())
                 .normalizeLocal();
 
