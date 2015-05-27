@@ -121,11 +121,6 @@ public class PlayerEntityAwareness {
         closestPoint = cVisibility == null
                 ? otherLocation
                 : cVisibility.giveClosestPoint(ownLocation);
-        
-        String closestStr = String.format("%f %f %f", closestPoint.x, closestPoint.y, closestPoint.z);
-        String otherStr = String.format("%f %f %f", otherLocation.x, otherLocation.y, otherLocation.z);
-        
-        System.out.println("closest: " + closestStr + ", other: " + otherStr);
 
         float distanceSquared = closestPoint.distanceSquared(ownLocation);
 
