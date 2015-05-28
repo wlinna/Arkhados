@@ -17,7 +17,9 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.SpatialDistancePair;
+import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
@@ -26,7 +28,6 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -89,13 +90,10 @@ class AStoneFist extends EntityAction {
         CCharacterPhysics physicsControl =
                 spatial.getControl(CCharacterPhysics.class);
         final int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
-        int myPlayerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
                 .normalize().multLocal(range);
 
         physicsControl.setViewDirection(hitDirection);
-        PhysicsSpace space = physicsControl.getPhysicsSpace();
-        Vector3f to = spatial.getLocalTranslation().add(hitDirection);
 
         Predicate<SpatialDistancePair> pred =
                 new Predicate<SpatialDistancePair>() {
@@ -114,8 +112,8 @@ class AStoneFist extends EntityAction {
                 CInfluenceInterface influenceInterface = value.spatial
                         .getControl(CInfluenceInterface.class);
 
-                if (influenceInterface != null &&
-                        !nullableTeamId.equals(myTeamId)) {                    
+                if (influenceInterface != null
+                        && !nullableTeamId.equals(myTeamId)) {
                     return true;
                 }
 
@@ -133,7 +131,7 @@ class AStoneFist extends EntityAction {
         SpatialDistancePair closest = Selector.giveClosest(
                 Selector.coneSelect(new ArrayList<SpatialDistancePair>(), pred,
                 spatial.getLocalTranslation(), hitDirection, range, 30f));
-        
+
         if (closest == null) {
             return false;
         }
@@ -141,6 +139,14 @@ class AStoneFist extends EntityAction {
         CInfluenceInterface targetInterface =
                 closest.spatial.getControl(CInfluenceInterface.class);
         if (targetInterface != null) {
+            EntityAction current =
+                    closest.spatial.getControl(CActionQueue.class).getCurrent();
+
+            if (current != null && current instanceof ATrance) {
+                ((ATrance) current).activate(spatial);
+                return false;
+            }
+
             final float damageFactor =
                     spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
             final float rawDamage = damage * damageFactor;
