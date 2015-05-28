@@ -18,11 +18,13 @@ import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.PlayerData;
 import arkhados.WorldManager;
+import arkhados.actions.ATrance;
+import arkhados.actions.EntityAction;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
-import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -37,13 +39,12 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
 
     private Node myStone;
     private WorldManager worldManager;
-    
     private static final float M1_COMBINATION_DAMAGE = 300f;
 
     public SpiritStoneCollisionListener(Node myStone,
             WorldManager worldManager) {
-        this.myStone = myStone;        
-        this.worldManager = worldManager;                
+        this.myStone = myStone;
+        this.worldManager = worldManager;
     }
 
     @Override
@@ -55,25 +56,25 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         }
 
         Spatial other = isA ? event.getNodeB() : event.getNodeA();
-        
+
         if (other == null) {
             return;
         }
-        
+
         int myCollisionGroup = isA ? event.getObjectA().getCollisionGroup()
                 : event.getObjectB().getCollisionGroup();
-        
+
         if (myCollisionGroup == CollisionGroups.NONE) {
             return;
         }
-        
-        PhysicsCollisionObject otherPhysics = isA ? event.getObjectB() :
-                event.getObjectA();
+
+        PhysicsCollisionObject otherPhysics = isA ? event.getObjectB()
+                : event.getObjectA();
         int otherCollisionGroup = otherPhysics.getCollisionGroup();
 
         CSpiritStonePhysics stonePhysics =
                 myStone.getControl(CSpiritStonePhysics.class);
-        
+
         int stoneId = myStone.getUserData(UserDataStrings.ENTITY_ID);
 
         Integer otherTeamId = other.getUserData(UserDataStrings.TEAM_ID);
@@ -90,17 +91,29 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
                 other.getControl(CInfluenceInterface.class);
         if (influenceInterface != null && stonePhysics.isPunched()
                 && !otherTeamId.equals(myTeamId)) {
-            
+
+            CActionQueue cQueue = other.getControl(CActionQueue.class);
+            EntityAction currentAction = cQueue.getCurrent();
+
             int ownerId = myStone.getUserData(UserDataStrings.PLAYER_ID);
-            int playerEntityId = PlayerData.getIntData(ownerId, PlayerDataStrings.ENTITY_ID);
+            int playerEntityId = PlayerData
+                    .getIntData(ownerId, PlayerDataStrings.ENTITY_ID);
             Spatial playerEntity = worldManager.getEntity(playerEntityId);
+
+            if (currentAction != null && currentAction instanceof ATrance) {
+                ((ATrance) currentAction).activate(playerEntity);
+                worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
+                return;
+            }
+
             CInfluenceInterface playerInterface =
                     playerEntity.getControl(CInfluenceInterface.class);
-            
+
             CharacterInteraction.harm(playerInterface, influenceInterface,
                     M1_COMBINATION_DAMAGE, null, true);
             worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
-        } else if (stonePhysics.isPunched() && otherCollisionGroup == CollisionGroups.WALLS) {
+        } else if (stonePhysics.isPunched()
+                && otherCollisionGroup == CollisionGroups.WALLS) {
             worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
         }
     }
