@@ -130,7 +130,7 @@ class AStoneFist extends EntityAction {
         };
         SpatialDistancePair closest = Selector.giveClosest(
                 Selector.coneSelect(new ArrayList<SpatialDistancePair>(), pred,
-                spatial.getLocalTranslation(), hitDirection, range, 30f));
+                spatial.getLocalTranslation(), hitDirection, range, 50f));
 
         if (closest == null) {
             return false;
