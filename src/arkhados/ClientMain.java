@@ -60,7 +60,9 @@ import java.util.logging.SimpleFormatter;
 import java.util.prefs.BackingStoreException;
 import javax.imageio.ImageIO;
 
-public class ClientMain extends SimpleApplication {
+public class ClientMain extends SimpleApplication {    
+    private final static Logger logger =
+            Logger.getLogger(ClientMain.class.getName());
 
     public final static String PREFERENCES_KEY = "arkhados";
 
@@ -82,8 +84,7 @@ public class ClientMain extends SimpleApplication {
 
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException | SecurityException ex) {
-            Logger.getLogger(ClientMain.class.getName())
-                    .log(Level.WARNING, null, ex);
+            logger.log(Level.WARNING, null, ex);
         }
 
         try {
@@ -229,8 +230,7 @@ public class ClientMain extends SimpleApplication {
                     ConnectionMenu menu = (ConnectionMenu) nifty
                             .findScreenController("arkhados.ui.ConnectionMenu");
                     menu.setStatusText(ex.getMessage());
-                    Logger.getLogger(ClientMain.class.getName())
-                            .log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, null, ex);
                 }
 
                 return null;
@@ -243,11 +243,12 @@ public class ClientMain extends SimpleApplication {
             return;
         }
 
-        System.out.println("Cancelling future");
+        logger.info("Cancelling connection future");
+        
+        boolean cancelSuccesful = connectionFuture.cancel(true);
 
-        connectionFuture.cancel(true);
-
-        System.out.println("Future cancelled");
+        logger.info(cancelSuccesful ? "Cancelled connection future"
+                : "Failed to cancel connection future");
         client = null;
 
         connectionFuture = null;
