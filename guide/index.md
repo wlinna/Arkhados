@@ -3,6 +3,32 @@ title: How to play
 layout: page
 ---
 
+How to get into game
+=====================
+
+## Joining server ##
+
+1. Open Arkhados client.
+2. Choose your video settings.
+3. (Optional) Configure your input and camera settings.
+4. Press "Join Game" in the main menu.
+5. Enter address and port of the server you want to join and your desired nick name.
+6. Press "Start Game" and choose your hero.
+7. Have fun! :)
+
+## Hosting server ##
+
+1. Configure your server by editing server settings file.
+2. Make sure that your configured port (or default port 12345) is open and forwarded to your computer.
+3. Start Arkhados server.
+4. Join your server using the Arkhados client. Use "localhost" (without quotes) as address.
+5. Get your external IP-address. You can get it from many places, such as [whatismyip.com](https://www.whatismyip.com/).
+6. Give your address and port to other players.
+7. Enjoy!
+8. If the game ends succesfully, its replay is saved to the replays-directory. Share that replay with other players.
+
+If others can't join your server, make sure that Arkhados isn't blocked by a firewall. If you are behind NAT, you probably need to forward some port to your IP. Visit [portforward.com](http://portforward.com/) for step-by-step port forwarding guides.
+
 Hero Guides
 ============
 
