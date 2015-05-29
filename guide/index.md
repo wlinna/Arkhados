@@ -87,7 +87,7 @@ To be implemented soon.
   - Melee and tank heroes however often need Space to get close to their targets or to initiate.
 - Though M1 is usually your weakest offensive skill, it also has lowest cooldown.
 - Learn to predict your opponents' actions. Often failed prediction is better than not predicting at all.
-- Only fight battles where you have the advantage! Even battles lead to loss of large amounts of health and your enemy might escape just before killing blow. Someone will "steal your kill" and you are left weak. Even if you get the kill, you will be next one to die.
+- Only fight battles where you have the advantage! Even battles lead to loss of large amounts of health and your enemy might escape just before the killing blow. Someone will "steal your kill" and you are left weak. Even if you get the kill, you will be next one to die.
 - Don't stand in the fire!
 
 ## Ember Mage ##
@@ -273,7 +273,7 @@ Rock Golem doesn't have passive at the moment.
 With his cunning, extreme speed and arsenal of weapons, Grok the Elite
 Soldier has single-handedly thwarted multiple invasions of aliens and demons
 alike. Using a dimensional doorway, he has come to stop chaos and evil once
-again and ultimately, to prove his superior elite skills
+again and ultimately, to prove his superior elite skills.
 
 **Description**
 
