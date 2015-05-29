@@ -42,7 +42,7 @@ import java.util.ArrayList;
  */
 public class EarthQuake extends Spell {
     public static final float RADIUS = 22f;
-    
+
     {
         iconName = "EarthQuake.png";
     }
@@ -83,14 +83,14 @@ class ACastEarthQuake extends EntityAction {
     public boolean update(float tpf) {
         ACharge charge = new ACharge(chargeRange);
         charge.setChargeSpeed(150f);
-        charge.setHitDamage(190f);
+        charge.setHitDamage(30f);
 
         IncapacitateCC incapacitate = new IncapacitateCC(1.2f, -1);
         ArrayList<AbstractBuff> buffs = new ArrayList<>();
         buffs.add(incapacitate);
 
         final float splashRadius = EarthQuake.RADIUS;
-        
+
         ASplash splash = new ASplash(splashRadius, 180f, 0f,
                 DistanceScaling.CONSTANT, buffs);
         final int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
@@ -124,7 +124,7 @@ class ACastEarthQuake extends EntityAction {
                     pair.spatial.getControl(CActionQueue.class)
                             .enqueueAction(new AKnockup());
                 }
-                
+
                 return false;
             }
         });
