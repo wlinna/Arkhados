@@ -51,6 +51,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -120,6 +122,8 @@ public class ClientMain extends SimpleApplication {
     private GameMode gameMode = null;
     private InputSettings inputSettings;
     private List<AppState> swappableStates = new ArrayList<>();
+    private Future connectionFuture;
+    private ScheduledThreadPoolExecutor threadPoolExecutor;
 
     @Override
     public void simpleInitApp() {
@@ -127,6 +131,8 @@ public class ClientMain extends SimpleApplication {
         if (!replayDir.exists()) {
             replayDir.mkdir();
         }
+
+        threadPoolExecutor = new ScheduledThreadPoolExecutor(4);
 
         Globals.assetManager = getAssetManager();
         Globals.app = this;
@@ -193,7 +199,9 @@ public class ClientMain extends SimpleApplication {
         clientHudManager.setNifty(nifty);
     }
 
-    public void connect(String username, String address, int port) {
+    public void connect(String username, final String address, final int port) {
+        cancelConnectionIfNotDone();
+
         clientWrapper.set(Network.createClient());
 
         ClientNetListener listenerManager =
@@ -211,16 +219,38 @@ public class ClientMain extends SimpleApplication {
 
         listenerManager.setName(username);
 
-        try {
-            clientWrapper.get().connectToServer(address, port, port);
-            clientWrapper.get().start();
-        } catch (IOException ex) {
-            ConnectionMenu menu = (ConnectionMenu) nifty
-                    .findScreenController("arkhados.ui.ConnectionMenu");
-            menu.setStatusText(ex.getMessage());
-            Logger.getLogger(ClientMain.class.getName())
-                    .log(Level.SEVERE, null, ex);
+        connectionFuture = threadPoolExecutor.submit(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                try {
+                    clientWrapper.get().connectToServer(address, port, port);
+                    clientWrapper.get().start();
+                } catch (IOException ex) {
+                    ConnectionMenu menu = (ConnectionMenu) nifty
+                            .findScreenController("arkhados.ui.ConnectionMenu");
+                    menu.setStatusText(ex.getMessage());
+                    Logger.getLogger(ClientMain.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+
+                return null;
+            }
+        });
+    }
+
+    public void cancelConnectionIfNotDone() {
+        if (connectionFuture == null || connectionFuture.isDone()) {
+            return;
         }
+
+        System.out.println("Cancelling future");
+
+        connectionFuture.cancel(true);
+
+        System.out.println("Future cancelled");
+        clientWrapper.set(null);
+
+        connectionFuture = null;
     }
 
     public void setupGameMode(final String gameModeString) {
@@ -262,6 +292,7 @@ public class ClientMain extends SimpleApplication {
 
     @Override
     public void destroy() {
+        threadPoolExecutor.shutdown();
         NetworkClient client = clientWrapper.get();
         if (client != null && client.isConnected()) {
             clientWrapper.get().close();
@@ -323,7 +354,7 @@ public class ClientMain extends SimpleApplication {
         swappableStates.add(userCommandManager);
         swappableStates.add(sender);
         swappableStates.add(receiver);
-        
+
         stateManager.attachAll(swappableStates);
 
         receiver.registerCommandHandler(netListener);

@@ -76,5 +76,6 @@ public class ConnectionMenu extends Menu {
     @Override
     public void onEndScreen() {
         setStatusText("");
+        ((ClientMain) Globals.app).cancelConnectionIfNotDone();
     }
 }
