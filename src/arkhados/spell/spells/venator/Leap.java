@@ -73,7 +73,7 @@ public class Leap extends Spell {
 
 class ACastLeap extends EntityAction {
 
-    private float forwardSpeed = 105f;
+    private float forwardSpeed = 130f;
     private final Spell spell;
     private boolean motionSet = false;
     private Vector3f direction;
@@ -103,7 +103,7 @@ class ACastLeap extends EntityAction {
 
         MotionEvent motionControl = new MotionEvent(spatial, path);
         motionControl.setInitialDuration(finalLocation.distance(startLocation) / forwardSpeed);
-        motionControl.setSpeed(1.4f);
+        motionControl.setSpeed(1f);
 
         direction = finalLocation.subtract(startLocation);
         physics.setViewDirection(direction);
@@ -111,7 +111,7 @@ class ACastLeap extends EntityAction {
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
                 List<SpatialDistancePair> spatialsOnDistance = Selector.getSpatialsWithinDistance(
-                        new ArrayList<SpatialDistancePair>(), spatial, 15f);
+                        new ArrayList<SpatialDistancePair>(), spatial, 20f);
 
                 SpatialDistancePair pairWithSmallestDistance = null;
                 for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
