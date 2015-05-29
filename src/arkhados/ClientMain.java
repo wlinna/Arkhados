@@ -323,10 +323,8 @@ public class ClientMain extends SimpleApplication {
         swappableStates.add(userCommandManager);
         swappableStates.add(sender);
         swappableStates.add(receiver);
-
-        for (AppState appState : swappableStates) {
-            stateManager.attach(appState);
-        }
+        
+        stateManager.attachAll(swappableStates);
 
         receiver.registerCommandHandler(netListener);
         receiver.registerCommandHandler(effectHandler);
