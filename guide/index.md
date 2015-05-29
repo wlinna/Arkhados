@@ -12,13 +12,13 @@ Hero Guides
 
 While every hero is unique, usually their spell sets are divided in the same way.
 
-- **M1:** Main offensive spell. Extremely low cooldown. Bound to left mouse button by default
-- **M2:** Typically ranged spell, even for melee heroes. Bound to right mouse button by default
-- **Q:** Typically utility spell. Often used for *crowd control*. Bound to Q by default
-- **E:** Usually hero's most powerful offensive spell. Bound to E by default
-- **R:** Protective and buff spell. Bound to R by default
-- **Space:** Movement spell. Bound to Space by default
-- **Passive:** Each hero has passive "spell" that they can't activate anytime they want
+- **M1:** Main offensive spell. Extremely low cooldown. Bound to left mouse button by default.
+- **M2:** Typically ranged spell, even for melee heroes. Bound to right mouse button by default.
+- **Q:** Typically utility spell. Often used for *crowd control*. Bound to Q by default.
+- **E:** Usually hero's most powerful offensive spell. Bound to E by default.
+- **R:** Protective and buff spell. Bound to R by default.
+- **Space:** Movement spell. Bound to Space by default.
+- **Passive:** Each hero has passive "spell" that they can't activate anytime they want.
 
 Certain spells are divided into **primary** and **secondary spells**. Primary and secondary spells of same spell share same cooldown and are quite similar. Each hero has two secondary spells.
 
@@ -27,25 +27,25 @@ Certain spells are divided into **primary** and **secondary spells**. Primary an
 **Note** that these aren't the only buffs and debuffs. There are also variations of each of these buffs and debuffs.
 
 #### Positive buffs ####
-- **Speed:** player gets higher movement speed
-- **Armor:** player takes less damage from any attack. Deflected damage is removed from armor amount
-- **Lifesteal:** whenever player does damage, they are healed for certain amount based on damage done
-- **Damage boost:** Player's offensive spells do more damage
-- **Heal over time:** Player's health is restored over time
+- **Speed:** Player gets higher movement speed.
+- **Armor:** Player takes less damage from any attack. Deflected damage is removed from armor amount.
+- **Lifesteal:** Whenever player does damage, they are healed for a certain amount based on damage done.
+- **Damage boost:** Player's offensive spells do more damage.
+- **Heal over time:** Player's health is restored over time.
 
 #### Common crowd control debuffs ####
 
-- **Stun:** player can't move or cast spells (there are currently no stuns in game)
-- **Incapacitate:** like stun, but if player under incapacitate takes damage,  incapacitate is dispelled
-- **Petrify:** like stun, but player takes heavily reduced damage. Has damage cap.
-- <img class="spell-icon" src="Images/BuffIcons/skull.png" />**Fear:** player starts running away from source of fear. Player can't cast or control their movement during fear. Fear is dispelled on damage (there are exceptions)
-- <img class="spell-icon" src="Images/BuffIcons/Blind.png" /> **Blind:** Player under blind has very short sight range and thus can't see others unless they are very close
-- <img class="spell-icon" src="Images/BuffIcons/Slow.png" /> **Slow:** Player's movement is slower
-- **Numb:** Player's cast speed is slower
-- **Weaken:** Player's offensive spells do less damage
+- **Stun:** Player can't move or cast spells (there are currently no stuns in game).
+- **Incapacitate:** Like stun, but if player under incapacitate takes damage,  incapacitate is dispelled.
+- **Petrify:** Like stun, but player takes heavily reduced damage. Has damage cap.
+- <img class="spell-icon" src="Images/BuffIcons/skull.png" />**Fear:** Player starts running away from the source of fear. Player can't cast or control their movement during fear. Fear is dispelled on damage (there are exceptions).
+- <img class="spell-icon" src="Images/BuffIcons/Blind.png" /> **Blind:** Player under blind has very short sight range and thus can't see others unless they are very close.
+- <img class="spell-icon" src="Images/BuffIcons/Slow.png" /> **Slow:** Player's movement is slower.
+- **Numb:** Player's cast speed is slower.
+- **Weaken:** Player's offensive spells do less damage.
 
 #### Other typical debuffs ####
-- **Damage over time:** player takes damage over time
+- **Damage over time:** Player takes damage over time.
 
 
 ### Regeneration ###
@@ -61,8 +61,8 @@ To be implemented soon.
   - Melee and tank heroes however often need Space to get close to their targets or to initiate.
 - Though M1 is usually your weakest offensive skill, it also has lowest cooldown.
 - Learn to predict your opponents' actions. Often failed prediction is better than not predicting at all.
-- Try to choose battle where you have an advantage! Even battles lead to loss of large amounts of health and your enemy might escape just before killing blow. Someone will "steal your kill" and you are left weak. Even if you get the kill, you will be next one to die.
-- Don't stand on fire!
+- Only fight battles where you have the advantage! Even battles lead to loss of large amounts of health and your enemy might escape just before killing blow. Someone will "steal your kill" and you are left weak. Even if you get the kill, you will be next one to die.
+- Don't stand in the fire!
 
 ## Ember Mage ##
 
@@ -117,7 +117,7 @@ Ignite is small **Damage over time** debuff that is applied through any of Ember
 ### Tips ###
 - Ember Mage is fragile and has mediocre movement speed. Try to keep your distance.
 - R-primary <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" /> is your best defense against ranged characters but less useful against melee heroes.
-- When escaping from melee heroes and you have option to choose between R <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" /> and Space <img class="spell-icon" src="Images/SpellIcons/flame_walk.png" />, you might want to consider using R-secondary first since Space is more flexible
+- When escaping from melee heroes and you have option to choose between R <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" /> and Space <img class="spell-icon" src="Images/SpellIcons/flame_walk.png" />, you might want to consider using R-secondary first since Space is more flexible.
 - Try to land your M2 <img class="spell-icon" src="Images/SpellIcons/magma_bash.png" /> on enemy **after** you have hit them with couple *Fireballs first*<img class="spell-icon" src="Images/SpellIcons/fireball.png" />. *Brimstone*-stacks amplify M2's effect.
 - On the other hand, if melee hero reaches you before you've stacked Brimstone on them, don't waste time with Fireballs.
 - If you hit enemy with *Magma Bash*<img class="spell-icon" src="Images/SpellIcons/magma_bash.png" />, follow it up with perfect *Meteor*<img class="spell-icon" src="Images/SpellIcons/meteor.png" /> hit. If you really need to escape then don't, because Meteor will dispel *Incapacitate*.
@@ -169,7 +169,7 @@ Venator has base lifesteal that cannot be dispelled
 - If you are low on health, you can try following hit-and-run combo against single targets:
   - Steps:
      1. (Optional) Use either of your R spells <img class="spell-icon" src="Images/SpellIcons/survival_instinct.png" /> to boost your combo.
-     2. Use *Leap* <img class="spell-icon" src="Images/SpellIcons/leap.png" /> to get close to your enemy and *incapacitate* them
+     2. Use *Leap* <img class="spell-icon" src="Images/SpellIcons/leap.png" /> to get close to your enemy and *incapacitate* them.
      3. Use *Deep Wounds* <img class="spell-icon" src="Images/SpellIcons/deep_wounds.png" /> to apply *Bleed* debuff on them.
      4. Use *Feral Scream* <img class="spell-icon" src="Images/SpellIcons/feral_scream.png" /> to *Fear* your enemy. Bleed DOES NOT interrupt Fear.
      5. Just before Fear ends, throw *Damaging Dagger* <img class="spell-icon" src="Images/SpellIcons/damaging_dagger.png" /> on your target.
@@ -229,7 +229,7 @@ Rock Golem doesn't have passive at the moment.
 - Hitting enemy with *Sealing Boulder* gives you best possible opportunity to punch *Spirit Stone* on them. For example, one of the deadliest single target combos of *Rock Golem* is following:
   1. Use *Earthquake* <img class="spell-icon" src="Images/SpellIcons/EarthQuake.png" /> to get close to your enemy and for initial damage.
   2. Quickly throw *Sealing Boulder* <img class="spell-icon" src="Images/SpellIcons/SealingBoulder.png" /> to *Petrify* (and it does some damage too).
-  3. Put *Spirit Stone* <img class="spell-icon" src="Images/SpellIcons/SpiritStone.png" /> between you and your enemy
+  3. Put *Spirit Stone* <img class="spell-icon" src="Images/SpellIcons/SpiritStone.png" /> between you and your enemy.
   4. Wait just a little bit and then punch <img class="spell-icon" src="Images/SpellIcons/StoneFist.png" /> the stone so that it hits enemy right after Petrify ends.
   5. Usually enemy escapes at this point but with some luck you might be able to toss  <img class="spell-icon" src="Images/SpellIcons/Toss.png" /> something on them or toss enemy somewhere for extra damage.
 
@@ -301,6 +301,6 @@ Elite soldier collects ammunition over time.
 - Try to use *Like a Pro* <img class="spell-icon" src="Images/SpellIcons/like_a_pro.png" /> whenever you fight. Ability to cast while moving allows you to dodge spells while staying offensive yourself. *Armor* greatly reduces damage whenever you are hit.
 - Rocket Launcher<img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" /> serves multiple purposes. Its *knockback* helps you keep distance to enemy and disrupts them. It has medium damage but also low cooldown.
 - Try to reserve at least one *Rocket* for *Rocket Jump* <img class="spell-icon" src="Images/SpellIcons/rocket_jump.jpeg" /> whenever you use *Rocket Launcher* <img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" />.
-- When you *Rocket Jump*, you can start casting spells even in mid-air. One useful offensive combo is to *Rocket Jump* <img class="spell-icon" src="Images/SpellIcons/rocket_jump.jpeg" /> next to enemy and start casting *Rocket Launcher* <img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" />before landing. If isn't prepared, you can often avoid taking damage yourself because of Rocket's *knockback*
+- When you *Rocket Jump*, you can start casting spells even in mid-air. One useful offensive combo is to *Rocket Jump* <img class="spell-icon" src="Images/SpellIcons/rocket_jump.jpeg" /> next to enemy and start casting *Rocket Launcher* <img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" />before landing. If isn't prepared, you can often avoid taking damage yourself because of Rocket's *knockback*.
 - When dealing with Ember Mage, save M2 for countering *Purifying Flame* <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" />. M2 is your only attack that isn't absorbed by Purifying Flame's shield.
 - *Blinding Ray's (M2 secondary)* has shorter casting time than *Railgun* <img class="spell-icon" src="Images/SpellIcons/railgun.png" /> and blinds enemies hit. If under pressure, prefer Blinding Ray.
