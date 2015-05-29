@@ -116,7 +116,7 @@ public class ClientMain extends SimpleApplication {
     }
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
-    private ValueWrapper<NetworkClient> clientWrapper = new ValueWrapper<>();
+    private NetworkClient client;
     private ClientHudManager clientHudManager;
     private Sender sender;
     private GameMode gameMode = null;
@@ -202,20 +202,20 @@ public class ClientMain extends SimpleApplication {
     public void connect(String username, final String address, final int port) {
         cancelConnectionIfNotDone();
 
-        clientWrapper.set(Network.createClient());
+        client = Network.createClient();
 
         ClientNetListener listenerManager =
                 stateManager.getState(ClientNetListener.class);
         listenerManager.reset();
-        clientWrapper.get().addClientStateListener(listenerManager);
+        client.addClientStateListener(listenerManager);
 
         Receiver receiver = stateManager.getState(Receiver.class);
 
-        clientWrapper.get().addMessageListener(receiver, OneTrueMessage.class);
+        client.addMessageListener(receiver, OneTrueMessage.class);
         sender.reset();
         receiver.reset();
 
-        ((ClientSender) sender).setClient(clientWrapper.get());
+        ((ClientSender) sender).setClient(client);
 
         listenerManager.setName(username);
 
@@ -223,8 +223,8 @@ public class ClientMain extends SimpleApplication {
             @Override
             public Void call() throws Exception {
                 try {
-                    clientWrapper.get().connectToServer(address, port, port);
-                    clientWrapper.get().start();
+                    client.connectToServer(address, port, port);
+                    client.start();
                 } catch (IOException ex) {
                     ConnectionMenu menu = (ConnectionMenu) nifty
                             .findScreenController("arkhados.ui.ConnectionMenu");
@@ -248,7 +248,7 @@ public class ClientMain extends SimpleApplication {
         connectionFuture.cancel(true);
 
         System.out.println("Future cancelled");
-        clientWrapper.set(null);
+        client = null;
 
         connectionFuture = null;
     }
@@ -293,9 +293,8 @@ public class ClientMain extends SimpleApplication {
     @Override
     public void destroy() {
         threadPoolExecutor.shutdown();
-        NetworkClient client = clientWrapper.get();
         if (client != null && client.isConnected()) {
-            clientWrapper.get().close();
+            client.close();
         }
         super.destroy();
     }
