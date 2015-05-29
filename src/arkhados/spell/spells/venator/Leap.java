@@ -115,7 +115,7 @@ class ACastLeap extends EntityAction {
             private void landingEffect() {
                 List<SpatialDistancePair> spatialsOnDistance =
                         Selector.getSpatialsWithinDistance(
-                        new ArrayList<SpatialDistancePair>(), spatial, 20f);
+                        new ArrayList<SpatialDistancePair>(), spatial, 17.5f);
 
                 SpatialDistancePair pairSmallestDistance = null;
                 for (SpatialDistancePair pair : spatialsOnDistance) {
