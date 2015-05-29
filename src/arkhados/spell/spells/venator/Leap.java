@@ -16,7 +16,7 @@ package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
-import arkhados.WorldManager;
+import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
@@ -84,25 +84,28 @@ class ACastLeap extends EntityAction {
     }
 
     private void motionPathVersion() {
-        final CCharacterPhysics physics = spatial.getControl(CCharacterPhysics.class);
+        final CCharacterPhysics physics =
+                spatial.getControl(CCharacterPhysics.class);
         physics.switchToMotionCollisionMode();
 
         // We set y to 1 to prevent ground collision on start
-        final Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
-        final Vector3f finalLocation = spatial.getControl(CSpellCast.class)
+        Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
+        Vector3f finalLocation = spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startLocation);
         path.addWayPoint(spatial.getLocalTranslation().add(finalLocation)
-                .divideLocal(2).setY(finalLocation.distance(startLocation) / 2f));
+                .divideLocal(2).setY(
+                finalLocation.distance(startLocation) / 2f));
         path.addWayPoint(finalLocation);
 
         path.setPathSplineType(Spline.SplineType.CatmullRom);
         path.setCurveTension(0.75f);
 
         MotionEvent motionControl = new MotionEvent(spatial, path);
-        motionControl.setInitialDuration(finalLocation.distance(startLocation) / forwardSpeed);
+        motionControl.setInitialDuration(
+                finalLocation.distance(startLocation) / forwardSpeed);
         motionControl.setSpeed(1f);
 
         direction = finalLocation.subtract(startLocation);
@@ -110,47 +113,59 @@ class ACastLeap extends EntityAction {
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
-                List<SpatialDistancePair> spatialsOnDistance = Selector.getSpatialsWithinDistance(
+                List<SpatialDistancePair> spatialsOnDistance =
+                        Selector.getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(), spatial, 20f);
 
-                SpatialDistancePair pairWithSmallestDistance = null;
-                for (SpatialDistancePair spatialDistancePair : spatialsOnDistance) {
+                SpatialDistancePair pairSmallestDistance = null;
+                for (SpatialDistancePair pair : spatialsOnDistance) {
                     // Check if spatial is character
-                    if (spatialDistancePair.spatial.getControl(CInfluenceInterface.class)
+                    if (pair.spatial.getControl(CInfluenceInterface.class)
                             == null) {
                         continue;
                     }
-                    
-                    if (spatialDistancePair.spatial == spatial) {
+
+                    if (pair.spatial == spatial) {
                         continue;
                     }
 
-                    if (pairWithSmallestDistance == null
-                            || spatialDistancePair.distance < pairWithSmallestDistance.distance) {
-                        pairWithSmallestDistance = spatialDistancePair;
+                    if (pairSmallestDistance == null
+                            || pair.distance < pairSmallestDistance.distance) {
+                        pairSmallestDistance = pair;
                     }
                 }
-                if (pairWithSmallestDistance != null) {
-                    CInfluenceInterface thisInfluenceInterfaceControl =
-                            spatial.getControl(CInfluenceInterface.class);
-                    CInfluenceInterface targetInfluenceInterface = pairWithSmallestDistance
-                            .spatial.getControl(CInfluenceInterface.class);
+                if (pairSmallestDistance != null) {
+                    EntityAction currentAction = pairSmallestDistance.spatial
+                            .getControl(CActionQueue.class).getCurrent();
 
-                    final float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-                    final float damage = 200f * damageFactor;
+                    if (currentAction != null
+                            && currentAction instanceof ATrance) {
+                        ((ATrance) currentAction).activate(spatial);
+                        return;
+                    }
+
+                    float damageFactor =
+                            spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    float damage = 200f * damageFactor;
 
                     List<AbstractBuff> buffs = new ArrayList<>(1);
                     buffs.add(0, new IncapacitateCC(1f, -1));
 
-                    CharacterInteraction.harm(thisInfluenceInterfaceControl,
-                            targetInfluenceInterface, damage, buffs, true);
+                    CInfluenceInterface myInterface =
+                            spatial.getControl(CInfluenceInterface.class);
+                    CInfluenceInterface targetInterface =
+                            pairSmallestDistance.spatial
+                            .getControl(CInfluenceInterface.class);
+
+                    CharacterInteraction.harm(myInterface, targetInterface,
+                            damage, buffs, true);
                 }
             }
 
             @Override
-            public void onWayPointReach(MotionEvent motionControl, int wayPointIndex) {
-                if (wayPointIndex == path.getNbWayPoints() - 2) {
-                } else if (wayPointIndex == path.getNbWayPoints() - 1) {
+            public void onWayPointReach(MotionEvent cMotion, int index) {
+                if (index == path.getNbWayPoints() - 2) {
+                } else if (index == path.getNbWayPoints() - 1) {
                     physics.switchToNormalPhysicsMode();
                     spatial.getControl(CActionQueue.class).enqueueAction(
                             new AChangeAnimation(Venator.ANIM_LAND));
