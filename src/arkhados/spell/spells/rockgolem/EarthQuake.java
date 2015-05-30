@@ -84,6 +84,9 @@ class ACastEarthQuake extends EntityAction {
         ACharge charge = new ACharge(chargeRange);
         charge.setChargeSpeed(150f);
         charge.setHitDamage(30f);
+        
+        // TODO: ACharge takes ATrance into action, but we need to do something
+        // here too.
 
         IncapacitateCC incapacitate = new IncapacitateCC(1.2f, -1);
         ArrayList<AbstractBuff> buffs = new ArrayList<>();

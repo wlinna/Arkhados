@@ -18,9 +18,40 @@ import arkhados.util.UserDataStrings;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 public class CCharacterHeal extends AbstractControl {
+
+    private static final float HEALING_CAP_CONST = 400f;
+    private float recordLowHealth;
+
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        recordLowHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+    }
+
+    private float getHealingCap() {
+        float max = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        return FastMath.clamp(recordLowHealth + HEALING_CAP_CONST,
+                HEALING_CAP_CONST, max);
+    }
+
+    public void regenerate(float healing) {
+        float max = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        recordLowHealth =
+                FastMath.clamp(recordLowHealth + healing, recordLowHealth, max);
+        heal(healing);
+    }
+
+    public void tookDamage() {
+        float currentHealth = 
+                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        if (currentHealth < recordLowHealth) {
+            recordLowHealth = currentHealth;
+        }
+    }
 
     public float heal(float healing) {
         CInfluenceInterface me =
@@ -29,11 +60,10 @@ public class CCharacterHeal extends AbstractControl {
             return 0f;
         }
         // TODO: Healing mitigation from negative buff
-        float maxHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
-        float healthBefore =
+        float healthBefore = 
                 spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        float health =
-                FastMath.clamp(healthBefore + healing, healthBefore, maxHealth);
+        float health = FastMath.clamp(healthBefore + healing, healthBefore,
+                getHealingCap());
         spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
         return health - healthBefore;
     }

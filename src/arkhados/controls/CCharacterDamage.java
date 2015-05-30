@@ -46,6 +46,7 @@ public class CCharacterDamage extends AbstractControl {
         }
 
         spatial.getControl(CResting.class).stopRegen();
+        spatial.getControl(CCharacterHeal.class).tookDamage();
 
         return healthBefore - health;
     }

@@ -33,8 +33,8 @@ public class CResting extends AbstractControl {
     }
 
     private void regenerate(float tpf) {
-        getSpatial().getControl(CCharacterHeal.class)
-                .heal(2.1f * idleTime * tpf);
+        CCharacterHeal cHeal = spatial.getControl(CCharacterHeal.class);
+        cHeal.regenerate(2.1f * idleTime * tpf);
     }
 
     @Override
@@ -43,10 +43,12 @@ public class CResting extends AbstractControl {
         if (newLocation.distanceSquared(location) > 0.1) {
             idleTime = 0;
         }
+
         idleTime += tpf;
         if (idleTime >= 2.5f) {
             regenerate(tpf);
         }
+
         location.set(newLocation);
     }
 
