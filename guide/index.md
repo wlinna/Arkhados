@@ -16,6 +16,8 @@ How to get into game
 6. Press "Start Game" and choose your hero.
 7. Have fun! :)
 
+**Note**: After each game it's recommended that you restart the client, just to be sure.
+
 ## Hosting server ##
 
 1. Configure your server by editing server settings file.
@@ -25,7 +27,7 @@ How to get into game
 5. Get your external IP-address. You can get it from many places, such as [whatismyip.com](https://www.whatismyip.com/).
 6. Give your address and port to other players.
 7. Enjoy!
-8. If the game ends succesfully, its replay is saved to the replays-directory. Share that replay with other players.
+8. If the game ends successfully, its replay is saved to the replays-directory. Share that replay with other players.
 
 If others can't join your server, make sure that Arkhados isn't blocked by a firewall. If you are behind NAT, you probably need to forward some port to your IP. Visit [portforward.com](http://portforward.com/) for step-by-step port forwarding guides.
 
@@ -189,7 +191,7 @@ Venator's lust for blood gives Venator extremely strong **lifesteal** buff but V
 Leap into the target location and **incapacitates** enemies in the landing area. Long cooldown.
 
 #### Passive: Blood drinker ####
-Venator has base lifesteal that cannot be dispelled
+Venator has base lifesteal that cannot be dispelled.
 
 ### Tips ###
 - If you are low on health, you can try following hit-and-run combo against single targets:
@@ -282,9 +284,10 @@ depending on the situation. He can pursue his enemies in medium range
 with his Shotgun, Rocket Launcher and Plasmagun or keep his distance
 and snipe enemies with his Railgun and Plasma Grenades.
 
-Unique aspect of Elite Soldier is that he has two different cooldown systems. Most of Elite Soldier's offensive spells have
-short cooldown, but they also consume ammunition. Because of this, Elite Soldier can do high damage by repeatedly casting
-his more powerful spells.
+Unique aspect of Elite Soldier is that he has two different cooldown
+systems. Most of Elite Soldier's offensive spells have short cooldown,
+but they also consume ammunition. Because of this, Elite Soldier can
+do high damage by repeatedly casting his more powerful spells.
 
 
 ### Skills ###
