@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivy-module version="2.0">
+    <info organisation="arkhados" module="Arkhados" />
+    <dependencies>
+        <dependency org="com.moandjiezana.toml" name="toml4j" rev="0.4.0"/>
+    </dependencies>
+</ivy-module>
