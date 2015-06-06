@@ -84,6 +84,7 @@ public class WorldManager extends AbstractAppState {
         new Vector3f(0, 0, 0)
     };
     private Node worldRoot;
+    private Node fakeWorldRoot;
     private AbstractArena arena = new BasicSquareArena();
     private HashMap<Integer, Spatial> entities = new HashMap<>();
     private SyncManager syncManager;
@@ -156,6 +157,7 @@ public class WorldManager extends AbstractAppState {
     public void loadLevel() {
         worldRoot = (Node) assetManager.loadModel(
                 "Scenes/LavaArenaWithFogWalls.j3o");
+        fakeWorldRoot = new Node("fake-world-root");
 
         RigidBodyControl physics = new RigidBodyControl(
                 new PlaneCollisionShape(new Plane(Vector3f.UNIT_Y, 0)), 0);
@@ -187,6 +189,7 @@ public class WorldManager extends AbstractAppState {
         space.addAll(worldRoot);
         space.setGravity(new Vector3f(0, -98.1f, 0));
         rootNode.attachChild(worldRoot);
+        rootNode.attachChild(fakeWorldRoot);
 
         cam.setLocation(new Vector3f(0, 160, 20));
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
@@ -252,7 +255,7 @@ public class WorldManager extends AbstractAppState {
 
         entities.put(id, entity);
         syncManager.addObject(id, entity);
-        
+
         PhysicsWorkaround.addAll(space, entity);
 
         worldRoot.attachChild(entity);
@@ -432,7 +435,7 @@ public class WorldManager extends AbstractAppState {
                 getWorldRoot().removeLight(light);
             }
         }
-        
+
         PhysicsWorkaround.removeAll(space, spatial);
     }
 
@@ -507,5 +510,9 @@ public class WorldManager extends AbstractAppState {
 
     public float getWorldTime() {
         return worldTime;
+    }
+
+    public Node getFakeWorldRoot() {
+        return fakeWorldRoot;
     }
 }

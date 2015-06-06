@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.Globals;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
@@ -176,6 +177,10 @@ class AFireTrance extends EntityAction implements ATrance {
     }
 
     private void motion(final Vector3f target) {
+        final Node worldRoot = spatial.getParent();
+        final Node fakeRoot = 
+                (Node) worldRoot.getParent().getChild("fake-world-root");
+        
         Vector3f start = spatial.getLocalTranslation();
 
         final MotionPath path = new MotionPath();
@@ -192,12 +197,17 @@ class AFireTrance extends EntityAction implements ATrance {
                 spatial.getControl(CCharacterPhysics.class);
         body.lookAt(target);
         body.switchToMotionCollisionMode();
+        
+        spatial.removeFromParent();
+        fakeRoot.attachChild(spatial);
 
         path.addListener(new MotionPathListener() {
             @Override
             public void onWayPointReach(MotionEvent motionControl,
                     int wayPointIndex) {
                 if (path.getNbWayPoints() == wayPointIndex + 1) {
+                    spatial.removeFromParent();
+                    worldRoot.attachChild(spatial);
                     body.switchToNormalPhysicsMode();
                     body.warp(target);
                     timeLeft = 0f;
