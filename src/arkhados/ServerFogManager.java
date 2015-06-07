@@ -25,6 +25,7 @@ import arkhados.net.ServerSender;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.ConnectionHelper;
 import arkhados.util.RemovalReasons;
+import arkhados.settings.server.Settings;
 import arkhados.util.UserDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -73,7 +74,7 @@ public class ServerFogManager extends AbstractAppState {
             return;
         }
 
-        checkTimer = Globals.DEFAULT_SYNC_FREQUENCY / 2f;
+        checkTimer = Settings.get().General().getDefaultSyncFrequency() / 2f;
 
         for (PlayerEntityAwareness playerEntityAwareness
                 : awarenessConnectionMap.keySet()) {

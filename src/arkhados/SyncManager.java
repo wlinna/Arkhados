@@ -31,6 +31,7 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.util.PlayerDataStrings;
+import arkhados.settings.server.Settings;
 import java.util.Set;
 
 /**
@@ -42,6 +43,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     private Application app;
     HashMap<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
+    private float defaultSyncFrequency;
     private Queue<StateData> stateDataQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
 
@@ -52,6 +54,11 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        Sender sender = app.getStateManager().getState(Sender.class);
+        if (sender.isServer()) {
+            defaultSyncFrequency = Settings.get().General()
+                    .getDefaultSyncFrequency();
+        }
     }
 
     @Override
@@ -71,7 +78,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
             }
         } else {
             syncTimer += tpf;
-            if (syncTimer >= Globals.DEFAULT_SYNC_FREQUENCY) {
+            if (syncTimer >= defaultSyncFrequency) {
                 sendSyncData();
                 syncTimer = 0.0f;
             }
@@ -187,8 +194,8 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
                 }
             });
         } else {
-            System.out.println("Entity id for player " + playerId + 
-                    " does not exist");
+            System.out.println("Entity id for player " + playerId
+                    + " does not exist");
         }
     }
 }

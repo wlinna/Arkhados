@@ -35,11 +35,13 @@ import arkhados.replay.ReplayCmdData;
 import arkhados.replay.ReplayData;
 import arkhados.replay.ReplayHeader;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.settings.server.Settings;
 import com.jme3.network.serializing.Serializer;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 
-public class ServerMain extends SimpleApplication {    
+public class ServerMain extends SimpleApplication {
+
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
@@ -82,8 +84,14 @@ public class ServerMain extends SimpleApplication {
         physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         flyCam.setEnabled(false);
 
+        int port = Settings.get().General().getPort();
+        if (port <= 0 ||  port > 65535) {
+            System.out.println("Port must be between 0 and 65535");
+            System.exit(1);
+        }
+
         try {
-            server = Network.createServer(Globals.PORT, Globals.PORT);
+            server = Network.createServer(port, port);
             server.start();
         } catch (IOException ex) {
             System.exit(1);
@@ -125,8 +133,8 @@ public class ServerMain extends SimpleApplication {
         sender.setWorld(world);
         // Accuracy should be > 45 or projectiles might "disappear" before
         // exploding. This is because of FogOfWar
-        physics.getPhysicsSpace().setAccuracy(1f / 52f);
-        
+        physics.getPhysicsSpace().setAccuracy(1f / Settings.get().General().getPhysicsTicksPerSecond());
+
         Globals.space = physics.getPhysicsSpace();
     }
 

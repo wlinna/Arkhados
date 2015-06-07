@@ -44,6 +44,7 @@ import arkhados.util.AudioQueue;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
+import arkhados.settings.server.Settings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
@@ -92,13 +93,14 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private SyncManager syncManager;
     private int spawnLocationIndex = 0;
     private Nifty nifty;
-    private int killLimit = 25;
+    private int killLimit;
     private final HashMap<Integer, DeathMatchPlayerTracker> trackers =
             new HashMap<>();
     private Element heroSelectionLayer;
     private HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
     private boolean firstBloodHappened;
     private AudioQueue audioQueue = new AudioQueue();
+    private float respawnTime;
 
     @Override
     public void initialize(Application app) {
@@ -115,6 +117,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
         firstBloodHappened = false;
 
         if (stateManager.getState(Sender.class).isServer()) {
+            killLimit = Settings.get().DeathMatch().getKillLimit();
+            respawnTime =
+                    Settings.get().DeathMatch().getRespawnTime();
             syncManager.setEnabled(true);
             syncManager.startListening();
             Globals.worldRunning = true;
@@ -246,7 +251,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         DeathMatchPlayerTracker dead = trackers.get(playerId);
         int endedSpree = dead.getKillingSpree();
 
-        dead.death(6f, deathByEnvironment);
+        dead.death(respawnTime, deathByEnvironment);
 
         canPickHeroMap.put(playerId, Boolean.TRUE);
 
