@@ -55,6 +55,7 @@ public class InputMappingStrings {
     public final static String VOLUME_DOWN = "volume-down";
     public final static String VOLUME_UP = "volume-up";
     public final static String TOGGLE_STATS = "toggle-stats";
+    public final static String HUD_TOGGLE_MENU = "hud-toggle-menu";
 
     public static Integer getId(String name) {
         return StringNumberMap.get(name);
