@@ -42,10 +42,10 @@ public final class InputSettings {
         setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
         setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
         setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
-        
+
         setKey(settings, InputMappingStrings.SEC1, true, KeyInput.KEY_1);
         setKey(settings, InputMappingStrings.SEC2, true, KeyInput.KEY_2);
-        
+
         if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
             settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
                     false);
@@ -62,8 +62,8 @@ public final class InputSettings {
         settings.putString(inputMapping, setting);
 
     }
-    
     private HashMap<String, String> buttonIdInputMappingMap = new HashMap<>(10);
+
     {
         buttonIdInputMappingMap.put("button_up", InputMappingStrings.MOVE_UP);
         buttonIdInputMappingMap.put("button_down",
@@ -80,28 +80,27 @@ public final class InputSettings {
         buttonIdInputMappingMap.put("button_e", InputMappingStrings.E);
         buttonIdInputMappingMap.put("button_r", InputMappingStrings.R);
         buttonIdInputMappingMap.put("button_space", InputMappingStrings.SPACE);
-        
+
         buttonIdInputMappingMap.put("button_sec1", InputMappingStrings.SEC1);
         buttonIdInputMappingMap.put("button_sec2", InputMappingStrings.SEC2);
     }
 
     public InputSettings(InputManager inputManager) {
-         inputManager.deleteTrigger(SimpleApplication.INPUT_MAPPING_EXIT,
+        inputManager.deleteTrigger(SimpleApplication.INPUT_MAPPING_EXIT,
                 new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-        inputManager.addMapping(SimpleApplication.INPUT_MAPPING_EXIT,
-                new KeyTrigger(KeyInput.KEY_F4));
+        inputManager.addMapping(InputMappingStrings.HUD_TOGGLE_MENU,
+                new KeyTrigger(KeyInput.KEY_ESCAPE));
 
         inputManager.addMapping(InputMappingStrings.MODIFIER,
                 new KeyTrigger(KeyInput.KEY_LSHIFT));
-        
+
         for (String inputMapping : buttonIdInputMappingMap.values()) {
             Trigger trigger = loadInput(inputMapping).trigger;
             inputManager.addMapping(inputMapping, trigger);
         }
     }
-    
-    
+
     public TriggerPair loadInput(String inputMappingString) {
         String inputString = Globals.app.getContext().getSettings()
                 .getString(inputMappingString);
@@ -121,7 +120,7 @@ public final class InputSettings {
         return triggerPair;
     }
 
-    public void saveInput(String inputMappingString, KeyTrigger trigger) {        
+    public void saveInput(String inputMappingString, KeyTrigger trigger) {
         String inputString = "keyboard::"
                 + Integer.toString(trigger.getKeyCode());
         Globals.app.getContext().getSettings()

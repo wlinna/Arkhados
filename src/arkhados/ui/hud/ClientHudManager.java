@@ -17,6 +17,7 @@ package arkhados.ui.hud;
 import arkhados.Globals;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterHud;
+import arkhados.util.InputMappingStrings;
 import arkhados.util.NiftyUtils;
 import arkhados.util.PlayerRoundStats;
 import com.jme3.app.Application;
@@ -47,6 +48,7 @@ public class ClientHudManager extends AbstractAppState
     private SpellBar spellBar = new SpellBar();
     private VisualStatistics statistics = new VisualStatistics();
     private VisualCharacterInfo characterInfo;
+    private HudMenu hudMenu = new HudMenu();
 
     public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
         characterInfo = new VisualCharacterInfo(cam, guiNode, guiFont);
@@ -60,6 +62,10 @@ public class ClientHudManager extends AbstractAppState
         spellBar.setScreen(screen);
         statistics.setNifty(nifty);
         statistics.setScreen(screen);
+
+        hudMenu.initialize(nifty, screen);
+        Globals.app.getInputManager().addListener(hudMenu,
+                InputMappingStrings.HUD_TOGGLE_MENU);
     }
 
     @Override
@@ -194,6 +200,16 @@ public class ClientHudManager extends AbstractAppState
     @Override
     public void cleanup() {
         super.cleanup();
+        Globals.app.getInputManager().removeListener(hudMenu);
+        hudMenu.cleanup();
         clear();
+    }
+
+    public void continueGame() {
+        screen.findElementByName("layer_settings").hide();
+    }
+
+    public void exitProgram() {
+        Globals.app.stop();
     }
 }

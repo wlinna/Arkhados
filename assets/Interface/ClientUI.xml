@@ -295,7 +295,7 @@
         </layer>
     </screen>
     
-    <screen id="default_hud" controller="arkhados.ui.hud.ClientHudManager">
+    <screen id="default_hud" controller="arkhados.ui.hud.ClientHudManager">        
         <layer id="bars" childLayout="vertical" valign="bottom">
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
                 <panel id="panel_top" height="0px" valign="top"></panel>
@@ -337,6 +337,19 @@
                 </panel>                                    
             </panel>
         </layer>
+        <layer id="layer_settings" childLayout="center" valign="center" visible="false">
+            <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">                              
+                <text style="nifty-label" text=""/>
+                <control id="continue-game" name="button" label="Continue" align="center">
+                    <interact onClick="continueGame()" />
+                </control>
+                
+                <text style="nifty-label" text=""/>
+                <control id="exit-program" name="button" label="Exit program" align="center" valign="bottom">
+                    <interact onClick="exitProgram()" />
+                </control>
+            </panel>
+        </layer>
     </screen>
     
     <screen id="credits" controller="arkhados.ui.MainMenu">
@@ -375,6 +388,7 @@
                 <text style="nifty-label" text="Iivari Sassi" />
                 <text style="nifty-label" text="Oskari Saari" />
                 <text style="nifty-label" text="Ilkka Wirkkala" />
+                <text style="nifty-label" text="Kim Seppänen" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/dnyarri/Arkhados/blob/master/CREDITS.md)" />
 
