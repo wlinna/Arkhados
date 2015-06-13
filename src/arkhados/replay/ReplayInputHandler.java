@@ -48,7 +48,7 @@ public class ReplayInputHandler extends AbstractAppState
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-        if (!isEnabled()) {
+        if (!isEnabled() || isPressed) {
             return;
         }
 
