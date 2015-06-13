@@ -35,6 +35,7 @@ public class ReplayReader extends AbstractAppState implements Receiver {
     private List<CommandHandler> handlers = new ArrayList<>();
     private ReplayData data;
     private float time = 0f;
+    private float speed = 1f;
 
     public void loadReplay(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
@@ -62,7 +63,7 @@ public class ReplayReader extends AbstractAppState implements Receiver {
     public void update(float tpf) {
         super.update(tpf);
 
-        time += tpf;
+        time += tpf * speed;
 
         for (Iterator<ReplayCmdData> it = data.getCommands().iterator();
                 it.hasNext();) {
@@ -120,5 +121,22 @@ public class ReplayReader extends AbstractAppState implements Receiver {
 
     public ReplayData getData() {
         return data;
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        if (speed < 0f) {
+            throw new IllegalArgumentException(
+                    "Can't set negative value for speed");
+        }
+
+        this.speed = speed;
     }
 }
