@@ -30,6 +30,7 @@ import arkhados.replay.FakeSender;
 import arkhados.replay.ReplayCmdData;
 import arkhados.replay.ReplayData;
 import arkhados.replay.ReplayHeader;
+import arkhados.replay.ReplayInputHandler;
 import arkhados.replay.ReplayReader;
 import arkhados.ui.ConnectionMenu;
 import arkhados.ui.MainMenu;
@@ -329,6 +330,11 @@ public class ClientMain extends SimpleApplication {
         sender = new FakeSender();
         ReplayReader reader = new ReplayReader();
         reader.setEnabled(false);
+        
+        ReplayInputHandler inputHandler = new ReplayInputHandler();  
+        inputHandler.setEnabled(false);
+        swappableStates.add(inputHandler);                
+        
         prepareAppStatesAndHandlers(reader);
     }
 

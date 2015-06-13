@@ -16,6 +16,7 @@ package arkhados.ui;
 
 import arkhados.ClientMain;
 import arkhados.Globals;
+import arkhados.replay.ReplayInputHandler;
 import arkhados.replay.ReplayReader;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.ListBox;
@@ -99,19 +100,20 @@ public class ReplayMenu implements ScreenController {
         replayReader.selectPlayer(model.getPlayerId());
         nifty.gotoScreen("default_hud");
         new java.util.Timer().schedule(new java.util.TimerTask() {
-
             @Override
             public void run() {
                 replayReader.setEnabled(true);
+                Globals.app.getStateManager().getState(ReplayInputHandler.class)
+                        .setEnabled(true);
             }
         }, 500);
-        
+
     }
 
     @Override
     public void onStartScreen() {
         Globals.replayMode = true;
-        ((ClientMain) Globals.app).prepareForReplay();                
+        ((ClientMain) Globals.app).prepareForReplay();
         findReplays();
     }
 
@@ -120,7 +122,7 @@ public class ReplayMenu implements ScreenController {
         popup.findNiftyControl("player_list", ListBox.class).clear();
         if (screen.findElementByName(popup.getId()) != null) {
             nifty.closePopup(popup.getId());
-        }            
+        }
 
         ListBox replayBox =
                 screen.findNiftyControl("replay_list", ListBox.class);
@@ -137,7 +139,7 @@ public class ReplayMenu implements ScreenController {
         ListBox box = screen.findNiftyControl("replay_list", ListBox.class);
         box.clear();
         File folder = new File("replays");
-        File[] fileList = folder.listFiles(filenameFilter);        
+        File[] fileList = folder.listFiles(filenameFilter);
         Arrays.sort(fileList, Collections.reverseOrder());
         for (File file : fileList) {
             box.addItem(file.getName());
