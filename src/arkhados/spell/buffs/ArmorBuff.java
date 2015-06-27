@@ -26,7 +26,7 @@ public class ArmorBuff extends AbstractBuff {
     private float amount;
     private float protectionPercent;
 
-    public ArmorBuff(float amount, float protectionPercent, float duration) {
+    protected ArmorBuff(float amount, float protectionPercent, float duration) {
         super(duration);
         this.amount = amount;
         this.protectionPercent = protectionPercent;
@@ -50,7 +50,7 @@ public class ArmorBuff extends AbstractBuff {
         if (armorBuff == null) {
             super.attachToCharacter(targetInterface);
         } else {
-            float newAmount = FastMath.clamp(armorBuff.getAmount() 
+            float newAmount = FastMath.clamp(armorBuff.getAmount()
                     + getAmount(), armorBuff.getAmount(), 100);
             armorBuff.setAmount(newAmount);
         }
@@ -80,5 +80,23 @@ public class ArmorBuff extends AbstractBuff {
 
     public void setAmount(float amount) {
         this.amount = amount;
+    }
+
+    static public class MyBuilder extends AbstractBuffBuilder {
+
+        private float amount;
+        private float protectionPercent;
+
+        public MyBuilder(float duration, float amount,
+                float protectionPercent) {
+            super(duration);
+            this.amount = amount;
+            this.protectionPercent = protectionPercent;
+        }
+
+        @Override
+        public ArmorBuff build() {
+            return set(new ArmorBuff(amount, protectionPercent, duration));
+        }
     }
 }

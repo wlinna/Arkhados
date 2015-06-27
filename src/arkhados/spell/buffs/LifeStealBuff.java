@@ -19,7 +19,7 @@ package arkhados.spell.buffs;
 public class LifeStealBuff extends AbstractBuff {
     private float amount;
 
-    public LifeStealBuff(float amount, float duration) {
+    private LifeStealBuff(float amount, float duration) {
         super(duration);
         this.amount = amount;
     }
@@ -27,4 +27,18 @@ public class LifeStealBuff extends AbstractBuff {
     public float getAmount() {
         return amount;
     }        
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+        private float amount;
+
+        public MyBuilder(float amount, float duration) {
+            super(duration);
+            this.amount = amount;
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new LifeStealBuff(amount, duration));
+        }
+    }
 }

@@ -27,7 +27,7 @@ public class DamageOverTimeBuff extends AbstractBuff {
     private float dps;
     private float time;
 
-    public DamageOverTimeBuff(float duration) {
+    private DamageOverTimeBuff(float duration) {
         super(duration);
     }
 
@@ -44,5 +44,25 @@ public class DamageOverTimeBuff extends AbstractBuff {
 
     public void setDps(float dps) {
         this.dps = dps;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+        private float dps;
+                
+        public MyBuilder(float duration) {
+            super(duration);
+        }
+
+        public MyBuilder dps(float dps) {
+            this.dps = dps;
+            return this;
+        }
+        
+        @Override
+        public AbstractBuff build() {
+            DamageOverTimeBuff dot = new DamageOverTimeBuff(duration);
+            dot.setDps(dps);
+            return set(dot);
+        }
     }
 }

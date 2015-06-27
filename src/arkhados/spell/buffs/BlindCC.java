@@ -12,19 +12,14 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.spell.buffs;
 
 import arkhados.controls.CInfluenceInterface;
 import arkhados.util.BuffTypeIds;
 
-
 public class BlindCC extends CrowdControlBuff {
-    {
-        setTypeId(BuffTypeIds.BLIND);
-    }
 
-    public BlindCC(float duration) {
+    private BlindCC(float duration) {
         super(duration);
     }
 
@@ -38,5 +33,20 @@ public class BlindCC extends CrowdControlBuff {
     public void destroy() {
         super.destroy();
         targetInterface.getBlinds().remove(this);
-    }        
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+        {
+            setTypeId(BuffTypeIds.BLIND);
+        }
+
+        public MyBuilder(float duration) {
+            super(duration);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new BlindCC(duration));
+        }
+    }
 }

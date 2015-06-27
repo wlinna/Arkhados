@@ -19,7 +19,7 @@ import arkhados.SpatialDistancePair;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellBuff;
-import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.DistanceScaling;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
@@ -31,8 +31,8 @@ import java.util.List;
 
 /**
  *
- * @author william TODO: Currently SplashAction seems to be meant for negative things only. There
- * could be healing splash too or something like that.
+ * @author william TODO: Currently SplashAction seems to be meant for negative
+ * things only. There could be healing splash too or something like that.
  */
 public class ASplash extends EntityAction {
 
@@ -40,15 +40,15 @@ public class ASplash extends EntityAction {
     private float baseDamage;
     private Float customImpulse;
     private DistanceScaling damageDistance;
-    private List<AbstractBuff> splashBuffs;
+    private List<AbstractBuffBuilder> splashBuffs;
     private boolean splashBuffsOnly = false;
     private List<Spatial> excluded = new ArrayList<>();
     private Integer excludedTeam = null;
-    
     private CInfluenceInterface casterInterface;
 
-    public ASplash(float radius, float baseDamage, DistanceScaling damageDistanceScaling,
-            List<AbstractBuff> splashBuffs) {
+    public ASplash(float radius, float baseDamage,
+            DistanceScaling damageDistanceScaling,
+            List<AbstractBuffBuilder> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;
         this.damageDistance = damageDistanceScaling;
@@ -58,7 +58,8 @@ public class ASplash extends EntityAction {
     }
 
     public ASplash(float radius, float baseDamage, float impulse,
-            DistanceScaling damageDistance, List<AbstractBuff> splashBuffs) {
+            DistanceScaling damageDistance,
+            List<AbstractBuffBuilder> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;
         this.customImpulse = impulse;
@@ -68,8 +69,8 @@ public class ASplash extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        List<SpatialDistancePair> spatialsOnDistance =
-                Selector.getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
+        List<SpatialDistancePair> spatialsOnDistance = Selector
+                .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, radius);
 
         for (SpatialDistancePair pair : spatialsOnDistance) {
@@ -96,11 +97,11 @@ public class ASplash extends EntityAction {
             }
             final float damage = baseDamage * damageDistanceFactor;
 
-            List<AbstractBuff> buffsToApply;
+            List<AbstractBuffBuilder> buffsToApply;
             if (splashBuffsOnly) {
                 buffsToApply = splashBuffs;
             } else {
-                final CSpellBuff buffControl = spatial.getControl(CSpellBuff.class);
+                CSpellBuff buffControl = spatial.getControl(CSpellBuff.class);
                 if (buffControl != null) {
                     buffsToApply = buffControl.getBuffs();
                     if (splashBuffs != null) {
@@ -111,27 +112,33 @@ public class ASplash extends EntityAction {
                 }
             }
 
-            CharacterInteraction.harm(casterInterface, targetInterface, damage, buffsToApply, true);
+            CharacterInteraction.harm(casterInterface, targetInterface, damage,
+                    buffsToApply, true);
 
             CCharacterPhysics physics =
                     pair.spatial.getControl(CCharacterPhysics.class);
             Float impulseFactor;
             if (customImpulse == null) {
-                impulseFactor = spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
+                impulseFactor =
+                        spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
             } else {
                 impulseFactor = customImpulse;
             }
             Vector3f impulse;
 
-            RigidBodyControl colliderPhysics = spatial.getControl(RigidBodyControl.class);
+            RigidBodyControl colliderPhysics =
+                    spatial.getControl(RigidBodyControl.class);
 
             if (colliderPhysics != null && !colliderPhysics.isKinematic()) {
                 impulse = pair.spatial.getLocalTranslation()
-                        .subtract(colliderPhysics.getPhysicsLocation().setY(0)).normalizeLocal()
+                        .subtract(colliderPhysics.getPhysicsLocation().setY(0))
+                        .normalizeLocal()
                         .multLocal(impulseFactor);
             } else {
-                impulse = pair.spatial.getLocalTranslation().subtract(spatial.getLocalTranslation())
-                        .normalizeLocal().multLocal(impulseFactor).multLocal(distanceFactor);
+                impulse = pair.spatial.getLocalTranslation()
+                        .subtract(spatial.getLocalTranslation())
+                        .normalizeLocal().multLocal(impulseFactor)
+                        .multLocal(distanceFactor);
             }
 
             physics.applyImpulse(impulse);

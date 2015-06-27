@@ -23,6 +23,7 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -38,24 +39,26 @@ public class ACastProjectile extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
-    private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
+    private final List<AbstractBuffBuilder> additionalBuffs = new ArrayList<>();
 
     public ACastProjectile(Spell spell, WorldManager worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
 
-    public void addBuff(final AbstractBuff buff) {
+    public void addBuff(AbstractBuffBuilder buff) {
         additionalBuffs.add(buff);
     }
 
     @Override
     public boolean update(float tpf) {
-        CCharacterPhysics physicsControl = spatial.getControl(CCharacterPhysics.class);
+        CCharacterPhysics physicsControl = 
+                spatial.getControl(CCharacterPhysics.class);
         Vector3f targetLocation = physicsControl.getTargetLocation();
         Vector3f viewDirection = targetLocation.subtract(
                 spatial.getLocalTranslation()).normalizeLocal();
-        spatial.getControl(CCharacterPhysics.class).setViewDirection(viewDirection);
+        spatial.getControl(CCharacterPhysics.class)
+                .setViewDirection(viewDirection);
 
         float characterRadius = spatial.getUserData(UserDataStrings.RADIUS);
         Vector3f spawnLocation = spatial.getLocalTranslation().add(
@@ -90,8 +93,8 @@ public class ACastProjectile extends EntityAction {
 
         CSpellBuff buffControl =
                 projectile.getControl(CSpellBuff.class);
-        for (AbstractBuff buff : additionalBuffs) {
-            buffControl.addBuff(buff);
+        for (AbstractBuffBuilder buffBuilder : additionalBuffs) {
+            buffControl.addBuff(buffBuilder);
         }
 
         return false;

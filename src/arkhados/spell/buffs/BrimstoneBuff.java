@@ -12,22 +12,17 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.spell.buffs;
 
 import arkhados.controls.CInfluenceInterface;
 import arkhados.util.BuffTypeIds;
 
-
 public class BrimstoneBuff extends AbstractBuff {
-    {
-        setTypeId(BuffTypeIds.BRIMSTONE);
-    }
-    
+
     private static float maxDuration;
     private static final int stackCap = 3;
 
-    public BrimstoneBuff(float duration) {
+    private BrimstoneBuff(float duration) {
         super(duration);
         maxDuration = duration;
     }
@@ -50,6 +45,19 @@ public class BrimstoneBuff extends AbstractBuff {
             }
         } else {
             super.attachToCharacter(targetInterface);
+        }
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.BRIMSTONE);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new BrimstoneBuff(duration));
         }
     }
 }

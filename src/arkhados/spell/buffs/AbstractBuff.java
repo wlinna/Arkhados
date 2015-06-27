@@ -46,7 +46,7 @@ public abstract class AbstractBuff {
      * @param buffGroupId identifies group of buffs so that they can be removed
      * with single dispel. Not used currently
      */
-    public AbstractBuff(float duration) {
+    protected AbstractBuff(float duration) {
         this.duration = duration;
     }
 

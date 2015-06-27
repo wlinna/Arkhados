@@ -17,6 +17,7 @@ package arkhados.spell.spells.embermage;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
@@ -41,7 +42,7 @@ public class Ignite extends Spell {
         return spell;
     }
 
-    public static DamageOverTimeBuff ifNotCooldownCreateDamageOverTimeBuff(
+    public static AbstractBuffBuilder ifNotCooldownCreateDamageOverTimeBuff(
             Node caster) {
         CSpellCast castControl = caster.getControl(CSpellCast.class);
         if (castControl.isOnCooldown("Ignite")) {
@@ -49,20 +50,21 @@ public class Ignite extends Spell {
             return null;
         }
 
+        float damagePerSecond = 20f;
+        float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+
+        damagePerSecond *= damageFactor;
+        
         castControl.putOnCooldown(Spell.getSpell("Ignite").getId());
 
-        DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(4f);
+        DamageOverTimeBuff.MyBuilder dotBuff =
+                new DamageOverTimeBuff.MyBuilder(4f).dps(damagePerSecond);
         dotBuff.setName("Ignite");
         dotBuff.setTypeId(BuffTypeIds.IGNITE);
         CInfluenceInterface ownerInterface =
                 caster.getControl(CInfluenceInterface.class);
         dotBuff.setOwnerInterface(ownerInterface);
-
-        float damagePerSecond = 20f;
-        float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
-
-        damagePerSecond *= damageFactor;
-        dotBuff.setDps(damagePerSecond);
+        
         return dotBuff;
     }
 }

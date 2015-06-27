@@ -29,6 +29,7 @@ import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
@@ -82,9 +83,8 @@ public class Meteor extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final ACastMeteor action =
-                        new ACastMeteor(worldManager, spell);
-                DamageOverTimeBuff ignite =
+                ACastMeteor action = new ACastMeteor(worldManager, spell);
+                AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     action.addAdditionalBuff(ignite);
@@ -102,14 +102,14 @@ class ACastMeteor extends EntityAction {
 
     private final Spell spell;
     private final WorldManager worldManager;
-    private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
+    private final List<AbstractBuffBuilder> additionalBuffs = new ArrayList<>();
 
     public ACastMeteor(WorldManager worldManager, Spell spell) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
 
-    public void addAdditionalBuff(AbstractBuff buff) {
+    public void addAdditionalBuff(AbstractBuffBuilder buff) {
         if (buff != null) {
             additionalBuffs.add(buff);
         }

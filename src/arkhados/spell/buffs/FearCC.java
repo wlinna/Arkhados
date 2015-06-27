@@ -31,10 +31,9 @@ public class FearCC extends CrowdControlBuff {
 
     {
         name = "Fear";
-        setTypeId(BuffTypeIds.FEAR);
     }
 
-    public FearCC(float duration) {
+    private FearCC(float duration) {
         super(duration);
     }
 
@@ -76,5 +75,18 @@ public class FearCC extends CrowdControlBuff {
     @Override
     public boolean isDamageSensitive() {
         return true;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.FEAR);
+        }
+
+        @Override
+        public FearCC build() {
+            return set(new FearCC(duration));
+        }
     }
 }

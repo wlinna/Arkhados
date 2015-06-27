@@ -22,6 +22,7 @@ import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class AMeleeAttack extends EntityAction {
 
-    private List<AbstractBuff> buffs = new ArrayList<>();
+    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private float damage;
     private float range;
 
@@ -44,7 +45,7 @@ public class AMeleeAttack extends EntityAction {
         this.range = range;
     }
 
-    public void addBuff(AbstractBuff buff) {
+    public void addBuff(AbstractBuffBuilder buff) {
         buffs.add(buff);
     }
 

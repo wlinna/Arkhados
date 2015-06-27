@@ -60,9 +60,9 @@ public class DaggerBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         if (primary) {
-            buffControl.addBuff(new SlowCC(6f, 0.33f));
+            buffControl.addBuff(new SlowCC.MyBuilder(6f, 0.33f));
         } else {
-            buffControl.addBuff(new CastSpeedBuff(6f, -0.33f));
+            buffControl.addBuff(new CastSpeedBuff.MyBuilder(6f, -0.33f));
         }
         node.addControl(buffControl);
 

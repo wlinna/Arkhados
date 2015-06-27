@@ -21,22 +21,23 @@ import arkhados.controls.CEliteSoldierAmmunition;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-
 /**
  * Elite Soldiers buff spell that gives armor, ability to move while casting and
  * gives little bit ammo.
+ *
  * @author william
  */
 public class LikeAPro extends Spell {
 
     {
-        iconName = "like_a_pro.png";        
+        iconName = "like_a_pro.png";
     }
 
     public LikeAPro(String name, float cooldown, float range, float castTime) {
@@ -50,20 +51,24 @@ public class LikeAPro extends Spell {
 
         final LikeAPro spell =
                 new LikeAPro("Like a Pro", cooldown, range, castTime);
+        final AbstractBuffBuilder armorBuilder =
+                new ArmorBuff.MyBuilder(5, 50, 0.6f);
+        final SpeedBuff.MyBuilder speedBuilder =
+                new SpeedBuff.MyBuilder(0, 6, 5);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
                 buffAction.setTypeId(EliteSoldier.ACTION_LIKE_A_PRO);
-                AbleToCastWhileMovingBuff likeAPro =
-                        new AbleToCastWhileMovingBuff(5);
+                AbleToCastWhileMovingBuff.MyBuilder likeAPro =
+                        new AbleToCastWhileMovingBuff.MyBuilder(5f);
                 likeAPro.setName("Like a Pro");
                 likeAPro.setTypeId(BuffTypeIds.LIKE_A_PRO);
                 buffAction.addBuff(likeAPro);
-                buffAction.addBuff(new SpeedBuff(0, 6, 5));
-                buffAction.addBuff(new ArmorBuff(50, 0.6f, 999999999));
-                
+                buffAction.addBuff(speedBuilder);
+                buffAction.addBuff(armorBuilder);
+
                 CEliteSoldierAmmunition ammunitionControl =
                         caster.getControl(CEliteSoldierAmmunition.class);
                 ammunitionControl.likeAPro();

@@ -12,7 +12,6 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.spell.buffs;
 
 import arkhados.util.BuffTypeIds;
@@ -21,7 +20,6 @@ import arkhados.util.BuffTypeIds;
  *
  * @author william
  */
-
 public class AbsorbingShieldBuff extends AbstractBuff {
 
     private float cap = 220f;
@@ -29,10 +27,9 @@ public class AbsorbingShieldBuff extends AbstractBuff {
     {
         friendly = true;
         name = "Purifying Flame";
-        setTypeId(BuffTypeIds.PURIFYING_FLAME);
     }
 
-    public AbsorbingShieldBuff(float duration) {
+    private AbsorbingShieldBuff(float duration) {
         super(duration);
     }
 
@@ -46,8 +43,21 @@ public class AbsorbingShieldBuff extends AbstractBuff {
     public boolean shouldContinue() {
         return super.shouldContinue() && cap > 0f;
     }
-    
+
     public void reduce(float dmg) {
         cap -= dmg;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.PURIFYING_FLAME);
+        }
+
+        @Override
+        public AbsorbingShieldBuff build() {
+            return set(new AbsorbingShieldBuff(duration));
+        }
     }
 }

@@ -20,6 +20,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
@@ -32,6 +33,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SurvivalInstinct extends Spell {
+
     static final float COOLDOWN = 12f;
     static final float RANGE = 0f;
     static final float CAST_TIME = 0f;
@@ -50,14 +52,17 @@ public class SurvivalInstinct extends Spell {
         final SurvivalInstinct spell = new SurvivalInstinct("Survival Instinct",
                 COOLDOWN, RANGE, CAST_TIME);
 
+        final AbstractBuffBuilder damageBuff =
+                new DamagePerHealthPercentBuff.MyBuilder(DURATION);
+        final AbstractBuffBuilder speedBuilder =
+                new MovementSpeedPerHealthMissingBuff.MyBuilder(DURATION);
+
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
-                buffAction.addBuff(
-                        new DamagePerHealthPercentBuff(DURATION));
-                buffAction.addBuff(
-                        new MovementSpeedPerHealthMissingBuff(DURATION));
+                buffAction.addBuff(damageBuff);
+                buffAction.addBuff(speedBuilder);
                 return buffAction;
             }
         };
@@ -99,6 +104,18 @@ class DamagePerHealthPercentBuff extends AbstractBuff {
 
         spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, damageFactor);
     }
+
+    static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new DamagePerHealthPercentBuff(duration));
+        }
+    }
 }
 
 class MovementSpeedPerHealthMissingBuff extends SpeedBuff {
@@ -108,11 +125,10 @@ class MovementSpeedPerHealthMissingBuff extends SpeedBuff {
 
     {
         name = "Survival Instinct";
-        setTypeId(BuffTypeIds.SURVIVAL_INSTINCT);
         friendly = true;
     }
 
-    public MovementSpeedPerHealthMissingBuff(float duration) {
+    private MovementSpeedPerHealthMissingBuff(float duration) {
         super(0, 5f, duration);
     }
 
@@ -128,6 +144,19 @@ class MovementSpeedPerHealthMissingBuff extends SpeedBuff {
     public float getFactor() {
         float healthMax = spatial.getUserData(UserDataStrings.HEALTH_MAX);
         float inverseHealthPercent = 1f - (originalHealth / healthMax);
-        return 1 + inverseHealthPercent / 8f;        
-    }        
+        return 1 + inverseHealthPercent / 8f;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.SURVIVAL_INSTINCT);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new MovementSpeedPerHealthMissingBuff(duration));
+        }
+    }
 }

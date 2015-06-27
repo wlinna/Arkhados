@@ -25,6 +25,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.DistanceScaling;
 import arkhados.util.Selector;
@@ -88,8 +89,8 @@ class ACastEarthQuake extends EntityAction {
         // TODO: ACharge takes ATrance into action, but we need to do something
         // here too.
 
-        IncapacitateCC incapacitate = new IncapacitateCC(1.2f);
-        ArrayList<AbstractBuff> buffs = new ArrayList<>();
+        AbstractBuffBuilder incapacitate = new IncapacitateCC.MyBuilder(1.2f);
+        ArrayList<AbstractBuffBuilder> buffs = new ArrayList<>();
         buffs.add(incapacitate);
 
         final float splashRadius = EarthQuake.RADIUS;

@@ -21,7 +21,7 @@ public class CastSpeedBuff extends AbstractBuff {
 
     private float factor;
 
-    public CastSpeedBuff(float duration, float by) {
+    private CastSpeedBuff(float duration, float by) {
         super(duration);
         factor = 1f + by;
     }
@@ -40,5 +40,19 @@ public class CastSpeedBuff extends AbstractBuff {
 
     public float getFactor() {
         return factor;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+        private final float amount;
+
+        public MyBuilder(float duration, float amount) {
+            super(duration);
+            this.amount = amount;
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new CastSpeedBuff(duration, amount));
+        }
     }
 }

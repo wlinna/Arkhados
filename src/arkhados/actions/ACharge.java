@@ -22,6 +22,7 @@ import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -49,7 +50,7 @@ public class ACharge extends EntityAction
     private Vector3f direction;
     private GhostControl ghost;
     private Node ghostNode;
-    private List<AbstractBuff> buffs = new ArrayList<>();
+    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private boolean hasCollided = false;
     private Spatial collidedWith = null;
     private float hitDamage;
@@ -58,7 +59,7 @@ public class ACharge extends EntityAction
         this.range = range;
     }
 
-    public void addBuff(AbstractBuff buff) {
+    public void addBuff(AbstractBuffBuilder buff) {
         buffs.add(buff);
     }
 

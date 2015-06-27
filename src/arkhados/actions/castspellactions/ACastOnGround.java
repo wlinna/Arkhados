@@ -21,6 +21,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -36,7 +37,8 @@ public class ACastOnGround extends EntityAction {
 
     private WorldManager worldManager;
     private Spell spell;
-    private final List<AbstractBuff> additionalEnterBuffs = new ArrayList<>();
+    private final List<AbstractBuffBuilder> additionalEnterBuffs
+            = new ArrayList<>();
     // NOTE: Add additionalExitBuffs -list if needed
 
     public ACastOnGround(WorldManager worldManager, Spell spell) {
@@ -57,15 +59,15 @@ public class ACastOnGround extends EntityAction {
         Spatial entity = worldManager.getEntity(entityId);
         CAreaEffect aoeControl =
                 entity.getControl(CAreaEffect.class);
-        aoeControl.setOwnerInterface(spatial.getControl(
-                CInfluenceInterface.class));
-        for (AbstractBuff buff : additionalEnterBuffs) {
+        aoeControl.setOwnerInterface(
+                spatial.getControl(CInfluenceInterface.class));
+        for (AbstractBuffBuilder buff : additionalEnterBuffs) {
             aoeControl.addEnterBuff(buff);
         }
         return false;
     }
 
-    public void addEnterBuff(final AbstractBuff buff) {
+    public void addEnterBuff(AbstractBuffBuilder buff) {
         if (buff == null) {
             throw new IllegalArgumentException(
                     "Nulls not allowed in containers");

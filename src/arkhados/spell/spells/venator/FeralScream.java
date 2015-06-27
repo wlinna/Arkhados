@@ -110,6 +110,11 @@ class AFeralScream extends EntityAction {
         List<SpatialDistancePair> spatialDistances = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, range);
+
+        FearCC.MyBuilder fearBuilder = new FearCC.MyBuilder(2f);
+        fearBuilder.setOwnerInterface(
+                spatial.getControl(CInfluenceInterface.class));
+
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
             CInfluenceInterface influenceInterface =
                     spatialDistancePair.spatial
@@ -126,8 +131,8 @@ class AFeralScream extends EntityAction {
                     spatialDistancePair.spatial)) {
                 continue;
             }
-            final float duration = 2f;
-            FearCC fear = new FearCC(duration);
+
+            FearCC fear = fearBuilder.build();
 
             final Vector3f initialDirection = spatialDistancePair.spatial
                     .getLocalTranslation()

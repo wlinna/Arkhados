@@ -20,16 +20,13 @@ import arkhados.util.BuffTypeIds;
 import java.util.Iterator;
 
 public class MagmaReleaseBuff extends AbstractBuff {
-    {
-        setTypeId(BuffTypeIds.MAGMA_RELEASE);
-    }
 
     public static final float TICK_LENGTH = 0.2f;
     private static final float DAMAGE = 60f;
     private float currentTime = 0f;
     private int count = 0;
 
-    public MagmaReleaseBuff(float duration) {
+    private MagmaReleaseBuff(float duration) {
         super(duration);
     }
 
@@ -42,7 +39,7 @@ public class MagmaReleaseBuff extends AbstractBuff {
             if (buff instanceof BrimstoneBuff) {
                 count = ((BrimstoneBuff) buff).getStacks();
                 buff.destroy();
-                it.remove();                
+                it.remove();
                 return;
             }
         }
@@ -51,8 +48,8 @@ public class MagmaReleaseBuff extends AbstractBuff {
     @Override
     public void update(float time) {
         super.update(time);
-        currentTime += time;        
-                
+        currentTime += time;
+
         if (count <= 0) {
             duration = 0f;
             return;
@@ -65,5 +62,18 @@ public class MagmaReleaseBuff extends AbstractBuff {
             CharacterInteraction.harm(getOwnerInterface(),
                     targetInterface, DAMAGE, null, true);
         }
-    }        
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.MAGMA_RELEASE);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new MagmaReleaseBuff(duration));
+        }
+    }
 }
