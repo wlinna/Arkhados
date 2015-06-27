@@ -27,8 +27,8 @@ public class BrimstoneBuff extends AbstractBuff {
     private static float maxDuration;
     private static final int stackCap = 3;
 
-    public BrimstoneBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public BrimstoneBuff(float duration) {
+        super(duration);
         maxDuration = duration;
     }
 

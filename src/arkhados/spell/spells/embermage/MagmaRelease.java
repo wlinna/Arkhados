@@ -209,7 +209,7 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new MagmaReleaseBuff(-1, 999999f));
+        buffControl.addBuff(new MagmaReleaseBuff(999999f));
 
         return node;
     }

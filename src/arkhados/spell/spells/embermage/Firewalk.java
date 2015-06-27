@@ -221,7 +221,7 @@ public class Firewalk extends Spell {
             node.setUserData(UserDataStrings.FOLLOW_ME, true);
 
             CSpellBuff buffControl = new CSpellBuff();
-            SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
+            SlowCC slowCC = new SlowCC(1f, 0.2f);
             buffControl.addBuff(slowCC);
             node.addControl(buffControl);
 

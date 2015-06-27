@@ -19,9 +19,9 @@ package arkhados.spell.buffs;
 public class DamageBuff extends AbstractBuff {
     private float factor;
     
-    public DamageBuff(int buffGroupId, float duration, float amount) {
-        super(buffGroupId, duration);
-        this.factor = 1 + amount;
+    public DamageBuff(float duration, float amount) {
+        super(duration);
+        factor = 1 + amount;
     }
 
     public float getFactor() {

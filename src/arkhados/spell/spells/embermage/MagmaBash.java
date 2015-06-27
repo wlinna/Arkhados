@@ -144,7 +144,7 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BrimstoneIncapacitate(1.20f, -1));
+        buffControl.addBuff(new BrimstoneIncapacitate(1.20f));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;
@@ -153,8 +153,8 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
 
 class BrimstoneIncapacitate extends IncapacitateCC {
 
-    public BrimstoneIncapacitate(float duration, int id) {
-        super(duration, id);
+    public BrimstoneIncapacitate(float duration) {
+        super(duration);
     }
 
     @Override

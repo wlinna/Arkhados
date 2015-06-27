@@ -29,8 +29,8 @@ public class PetrifyCC extends CrowdControlBuff {
     private float totalDamageTaken = 0f;
     private final float damageReduction = 0.85f;
 
-    public PetrifyCC(int id, float duration) {
-        super(id, duration);
+    public PetrifyCC(float duration) {
+        super(duration);
     }
 
     public float damage(float damage) {
@@ -41,11 +41,7 @@ public class PetrifyCC extends CrowdControlBuff {
 
     @Override
     public boolean shouldContinue() {
-        if (super.shouldContinue()) {
-            return totalDamageTaken <= damageCap;
-        }
-
-        return false;
+        return super.shouldContinue() && totalDamageTaken <= damageCap;
     }
 
     @Override

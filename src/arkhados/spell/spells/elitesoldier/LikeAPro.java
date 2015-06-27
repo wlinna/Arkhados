@@ -57,12 +57,12 @@ public class LikeAPro extends Spell {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
                 buffAction.setTypeId(EliteSoldier.ACTION_LIKE_A_PRO);
                 AbleToCastWhileMovingBuff likeAPro =
-                        new AbleToCastWhileMovingBuff(-1, 5);
+                        new AbleToCastWhileMovingBuff(5);
                 likeAPro.setName("Like a Pro");
                 likeAPro.setTypeId(BuffTypeIds.LIKE_A_PRO);
                 buffAction.addBuff(likeAPro);
-                buffAction.addBuff(new SpeedBuff(0, 6, -1, 5));
-                buffAction.addBuff(new ArmorBuff(50, 0.6f, -1, 999999999));
+                buffAction.addBuff(new SpeedBuff(0, 6, 5));
+                buffAction.addBuff(new ArmorBuff(50, 0.6f, 999999999));
                 
                 CEliteSoldierAmmunition ammunitionControl =
                         caster.getControl(CEliteSoldierAmmunition.class);

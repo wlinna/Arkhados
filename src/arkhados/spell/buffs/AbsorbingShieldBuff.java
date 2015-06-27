@@ -32,8 +32,8 @@ public class AbsorbingShieldBuff extends AbstractBuff {
         setTypeId(BuffTypeIds.PURIFYING_FLAME);
     }
 
-    public AbsorbingShieldBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public AbsorbingShieldBuff(float duration) {
+        super(duration);
     }
 
     @Override

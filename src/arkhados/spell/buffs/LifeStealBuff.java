@@ -19,12 +19,8 @@ package arkhados.spell.buffs;
 public class LifeStealBuff extends AbstractBuff {
     private float amount;
 
-    public LifeStealBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
-    }
-
-    public LifeStealBuff(float amount, int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public LifeStealBuff(float amount, float duration) {
+        super(duration);
         this.amount = amount;
     }
         

@@ -81,7 +81,7 @@ class ACastDeepWounds extends EntityAction {
         charge.setChargeSpeed(255f);
         spatial.getControl(CActionQueue.class).enqueueAction(charge);
 
-        BleedBuff bleedBuff = new BleedBuff(-1, 4.2f);
+        BleedBuff bleedBuff = new BleedBuff(4.2f);
         bleedBuff.setOwnerInterface(spatial
                 .getControl(CInfluenceInterface.class));
 
@@ -106,8 +106,8 @@ class BleedBuff extends AbstractBuff {
         setTypeId(BuffTypeIds.DEEP_WOUNDS);
     }
 
-    public BleedBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public BleedBuff(float duration) {
+        super(duration);
     }
 
     @Override

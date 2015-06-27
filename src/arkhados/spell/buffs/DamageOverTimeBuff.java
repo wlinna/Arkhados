@@ -27,17 +27,18 @@ public class DamageOverTimeBuff extends AbstractBuff {
     private float dps;
     private float time;
 
-    public DamageOverTimeBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public DamageOverTimeBuff(float duration) {
+        super(duration);
     }
 
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        this.time += tpf;        
-        if (time > 0.05) {            
-            CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, this.dps * time, null, false);
-            this.time = 0f;
+        time += tpf;        
+        if (time > 0.05f) {            
+            CharacterInteraction.harm(getOwnerInterface(), targetInterface,
+                    dps * time, null, false);
+            time = 0f;
         }
     }
 

@@ -24,11 +24,11 @@ import arkhados.util.BuffTypeIds;
  */
 public class IncapacitateCC extends CrowdControlBuff {
     {
-        super.name = "Incapacitate";
-        super.setTypeId(BuffTypeIds.INCAPACITATE);
+        name = "Incapacitate";
+        setTypeId(BuffTypeIds.INCAPACITATE);
     }
-    public IncapacitateCC(float duration, int id) {
-        super(id, duration);
+    public IncapacitateCC(float duration) {
+        super(duration);
     }
 
     @Override

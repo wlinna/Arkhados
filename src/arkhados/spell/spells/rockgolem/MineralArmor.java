@@ -52,7 +52,7 @@ public class MineralArmor extends Spell {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff action = new ACastSelfBuff();
                 MineralArmorBuff armor =
-                        new MineralArmorBuff(200f, 0.75f, -1, 4f);
+                        new MineralArmorBuff(200f, 0.75f, 4f);
                 armor.setOwnerInterface(caster
                         .getControl(CInfluenceInterface.class));
                 action.addBuff(armor);
@@ -68,9 +68,8 @@ public class MineralArmor extends Spell {
 
 class MineralArmorBuff extends ArmorBuff {
 
-    public MineralArmorBuff(float amount, float protectionPercent,
-            int buffGroupId, float duration) {
-        super(amount, protectionPercent, buffGroupId, duration);
+    public MineralArmorBuff(float amount, float protectionPercent, float duration) {
+        super(amount, protectionPercent, duration);
         setTypeId(BuffTypeIds.MINERAL_ARMOR);
     }
 

@@ -41,8 +41,9 @@ public class Ignite extends Spell {
         return spell;
     }
 
-    public static DamageOverTimeBuff ifNotCooldownCreateDamageOverTimeBuff(final Node caster) {
-        final CSpellCast castControl = caster.getControl(CSpellCast.class);
+    public static DamageOverTimeBuff ifNotCooldownCreateDamageOverTimeBuff(
+            Node caster) {
+        CSpellCast castControl = caster.getControl(CSpellCast.class);
         if (castControl.isOnCooldown("Ignite")) {
             // TODO: Check if adding null causes problems
             return null;
@@ -50,15 +51,15 @@ public class Ignite extends Spell {
 
         castControl.putOnCooldown(Spell.getSpell("Ignite").getId());
 
-        final DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(-1, 4f);
+        DamageOverTimeBuff dotBuff = new DamageOverTimeBuff(4f);
         dotBuff.setName("Ignite");
         dotBuff.setTypeId(BuffTypeIds.IGNITE);
-        final CInfluenceInterface ownerInterface = caster.getControl(CInfluenceInterface.class);
+        CInfluenceInterface ownerInterface =
+                caster.getControl(CInfluenceInterface.class);
         dotBuff.setOwnerInterface(ownerInterface);
 
         float damagePerSecond = 20f;
-        Float damageFactor = 1f;
-        damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
 
         damagePerSecond *= damageFactor;
         dotBuff.setDps(damagePerSecond);

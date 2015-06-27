@@ -14,8 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-import arkhados.util.UserDataStrings;
-
 /**
  *
  * @author william
@@ -25,9 +23,9 @@ public class SpeedBuff extends AbstractBuff {
     private float factor;
     private float constant;
 
-    public SpeedBuff(float percentAmount, float constantAmount, int buffGroupId,
+    public SpeedBuff(float percentAmount, float constantAmount,
             float duration) {
-        super(buffGroupId, duration);
+        super(duration);
 
         factor = 1 + percentAmount;
         constant = constantAmount;

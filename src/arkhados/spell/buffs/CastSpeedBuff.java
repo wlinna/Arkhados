@@ -21,8 +21,8 @@ public class CastSpeedBuff extends AbstractBuff {
 
     private float factor;
 
-    public CastSpeedBuff(int id, float duration, float by) {
-        super(id, duration);
+    public CastSpeedBuff(float duration, float by) {
+        super(duration);
         factor = 1f + by;
     }
 

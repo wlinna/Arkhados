@@ -213,7 +213,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BrimstoneBuff(-1, 8f));
+        buffControl.addBuff(new BrimstoneBuff(8f));
 
         return node;
     }

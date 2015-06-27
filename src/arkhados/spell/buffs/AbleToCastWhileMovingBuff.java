@@ -17,7 +17,7 @@ package arkhados.spell.buffs;
 
 public class AbleToCastWhileMovingBuff extends AbstractBuff {
 
-    public AbleToCastWhileMovingBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public AbleToCastWhileMovingBuff(float duration) {
+        super(duration);
     }
 }

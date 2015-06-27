@@ -149,7 +149,7 @@ class ACastLeap extends EntityAction {
                     float damage = 200f * damageFactor;
 
                     List<AbstractBuff> buffs = new ArrayList<>(1);
-                    buffs.add(0, new IncapacitateCC(1f, -1));
+                    buffs.add(0, new IncapacitateCC(1f));
 
                     CInfluenceInterface myInterface =
                             spatial.getControl(CInfluenceInterface.class);

@@ -182,7 +182,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
             CSpellBuff buffControl = new CSpellBuff();
             node.addControl(buffControl);
 
-            buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
+            buffControl.addBuff(new SlowCC(1f, 0.3f));
 
             GhostControl characterCollision = new GhostControl(collisionShape);
             characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);

@@ -127,7 +127,7 @@ class AFeralScream extends EntityAction {
                 continue;
             }
             final float duration = 2f;
-            FearCC fear = new FearCC(-1, duration);
+            FearCC fear = new FearCC(duration);
 
             final Vector3f initialDirection = spatialDistancePair.spatial
                     .getLocalTranslation()

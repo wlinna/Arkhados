@@ -55,9 +55,9 @@ public class SurvivalInstinct extends Spell {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
                 buffAction.addBuff(
-                        new DamagePerHealthPercentBuff(-1, DURATION));
+                        new DamagePerHealthPercentBuff(DURATION));
                 buffAction.addBuff(
-                        new MovementSpeedPerHealthMissingBuff(-1, DURATION));
+                        new MovementSpeedPerHealthMissingBuff(DURATION));
                 return buffAction;
             }
         };
@@ -75,8 +75,8 @@ class DamagePerHealthPercentBuff extends AbstractBuff {
         friendly = true;
     }
 
-    public DamagePerHealthPercentBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public DamagePerHealthPercentBuff(float duration) {
+        super(duration);
     }
 
     @Override
@@ -112,8 +112,8 @@ class MovementSpeedPerHealthMissingBuff extends SpeedBuff {
         friendly = true;
     }
 
-    public MovementSpeedPerHealthMissingBuff(int buffGroupId, float duration) {
-        super(0, 5f, buffGroupId, duration);
+    public MovementSpeedPerHealthMissingBuff(float duration) {
+        super(0, 5f, duration);
     }
 
     @Override

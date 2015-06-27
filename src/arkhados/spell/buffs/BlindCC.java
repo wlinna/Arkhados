@@ -24,8 +24,8 @@ public class BlindCC extends CrowdControlBuff {
         setTypeId(BuffTypeIds.BLIND);
     }
 
-    public BlindCC(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public BlindCC(float duration) {
+        super(duration);
     }
 
     @Override

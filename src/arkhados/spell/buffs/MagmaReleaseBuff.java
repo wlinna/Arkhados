@@ -29,8 +29,8 @@ public class MagmaReleaseBuff extends AbstractBuff {
     private float currentTime = 0f;
     private int count = 0;
 
-    public MagmaReleaseBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    public MagmaReleaseBuff(float duration) {
+        super(duration);
     }
 
     @Override

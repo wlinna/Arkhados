@@ -48,12 +48,12 @@ public class Bedrock extends Spell{
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff action = new ACastSelfBuff();
-                ArmorBuff armor = new ArmorBuff(500f, 0.55f, -1, 4f);
+                ArmorBuff armor = new ArmorBuff(500f, 0.55f, 4f);
                 armor.setTypeId(BuffTypeIds.BEDROCK);
                 armor.setOwnerInterface(caster
                         .getControl(CInfluenceInterface.class));
                 action.addBuff(armor);
-                SlowCC slow = new SlowCC(-1, 4f, 0.75f);
+                SlowCC slow = new SlowCC(4f, 0.75f);
                 slow.setTypeId(-1);
                 action.addBuff(slow);
                 return action;

@@ -106,7 +106,7 @@ public class PurifyingFlame extends Spell {
 
                     aoeContainer.addControl(areaEffectControl);
 
-                    action.addBuff(new AbsorbingShieldBuff(-1, duration));
+                    action.addBuff(new AbsorbingShieldBuff(duration));
                 }
 
                 aoeContainer.setLocalTranslation(0f, 0f, 0f);

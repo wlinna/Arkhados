@@ -23,14 +23,9 @@ package arkhados.spell.buffs;
  */
 public abstract class CrowdControlBuff extends AbstractBuff {
 
-    /**
-     *
-     * @param id buff group's id
-     * @param duration how long buff is going to influence entity
-     */
-    public CrowdControlBuff(int id, float duration) {
-        super(id, duration);
-    }    
+    public CrowdControlBuff(float duration) {
+        super(duration);
+    }
 
     public boolean preventsCasting() {
         return false;

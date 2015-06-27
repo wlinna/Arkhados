@@ -34,8 +34,8 @@ public class FearCC extends CrowdControlBuff {
         setTypeId(BuffTypeIds.FEAR);
     }
 
-    public FearCC(int id, float duration) {
-        super(id, duration);
+    public FearCC(float duration) {
+        super(duration);
     }
 
     @Override
