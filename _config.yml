@@ -3,8 +3,8 @@ title: Arkhados
 description: > # this means to ignore newlines until "baseurl:"
   Web site of Arkhados
 baseurl: "/Arkhados/" # the subpath of your site, e.g. /blog/
-url: "http://dnyarri.github.io" # the base hostname & protocol for your site
-github_username:  dnyarri
+url: "http://triplesnail.github.io" # the base hostname & protocol for your site
+github_username:  TripleSnail
 
 # Build settings
 markdown: kramdown
