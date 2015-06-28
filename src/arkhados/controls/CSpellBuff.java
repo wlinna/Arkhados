@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -27,11 +27,11 @@ import java.util.List;
  */
 public class CSpellBuff extends AbstractControl {
 
-    private List<AbstractBuff> buffs = new ArrayList<>();
+    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private CInfluenceInterface ownerInterface;
 
-    public void addBuff(AbstractBuff buff) {
-        this.buffs.add(buff);
+    public void addBuff(AbstractBuffBuilder buff) {
+        buffs.add(buff);
     }
 
     @Override
@@ -42,9 +42,9 @@ public class CSpellBuff extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public List<AbstractBuff> getBuffs() {
+    public List<AbstractBuffBuilder> getBuffs() {
         return this.buffs;
-    }
+    }    
 
     public CInfluenceInterface getOwnerInterface() {
         return this.ownerInterface;

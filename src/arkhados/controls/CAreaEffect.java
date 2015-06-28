@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.PlayerData;
 import arkhados.actions.ADelay;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.influences.Influence;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserDataStrings;
@@ -44,8 +45,7 @@ public class CAreaEffect extends AbstractControl
     private GhostControl ghostControl;
     private PhysicsSpace space;
     private final List<Influence> influences = new ArrayList<>();
-    private final List<AbstractBuff> exitBuffs = new ArrayList<>();
-    private final List<AbstractBuff> enterBuffs = new ArrayList<>();
+    private final List<AbstractBuffBuilder> enterBuffs = new ArrayList<>();
     private final HashMap<CInfluenceInterface, Boolean> enteredPlayers =
             new HashMap<>();
     private CInfluenceInterface ownerInterface = null;
@@ -71,22 +71,13 @@ public class CAreaEffect extends AbstractControl
         influences.add(influence);
     }
 
-    public void addEnterBuff(AbstractBuff buff) {
-        if (buff == null) {
+    public void addEnterBuff(AbstractBuffBuilder builder) {
+        if (builder == null) {
             throw new IllegalArgumentException(
                     "Nulls not allowed in containers");
         }
 
-        enterBuffs.add(buff);
-    }
-
-    public void addExitBuff(AbstractBuff buff) {
-        if (buff == null) {
-            throw new IllegalArgumentException(
-                    "Nulls not allowed in containers");
-        }
-
-        exitBuffs.add(buff);
+        enterBuffs.add(builder);
     }
 
     @Override

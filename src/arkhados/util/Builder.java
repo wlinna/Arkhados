@@ -12,23 +12,12 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs;
+package arkhados.util;
 
-public class AbleToCastWhileMovingBuff extends AbstractBuff {
-
-    private AbleToCastWhileMovingBuff(float duration) {
-        super(duration);
-    }
-
-    public static class MyBuilder extends AbstractBuffBuilder {
-
-        public MyBuilder(float duration) {
-            super(duration);
-        }
-
-        @Override
-        public AbleToCastWhileMovingBuff build() {
-            return set(new AbleToCastWhileMovingBuff(duration));
-        }
-    }
+/**
+ *
+ * @author william
+ */
+public interface Builder<T> {
+    public T build();
 }

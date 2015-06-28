@@ -17,6 +17,7 @@ package arkhados.actions.castspellactions;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,19 +27,22 @@ import java.util.List;
  */
 public class ACastSelfBuff extends EntityAction {
 
-    private List<AbstractBuff> buffs = new ArrayList<>();
+    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
 
     @Override
-    public boolean update(float tpf) {
+    public boolean update(float tpf) {        
         CInfluenceInterface target =
                 spatial.getControl(CInfluenceInterface.class);
-        for (AbstractBuff buff : buffs) {
+        for (AbstractBuffBuilder builder : buffs) {
+            AbstractBuff buff = builder.build();
+            buff.setOwnerInterface(target);
             buff.attachToCharacter(target);
         }
+
         return false;
     }
 
-    public void addBuff(AbstractBuff buff) {
+    public void addBuff(AbstractBuffBuilder buff) {
         buffs.add(buff);
     }
 }

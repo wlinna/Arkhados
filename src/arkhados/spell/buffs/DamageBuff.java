@@ -12,19 +12,38 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.spell.buffs;
 
-
 public class DamageBuff extends AbstractBuff {
+
     private float factor;
-    
-    public DamageBuff(int buffGroupId, float duration, float amount) {
-        super(buffGroupId, duration);
-        this.factor = 1 + amount;
+
+    private DamageBuff(float duration, float amount) {
+        super(duration);
+        factor = 1 + amount;
     }
 
     public float getFactor() {
         return factor;
-    }        
+    }
+
+    @Override
+    public boolean isFriendly() {
+        return factor > 1f;
+    }
+    
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        private final float amount;
+
+        public MyBuilder(float duration, float amount) {
+            super(duration);
+            this.amount = amount;
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new DamageBuff(duration, amount));
+        }
+    }
 }

@@ -27,21 +27,42 @@ public class DamageOverTimeBuff extends AbstractBuff {
     private float dps;
     private float time;
 
-    public DamageOverTimeBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    private DamageOverTimeBuff(float duration) {
+        super(duration);
     }
 
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        this.time += tpf;        
-        if (time > 0.05) {            
-            CharacterInteraction.harm(super.getOwnerInterface(), super.targetInterface, this.dps * time, null, false);
-            this.time = 0f;
+        time += tpf;        
+        if (time > 0.05f) {            
+            CharacterInteraction.harm(getOwnerInterface(), targetInterface,
+                    dps * time, null, false);
+            time = 0f;
         }
     }
 
     public void setDps(float dps) {
         this.dps = dps;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+        private float dps;
+                
+        public MyBuilder(float duration) {
+            super(duration);
+        }
+
+        public MyBuilder dps(float dps) {
+            this.dps = dps;
+            return this;
+        }
+        
+        @Override
+        public AbstractBuff build() {
+            DamageOverTimeBuff dot = new DamageOverTimeBuff(duration);
+            dot.setDps(dps);
+            return set(dot);
+        }
     }
 }

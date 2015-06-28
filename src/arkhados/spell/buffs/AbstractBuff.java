@@ -35,7 +35,6 @@ public abstract class AbstractBuff {
     private static Sender sender;
     protected String name = null;
     private int typeId = -1;
-    private int buffGroupId;
     private int stacks = 1;
     protected float duration;
     protected CInfluenceInterface targetInterface = null;
@@ -47,8 +46,7 @@ public abstract class AbstractBuff {
      * @param buffGroupId identifies group of buffs so that they can be removed
      * with single dispel. Not used currently
      */
-    public AbstractBuff(int buffGroupId, float duration) {
-        this.buffGroupId = buffGroupId;
+    protected AbstractBuff(float duration) {
         this.duration = duration;
     }
 
@@ -71,14 +69,6 @@ public abstract class AbstractBuff {
                 .getUserData(UserDataStrings.ENTITY_ID);
         return typeId == -1 ? null
                 : new CmdBuff(entityId, typeId, buffId, duration, added);
-    }
-
-    /**
-     *
-     * @return Id of buff group that buff belongs to.
-     */
-    public int getBuffGroupId() {
-        return buffGroupId;
     }
 
     public void update(float time) {

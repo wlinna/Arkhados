@@ -25,6 +25,7 @@ import arkhados.controls.CVisibility;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.spell.influences.SlowInfluence;
@@ -73,9 +74,9 @@ public class EmberCircle extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                final ACastOnGround castOnGround =
+                ACastOnGround castOnGround =
                         new ACastOnGround(worldManager, spell);
-                DamageOverTimeBuff ignite =
+                AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     castOnGround.addEnterBuff(ignite);

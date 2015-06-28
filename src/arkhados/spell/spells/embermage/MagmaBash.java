@@ -23,6 +23,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.BrimstoneBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
@@ -144,7 +145,7 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BrimstoneIncapacitate(1.20f, -1));
+        buffControl.addBuff(new BrimstoneIncapacitate.MyBuilder(1.20f));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;
@@ -153,8 +154,8 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
 
 class BrimstoneIncapacitate extends IncapacitateCC {
 
-    public BrimstoneIncapacitate(float duration, int id) {
-        super(duration, id);
+    private BrimstoneIncapacitate(float duration) {
+        super(duration);
     }
 
     @Override
@@ -174,5 +175,17 @@ class BrimstoneIncapacitate extends IncapacitateCC {
         }
 
         super.attachToCharacter(influenceInterface);
+    }
+
+    static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(duration);
+        }
+
+        @Override
+        public BrimstoneIncapacitate build() {
+            return new BrimstoneIncapacitate(duration);
+        }
     }
 }

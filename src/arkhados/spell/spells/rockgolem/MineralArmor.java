@@ -17,9 +17,10 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.ACastSelfBuff;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.ArmorBuff;
 import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
@@ -51,10 +52,8 @@ public class MineralArmor extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff action = new ACastSelfBuff();
-                MineralArmorBuff armor =
-                        new MineralArmorBuff(200f, 0.75f, -1, 4f);
-                armor.setOwnerInterface(caster
-                        .getControl(CInfluenceInterface.class));
+                AbstractBuffBuilder armor =
+                        new MineralArmorBuff.MyBuilder(200f, 0.75f, 4f);
                 action.addBuff(armor);
                 return action;
             }
@@ -68,10 +67,9 @@ public class MineralArmor extends Spell {
 
 class MineralArmorBuff extends ArmorBuff {
 
-    public MineralArmorBuff(float amount, float protectionPercent,
-            int buffGroupId, float duration) {
-        super(amount, protectionPercent, buffGroupId, duration);
-        setTypeId(BuffTypeIds.MINERAL_ARMOR);
+    private MineralArmorBuff(float amount, float protectionPercent,
+            float duration) {
+        super(amount, protectionPercent, duration);
     }
 
     @Override
@@ -81,5 +79,23 @@ class MineralArmorBuff extends ArmorBuff {
         // Healing amount is based on assumption that duration is 4s.
         CharacterInteraction.heal(getOwnerInterface(), targetInterface,
                 0.2f * getAmount() * time);
+    }
+
+    static class MyBuilder extends AbstractBuffBuilder {
+
+        private final float amount;
+        private final float protectionPercent;
+
+        MyBuilder(float amount, float protectionPercent, float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.MINERAL_ARMOR);
+            this.amount = amount;
+            this.protectionPercent = protectionPercent;
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return new MineralArmorBuff(amount, protectionPercent, duration);
+        }
     }
 }

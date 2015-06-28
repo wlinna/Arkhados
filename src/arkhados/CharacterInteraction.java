@@ -19,6 +19,8 @@ import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.gamemode.GameMode;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
+import arkhados.util.Builder;
 import arkhados.util.RoundStats;
 import arkhados.util.UserDataStrings;
 import com.jme3.scene.Spatial;
@@ -40,7 +42,7 @@ public class CharacterInteraction {
 
     public static void harm(CInfluenceInterface attacker,
             CInfluenceInterface target, final float rawDamage,
-            List<AbstractBuff> buffs, boolean canBreakCC) {
+            List<AbstractBuffBuilder> buffBuilders, boolean canBreakCC) {
 
         if (target == null) {
             return;
@@ -90,12 +92,17 @@ public class CharacterInteraction {
             gameMode.playerDied(targetPlayerId, latestDamagerId);
         }
 
-        if (buffs != null) {
-            for (AbstractBuff buff : buffs) {
-                if (buff != null && !buff.isFriendly()) {
-                    buff.attachToCharacter(target);
-                } else if (buff == null) {
+        if (buffBuilders != null) {
+            for (Builder<AbstractBuff> buffBuilder : buffBuilders) {
+                AbstractBuff buff = buffBuilder.build();
+
+                if (buff == null) {
                     System.out.println("Null in buff-list");
+                    continue;
+                }
+
+                if (!buff.isFriendly()) {
+                    buff.attachToCharacter(target);
                 }
             }
         }
@@ -119,7 +126,7 @@ public class CharacterInteraction {
     }
 
     public static void startNewRound() {
-        final RoundStats roundStats = new RoundStats();
+        RoundStats roundStats = new RoundStats();
         roundStats.initialize();
         roundStatList.add(roundStats);
     }
@@ -128,7 +135,7 @@ public class CharacterInteraction {
         RoundStats round = roundStatList.get(roundStatList.size() - 1);
         round.addPlayer(playerId);
     }
-    
+
     public static void removePlayer(int playerId) {
         RoundStats round = roundStatList.get(roundStatList.size() - 1);
         round.removePlayer(playerId);

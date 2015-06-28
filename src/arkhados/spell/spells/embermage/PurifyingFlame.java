@@ -24,7 +24,7 @@ import arkhados.controls.CTimedExistence;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbsorbingShieldBuff;
-import arkhados.spell.buffs.DamageOverTimeBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -83,7 +83,7 @@ public class PurifyingFlame extends Spell {
                             new CAreaEffect(ghost);
                     areaEffectControl.setOwnerInterface(caster
                             .getControl(CInfluenceInterface.class));
-                    DamageOverTimeBuff ignite = Ignite
+                    AbstractBuffBuilder ignite = Ignite
                             .ifNotCooldownCreateDamageOverTimeBuff(caster);
 
                     if (ignite != null) {
@@ -106,7 +106,7 @@ public class PurifyingFlame extends Spell {
 
                     aoeContainer.addControl(areaEffectControl);
 
-                    action.addBuff(new AbsorbingShieldBuff(-1, duration));
+                    action.addBuff(new AbsorbingShieldBuff.MyBuilder(duration));
                 }
 
                 aoeContainer.setLocalTranslation(0f, 0f, 0f);

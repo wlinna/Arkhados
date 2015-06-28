@@ -26,6 +26,7 @@ import arkhados.controls.CGrenade;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -74,6 +75,8 @@ public class PlasmaGrenades extends Spell {
 }
 
 class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
+    private static AbstractBuffBuilder slowBuilder =
+            new SlowCC.MyBuilder(1f, 0.3f);
 
     private ParticleEmitter createPlasmaEmitter() {
         ParticleEmitter plasma = new ParticleEmitter("plasma-emitter",
@@ -182,7 +185,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
             CSpellBuff buffControl = new CSpellBuff();
             node.addControl(buffControl);
 
-            buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
+            buffControl.addBuff(slowBuilder);
 
             GhostControl characterCollision = new GhostControl(collisionShape);
             characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);

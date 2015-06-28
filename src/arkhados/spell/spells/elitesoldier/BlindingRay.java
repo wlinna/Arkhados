@@ -176,7 +176,7 @@ class RayBuilder extends AbstractNodeBuilder {
         node.addControl(projectileControl);
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BlindCC(-1, 2.5f));
+        buffControl.addBuff(new BlindCC.MyBuilder(2.5f));
 
         return node;
     }

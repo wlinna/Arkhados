@@ -29,6 +29,7 @@ import arkhados.controls.CSyncInterpolation;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
@@ -85,7 +86,7 @@ public class Firewalk extends Spell {
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastFirewalk castAction =
                         new ACastFirewalk(spell, Spell.worldManager);
-                DamageOverTimeBuff ignite =
+                AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     castAction.additionalBuffs.add(ignite);
@@ -101,7 +102,8 @@ public class Firewalk extends Spell {
     private static class ACastFirewalk extends EntityAction {
 
         private final Spell spell;
-        private final List<AbstractBuff> additionalBuffs = new ArrayList<>();
+        private final List<AbstractBuffBuilder> additionalBuffs =
+                new ArrayList<>();
         private final WorldManager world;
 
         public ACastFirewalk(Spell spell, WorldManager world) {
@@ -110,7 +112,7 @@ public class Firewalk extends Spell {
             super.setTypeId(EmberMage.ACTION_FIREWALK);
         }
 
-        public void addAdditionalBuff(AbstractBuff buff) {
+        public void addAdditionalBuff(AbstractBuffBuilder buff) {
             if (buff == null) {
                 throw new IllegalArgumentException("Nulls are not allowed "
                         + "for buff collection");
@@ -221,7 +223,7 @@ public class Firewalk extends Spell {
             node.setUserData(UserDataStrings.FOLLOW_ME, true);
 
             CSpellBuff buffControl = new CSpellBuff();
-            SlowCC slowCC = new SlowCC(-1, 1f, 0.2f);
+            AbstractBuffBuilder slowCC = new SlowCC.MyBuilder(1f, 0.2f);
             buffControl.addBuff(slowCC);
             node.addControl(buffControl);
 

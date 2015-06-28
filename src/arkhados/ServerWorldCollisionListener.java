@@ -150,7 +150,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                 return;
             }
 
-            final CSpellBuff buffControl = projectile.getSpatial()
+            CSpellBuff buffControl = projectile.getSpatial()
                     .getControl(CSpellBuff.class);
 
             final boolean canBreakCC = damage > 0f ? true : false;

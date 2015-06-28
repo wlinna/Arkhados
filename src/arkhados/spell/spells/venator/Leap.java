@@ -26,6 +26,7 @@ import arkhados.controls.CSpellCast;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
@@ -148,8 +149,8 @@ class ACastLeap extends EntityAction {
                             spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
                     float damage = 200f * damageFactor;
 
-                    List<AbstractBuff> buffs = new ArrayList<>(1);
-                    buffs.add(0, new IncapacitateCC(1f, -1));
+                    List<AbstractBuffBuilder> buffs = new ArrayList<>(1);
+                    buffs.add(0, new IncapacitateCC.MyBuilder(1f));
 
                     CInfluenceInterface myInterface =
                             spatial.getControl(CInfluenceInterface.class);

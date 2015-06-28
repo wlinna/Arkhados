@@ -25,6 +25,7 @@ import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.MagmaReleaseBuff;
 import arkhados.util.AbstractNodeBuilder;
@@ -75,7 +76,7 @@ public class MagmaRelease extends Spell {
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile castProjectile =
                         new ACastProjectile(spell, Spell.worldManager);
-                DamageOverTimeBuff ignite =
+                AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
                     castProjectile.addBuff(ignite);
@@ -209,7 +210,7 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new MagmaReleaseBuff(-1, 999999f));
+        buffControl.addBuff(new MagmaReleaseBuff.MyBuilder(999999f));
 
         return node;
     }

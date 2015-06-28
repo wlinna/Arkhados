@@ -22,17 +22,30 @@ import arkhados.util.BuffTypeIds;
  */
 public class SlowCC extends CrowdControlBuff {
 
-    {
-        setTypeId(BuffTypeIds.SLOW);
-    }
     private float slowFactor;
 
-    public SlowCC(int id, float duration, float slow) {
-        super(id, duration);
+    private SlowCC(float duration, float slow) {
+        super(duration);
         slowFactor = 1f - slow;
     }
 
     public float getSlowFactor() {
         return slowFactor;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        private float slowFactor;
+
+        public MyBuilder(float duration, float slowFactor) {
+            super(duration);
+            setTypeId(BuffTypeIds.SLOW);
+            this.slowFactor = slowFactor;
+        }
+
+        @Override
+        public SlowCC build() {
+            return set(new SlowCC(duration, slowFactor));
+        }
     }
 }

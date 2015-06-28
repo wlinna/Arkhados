@@ -25,6 +25,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
@@ -72,7 +73,7 @@ public class StoneFist extends Spell {
 
 class AStoneFist extends EntityAction {
 
-    private List<AbstractBuff> buffs = new ArrayList<>();
+    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private float damage;
     private float range;
 
@@ -81,7 +82,7 @@ class AStoneFist extends EntityAction {
         this.range = range;
     }
 
-    public void addBuff(AbstractBuff buff) {
+    public void addBuff(AbstractBuffBuilder buff) {
         buffs.add(buff);
     }
 

@@ -18,6 +18,7 @@ import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.ACastSelfBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageBuff;
 import arkhados.spell.buffs.LifeStealBuff;
 import arkhados.util.BuffTypeIds;
@@ -35,16 +36,18 @@ public class BloodFrenzy extends Spell {
         final BloodFrenzy spell = new BloodFrenzy("Blood Frenzy",
                 SurvivalInstinct.COOLDOWN, 0f, SurvivalInstinct.CAST_TIME);
 
+        final AbstractBuffBuilder lifeStealBuff = new LifeStealBuff.MyBuilder(
+                1.4f, SurvivalInstinct.DURATION);
+        lifeStealBuff.setTypeId(BuffTypeIds.BLOOD_FRENZY);
+
+
+        final AbstractBuffBuilder damageBuff =
+                new DamageBuff.MyBuilder(SurvivalInstinct.DURATION, -0.5f);
+
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff buffAction = new ACastSelfBuff();
-                LifeStealBuff lifeStealBuff =
-                        new LifeStealBuff(1.4f, -1, SurvivalInstinct.DURATION);
-                lifeStealBuff.setTypeId(BuffTypeIds.BLOOD_FRENZY);
-                DamageBuff damageBuff =
-                        new DamageBuff(-1, SurvivalInstinct.DURATION, -0.5f);
-                
                 buffAction.addBuff(lifeStealBuff);
                 buffAction.addBuff(damageBuff);
                 return buffAction;

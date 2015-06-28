@@ -180,7 +180,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
 
-        buffControl.addBuff(new SlowCC(-1, 1f, 0.3f));
+        buffControl.addBuff(new SlowCC.MyBuilder(1f, 0.3f));
         return node;
     }
 }

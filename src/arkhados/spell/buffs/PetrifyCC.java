@@ -21,16 +21,13 @@ import arkhados.util.BuffTypeIds;
  * @author william
  */
 public class PetrifyCC extends CrowdControlBuff {
-    {
-        setTypeId(BuffTypeIds.PETRIFY);
-    }
         
     private final float damageCap = 100;
     private float totalDamageTaken = 0f;
     private final float damageReduction = 0.85f;
 
-    public PetrifyCC(int id, float duration) {
-        super(id, duration);
+    private PetrifyCC(float duration) {
+        super(duration);
     }
 
     public float damage(float damage) {
@@ -41,11 +38,7 @@ public class PetrifyCC extends CrowdControlBuff {
 
     @Override
     public boolean shouldContinue() {
-        if (super.shouldContinue()) {
-            return totalDamageTaken <= damageCap;
-        }
-
-        return false;
+        return super.shouldContinue() && totalDamageTaken <= damageCap;
     }
 
     @Override
@@ -56,5 +49,17 @@ public class PetrifyCC extends CrowdControlBuff {
     @Override
     public boolean preventsMoving() {
         return true;
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.PETRIFY);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new PetrifyCC(duration));
+        }
     }
 }

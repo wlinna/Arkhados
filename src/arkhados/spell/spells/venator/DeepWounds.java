@@ -24,6 +24,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserDataStrings;
 import com.jme3.math.Vector3f;
@@ -81,12 +82,14 @@ class ACastDeepWounds extends EntityAction {
         charge.setChargeSpeed(255f);
         spatial.getControl(CActionQueue.class).enqueueAction(charge);
 
-        BleedBuff bleedBuff = new BleedBuff(-1, 4.2f);
+        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+
+        AbstractBuffBuilder bleedBuff = new BleedBuff.MyBuilder(4.2f)
+                .damagePerUnit(2 * damageFactor);
+
         bleedBuff.setOwnerInterface(spatial
                 .getControl(CInfluenceInterface.class));
 
-        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-        bleedBuff.setDamagePerUnit(2f * damageFactor);
         charge.addBuff(bleedBuff);
 
         // TODO: MAKE SURE it's okay to disable this
@@ -103,11 +106,10 @@ class BleedBuff extends AbstractBuff {
 
     {
         name = "Deep Wounds";
-        setTypeId(BuffTypeIds.DEEP_WOUNDS);
     }
 
-    public BleedBuff(int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    private BleedBuff(float duration) {
+        super(duration);
     }
 
     @Override
@@ -132,5 +134,27 @@ class BleedBuff extends AbstractBuff {
 
     public void setDamagePerUnit(float dmgPerUnit) {
         this.dmgPerUnit = dmgPerUnit;
+    }
+
+    static class MyBuilder extends AbstractBuffBuilder {
+
+        private float damagePerUnit;
+
+        public MyBuilder(float duration) {
+            super(duration);
+            setTypeId(BuffTypeIds.DEEP_WOUNDS);
+        }
+
+        public MyBuilder damagePerUnit(float damagePerUnit) {
+            this.damagePerUnit = damagePerUnit;
+            return this;
+        }
+
+        @Override
+        public AbstractBuff build() {
+            BleedBuff bleedBuff = new BleedBuff(duration);
+            bleedBuff.setDamagePerUnit(damagePerUnit);
+            return set(bleedBuff);
+        }
     }
 }

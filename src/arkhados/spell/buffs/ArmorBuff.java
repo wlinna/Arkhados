@@ -26,8 +26,8 @@ public class ArmorBuff extends AbstractBuff {
     private float amount;
     private float protectionPercent;
 
-    public ArmorBuff(float amount, float protectionPercent, int buffGroupId, float duration) {
-        super(buffGroupId, duration);
+    protected ArmorBuff(float amount, float protectionPercent, float duration) {
+        super(duration);
         this.amount = amount;
         this.protectionPercent = protectionPercent;
     }
@@ -39,7 +39,8 @@ public class ArmorBuff extends AbstractBuff {
         for (AbstractBuff buff : targetInterface.getBuffs()) {
             if (buff instanceof ArmorBuff && buff != this) {
                 armorBuff = (ArmorBuff) buff;
-                if (armorBuff.getProtectionPercent() != this.getProtectionPercent()) {
+                if (armorBuff.getProtectionPercent()
+                        != getProtectionPercent()) {
                     armorBuff = null;
                 } else {
                     break;
@@ -49,23 +50,24 @@ public class ArmorBuff extends AbstractBuff {
         if (armorBuff == null) {
             super.attachToCharacter(targetInterface);
         } else {
-            final float newAmount = FastMath.clamp(armorBuff.getAmount() + this.getAmount(), armorBuff.getAmount(), 100);
-            armorBuff.setAmount(newAmount);           
+            float newAmount = FastMath.clamp(armorBuff.getAmount()
+                    + getAmount(), armorBuff.getAmount(), 100);
+            armorBuff.setAmount(newAmount);
         }
 
     }
 
     public float mitigate(float damage) {
-        final float portion = damage * this.protectionPercent;
-        final float amountAbsorbed = FastMath.clamp(portion, 0, this.amount);
+        float portion = damage * protectionPercent;
+        float amountAbsorbed = FastMath.clamp(portion, 0, amount);
         damage -= amountAbsorbed;
-        this.amount -= amountAbsorbed;
+        amount -= amountAbsorbed;
         return damage;
     }
 
     @Override
     public boolean shouldContinue() {
-        return super.shouldContinue() && this.amount > 0;
+        return super.shouldContinue() && amount > 0;
     }
 
     public float getAmount() {
@@ -78,5 +80,23 @@ public class ArmorBuff extends AbstractBuff {
 
     public void setAmount(float amount) {
         this.amount = amount;
+    }
+
+    static public class MyBuilder extends AbstractBuffBuilder {
+
+        private float amount;
+        private float protectionPercent;
+
+        public MyBuilder(float duration, float amount,
+                float protectionPercent) {
+            super(duration);
+            this.amount = amount;
+            this.protectionPercent = protectionPercent;
+        }
+
+        @Override
+        public ArmorBuff build() {
+            return set(new ArmorBuff(amount, protectionPercent, duration));
+        }
     }
 }

@@ -12,12 +12,10 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.ACastSelfBuff;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.ArmorBuff;
@@ -26,9 +24,9 @@ import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
+public class Bedrock extends Spell {
 
-public class Bedrock extends Spell{
-    {   
+    {
         iconName = "MineralArmor.png";
     }
 
@@ -44,18 +42,20 @@ public class Bedrock extends Spell{
 
         final Bedrock spell = new Bedrock("Bedrock", cooldown,
                 range, castTime);
+
+        final ArmorBuff.MyBuilder armorBuilder =
+                new ArmorBuff.MyBuilder(4f, 500, 0.55f);
+        armorBuilder.setTypeId(BuffTypeIds.BEDROCK);
+        
+        final SlowCC.MyBuilder slowBuilder = new SlowCC.MyBuilder(4f, 0.75f);
+        slowBuilder.setTypeId(-1);
+
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastSelfBuff action = new ACastSelfBuff();
-                ArmorBuff armor = new ArmorBuff(500f, 0.55f, -1, 4f);
-                armor.setTypeId(BuffTypeIds.BEDROCK);
-                armor.setOwnerInterface(caster
-                        .getControl(CInfluenceInterface.class));
-                action.addBuff(armor);
-                SlowCC slow = new SlowCC(-1, 4f, 0.75f);
-                slow.setTypeId(-1);
-                action.addBuff(slow);
+                action.addBuff(armorBuilder);
+                action.addBuff(slowBuilder);
                 return action;
             }
         };
@@ -64,5 +64,4 @@ public class Bedrock extends Spell{
 
         return spell;
     }
-
 }
