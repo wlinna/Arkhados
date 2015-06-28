@@ -9,7 +9,8 @@ are all awesome!
 
 ## Graphics ##
 
-- Kimmo Näveri – Logo
+- William Linna - Logo and some icons and animations
+- Kimmo Näveri - Original logo
 
 ## Sound effects ##
 
@@ -17,8 +18,8 @@ are all awesome!
 
 ## Designs ##
 
-- Allexit - Hero designs
 - William Linna - Hero designs
+- Allexit - Hero designs
 
 ## Code contributions ##
 
@@ -261,5 +262,4 @@ of that sound is used (with small modifications) for Petrify.wav. Sound is licen
 Independent.nu for DeepWounds sound effect. DeepWounds.wav is based on
 Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). Sound is licensed under CC0
 
-
-NOTE: There will be ingame credits screen when game matures more.
+[skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
