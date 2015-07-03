@@ -15,6 +15,8 @@ Arkhados.
 
 It's programmed in Java using jMonkeyEngine 3.
 
+<iframe src="https://player.vimeo.com/video/131966456" width="500" height="313" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="https://vimeo.com/131966456">Arkhados 0.5 trailer</a> from <a href="https://vimeo.com/user41505101">William Linna</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
 ## Dependencies ##
 
 In order to compile, you need stable release of jMonkeyEngine 3 and
