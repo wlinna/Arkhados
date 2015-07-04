@@ -1,0 +1,19 @@
+---
+layout: page
+title: Media
+permalink: /media/
+---
+
+<div class="home">
+
+  <div class="thumbnails">
+    {% for image in site.data.screenshots %}
+    <div class="thumbnail">
+      <a href="{{ site.['baseurl'] }}/screenshots/{{ image.src }}">
+        <img class="thumbnail-img" src="{{ site.['baseurl'] }}/screenshots/{{ image.src }}"
+             alt="screenshot" />
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
