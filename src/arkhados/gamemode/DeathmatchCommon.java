@@ -104,7 +104,6 @@ public class DeathmatchCommon {
 
         if (stateManager.getState(Sender.class).isServer()) {
             killLimit = Settings.get().DeathMatch().getKillLimit();
-            killLimit = 2;
             respawnTime =
                     Settings.get().DeathMatch().getRespawnTime();
             syncManager.setEnabled(true);
