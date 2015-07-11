@@ -63,6 +63,9 @@ public class MessageUtils {
         Serializer.registerClass(ChatMessage.class);
         Serializer.registerClass(CmdSelectHero.class);
         Serializer.registerClass(CmdPlayerStatusChange.class);
+        Serializer.registerClass(CmdTeamOptions.class);
+        Serializer.registerClass(CmdSelectTeam.class);
+        Serializer.registerClass(CmdTeamAcceptance.class);
         // </Lobby>
 
         // <Sync>

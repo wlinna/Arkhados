@@ -18,10 +18,12 @@ import arkhados.CharacterInteraction;
 import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.PlayerData;
+import arkhados.ServerFogManager;
 import arkhados.SyncManager;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.WorldManager;
+import arkhados.controls.PlayerEntityAwareness;
 import arkhados.effects.DeathManager;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
@@ -102,7 +104,7 @@ public class DeathmatchCommon {
 
         if (stateManager.getState(Sender.class).isServer()) {
             killLimit = Settings.get().DeathMatch().getKillLimit();
-            killLimit = 1;
+            killLimit = 2;
             respawnTime =
                     Settings.get().DeathMatch().getRespawnTime();
             syncManager.setEnabled(true);
@@ -116,24 +118,33 @@ public class DeathmatchCommon {
         }
     }
 
-    void setNifty(Nifty nifty) {
+    void setNifty(final Nifty nifty) {
         this.nifty = nifty;
 
         if (Globals.replayMode) {
             return;
         }
 
-        DeathMatchHeroSelectionLayerBuilder layerBuilder =
-                new DeathMatchHeroSelectionLayerBuilder();
+        app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                DeathMatchHeroSelectionLayerBuilder layerBuilder =
+                        new DeathMatchHeroSelectionLayerBuilder();
 
-        Screen screen = nifty.getScreen("default_hud");
+                Screen screen = nifty.getScreen("default_hud");
 
-        heroSelectionLayer =
-                layerBuilder.build(nifty, screen, screen.getRootElement());
+                heroSelectionLayer = layerBuilder
+                        .build(nifty, screen, screen.getRootElement());
+                heroSelectionLayer.hideWithoutEffect();
 
-        DeathMatchHeroSelectionLayerController control = heroSelectionLayer
-                .getControl(DeathMatchHeroSelectionLayerController.class);
-        control.setStateManager(stateManager);
+                DeathMatchHeroSelectionLayerController control =
+                        heroSelectionLayer.getControl(
+                        DeathMatchHeroSelectionLayerController.class);
+                control.setStateManager(stateManager);
+
+                return null;
+            }
+        });
     }
 
     void update(float tpf) {
@@ -213,6 +224,29 @@ public class DeathmatchCommon {
         if (playerId == myPlayerId) {
             handleOwnDeath();
         }
+    }
+
+    void preparePlayer(final int playerId) {
+        app.enqueue(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                DeathMatchPlayerTracker tracker =
+                        new DeathMatchPlayerTracker(0.5f);
+                getTrackers().put(playerId, tracker);
+
+                ServerFogManager fogManager =
+                        stateManager.getState(ServerFogManager.class);
+                if (fogManager != null) { // Same as asking for if this is server
+                    PlayerEntityAwareness awareness =
+                            fogManager.createAwarenessForPlayer(playerId);
+                    fogManager.teachAboutPrecedingEntities(awareness);
+
+                    getCanPickHeroMap().put(playerId, Boolean.TRUE);
+                    CharacterInteraction.addPlayer(playerId);
+                }
+                return null;
+            }
+        });
     }
 
     void playerChoseHero(final int playerId, final String heroName) {
@@ -423,8 +457,7 @@ public class DeathmatchCommon {
     int getKillLimit() {
         return killLimit;
     }
-    
-    
+
     Element getHeroSelectionLayer() {
         return heroSelectionLayer;
     }
@@ -437,8 +470,7 @@ public class DeathmatchCommon {
         return app;
     }
 
-    public HashMap<Integer, DeathMatchPlayerTracker> getTrackers() {
+    HashMap<Integer, DeathMatchPlayerTracker> getTrackers() {
         return trackers;
     }
-
 }

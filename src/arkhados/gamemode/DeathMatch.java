@@ -35,7 +35,6 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.HostedConnection;
 import de.lessvoid.nifty.Nifty;
-import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -94,28 +93,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
     }
 
     @Override
-    public void playerJoined(final int playerId) {
-
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                DeathMatchPlayerTracker tracker =
-                        new DeathMatchPlayerTracker(0.5f);
-                common.getTrackers().put(playerId, tracker);
-
-                ServerFogManager fogManager =
-                        stateManager.getState(ServerFogManager.class);
-                if (fogManager != null) { // Same as asking for if this is server
-                    PlayerEntityAwareness awareness =
-                            fogManager.createAwarenessForPlayer(playerId);
-                    fogManager.teachAboutPrecedingEntities(awareness);
-
-                    common.getCanPickHeroMap().put(playerId, Boolean.TRUE);
-                    CharacterInteraction.addPlayer(playerId);
-                }
-                return null;
-            }
-        });
+    public void playerJoined(int playerId) {
+        common.preparePlayer(playerId);
     }
 
     @Override
@@ -175,6 +154,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
         common.setNifty(nifty);
+        common.getHeroSelectionLayer().show();
     }
 
     @Override

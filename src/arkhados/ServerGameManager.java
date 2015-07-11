@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Sender;
@@ -50,10 +49,8 @@ public class ServerGameManager extends AbstractAppState {
 
         this.app = app;
 
-        if (gameMode instanceof DeathMatch) {
-            ServerMain serverApp = (ServerMain) app;
-            serverApp.startGame();
-        }
+        ServerMain serverApp = (ServerMain) app;
+        serverApp.startGame();
     }
 
     public synchronized boolean startGame() {
@@ -92,7 +89,7 @@ public class ServerGameManager extends AbstractAppState {
     public GameMode getGameMode() {
         return gameMode;
     }
-    
+
     public void playerJoined(int playerId) {
         gameMode.playerJoined(playerId);
     }
