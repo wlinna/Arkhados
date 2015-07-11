@@ -26,7 +26,9 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbsorbingShieldBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.influences.DamageOverTimeInfluence;
+import arkhados.util.PhysicsWorkaround;
 import arkhados.util.UserDataStrings;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Vector3f;
@@ -37,6 +39,7 @@ import com.jme3.scene.Node;
  * @author william
  */
 public class PurifyingFlame extends Spell {
+
     public static final float COOLDOWN = 12f;
 
     {
@@ -60,9 +63,9 @@ public class PurifyingFlame extends Spell {
             public EntityAction newAction(Node caster, Vector3f vec) {
 
                 // TODO: Get this from BuffInformation
-                final float duration = 3f;
-                final ACastSelfBuff action = new ACastSelfBuff();
-                final Node aoeContainer = new Node("purifying-flame");
+                float duration = 3f;
+                ACastSelfBuff action = new ACastSelfBuff();
+                Node aoeContainer = new Node("purifying-flame");
 
                 if (worldManager.isServer()) {
                     int playerId =
@@ -113,11 +116,14 @@ public class PurifyingFlame extends Spell {
                 CTimedExistence timedExistence =
                         new CTimedExistence(duration);
                 aoeContainer.addControl(timedExistence);
-                timedExistence.setSpace(caster
-                        .getControl(CCharacterPhysics.class)
-                        .getPhysicsSpace());
+
+                PhysicsSpace physicsSpace = caster.getControl(
+                        CCharacterPhysics.class).getPhysicsSpace();
+
+                timedExistence.setSpace(physicsSpace);
 
                 caster.attachChild(aoeContainer);
+                PhysicsWorkaround.addAll(physicsSpace, aoeContainer);
 
                 return action;
             }
