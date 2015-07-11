@@ -27,13 +27,12 @@ import java.util.concurrent.Callable;
  */
 public class AudioQueue {
 
+    private AudioTracker current;
     private Queue<AudioNode> queue = new LinkedList<>();
 
     public synchronized void enqueueAudio(final AudioNode audio) {
-        AudioNode current = queue.peek();
-        queue.add(audio);
-
         if (current == null) {
+            current = new AudioTracker(audio);
             Globals.app.enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
@@ -41,22 +40,50 @@ public class AudioQueue {
                     return null;
                 }
             });
+        } else {
+            queue.add(audio);
         }
     }
 
     public synchronized void update() {
-        AudioNode current = queue.peek();
-
         if (current == null) {
             return;
         }
 
-        if (current.getStatus() == AudioSource.Status.Stopped) {
-            queue.remove();
+        boolean playing = current.update();
+
+        if (!playing) {
             AudioNode next = queue.peek();
+
             if (next != null) {
                 next.play();
+                queue.remove();
+                current = new AudioTracker(next);
+            } else {
+                current = null;
             }
         }
+    }
+}
+
+class AudioTracker {
+
+    private AudioNode node;
+    private boolean hasStarted;
+
+    public AudioTracker(AudioNode node) {
+        this.node = node;
+    }
+
+    public boolean update() {
+        if (hasStarted && node.getStatus() != AudioSource.Status.Playing) {
+            return false;
+        }
+
+        if (node.getStatus() == AudioSource.Status.Playing) {
+            hasStarted = true;
+        }
+
+        return true;
     }
 }
