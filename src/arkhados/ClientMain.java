@@ -18,6 +18,7 @@ import arkhados.effects.BlindManager;
 import arkhados.effects.DeathManager;
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
+import arkhados.gamemode.TeamDeathmatch;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.KeySetter;
 import arkhados.messages.MessageUtils;
@@ -35,7 +36,6 @@ import arkhados.replay.ReplayReader;
 import arkhados.ui.ConnectionMenu;
 import arkhados.ui.MainMenu;
 import arkhados.ui.ReplayMenu;
-import arkhados.util.ValueWrapper;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
@@ -69,7 +69,7 @@ public class ClientMain extends SimpleApplication {
 
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.INFO);
-        Logger.getLogger("de.lessvoid.nifty").setLevel(Level.WARNING);
+        Logger.getLogger("de.lessvoid.nifty").setLevel(Level.INFO);
         Logger.getLogger("com.jme3.system.lwjgl.LwjglContext")
                 .setLevel(Level.SEVERE);
         Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.WARNING);
@@ -83,7 +83,7 @@ public class ClientMain extends SimpleApplication {
             fileHandler.setLevel(Level.FINE);
             fileHandler.setFormatter(new SimpleFormatter());
 
-            Logger.getLogger("").addHandler(fileHandler);
+            Logger.getLogger("").addHandler(fileHandler);            
         } catch (IOException | SecurityException ex) {
             logger.log(Level.WARNING, null, ex);
         }
@@ -265,6 +265,13 @@ public class ClientMain extends SimpleApplication {
                         gameMode = dm;
                         gameMode.initialize(ClientMain.this);
                         dm.setNifty(nifty);
+                        gameMode.startGame();
+                        break;
+                    case "TeamDeathmatch":
+                        TeamDeathmatch tdm = new TeamDeathmatch();
+                        gameMode = tdm;
+                        gameMode.initialize(ClientMain.this);
+                        tdm.setNifty(nifty);
                         gameMode.startGame();
                         break;
                 }

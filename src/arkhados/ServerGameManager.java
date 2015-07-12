@@ -16,8 +16,10 @@ package arkhados;
 
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
+import arkhados.gamemode.TeamDeathmatch;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Sender;
+import arkhados.settings.server.Settings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -34,8 +36,18 @@ public class ServerGameManager extends AbstractAppState {
     private Application app;
     private GameMode gameMode;
 
-    public ServerGameManager(GameMode gameMode) {
-        this.gameMode = gameMode;
+    public ServerGameManager() {
+        
+        switch (Settings.get().General().getGameMode()) {
+            case "Deathmatch":
+                gameMode = new DeathMatch();
+                break;
+            case "TeamDeathmatch":
+                gameMode = new TeamDeathmatch();
+                break;
+                
+        }
+
         CharacterInteraction.gameMode = gameMode;
     }
 
@@ -50,10 +62,8 @@ public class ServerGameManager extends AbstractAppState {
 
         this.app = app;
 
-        if (gameMode instanceof DeathMatch) {
-            ServerMain serverApp = (ServerMain) app;
-            serverApp.startGame();
-        }
+        ServerMain serverApp = (ServerMain) app;
+        serverApp.startGame();
     }
 
     public synchronized boolean startGame() {
@@ -92,7 +102,7 @@ public class ServerGameManager extends AbstractAppState {
     public GameMode getGameMode() {
         return gameMode;
     }
-    
+
     public void playerJoined(int playerId) {
         gameMode.playerJoined(playerId);
     }

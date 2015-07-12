@@ -15,6 +15,7 @@
 package arkhados;
 
 import arkhados.gamemode.DeathMatch;
+import arkhados.gamemode.TeamDeathmatch;
 import arkhados.messages.MessageUtils;
 import arkhados.net.DefaultReceiver;
 import com.jme3.app.SimpleApplication;
@@ -79,7 +80,7 @@ public class ServerMain extends SimpleApplication {
         Globals.assetManager = getAssetManager();
         Globals.app = this;
         world = new WorldManager();
-        gameManager = new ServerGameManager(new DeathMatch());
+        gameManager = new ServerGameManager();
         physics = new BulletAppState();
         physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         flyCam.setEnabled(false);

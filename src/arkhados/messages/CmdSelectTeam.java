@@ -12,19 +12,25 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.ui.hud;
 
-import arkhados.ui.HeroSelectionBuilder;
-import de.lessvoid.nifty.builder.LayerBuilder;
+package arkhados.messages;
 
-/**
- *
- * @author william
- */
-public class DeathMatchHeroSelectionLayerBuilder extends LayerBuilder {
-    public DeathMatchHeroSelectionLayerBuilder() {
-        childLayoutCenter();        
-        panel(new HeroSelectionBuilder());
-        controller(new DeathMatchHeroSelectionLayerController());
+import arkhados.net.Command;
+import com.jme3.network.serializing.Serializable;
+
+@Serializable
+public class CmdSelectTeam implements Command {
+    public String team;
+
+    public CmdSelectTeam() {
+    }    
+    
+    public CmdSelectTeam(String team) {
+        this.team = team;        
+    }
+        
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }
