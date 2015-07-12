@@ -121,6 +121,13 @@ public class ACharge extends EntityAction
     }
 
     private void collided(Spatial target) {
+        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int targetTeam = target.getUserData(UserDataStrings.TEAM_ID);
+        
+        if (myTeam == targetTeam) {
+            return;
+        }
+        
         EntityAction aCurrent =
                 target.getControl(CActionQueue.class).getCurrent();
 

@@ -118,7 +118,7 @@ class ACastLeap extends EntityAction {
                 List<SpatialDistancePair> spatialsOnDistance =
                         Selector.getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(), spatial, 17.5f,
-                        new Selector.IsOtherTeam(myTeamId));
+                        new Selector.IsCharacterOfOtherTeam(myTeamId));
 
                 SpatialDistancePair pairSmallestDistance = null;
                 for (SpatialDistancePair pair : spatialsOnDistance) {

@@ -114,17 +114,10 @@ class ACastEarthQuake extends EntityAction {
                 ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
                         .getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(),
-                        spatial.getLocalTranslation(), splashRadius, null);
+                        spatial.getLocalTranslation(), splashRadius,
+                        new Selector.IsCharacterOfOtherTeam(teamId));
 
                 for (SpatialDistancePair pair : spatialsWithinDistance) {
-                    if (pair.spatial.getControl(CInfluenceInterface.class)
-                            == null) {
-                        continue;
-                    } else if (pair.spatial.getUserData(UserDataStrings.TEAM_ID)
-                            .equals(teamId)) {
-                        continue;
-                    }
-
                     pair.spatial.getControl(CActionQueue.class)
                             .enqueueAction(new AKnockup());
                 }

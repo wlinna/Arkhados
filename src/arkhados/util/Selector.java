@@ -142,12 +142,12 @@ public class Selector {
         Selector.world = world;
     }
 
-    public static class IsOtherTeam implements
+    public static class IsCharacterOfOtherTeam implements
             Predicate<Spatial> {
 
         private final int myTeam;
 
-        public IsOtherTeam(int myTeam) {
+        public IsCharacterOfOtherTeam(int myTeam) {
             this.myTeam = myTeam;
         }
 

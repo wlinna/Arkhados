@@ -72,7 +72,7 @@ public class ASplash extends EntityAction {
     public boolean update(float tpf) {
         Predicate<Spatial> predicate = excludedTeam == null
                 ? null
-                : new Selector.IsOtherTeam(excludedTeam);
+                : new Selector.IsCharacterOfOtherTeam(excludedTeam);
         
         List<SpatialDistancePair> spatialsOnDistance = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
