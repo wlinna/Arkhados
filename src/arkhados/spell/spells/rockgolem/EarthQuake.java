@@ -114,7 +114,7 @@ class ACastEarthQuake extends EntityAction {
                 ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
                         .getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(),
-                        spatial.getLocalTranslation(), splashRadius);
+                        spatial.getLocalTranslation(), splashRadius, null);
 
                 for (SpatialDistancePair pair : spatialsWithinDistance) {
                     if (pair.spatial.getControl(CInfluenceInterface.class)

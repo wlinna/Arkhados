@@ -16,6 +16,7 @@ package arkhados.util;
 
 import arkhados.SpatialDistancePair;
 import arkhados.WorldManager;
+import arkhados.controls.CInfluenceInterface;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -57,12 +58,15 @@ public class Selector {
         rightNormal.set(rightNormal.z, 0, -rightNormal.x);
         Plane rightPlane = new Plane(rightNormal, location.dot(rightNormal));
 
-        T spatialDistances = getSpatialsWithinDistance(collection, location, range);
+        T spatialDistances = getSpatialsWithinDistance(collection,
+                location, range, null);
 
-        for (Iterator<SpatialDistancePair> it = spatialDistances.iterator(); it.hasNext();) {
+        for (Iterator<SpatialDistancePair> it = spatialDistances.iterator();
+                it.hasNext();) {
             SpatialDistancePair spatialDistancePair = it.next();
 
-            if (!Selector.isInCone(leftPlane, rightPlane, spatialDistancePair.spatial)) {
+            if (!Selector.isInCone(leftPlane, rightPlane,
+                    spatialDistancePair.spatial)) {
                 it.remove();
                 continue;
             }
@@ -90,22 +94,28 @@ public class Selector {
     public static <T extends Collection<SpatialDistancePair>> T getSpatialsWithinDistance(
             T collection,
             Spatial spatial,
-            float distance) {
+            float distance,
+            Predicate<Spatial> predicate) {
 
         return getSpatialsWithinDistance(collection,
-                spatial.getWorldTranslation(), distance);
+                spatial.getWorldTranslation(), distance, predicate);
     }
 
     public static <T extends Collection<SpatialDistancePair>> T getSpatialsWithinDistance(
             T collection,
             Vector3f location,
-            float distance) {
+            float distance,
+            Predicate<Spatial> predicate) {
         Node worldRoot = world.getWorldRoot();
 
         for (Spatial child : worldRoot.getChildren()) {
             float distanceBetween = child.getWorldTranslation()
                     .distance(location);
             if (distanceBetween > distance) {
+                continue;
+            }
+
+            if (predicate != null && !predicate.test(child)) {
                 continue;
             }
 
@@ -130,5 +140,24 @@ public class Selector {
 
     public static void setWorldManager(WorldManager world) {
         Selector.world = world;
+    }
+
+    public static class IsOtherTeam implements
+            Predicate<Spatial> {
+
+        private final int myTeam;
+
+        public IsOtherTeam(int myTeam) {
+            this.myTeam = myTeam;
+        }
+
+        @Override
+        public boolean test(Spatial spatial) {
+            if (spatial.getControl(CInfluenceInterface.class) == null) {
+                return false;
+            }
+
+            return !spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeam);
+        }
     }
 }

@@ -19,5 +19,5 @@ package arkhados.util;
  * @author william
  */
 public interface Predicate<T> {
-    public boolean test(T value);
+    public boolean test(T value);    
 }

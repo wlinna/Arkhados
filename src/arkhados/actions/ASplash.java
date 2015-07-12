@@ -21,6 +21,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.DistanceScaling;
+import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserDataStrings;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -69,22 +70,19 @@ public class ASplash extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
+        Predicate<Spatial> predicate = excludedTeam == null
+                ? null
+                : new Selector.IsOtherTeam(excludedTeam);
+        
         List<SpatialDistancePair> spatialsOnDistance = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
-                spatial, radius);
+                spatial, radius, predicate);
 
         for (SpatialDistancePair pair : spatialsOnDistance) {
             CInfluenceInterface targetInterface =
                     pair.spatial.getControl(CInfluenceInterface.class);
-            if (targetInterface == null || excluded.contains(pair.spatial)) {
+            if (excluded.contains(pair.spatial)) {
                 continue;
-            }
-
-            if (excludedTeam != null) {
-                int teamId = pair.spatial.getUserData(UserDataStrings.TEAM_ID);
-                if (teamId == excludedTeam) {
-                    continue;
-                }
             }
 
             // TODO: Determine base damage somewhere else so that we can apply damage modifier to it

@@ -114,27 +114,22 @@ class ACastLeap extends EntityAction {
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
+                int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
                 List<SpatialDistancePair> spatialsOnDistance =
                         Selector.getSpatialsWithinDistance(
-                        new ArrayList<SpatialDistancePair>(), spatial, 17.5f);
+                        new ArrayList<SpatialDistancePair>(), spatial, 17.5f,
+                        new Selector.IsOtherTeam(myTeamId));
 
                 SpatialDistancePair pairSmallestDistance = null;
                 for (SpatialDistancePair pair : spatialsOnDistance) {
                     // Check if spatial is character
-                    if (pair.spatial.getControl(CInfluenceInterface.class)
-                            == null) {
-                        continue;
-                    }
-
-                    if (pair.spatial == spatial) {
-                        continue;
-                    }
 
                     if (pairSmallestDistance == null
                             || pair.distance < pairSmallestDistance.distance) {
                         pairSmallestDistance = pair;
                     }
                 }
+
                 if (pairSmallestDistance != null) {
                     EntityAction currentAction = pairSmallestDistance.spatial
                             .getControl(CActionQueue.class).getCurrent();

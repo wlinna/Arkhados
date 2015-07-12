@@ -109,7 +109,7 @@ class AFeralScream extends EntityAction {
 
         List<SpatialDistancePair> spatialDistances = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
-                spatial, range);
+                spatial, range, null);
 
         FearCC.MyBuilder fearBuilder = new FearCC.MyBuilder(2f);
         fearBuilder.setOwnerInterface(
