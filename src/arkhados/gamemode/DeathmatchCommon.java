@@ -103,9 +103,6 @@ public class DeathmatchCommon {
         firstBloodHappened = false;
 
         if (stateManager.getState(Sender.class).isServer()) {
-            killLimit = Settings.get().DeathMatch().getKillLimit();
-            respawnTime =
-                    Settings.get().DeathMatch().getRespawnTime();
             syncManager.setEnabled(true);
             syncManager.startListening();
             Globals.worldRunning = true;
@@ -124,26 +121,19 @@ public class DeathmatchCommon {
             return;
         }
 
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                DeathMatchHeroSelectionLayerBuilder layerBuilder =
-                        new DeathMatchHeroSelectionLayerBuilder();
+        DeathMatchHeroSelectionLayerBuilder layerBuilder =
+                new DeathMatchHeroSelectionLayerBuilder();
 
-                Screen screen = nifty.getScreen("default_hud");
+        Screen screen = nifty.getScreen("default_hud");
 
-                heroSelectionLayer = layerBuilder
-                        .build(nifty, screen, screen.getRootElement());
-                heroSelectionLayer.hideWithoutEffect();
+        heroSelectionLayer = layerBuilder
+                .build(nifty, screen, screen.getRootElement());
+        heroSelectionLayer.hideWithoutEffect();
 
-                DeathMatchHeroSelectionLayerController control =
-                        heroSelectionLayer.getControl(
-                        DeathMatchHeroSelectionLayerController.class);
-                control.setStateManager(stateManager);
-
-                return null;
-            }
-        });
+        DeathMatchHeroSelectionLayerController control =
+                heroSelectionLayer.getControl(
+                DeathMatchHeroSelectionLayerController.class);
+        control.setStateManager(stateManager);
     }
 
     void update(float tpf) {
@@ -162,6 +152,8 @@ public class DeathmatchCommon {
             case Topic.FIRST_BLOOD_HAPPENED:
                 firstBloodHappened = true;
                 break;
+
+
         }
     }
 
@@ -194,7 +186,6 @@ public class DeathmatchCommon {
 
         int killingSpree = 0;
         int combo = 0;
-
         if (!deathByEnvironment) {
             DeathMatchPlayerTracker killer = trackers.get(killersPlayerId);
             killer.addKill();
@@ -203,7 +194,8 @@ public class DeathmatchCommon {
             combo = killer.getCombo();
         }
 
-        sender.addCommand(new CmdPlayerKill(playerId, killersPlayerId,
+        sender.addCommand(
+                new CmdPlayerKill(playerId, killersPlayerId,
                 killingSpree, combo, endedSpree));
     }
 
@@ -216,10 +208,12 @@ public class DeathmatchCommon {
         String killerName = getPlayerName(killersId);
 
         killedMessage(playerName, killerName, endedSpree);
-        firstBloodMessage(killersId);
-        comboMessage(killerName, combo);
-        killingSpreeMessage(killerName, killingSpree);
 
+        firstBloodMessage(killersId);
+
+        comboMessage(killerName, combo);
+
+        killingSpreeMessage(killerName, killingSpree);
         if (playerId == myPlayerId) {
             handleOwnDeath();
         }
@@ -235,7 +229,8 @@ public class DeathmatchCommon {
 
                 ServerFogManager fogManager =
                         stateManager.getState(ServerFogManager.class);
-                if (fogManager != null) { // Same as asking for if this is server
+                if (fogManager
+                        != null) { // Same as asking for if this is server
                     PlayerEntityAwareness awareness =
                             fogManager.createAwarenessForPlayer(playerId);
                     fogManager.teachAboutPrecedingEntities(awareness);
@@ -243,6 +238,7 @@ public class DeathmatchCommon {
                     getCanPickHeroMap().put(playerId, Boolean.TRUE);
                     CharacterInteraction.addPlayer(playerId);
                 }
+
                 return null;
             }
         });
@@ -281,8 +277,10 @@ public class DeathmatchCommon {
                 CmdSetPlayersCharacter playersCharacterCommand =
                         new CmdSetPlayersCharacter(entityId, playerId);
 
-                stateManager.getState(ServerSender.class)
+                stateManager
+                        .getState(ServerSender.class)
                         .addCommand(playersCharacterCommand);
+
                 return null;
             }
         };
@@ -366,16 +364,23 @@ public class DeathmatchCommon {
                 UserCommandManager userCommandManager =
                         stateManager.getState(UserCommandManager.class);
                 int characterId = userCommandManager.getCharacterId();
+
                 worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
+
                 userCommandManager.nullifyCharacter();
                 ClientHudManager hudManager =
                         stateManager.getState(ClientHudManager.class);
+
                 hudManager.clearAllButCharactersInfo();
+
                 hudManager.showStatistics();
+
                 stateManager.getState(DeathManager.class).death();
                 if (!Globals.replayMode) {
                     getHeroSelectionLayer().showWithoutEffects();
                 }
+
+
                 return null;
             }
         });
@@ -385,7 +390,8 @@ public class DeathmatchCommon {
             int endedSpree) {
         String message = DeathMatchMessageMaker
                 .killed(playerName, killerName, endedSpree);
-        stateManager.getState(ClientHudManager.class).addMessage(message);
+        stateManager
+                .getState(ClientHudManager.class).addMessage(message);
     }
 
     private void firstBloodMessage(int killersId) {
@@ -398,7 +404,8 @@ public class DeathmatchCommon {
         String name = getPlayerName(killersId);
 
         String message = String.format("%s just drew First Blood!", name);
-        stateManager.getState(ClientHudManager.class).addMessage(message);
+        stateManager
+                .getState(ClientHudManager.class).addMessage(message);
 
         playAnnouncerSound(FIRST_BLOOD_PATH);
     }
@@ -411,9 +418,11 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.spree(playerName, spree);
-        stateManager.getState(ClientHudManager.class).addMessage(message);
+        stateManager
+                .getState(ClientHudManager.class).addMessage(message);
 
         String audioPath = spreeAnnouncements.get(spree);
+
         playAnnouncerSound(audioPath);
     }
 
@@ -425,9 +434,11 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.combo(playerName, combo);
-        stateManager.getState(ClientHudManager.class).addMessage(message);
+        stateManager
+                .getState(ClientHudManager.class).addMessage(message);
 
         String audioPath = comboAnnouncements.get(combo);
+
         playAnnouncerSound(audioPath);
     }
 
@@ -471,5 +482,13 @@ public class DeathmatchCommon {
 
     HashMap<Integer, DeathMatchPlayerTracker> getTrackers() {
         return trackers;
+    }
+
+    public void setKillLimit(int killLimit) {
+        this.killLimit = killLimit;
+    }
+
+    public void setRespawnTime(float respawnTime) {
+        this.respawnTime = respawnTime;
     }
 }

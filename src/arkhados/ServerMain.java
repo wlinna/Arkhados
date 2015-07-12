@@ -80,7 +80,7 @@ public class ServerMain extends SimpleApplication {
         Globals.assetManager = getAssetManager();
         Globals.app = this;
         world = new WorldManager();
-        gameManager = new ServerGameManager(new TeamDeathmatch());
+        gameManager = new ServerGameManager();
         physics = new BulletAppState();
         physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         flyCam.setEnabled(false);

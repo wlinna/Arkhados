@@ -30,6 +30,7 @@ import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
+import arkhados.settings.server.Settings;
 import arkhados.ui.hud.ServerClientDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -60,6 +61,10 @@ public class DeathMatch extends GameMode implements CommandHandler {
         syncManager = stateManager.getState(SyncManager.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
         common.initialize(app);
+        
+        Settings.Deathmatch settings = Settings.get().Deathmatch();
+        common.setKillLimit(settings.getKillLimit());
+        common.setRespawnTime(settings.getRespawnTime());
     }
 
     @Override

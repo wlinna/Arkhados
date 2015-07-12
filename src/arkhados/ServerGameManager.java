@@ -14,9 +14,12 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
+import arkhados.gamemode.TeamDeathmatch;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Sender;
+import arkhados.settings.server.Settings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -33,8 +36,18 @@ public class ServerGameManager extends AbstractAppState {
     private Application app;
     private GameMode gameMode;
 
-    public ServerGameManager(GameMode gameMode) {
-        this.gameMode = gameMode;
+    public ServerGameManager() {
+        
+        switch (Settings.get().General().getGameMode()) {
+            case "Deathmatch":
+                gameMode = new DeathMatch();
+                break;
+            case "TeamDeathmatch":
+                gameMode = new TeamDeathmatch();
+                break;
+                
+        }
+
         CharacterInteraction.gameMode = gameMode;
     }
 

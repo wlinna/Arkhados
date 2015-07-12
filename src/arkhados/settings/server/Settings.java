@@ -28,8 +28,9 @@ import java.util.logging.Logger;
 public class Settings {
 
     private static Settings instance = null;
-    private SettingsGeneral sg;
-    private SettingsDeathMatch sdm;
+    private SettingsGeneral general;
+    private Deathmatch dm;
+    private TeamDeathmatch tdm;
 
     private Settings() {
         if (!(new File("settings.toml").exists())) {
@@ -38,23 +39,16 @@ public class Settings {
 
         Toml toml = new Toml().parse(new File("settings.toml"));
 
-        sg = toml.getTable("General").to(SettingsGeneral.class);
-        sdm = toml.getTable("GameModes.DeathMatch")
-                .to(SettingsDeathMatch.class);
+        general = toml.getTable("General").to(SettingsGeneral.class);
+        dm = toml.getTable("GameModes.Deathmatch").to(Deathmatch.class);
+        tdm = toml.getTable("GameModes.TeamDeathmatch")
+                .to(TeamDeathmatch.class);
     }
 
     public final void generateDefaultConfigFile() {
-        try (BufferedWriter bw = 
+        try (BufferedWriter bw =
                 new BufferedWriter(new FileWriter("settings.toml"));) {
-            String newLine = System.getProperty("line.separator");
-            bw.write("[General]" + newLine
-                    + "port = 12345" + newLine
-                    + "physicsTicksPerSecond = 60.0" + newLine
-                    + "defaultSyncFrequency = 0.05" + newLine + newLine
-                    + "[GameModes]" + newLine
-                    + "[GameModes.DeathMatch]" + newLine
-                    + "killLimit = 25" + newLine
-                    + "respawnTime = 6.0");
+            bw.write(Settings.DEFAULT);
         } catch (Exception ex) {
             Logger.getLogger(Settings.class.getName())
                     .log(Level.SEVERE, null, ex);
@@ -71,10 +65,55 @@ public class Settings {
     }
 
     public SettingsGeneral General() {
-        return sg;
+        return general;
     }
 
-    public SettingsDeathMatch DeathMatch() {
-        return sdm;
+    public Deathmatch Deathmatch() {
+        return dm;
     }
+
+    public TeamDeathmatch TeamDeathmatch() {
+        return tdm;
+    }
+
+    static public class Deathmatch {
+
+        private int killLimit;
+        private float respawnTime;
+
+        public int getKillLimit() {
+            return killLimit;
+        }
+
+        public float getRespawnTime() {
+            return respawnTime;
+        }
+    }
+
+    static public class TeamDeathmatch {
+
+        private int killLimit;
+        private float respawnTime;
+
+        public int getKillLimit() {
+            return killLimit;
+        }
+
+        public float getRespawnTime() {
+            return respawnTime;
+        }
+    }
+    private static final String DEFAULT = String.format(
+            "[General]%n"
+            + "port = 12345%n"
+            + "physicsTicksPerSecond = 60.0%n"
+            + "defaultSyncFrequency = 0.05%n"
+            + "gameMode = \"TeamDeathmatch\"%n%n"
+            + "[GameModes]%n"
+            + "[GameModes.Deathmatch]%n"
+            + "killLimit = 25%n"
+            + "respawnTime = 6.0%n%n"
+            + "[GameModes.TeamDeathmatch]%n"
+            + "killLimit = 25%n"
+            + "respawnTime = 9.0%n");
 }

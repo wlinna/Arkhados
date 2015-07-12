@@ -32,6 +32,7 @@ import arkhados.net.CommandHandler;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
+import arkhados.settings.server.Settings;
 import arkhados.ui.TeamSelectionBuilder;
 import arkhados.ui.hud.ServerClientDataStrings;
 import arkhados.util.PlayerDataStrings;
@@ -84,6 +85,10 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         sync = stateManager.getState(SyncManager.class);
         world = stateManager.getState(WorldManager.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
+
+        Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();
+        common.setKillLimit(settings.getKillLimit());
+        common.setRespawnTime(settings.getRespawnTime());
     }
 
     public void setNifty(Nifty nifty) {
@@ -128,7 +133,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         if (killersPlayerId == -1) {
             return;
         }
-        
+
         int killersTeam = PlayerData.getIntData(killersPlayerId,
                 PlayerDataStrings.TEAM_ID);
 
