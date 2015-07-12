@@ -23,6 +23,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.FearCC;
 import arkhados.util.Selector;
+import arkhados.util.UserDataStrings;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -107,9 +108,11 @@ class AFeralScream extends EntityAction {
         Plane rightPlane = new Plane(rightNormal,
                 spatial.getLocalTranslation().dot(rightNormal));
 
+        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+        
         List<SpatialDistancePair> spatialDistances = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
-                spatial, range, null);
+                spatial, range, new Selector.IsCharacterOfOtherTeam(myTeam));
 
         FearCC.MyBuilder fearBuilder = new FearCC.MyBuilder(2f);
         fearBuilder.setOwnerInterface(
@@ -118,14 +121,7 @@ class AFeralScream extends EntityAction {
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
             CInfluenceInterface influenceInterface =
                     spatialDistancePair.spatial
-                    .getControl(CInfluenceInterface.class);
-
-            if (influenceInterface == null) {
-                continue;
-            }
-            if (spatialDistancePair.spatial == spatial) {
-                continue;
-            }
+                    .getControl(CInfluenceInterface.class);           
 
             if (!Selector.isInCone(leftPlane, rightPlane,
                     spatialDistancePair.spatial)) {
