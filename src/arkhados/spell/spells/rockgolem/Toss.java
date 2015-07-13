@@ -29,6 +29,7 @@ import arkhados.messages.CmdWorldEffect;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
+import arkhados.util.UserDataStrings;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -159,16 +160,22 @@ class AToss extends EntityAction {
             }
 
             private void landingEffect() {
+                int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+
                 ASplash splashAction =
                         new ASplash(Toss.SPLASH_RADIUS, 350, 0,
                         DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
                 splashAction.excludeSpatial(target);
+                splashAction.setExcludedTeam(myTeam);
                 splashAction.setCasterInterface(spatial
                         .getControl(CInfluenceInterface.class));
                 splashAction.update(0f);
-                if (stonePhysics == null) {
+
+                int targetTeam = target.getUserData(UserDataStrings.TEAM_ID);
+
+                if (stonePhysics == null && myTeam != targetTeam) {
                     CInfluenceInterface targetInterface =
                             target.getControl(CInfluenceInterface.class);
                     CInfluenceInterface myInterface =

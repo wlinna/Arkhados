@@ -142,8 +142,15 @@ public class Selector {
         Selector.world = world;
     }
 
-    public static class IsCharacterOfOtherTeam implements
-            Predicate<Spatial> {
+    public static class IsCharacter implements Predicate<Spatial> {
+
+        @Override
+        public boolean test(Spatial value) {
+            return value.getControl(CInfluenceInterface.class) != null;
+        }        
+    }
+    
+    public static class IsCharacterOfOtherTeam implements Predicate<Spatial> {
 
         private final int myTeam;
 
