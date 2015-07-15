@@ -167,4 +167,21 @@ public class Selector {
             return !spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeam);
         }
     }
+    
+    public static class IsAlliedCharacter implements Predicate<Spatial> {
+        private final int myTeam;
+
+        public IsAlliedCharacter(int myTeam) {
+            this.myTeam = myTeam;
+        }
+
+        @Override
+        public boolean test(Spatial value) {
+            if (value.getControl(CInfluenceInterface.class) == null) {
+                return false;
+            }
+            
+            return value.getUserData(UserDataStrings.TEAM_ID).equals(myTeam);
+        }        
+    }
 }
