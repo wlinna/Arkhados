@@ -17,6 +17,7 @@ package arkhados.spell;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
+import arkhados.spell.spells.shadowmancer.ShadowOrb;
 import arkhados.spell.spells.elitesoldier.BlindingRay;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
 import arkhados.spell.spells.elitesoldier.PlasmaGrenades;
@@ -133,6 +134,8 @@ public abstract class Spell {
         addSpell(entityFactory, MineralArmor.create());
         addSpell(entityFactory, Bedrock.create());
         addSpell(entityFactory, EarthQuake.create());
+        
+        addSpell(entityFactory, ShadowOrb.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

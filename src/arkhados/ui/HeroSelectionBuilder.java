@@ -60,6 +60,8 @@ public class HeroSelectionBuilder extends PanelBuilder {
                         new HeroButtonBuilder("Venator", "Venator")));
                 panel(new HeroCategoryBuilder("Tank",
                         new HeroButtonBuilder("RockGolem", "Rock Golem")));
+                panel(new HeroCategoryBuilder("Support", 
+                        new HeroButtonBuilder("Shadowmancer", "Shadowmancer")));
             }
         });
     }
