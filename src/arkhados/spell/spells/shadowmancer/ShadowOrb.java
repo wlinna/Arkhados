@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.shadowmancer;
 
-import arkhados.spell.spells.embermage.*;
 import arkhados.CollisionGroups;
 import arkhados.WorldManager;
 import arkhados.actions.EntityAction;
@@ -27,8 +26,6 @@ import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.BrimstoneBuff;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
@@ -77,11 +74,6 @@ public class ShadowOrb extends Spell {
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile castProjectile =
                         new ACastProjectile(spell, Spell.worldManager);
-                AbstractBuffBuilder ignite =
-                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
-                if (ignite != null) {
-                    castProjectile.addBuff(ignite);
-                }
                 return castProjectile;
             }
         };
@@ -93,24 +85,22 @@ public class ShadowOrb extends Spell {
 }
 class OrbBuilder extends AbstractNodeBuilder {
 
-    private ParticleEmitter createFireEmitter() {
-        ParticleEmitter purple = new ParticleEmitter("fire-emitter",
+    private ParticleEmitter createPurpleEmitter() {
+        ParticleEmitter purple = new ParticleEmitter("purple-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(assetManager,
+        Material materialPurple = new Material(assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture",
+        materialPurple.setTexture("Texture",
                 assetManager.loadTexture("Effects/flame.png"));
-        purple.setMaterial(materialRed);
+        purple.setMaterial(materialPurple);
         purple.setImagesX(2);
         purple.setImagesY(2);
         purple.setSelectRandomImage(true);
-        purple.setStartColor(new ColorRGBA(0.8f, 0.0150f, 0.80f, 1.0f));
-        purple.setEndColor(new ColorRGBA(0.8f, 0f, 0.80f, 0.5f));
+        purple.setStartColor(new ColorRGBA(0.8f, 0.015f, 0.8f, 1f));
+        purple.setEndColor(new ColorRGBA(0.8f, 0f, 0.8f, 0.5f));
         purple.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
         purple.setStartSize(2.5f);
-        purple.setEndSize(1.0f);
+        purple.setEndSize(1f);
         purple.setGravity(Vector3f.ZERO);
         purple.setLowLife(0.1f);
         purple.setHighLife(0.1f);
@@ -130,7 +120,6 @@ class OrbBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        // TODO: Give at least bit better material
         Material material =
                 new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
@@ -142,21 +131,14 @@ class OrbBuilder extends AbstractNodeBuilder {
         node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
 
         if (worldManager.isClient()) {
-            ParticleEmitter fire = createFireEmitter();
-            node.attachChild(fire);
-
-//            ParticleEmitter smoke = createSmokeEmitter();
-//            node.attachChild(smoke);
-
+            ParticleEmitter purple = createPurpleEmitter();
+            node.attachChild(purple);
+            
             node.addControl(new CEntityEvent());
-            /**
-             * Here we specify what happens on client side when fireball is
-             * removed. In this case we want explosion effect.
-             */
+            
             AOrbRemoval removalAction =
                     new AOrbRemoval(assetManager);
-            removalAction.setFireEmitter(fire);
-//            removalAction.setSmokeTrail(smoke);
+            removalAction.setPurpleEmitter(purple);
 
             node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
@@ -194,11 +176,9 @@ class OrbBuilder extends AbstractNodeBuilder {
 class AOrbRemoval implements ARemovalEvent {
 
     private ParticleEmitter purple;
-    private AssetManager assetManager;
     private AudioNode sound;
 
     public AOrbRemoval(AssetManager assetManager) {
-        this.assetManager = assetManager;
         sound = new AudioNode(assetManager,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
@@ -206,48 +186,8 @@ class AOrbRemoval implements ARemovalEvent {
         sound.setVolume(1f);
     }
 
-    public void setFireEmitter(ParticleEmitter fire) {
-        this.purple = fire;
-    }
-
-//    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
-//        smokeTrail.setParticlesPerSec(0);
-//        worldRoot.attachChild(smokeTrail);
-//        smokeTrail.setLocalTranslation(worldTranslation);
-//        smokeTrail.addControl(new CTimedExistence(5f));
-//    }
-
-    private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
-        ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
-                ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(assetManager,
-                "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
-        smokePuff.setMaterial(materialGray);
-        smokePuff.setImagesX(2);
-        smokePuff.setImagesY(2);
-        smokePuff.setSelectRandomImage(true);
-        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.2f));
-        smokePuff.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
-
-        smokePuff.getParticleInfluencer()
-                .setInitialVelocity(Vector3f.UNIT_X.mult(5.0f));
-        smokePuff.getParticleInfluencer().setVelocityVariation(1f);
-
-        smokePuff.setStartSize(2.0f);
-        smokePuff.setEndSize(6.0f);
-        smokePuff.setGravity(Vector3f.ZERO);
-        smokePuff.setLowLife(0.75f);
-        smokePuff.setHighLife(1f);
-        smokePuff.setParticlesPerSec(0);
-
-        smokePuff.setRandomAngle(true);
-
-        smokePuff.setShape(new EmitterSphereShape(Vector3f.ZERO, 4.0f));
-        worldRoot.attachChild(smokePuff);
-        smokePuff.setLocalTranslation(worldTranslation);
-        smokePuff.emitAllParticles();
+    public void setPurpleEmitter(ParticleEmitter purple) {
+        this.purple = purple;
     }
 
     @Override
@@ -257,28 +197,26 @@ class AOrbRemoval implements ARemovalEvent {
         }
 
         Vector3f worldTranslation = purple.getParent().getLocalTranslation();
-//        leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-        createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
 
         purple.removeFromParent();
         worldManager.getWorldRoot().attachChild(purple);
         purple.setLocalTranslation(worldTranslation);
         purple.addControl(new CTimedExistence(1f));
 
-        purple.setStartColor(new ColorRGBA(0.3f, 0.0150f, 0.3f, 0.80f));
+        purple.setStartColor(new ColorRGBA(0.3f, 0.015f, 0.3f, 0.8f));
         purple.setEndColor(new ColorRGBA(0f, 0f, 0f, 0f));
         purple.setLowLife(0.1f);
         purple.setHighLife(0.3f);
         purple.setNumParticles(100);
-        purple.setStartSize(0.50f);
-        purple.setEndSize(3.0f);
+        purple.setStartSize(0.5f);
+        purple.setEndSize(3f);
         purple.getParticleInfluencer()
-                .setInitialVelocity(Vector3f.UNIT_X.mult(15.0f));
+                .setInitialVelocity(Vector3f.UNIT_X.mult(15f));
         purple.getParticleInfluencer().setVelocityVariation(1f);
 
-        purple.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
+        purple.setShape(new EmitterSphereShape(Vector3f.ZERO, 2f));
         purple.emitAllParticles();
-        purple.setParticlesPerSec(0.0f);
+        purple.setParticlesPerSec(0f);
 
         sound.setLocalTranslation(worldTranslation);
         sound.play();
