@@ -42,14 +42,17 @@ public class ACastBuff extends EntityAction {
     public boolean update(float tpf) {
         SpatialDistancePair targetPair = getTarget();
         
+        CInfluenceInterface caster =
+                spatial.getControl(CInfluenceInterface.class);
+        
         // If no allies are found, cast on self
         CInfluenceInterface target = targetPair != null
                 ? targetPair.spatial.getControl(CInfluenceInterface.class)
-                : spatial.getControl(CInfluenceInterface.class);
+                : caster;
         
         for (AbstractBuffBuilder builder : buffs) {
             AbstractBuff buff = builder.build();
-            buff.setOwnerInterface(target);
+            buff.setOwnerInterface(caster);
             buff.attachToCharacter(target);
         }
 
