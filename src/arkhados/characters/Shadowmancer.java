@@ -101,8 +101,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         spellCastControl.putSpell(Spell.getSpell("Shadow Orb"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
-        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), M2Id);
-        spellCastControl.putSpell(Spell.getSpell("Magma Release"), -M2Id);
+        spellCastControl.putSpell(Spell.getSpell("Dark Energy"), M2Id);
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
@@ -113,7 +112,6 @@ public class Shadowmancer extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2Id);
         spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
 
         /**
@@ -141,8 +139,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
                 new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation("Shadow Orb", attackAnim);
-        characterAnimControl.addSpellAnimation("Magma Bash", attackAnim);
-        characterAnimControl.addSpellAnimation("Magma Release", attackAnim);
+        characterAnimControl.addSpellAnimation("Dark Energy", attackAnim);
         characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
         characterAnimControl.addSpellAnimation("Meteor", idleAnim);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);

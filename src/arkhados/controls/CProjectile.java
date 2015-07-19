@@ -27,6 +27,7 @@ import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserDataStrings;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,8 +52,6 @@ public class CProjectile extends AbstractControl implements CSync {
     private boolean isProjectile = true;
     private final Set<Spatial> hurtList = new HashSet<>();
 
-    // Not used anymore but I'm saving it for projectiles that can be set
-    // to explode at selected location
     public void setTarget(Vector3f target) {
         float speedMovement =
                 getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
@@ -65,6 +64,9 @@ public class CProjectile extends AbstractControl implements CSync {
         rigidBodyControl.setLinearVelocity(direction);
         speed = direction.length();
         rigidBodyControl.setGravity(Vector3f.ZERO);
+        range =
+                rigidBodyControl.getPhysicsLocation().distance(target);
+        range = FastMath.clamp(range, 0.001f, range);
     }
 
     /**

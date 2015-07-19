@@ -43,6 +43,7 @@ import arkhados.spell.spells.rockgolem.SealingBoulder;
 import arkhados.spell.spells.rockgolem.SpiritStone;
 import arkhados.spell.spells.rockgolem.StoneFist;
 import arkhados.spell.spells.rockgolem.Toss;
+import arkhados.spell.spells.shadowmancer.DarkEnergy;
 import arkhados.spell.spells.venator.BloodFrenzy;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
@@ -136,6 +137,7 @@ public abstract class Spell {
         addSpell(entityFactory, EarthQuake.create());
         
         addSpell(entityFactory, ShadowOrb.create());
+        addSpell(entityFactory, DarkEnergy.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

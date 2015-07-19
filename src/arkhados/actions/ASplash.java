@@ -40,19 +40,20 @@ public class ASplash extends EntityAction {
     private float radius;
     private float baseDamage;
     private Float customImpulse;
-    private DistanceScaling damageDistance;
+    private DistanceScaling distanceScaling;
     private List<AbstractBuffBuilder> splashBuffs;
     private boolean splashBuffsOnly = false;
     private List<Spatial> excluded = new ArrayList<>();
     private Integer excludedTeam = null;
     private CInfluenceInterface casterInterface;
+    private float baseHeal;
 
     public ASplash(float radius, float baseDamage,
-            DistanceScaling damageDistanceScaling,
+            DistanceScaling distanceScaling,
             List<AbstractBuffBuilder> splashBuffs) {
         this.radius = radius;
         this.baseDamage = baseDamage;
-        this.damageDistance = damageDistanceScaling;
+        this.distanceScaling = distanceScaling;
         this.splashBuffs = splashBuffs;
 
         this.customImpulse = null;
@@ -64,8 +65,41 @@ public class ASplash extends EntityAction {
         this.radius = radius;
         this.baseDamage = baseDamage;
         this.customImpulse = impulse;
-        this.damageDistance = damageDistance;
+        this.distanceScaling = damageDistance;
         this.splashBuffs = splashBuffs;
+    }
+
+    public ASplash(float radius) {
+        this.radius = radius;
+    }
+
+    public ASplash damage(float amount) {
+        baseDamage = amount;
+        return this;
+    }
+
+    public ASplash heal(float amount) {
+        baseHeal = amount;
+        return this;
+    }
+
+    public ASplash impulse(float impulse) {
+        customImpulse = impulse;
+        return this;
+    }
+
+    public ASplash distanceScaling(DistanceScaling type) {
+        distanceScaling = type;
+        return this;
+    }
+    
+    public ASplash addBuff(AbstractBuffBuilder buff) {
+        if (splashBuffs == null) {
+            splashBuffs = new ArrayList<>();
+        }
+        
+        splashBuffs.add(buff);
+        return this;
     }
 
     @Override
@@ -73,27 +107,16 @@ public class ASplash extends EntityAction {
         Predicate<Spatial> predicate = excludedTeam == null
                 ? new Selector.IsCharacter()
                 : new Selector.IsCharacterOfOtherTeam(excludedTeam);
-        
+
         List<SpatialDistancePair> spatialsOnDistance = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, radius, predicate);
 
+        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+
         for (SpatialDistancePair pair : spatialsOnDistance) {
             CInfluenceInterface targetInterface =
                     pair.spatial.getControl(CInfluenceInterface.class);
-            if (excluded.contains(pair.spatial)) {
-                continue;
-            }
-
-            // TODO: Determine base damage somewhere else so that we can apply damage modifier to it
-
-            float distanceFactor = 1f - (pair.distance / radius);
-            float damageDistanceFactor = 1f;
-
-            if (damageDistance == DistanceScaling.LINEAR) {
-                damageDistanceFactor = distanceFactor;
-            }
-            final float damage = baseDamage * damageDistanceFactor;
 
             List<AbstractBuffBuilder> buffsToApply;
             if (splashBuffsOnly) {
@@ -110,39 +133,80 @@ public class ASplash extends EntityAction {
                 }
             }
 
-            CharacterInteraction.harm(casterInterface, targetInterface, damage,
-                    buffsToApply, true);
-
-            CCharacterPhysics physics =
-                    pair.spatial.getControl(CCharacterPhysics.class);
-            Float impulseFactor;
-            if (customImpulse == null) {
-                impulseFactor =
-                        spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
-            } else {
-                impulseFactor = customImpulse;
-            }
-            Vector3f impulse;
-
-            RigidBodyControl colliderPhysics =
-                    spatial.getControl(RigidBodyControl.class);
-
-            if (colliderPhysics != null && !colliderPhysics.isKinematic()) {
-                impulse = pair.spatial.getLocalTranslation()
-                        .subtract(colliderPhysics.getPhysicsLocation().setY(0))
-                        .normalizeLocal()
-                        .multLocal(impulseFactor);
-            } else {
-                impulse = pair.spatial.getLocalTranslation()
-                        .subtract(spatial.getLocalTranslation())
-                        .normalizeLocal().multLocal(impulseFactor)
-                        .multLocal(distanceFactor);
+            if (excluded.contains(pair.spatial)) {
+                continue;
             }
 
-            physics.applyImpulse(impulse);
+            if (spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeam)) {
+                positive(pair, targetInterface, buffsToApply);
+            } else {
+                negative(pair, targetInterface, buffsToApply);
+            }
         }
 
         return false;
+    }
+
+    private void positive(SpatialDistancePair target,
+            CInfluenceInterface targetInterface,
+            List<AbstractBuffBuilder> buffs) {
+        float distanceFactor = 1f - (target.distance / radius);
+        float distanceScaler = 1f;
+
+        if (distanceScaling == DistanceScaling.LINEAR) {
+            distanceScaler = distanceFactor;
+        }
+
+        final float healing = baseHeal * distanceScaler;
+
+        CharacterInteraction.help(casterInterface, targetInterface, healing,
+                buffs);
+    }
+
+    private void negative(SpatialDistancePair pair,
+            CInfluenceInterface targetInterface,
+            List<AbstractBuffBuilder> buffs) {
+
+        float distanceFactor = 1f - (pair.distance / radius);
+        float distanceScaler = 1f;
+
+        if (distanceScaling == DistanceScaling.LINEAR) {
+            distanceScaler = distanceFactor;
+        }
+
+        final float damage = baseDamage * distanceScaler;
+
+        CharacterInteraction.harm(casterInterface, targetInterface, damage,
+                buffs, true);
+
+        CCharacterPhysics physics =
+                pair.spatial.getControl(CCharacterPhysics.class);
+
+        Float impulseFactor;
+        if (customImpulse == null) {
+            impulseFactor =
+                    spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
+        } else {
+            impulseFactor = customImpulse;
+        }
+        Vector3f impulse;
+
+        RigidBodyControl colliderPhysics =
+                spatial.getControl(RigidBodyControl.class);
+
+        if (colliderPhysics != null && !colliderPhysics.isKinematic()) {
+            impulse = pair.spatial.getLocalTranslation()
+                    .subtract(colliderPhysics.getPhysicsLocation().setY(0))
+                    .normalizeLocal()
+                    .multLocal(impulseFactor);
+        } else {
+            impulse = pair.spatial.getLocalTranslation()
+                    .subtract(spatial.getLocalTranslation())
+                    .normalizeLocal().multLocal(impulseFactor)
+                    .multLocal(distanceFactor);
+        }
+
+        physics.applyImpulse(impulse);
     }
 
     public void setExcludedTeam(int teamId) {

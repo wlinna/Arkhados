@@ -44,11 +44,7 @@ public class CharacterInteraction {
             CInfluenceInterface target, final float rawDamage,
             List<AbstractBuffBuilder> buffBuilders, boolean canBreakCC) {
 
-        if (target == null) {
-            return;
-        }
-
-        if (target.isDead()) {
+        if (target == null || target.isDead()) {
             return;
         }
 
@@ -108,21 +104,47 @@ public class CharacterInteraction {
         }
     }
 
-    public static void heal(CInfluenceInterface healer,
-            CInfluenceInterface target, float amount) {
-        if (target == null) {
-            return;
-        } else if (target.isDead()) {
+    public static void help(CInfluenceInterface healer,
+            CInfluenceInterface target, float heal,
+            List<AbstractBuffBuilder> buffBuilders) {
+
+        if (target == null || target.isDead()) {
             return;
         }
 
         float healingDone = target.getSpatial()
-                .getControl(CCharacterHeal.class).heal(amount);
+                .getControl(CCharacterHeal.class).heal(heal);
 
-        int healerPlayerId = healer.getSpatial()
-                .getUserData(UserDataStrings.PLAYER_ID);
-        getCurrentRoundStats().addHealthRestorationForPlayer(healerPlayerId,
-                healingDone);
+        if (healer != null) {
+            int healerPlayerId = healer.getSpatial()
+                    .getUserData(UserDataStrings.PLAYER_ID);
+            getCurrentRoundStats().addHealthRestorationForPlayer(
+                    healerPlayerId, healingDone);
+        }
+
+        if (buffBuilders != null) {
+            for (Builder<AbstractBuff> buffBuilder : buffBuilders) {
+                if (buffBuilder == null) {
+                    System.out.println("Null buffBuilder");
+                    continue;
+                }
+
+                AbstractBuff buff = buffBuilder.build();
+
+                if (buff == null) {
+                    System.out.println("Builder built null buff");
+                    continue;
+                }
+
+                if (buff.isFriendly()) {
+                    if (buff.getOwnerInterface() == null) {
+                        buff.setOwnerInterface(healer);
+                    }
+
+                    buff.attachToCharacter(target);
+                }
+            }
+        }
     }
 
     public static void startNewRound() {

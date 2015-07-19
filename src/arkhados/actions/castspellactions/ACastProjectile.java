@@ -21,6 +21,8 @@ import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
+import arkhados.controls.CSpellCast;
+import arkhados.controls.CUserInput;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -32,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CastProjectileAction is proper action for basic projectile spells like Magma Bash, Fireball etc.
+ * CastProjectileAction is proper action for basic projectile spells like Magma
+ * Bash, Fireball etc.
+ *
  * @author william
  */
 public class ACastProjectile extends EntityAction {
@@ -40,6 +44,7 @@ public class ACastProjectile extends EntityAction {
     private final Spell spell;
     private final WorldManager worldManager;
     private final List<AbstractBuffBuilder> additionalBuffs = new ArrayList<>();
+    private boolean detonateAtTarget;
 
     public ACastProjectile(Spell spell, WorldManager worldManager) {
         this.spell = spell;
@@ -50,12 +55,13 @@ public class ACastProjectile extends EntityAction {
         additionalBuffs.add(buff);
     }
 
+
     @Override
     public boolean update(float tpf) {
-        CCharacterPhysics physicsControl = 
-                spatial.getControl(CCharacterPhysics.class);
-        Vector3f targetLocation = physicsControl.getTargetLocation();
-        Vector3f viewDirection = targetLocation.subtract(
+        CSpellCast cSpellCast = spatial.getControl(CSpellCast.class);
+        Vector3f mouseTarget = cSpellCast.getClosestPointToTarget(spell);
+
+        Vector3f viewDirection = mouseTarget.subtract(
                 spatial.getLocalTranslation()).normalizeLocal();
         spatial.getControl(CCharacterPhysics.class)
                 .setViewDirection(viewDirection);
@@ -64,6 +70,7 @@ public class ACastProjectile extends EntityAction {
         Vector3f spawnLocation = spatial.getLocalTranslation().add(
                 viewDirection.mult(characterRadius / 1.5f))
                 .addLocal(0f, 10.0f, 0.0f);
+
         int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
 
         int projectileId = worldManager.addNewEntity(spell.getId(),
@@ -76,18 +83,23 @@ public class ACastProjectile extends EntityAction {
 
         CProjectile projectileControl =
                 projectile.getControl(CProjectile.class);
-        projectileControl.setRange(spell.getRange());
-        projectileControl.setDirection(viewDirection);
-        
+
+        if (detonateAtTarget) {
+            projectileControl.setTarget(mouseTarget);
+        } else {
+            projectileControl.setDirection(viewDirection);
+            projectileControl.setRange(spell.getRange());
+        }
+
         CInfluenceInterface influenceInterface =
                 spatial.getControl(CInfluenceInterface.class);
-        
+
         projectileControl.setOwnerInterface(influenceInterface);
-        
+
         ASplash splashAction = projectileControl.getSplashAction();
         if (splashAction != null) {
-            int teamId = projectile.getUserData(UserDataStrings.TEAM_ID);
-            splashAction.setExcludedTeam(teamId);
+//            int teamId = projectile.getUserData(UserDataStrings.TEAM_ID);
+//            splashAction.setExcludedTeam(teamId);
             splashAction.setCasterInterface(influenceInterface);
         }
 
@@ -98,5 +110,9 @@ public class ACastProjectile extends EntityAction {
         }
 
         return false;
+    }
+
+    public void detonateAtTarget(boolean detonateAtTarget) {
+        this.detonateAtTarget = detonateAtTarget;
     }
 }
