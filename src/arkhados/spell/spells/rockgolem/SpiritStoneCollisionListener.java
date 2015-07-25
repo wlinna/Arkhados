@@ -22,7 +22,6 @@ import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -97,7 +96,7 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
 
             int ownerId = myStone.getUserData(UserData.PLAYER_ID);
             int playerEntityId = PlayerData
-                    .getIntData(ownerId, PlayerDataStrings.ENTITY_ID);
+                    .getIntData(ownerId, PlayerData.ENTITY_ID);
             Spatial playerEntity = worldManager.getEntity(playerEntityId);
 
             if (currentAction != null && currentAction instanceof ATrance) {

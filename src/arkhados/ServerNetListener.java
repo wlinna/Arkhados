@@ -34,7 +34,6 @@ import arkhados.net.Receiver;
 import arkhados.net.ServerSender;
 import arkhados.ui.hud.ServerClientDataStrings;
 import static arkhados.ui.hud.ServerClientDataStrings.PLAYER_ID;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import com.jme3.app.state.AppStateManager;
 import java.util.concurrent.Callable;
@@ -96,7 +95,7 @@ public class ServerNetListener implements ConnectionListener,
                 ServerClientData.removeConnection(playerId);
 
                 int entityId = PlayerData.getIntData(playerId,
-                        PlayerDataStrings.ENTITY_ID);
+                        PlayerData.ENTITY_ID);
                 if (entityId > -1) {
                     WorldManager world =
                             stateManager.getState(WorldManager.class);
@@ -176,9 +175,9 @@ public class ServerNetListener implements ConnectionListener,
             public Void call() throws Exception {
                 final int playerId = PlayerData.getNew(commmand.getName());
                 PlayerData
-                        .setData(playerId, PlayerDataStrings.HERO, "EmberMage");
+                        .setData(playerId, PlayerData.HERO, "EmberMage");
                 PlayerData
-                        .setData(playerId, PlayerDataStrings.TEAM_ID, playerId);
+                        .setData(playerId, PlayerData.TEAM_ID, playerId);
 
                 source.setAttribute(PLAYER_ID, playerId);
 
@@ -214,14 +213,14 @@ public class ServerNetListener implements ConnectionListener,
                 ((HostedConnection) source).getId());
 
         // TODO: Check hero name validity
-        PlayerData.setData(playerId, PlayerDataStrings.HERO,
+        PlayerData.setData(playerId, PlayerData.HERO,
                 command.getHeroName());
     }
 
     private void handleClientSettingsCommand(HostedConnection source,
             CmdClientSettings clientSettings) {
         int playerId = ServerClientData.getPlayerId(source.getId());
-        PlayerData.setData(playerId, PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
+        PlayerData.setData(playerId, PlayerData.COMMAND_MOVE_INTERRUPTS,
                 clientSettings.commandMoveInterrupts());
     }
 

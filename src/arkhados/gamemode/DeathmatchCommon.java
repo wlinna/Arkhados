@@ -31,13 +31,11 @@ import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
-import arkhados.settings.server.Settings;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerBuilder;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerController;
 import arkhados.util.AudioQueue;
 import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -261,7 +259,7 @@ public class DeathmatchCommon {
             @Override
             public Void call() throws Exception {
                 int oldEntityId = PlayerData
-                        .getIntData(playerId, PlayerDataStrings.ENTITY_ID);
+                        .getIntData(playerId, PlayerData.ENTITY_ID);
                 worldManager.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
                 Vector3f startingLocation = getNewSpawnLocation();
@@ -272,7 +270,7 @@ public class DeathmatchCommon {
                 int entityId = worldManager
                         .addNewEntity(nodeBuilderId, startingLocation,
                         new Quaternion(), playerId);
-                playerData.setData(PlayerDataStrings.ENTITY_ID, entityId);
+                playerData.setData(PlayerData.ENTITY_ID, entityId);
 
                 CmdSetPlayersCharacter playersCharacterCommand =
                         new CmdSetPlayersCharacter(entityId, playerId);
@@ -445,7 +443,7 @@ public class DeathmatchCommon {
     private String getPlayerName(int id) {
         return id < 0
                 ? "Environment"
-                : PlayerData.getStringData(id, PlayerDataStrings.NAME);
+                : PlayerData.getStringData(id, PlayerData.NAME);
     }
 
     private void preloadAnnouncer() {

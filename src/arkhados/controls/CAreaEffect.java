@@ -17,10 +17,8 @@ package arkhados.controls;
 import arkhados.CharacterInteraction;
 import arkhados.PlayerData;
 import arkhados.actions.ADelay;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.influences.Influence;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
@@ -122,7 +120,7 @@ public class CAreaEffect extends AbstractControl
 
             int othersPlayerId = other.getUserData(UserData.PLAYER_ID);
             int othersTeamId = PlayerData.getIntData(othersPlayerId,
-                    PlayerDataStrings.TEAM_ID);
+                    PlayerData.TEAM_ID);
             boolean sameTeam = myTeamId == othersTeamId;
             for (Influence influence : influences) {
                 if (sameTeam && influence.isFriendly()) {

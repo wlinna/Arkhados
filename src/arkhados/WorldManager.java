@@ -37,7 +37,6 @@ import java.util.HashMap;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CEntityVariable;
-import arkhados.controls.CGrenade;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
 import arkhados.controls.CUserInput;
@@ -50,7 +49,6 @@ import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.util.BuildParameters;
 import arkhados.util.EntityFactory;
 import arkhados.util.PhysicsWorkaround;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
@@ -245,7 +243,7 @@ public class WorldManager extends AbstractAppState {
         entity.setUserData(UserData.ENTITY_ID, id);
         entity.setUserData(UserData.INVISIBLE_TO_ALL, false);
         entity.setUserData(UserData.INVISIBLE_TO_ENEMY, false);
-        int teamId = PlayerData.getIntData(playerId, PlayerDataStrings.TEAM_ID);
+        int teamId = PlayerData.getIntData(playerId, PlayerData.TEAM_ID);
         entity.setUserData(UserData.TEAM_ID, teamId);
         if (isServer()) {
             entity.setUserData(UserData.BIRTHTIME, worldTime);
@@ -460,7 +458,7 @@ public class WorldManager extends AbstractAppState {
 
     public void clear() {
         for (PlayerData playerData : PlayerData.getPlayers()) {
-            playerData.setData(PlayerDataStrings.ENTITY_ID, -1l);
+            playerData.setData(PlayerData.ENTITY_ID, -1l);
         }
         if (worldRoot != null) {
             space.removeAll(worldRoot);

@@ -16,8 +16,8 @@ package arkhados.ui;
 
 import arkhados.ClientMain;
 import arkhados.InputSettings;
+import arkhados.PlayerData;
 import arkhados.TriggerPair;
-import arkhados.util.PlayerDataStrings;
 import com.jme3.app.Application;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -208,7 +208,7 @@ public class KeySetter implements RawInputListener, ScreenController {
                 }
 
                 boolean moveInterrupts = app.getContext().getSettings()
-                        .getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                        .getBoolean(PlayerData.COMMAND_MOVE_INTERRUPTS);
                 CheckBox cbox_moveInterrupts = screen.findNiftyControl(
                         "cbox_move_interrupts", CheckBox.class);
                 cbox_moveInterrupts.setChecked(moveInterrupts);
@@ -253,7 +253,7 @@ public class KeySetter implements RawInputListener, ScreenController {
 
                 if ("cbox_move_interrupts".equals(cboxId)) {
                     app.getContext().getSettings().putBoolean(
-                            PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
+                            PlayerData.COMMAND_MOVE_INTERRUPTS,
                             cbox.isChecked());
                 }
                 try {

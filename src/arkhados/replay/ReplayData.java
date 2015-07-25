@@ -16,7 +16,6 @@ package arkhados.replay;
 
 import arkhados.PlayerData;
 import arkhados.net.Command;
-import arkhados.util.PlayerDataStrings;
 import com.jme3.network.Message;
 import com.jme3.network.serializing.Serializable;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class ReplayData implements Message {
         ReplayCmdData cmdData = new ReplayCmdData(playerId, cmd, time);
 
         String name =
-                PlayerData.getStringData(playerId, PlayerDataStrings.NAME);
+                PlayerData.getStringData(playerId, PlayerData.NAME);
         header.getPlayers().put(playerId, name);
 
         commands.add(cmdData);

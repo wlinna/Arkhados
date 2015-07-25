@@ -23,7 +23,6 @@ import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
@@ -136,7 +135,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
         int grenadeTeamId = spatial.getUserData(UserData.TEAM_ID);
         int targetPlayerId = other.getUserData(UserData.PLAYER_ID);
         int targetTeamId =
-                PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+                PlayerData.getIntData(targetPlayerId, PlayerData.TEAM_ID);
 
         if (targetTeamId == grenadeTeamId) {
             return;

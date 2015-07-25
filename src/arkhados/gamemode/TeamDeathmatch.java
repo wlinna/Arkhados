@@ -35,7 +35,6 @@ import arkhados.net.ServerSender;
 import arkhados.settings.server.Settings;
 import arkhados.ui.TeamSelectionBuilder;
 import arkhados.ui.hud.ServerClientDataStrings;
-import arkhados.util.PlayerDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.HostedConnection;
@@ -135,7 +134,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         }
 
         int killersTeam = PlayerData.getIntData(killersPlayerId,
-                PlayerDataStrings.TEAM_ID);
+                PlayerData.TEAM_ID);
 
         int kills = teamKills.get(killersTeam) + 1;
         teamKills.put(killersTeam, kills);
@@ -185,7 +184,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
             int playerId = ServerClientData.getPlayerId(
                     ((HostedConnection) source).getId());
-            PlayerData.setData(playerId, PlayerDataStrings.TEAM_ID, teamId);
+            PlayerData.setData(playerId, PlayerData.TEAM_ID, teamId);
 
             common.preparePlayer(playerId);
 

@@ -29,13 +29,10 @@ import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.ui.ConnectionMenu;
 import arkhados.ui.hud.ClientHudManager;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.Timer;
-import arkhados.util.ValueWrapper;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.network.NetworkClient;
 import com.jme3.system.AppSettings;
 
 /**
@@ -149,7 +146,7 @@ public class ClientNetListener extends AbstractAppState
             AppSettings settings = app.getContext().getSettings();
 
             boolean movingInterrupts = settings
-                    .getBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                    .getBoolean(PlayerData.COMMAND_MOVE_INTERRUPTS);
 
             CmdClientSettings clientSettingsCommand =
                     new CmdClientSettings(movingInterrupts);
@@ -184,11 +181,11 @@ public class ClientNetListener extends AbstractAppState
 
         if (command.joined()) {
             String newPlayer = PlayerData.getStringData(command.getPlayerId(),
-                    PlayerDataStrings.NAME);
+                    PlayerData.NAME);
             hud.addMessage(newPlayer + " has joined the game");
         } else if (command.left()) {
             String leaver = PlayerData.getStringData(command.getPlayerId(),
-                    PlayerDataStrings.NAME);
+                    PlayerData.NAME);
             PlayerData.remove(command.getPlayerId());
             hud.addMessage(leaver + " has left the game");
         }

@@ -30,7 +30,6 @@ import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
-import arkhados.util.PlayerDataStrings;
 import arkhados.settings.server.Settings;
 import java.util.Set;
 
@@ -184,7 +183,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
 
         final int playerId = ServerClientData.getPlayerId(source.getId());
         final int syncId = PlayerData.getIntData(playerId,
-                PlayerDataStrings.ENTITY_ID);
+                PlayerData.ENTITY_ID);
         if (syncId != -1) {
             app.enqueue(new Callable<Void>() {
                 @Override

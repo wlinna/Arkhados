@@ -15,7 +15,6 @@
 package arkhados.ui.hud;
 
 import arkhados.PlayerData;
-import arkhados.util.PlayerDataStrings;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.TextBuilder;
 
@@ -37,7 +36,7 @@ public class PlayerStatisticsPanelBuilder extends PanelBuilder {
         StatisticsTextBuilder nameBuilder =
                 new StatisticsTextBuilder(playerId + "-name");
         nameBuilder.text(PlayerData.getStringData(playerId,
-                PlayerDataStrings.NAME));
+                PlayerData.NAME));
         text(nameBuilder);
         text(new StatisticsTextBuilder(playerId + "-damage"));
         text(new StatisticsTextBuilder(playerId + "-restoration"));

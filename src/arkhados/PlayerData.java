@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package arkhados;
 
 import com.jme3.network.serializing.Serializable;
@@ -44,13 +43,22 @@ import java.util.Map.Entry;
  * a database or similar, static access with synchronization. Access is assured
  * to be sequential during the game, so in theory syncing is not needed. Used on
  * server and on client.
+ *
  * @author normenhansen
  *
- * TODO: Many methods use LinkedList instead of ArrayList. Consider converting to ArrayList.
+ * TODO: Many methods use LinkedList instead of ArrayList. Consider converting
+ * to ArrayList.
  */
 @Serializable
 public final class PlayerData {
 
+    public static final String ENTITY_ID = "entity-id";
+    public static final String HERO = "hero";
+    public static final String READY_FOR_ROUND = "ready-for-round";
+    public static final String WORLD_CREATED = "world-created";
+    public static final String COMMAND_MOVE_INTERRUPTS = "command-move-interrupts";
+    public static final String NAME = "name";
+    public static final String TEAM_ID = "team-id";
     private static HashMap<Integer, PlayerData> players = new HashMap<>();
     private int id;
     private int aiControl = -1;
@@ -127,53 +135,73 @@ public final class PlayerData {
     }
 
     public static synchronized float getFloatData(int id, String key) {
-        if (!players.containsKey(id)) return -1;
+        if (!players.containsKey(id)) {
+            return -1;
+        }
         return players.get(id).getFloatData(key);
     }
 
     public static synchronized void setData(int id, String key, float data) {
-        if (!players.containsKey(id)) return;
+        if (!players.containsKey(id)) {
+            return;
+        }
         players.get(id).setData(key, data);
     }
 
     public static synchronized int getIntData(int id, String key) {
-        if (!players.containsKey(id)) return -1;
-        Integer data = players.get(id).getIntData(key);        
+        if (!players.containsKey(id)) {
+            return -1;
+        }
+        Integer data = players.get(id).getIntData(key);
         return data != null ? data.intValue() : -1;
     }
 
     public static synchronized void setData(int id, String key, int data) {
-        if (!players.containsKey(id)) return;
+        if (!players.containsKey(id)) {
+            return;
+        }
         players.get(id).setData(key, data);
     }
 
     public static synchronized Long getLongData(int id, String key) {
-        if (!players.containsKey(id)) return new Long(-1);
+        if (!players.containsKey(id)) {
+            return new Long(-1);
+        }
         return players.get(id).getLongData(key);
     }
 
     public static synchronized void setData(int id, String key, long data) {
-        if (!players.containsKey(id)) return;
+        if (!players.containsKey(id)) {
+            return;
+        }
         players.get(id).setData(key, data);
     }
 
     public static synchronized Boolean getBooleanData(int id, String key) {
-        if (!players.containsKey(id)) return false;
+        if (!players.containsKey(id)) {
+            return false;
+        }
         return players.get(id).getBooleanData(key);
     }
 
     public static synchronized void setData(int id, String key, boolean data) {
-        if (!players.containsKey(id)) return;
+        if (!players.containsKey(id)) {
+            return;
+        }
         players.get(id).setData(key, data);
     }
 
     public static synchronized String getStringData(int id, String key) {
-        if (!players.containsKey(id)) return "unknown";
+        if (!players.containsKey(id)) {
+            return "unknown";
+        }
         return players.get(id).getStringData(key);
     }
 
     public static synchronized void setData(int id, String key, String data) {
-        if (!players.containsKey(id)) return;
+        if (!players.containsKey(id)) {
+            return;
+        }
         players.get(id).setData(key, data);
     }
 

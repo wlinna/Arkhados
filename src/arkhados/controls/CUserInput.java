@@ -17,7 +17,6 @@ package arkhados.controls;
 import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.ServerPlayerInputState;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -63,7 +62,7 @@ public class CUserInput extends AbstractControl {
 
             Boolean commandMoveInterruptsBoolean =
                     PlayerData.getBooleanData(playerId,
-                    PlayerDataStrings.COMMAND_MOVE_INTERRUPTS);
+                    PlayerData.COMMAND_MOVE_INTERRUPTS);
             boolean commandMoveInterrupts = commandMoveInterruptsBoolean != null
                     && commandMoveInterruptsBoolean;
 

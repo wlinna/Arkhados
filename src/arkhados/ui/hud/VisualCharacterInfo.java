@@ -15,7 +15,6 @@
 package arkhados.ui.hud;
 
 import arkhados.PlayerData;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.UserData;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -50,7 +49,7 @@ public class VisualCharacterInfo {
 
         int playerId = character.getUserData(UserData.PLAYER_ID);
         String name =
-                PlayerData.getStringData(playerId, PlayerDataStrings.NAME);
+                PlayerData.getStringData(playerId, PlayerData.NAME);
 
         createPlayerName(name);
     }

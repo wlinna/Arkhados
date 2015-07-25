@@ -23,7 +23,6 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSkyDrop;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.spells.rockgolem.CSpiritStonePhysics;
-import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -118,7 +117,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
         int projectileTeamId = projectile.getSpatial().getUserData(UserData.TEAM_ID);
         int targetPlayerId = target.getSpatial().getUserData(UserData.PLAYER_ID);
-        int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
+        int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerData.TEAM_ID);
 
         if (targetTeamId == projectileTeamId) {
             return;

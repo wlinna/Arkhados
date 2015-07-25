@@ -15,7 +15,6 @@
 package arkhados;
 
 import arkhados.util.InputMappingStrings;
-import arkhados.util.PlayerDataStrings;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -46,8 +45,8 @@ public final class InputSettings {
         setKey(settings, InputMappingStrings.SEC1, true, KeyInput.KEY_1);
         setKey(settings, InputMappingStrings.SEC2, true, KeyInput.KEY_2);
 
-        if (!settings.containsKey(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS)) {
-            settings.putBoolean(PlayerDataStrings.COMMAND_MOVE_INTERRUPTS,
+        if (!settings.containsKey(PlayerData.COMMAND_MOVE_INTERRUPTS)) {
+            settings.putBoolean(PlayerData.COMMAND_MOVE_INTERRUPTS,
                     false);
         }
     }
