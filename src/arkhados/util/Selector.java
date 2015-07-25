@@ -164,7 +164,7 @@ public class Selector {
                 return false;
             }
 
-            return !spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeam);
+            return !spatial.getUserData(UserData.TEAM_ID).equals(myTeam);
         }
     }
     
@@ -181,7 +181,7 @@ public class Selector {
                 return false;
             }
             
-            return value.getUserData(UserDataStrings.TEAM_ID).equals(myTeam);
+            return value.getUserData(UserData.TEAM_ID).equals(myTeam);
         }        
     }
 }

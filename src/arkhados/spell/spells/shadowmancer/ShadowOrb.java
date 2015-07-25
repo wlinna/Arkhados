@@ -29,7 +29,7 @@ import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -125,10 +125,10 @@ class OrbBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 150f);
-        node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, 140f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 150f);
+        node.setUserData(UserData.MASS, 0.30f);
+        node.setUserData(UserData.DAMAGE, 140f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         if (worldManager.isClient()) {
             ParticleEmitter purple = createPurpleEmitter();
@@ -146,7 +146,7 @@ class OrbBuilder extends AbstractNodeBuilder {
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(3);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserData.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that

@@ -21,7 +21,7 @@ import arkhados.spell.buffs.CastSpeedBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Node;
@@ -40,14 +40,14 @@ public class DaggerBuilder extends AbstractNodeBuilder {
                 (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
         node.setLocalTranslation(params.location);
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 170f);
-        node.setUserData(UserDataStrings.MASS, 30f);
-        node.setUserData(UserDataStrings.DAMAGE, 150f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 170f);
+        node.setUserData(UserData.MASS, 30f);
+        node.setUserData(UserData.DAMAGE, 150f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(4);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserData.MASS));
 
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);

@@ -37,7 +37,7 @@ import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
@@ -62,22 +62,22 @@ public class Shadowmancer extends AbstractNodeBuilder {
     public Node build(BuildParameters params) {
         Node entity = (Node) assetManager.loadModel("Models/Mage.j3o");
         float movementSpeed = 36.1f;
-        entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
-        entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
-        entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
+        entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
+        entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
+        entity.setUserData(UserData.SPEED_ROTATION, 0f);
         float radius = 5f;
-        entity.setUserData(UserDataStrings.RADIUS, radius);
+        entity.setUserData(UserData.RADIUS, radius);
         float health = 1700f;
-        entity.setUserData(UserDataStrings.HEALTH_MAX, health);
+        entity.setUserData(UserData.HEALTH_MAX, health);
 
-        entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        entity.setUserData(UserData.HEALTH_CURRENT, health);
         if (params.age < 0f) {
-            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
+            entity.setUserData(UserData.HEALTH_CURRENT, 0f);
         }
 
-        entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
-        entity.setUserData(UserDataStrings.LIFE_STEAL_BASE, 0f);
-        entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
+        entity.setUserData(UserData.DAMAGE_FACTOR, 1f);
+        entity.setUserData(UserData.LIFE_STEAL_BASE, 0f);
+        entity.setUserData(UserData.LIFE_STEAL, 0f);
 
         entity.addControl(new CCharacterPhysics(radius, 20f, 75f));
 

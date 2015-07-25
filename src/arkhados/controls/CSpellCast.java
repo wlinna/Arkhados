@@ -30,7 +30,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
 import arkhados.spell.buffs.CastSpeedBuff;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,7 +219,7 @@ public class CSpellCast extends AbstractControl {
                     .subtract(spatial.getLocalTranslation());
             awareness.getFogManager().addCommand(spatial,
                     new CmdStartCastingSpell(
-                    (int) spatial.getUserData(UserDataStrings.ENTITY_ID),
+                    (int) spatial.getUserData(UserData.ENTITY_ID),
                     spell.getId(), direction, castSpeedFactor));
             getSpatial().getControl(CResting.class).stopRegen();
         }
@@ -249,7 +249,7 @@ public class CSpellCast extends AbstractControl {
                 .getControl(CEntityVariable.class).getAwareness();
 
         if (awareness != null) {
-            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            int entityId = spatial.getUserData(UserData.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
             awareness.getFogManager().addCommand(spatial,
                     new CmdSetCooldown(entityId, spellId, cooldown, true));
@@ -263,7 +263,7 @@ public class CSpellCast extends AbstractControl {
                 .getControl(CEntityVariable.class).getAwareness();
 
         if (awareness != null) {
-            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            int entityId = spatial.getUserData(UserData.ENTITY_ID);
             awareness.getFogManager().addCommand(spatial,
                     new CmdSetCooldown(entityId, spell.getId(),
                     spell.getCooldown(), true));

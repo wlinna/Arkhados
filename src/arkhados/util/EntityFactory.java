@@ -56,7 +56,7 @@ public class EntityFactory {
             return null;
         }
         Node node = nodeBuilders.get(id).build(params);
-        node.setUserData(UserDataStrings.NODE_BUILDER_ID, id);
+        node.setUserData(UserData.NODE_BUILDER_ID, id);
         return node;
     }
 

@@ -15,7 +15,7 @@
 package arkhados.controls;
 
 import arkhados.Globals;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -50,7 +50,7 @@ public class CCharacterMovement extends AbstractControl {
             return;
         }
 
-        float speed = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
         Vector3f scaledDirection = direction.normalize().multLocal(speed);
 
         cPhysics.setWalkDirection(scaledDirection);
@@ -61,7 +61,7 @@ public class CCharacterMovement extends AbstractControl {
             return;
         }
 
-        float speed = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
 
         Vector3f scaledDirection =
                 getWalkDirection().normalize().multLocal(speed);
@@ -80,8 +80,8 @@ public class CCharacterMovement extends AbstractControl {
     public void setSpeedToBase() {
         if (!isSpeedConstant()) {
             float msBase =
-                    spatial.getUserData(UserDataStrings.SPEED_MOVEMENT_BASE);
-            spatial.setUserData(UserDataStrings.SPEED_MOVEMENT, msBase);
+                    spatial.getUserData(UserData.SPEED_MOVEMENT_BASE);
+            spatial.setUserData(UserData.SPEED_MOVEMENT, msBase);
         }
     }
 

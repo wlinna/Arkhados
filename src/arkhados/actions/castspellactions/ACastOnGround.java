@@ -22,7 +22,7 @@ import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -52,7 +52,7 @@ public class ACastOnGround extends EntityAction {
                 spatial.getControl(CSpellCast.class);
         Vector3f adjustedTarget =
                 castControl.getClosestPointToTarget(spell).setY(0.1f);
-        Integer playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        Integer playerId = spatial.getUserData(UserData.PLAYER_ID);
         int entityId = worldManager.addNewEntity(spell.getId(),
                 adjustedTarget, Quaternion.IDENTITY, playerId);
 

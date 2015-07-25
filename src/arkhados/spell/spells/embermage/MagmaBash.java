@@ -28,7 +28,7 @@ import arkhados.spell.buffs.BrimstoneBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -94,11 +94,11 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 180f);
-        node.setUserData(UserDataStrings.MASS, 10f);
-        node.setUserData(UserDataStrings.DAMAGE, 80f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-        node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 7.4f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 180f);
+        node.setUserData(UserData.MASS, 10f);
+        node.setUserData(UserData.DAMAGE, 80f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.INCAPACITATE_LENGTH, 7.4f);
 
         if (AbstractNodeBuilder.worldManager.isClient()) {
             ParticleEmitter fire = new ParticleEmitter("fire-emitter",
@@ -135,7 +135,7 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(3);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserData.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS

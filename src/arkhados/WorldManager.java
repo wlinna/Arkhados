@@ -53,7 +53,7 @@ import arkhados.util.PhysicsWorkaround;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
@@ -239,18 +239,18 @@ public class WorldManager extends AbstractAppState {
         Spatial entity = entityFactory.build(nodeBuilderId,
                 new BuildParameters(age, location));
 
-        entity.setUserData(UserDataStrings.NODE_BUILDER_ID, nodeBuilderId);
+        entity.setUserData(UserData.NODE_BUILDER_ID, nodeBuilderId);
         setEntityTranslation(entity, location, rotation);
-        entity.setUserData(UserDataStrings.PLAYER_ID, playerId);
-        entity.setUserData(UserDataStrings.ENTITY_ID, id);
-        entity.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
-        entity.setUserData(UserDataStrings.INVISIBLE_TO_ENEMY, false);
+        entity.setUserData(UserData.PLAYER_ID, playerId);
+        entity.setUserData(UserData.ENTITY_ID, id);
+        entity.setUserData(UserData.INVISIBLE_TO_ALL, false);
+        entity.setUserData(UserData.INVISIBLE_TO_ENEMY, false);
         int teamId = PlayerData.getIntData(playerId, PlayerDataStrings.TEAM_ID);
-        entity.setUserData(UserDataStrings.TEAM_ID, teamId);
+        entity.setUserData(UserData.TEAM_ID, teamId);
         if (isServer()) {
-            entity.setUserData(UserDataStrings.BIRTHTIME, worldTime);
+            entity.setUserData(UserData.BIRTHTIME, worldTime);
         } else {
-            entity.setUserData(UserDataStrings.BIRTHTIME, age);
+            entity.setUserData(UserData.BIRTHTIME, age);
         }
 
         entities.put(id, entity);
@@ -269,7 +269,7 @@ public class WorldManager extends AbstractAppState {
         if (isCharacter && PlayerData.isHuman(playerId)) {
             logger.log(Level.INFO, "Adding entity {0} for player {1}",
                     new Object[]{id, playerId});
-            entity.setUserData(UserDataStrings.FOLLOW_ME, true);
+            entity.setUserData(UserData.FOLLOW_ME, true);
 
             CUserInput userInputControl = new CUserInput();
             if (isServer()) {
@@ -286,7 +286,7 @@ public class WorldManager extends AbstractAppState {
         }
 
         boolean followMe = entity.getUserDataKeys()
-                .contains(UserDataStrings.FOLLOW_ME);
+                .contains(UserData.FOLLOW_ME);
 
         ServerFogManager serverFogManager =
                 app.getStateManager().getState(ServerFogManager.class);
@@ -324,7 +324,7 @@ public class WorldManager extends AbstractAppState {
     public void temporarilyRemoveEntity(int id) {
         logger.log(Level.FINE, "Temporarily removing entity with id {0}", id);
         Spatial spatial = getEntity(id);
-        spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, true);
+        spatial.setUserData(UserData.INVISIBLE_TO_ALL, true);
         spatial.removeFromParent();
         syncManager.removeEntity(id);
 
@@ -340,7 +340,7 @@ public class WorldManager extends AbstractAppState {
         logger.log(Level.FINE,
                 "Restoring temporarily removed entity. Id {0}", id);
         Spatial spatial = getEntity(id);
-        spatial.setUserData(UserDataStrings.INVISIBLE_TO_ALL, false);
+        spatial.setUserData(UserData.INVISIBLE_TO_ALL, false);
         worldRoot.attachChild(spatial);
         syncManager.addObject(id, spatial);
 

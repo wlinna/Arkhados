@@ -28,7 +28,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -90,7 +90,7 @@ class AStoneFist extends EntityAction {
     public boolean update(float tpf) {
         CCharacterPhysics physicsControl =
                 spatial.getControl(CCharacterPhysics.class);
-        final int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        final int myTeamId = spatial.getUserData(UserData.TEAM_ID);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
                 .normalize().multLocal(range);
 
@@ -105,7 +105,7 @@ class AStoneFist extends EntityAction {
                 }
 
                 Integer nullableTeamId =
-                        value.spatial.getUserData(UserDataStrings.TEAM_ID);
+                        value.spatial.getUserData(UserData.TEAM_ID);
                 if (nullableTeamId == null) {
                     return false;
                 }
@@ -149,7 +149,7 @@ class AStoneFist extends EntityAction {
             }
 
             final float damageFactor =
-                    spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                    spatial.getUserData(UserData.DAMAGE_FACTOR);
             final float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
             CharacterInteraction.harm(

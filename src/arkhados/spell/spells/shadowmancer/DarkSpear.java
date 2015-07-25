@@ -23,7 +23,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
@@ -70,8 +70,8 @@ class CSpear extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        float dmg = spatial.getUserData(UserDataStrings.DAMAGE);
-        spatial.setUserData(UserDataStrings.DAMAGE, dmg + tpf * 200f);
+        float dmg = spatial.getUserData(UserData.DAMAGE);
+        spatial.setUserData(UserData.DAMAGE, dmg + tpf * 200f);
     }
 
     @Override
@@ -87,14 +87,14 @@ class SpearBuilder extends AbstractNodeBuilder {
                 (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
         node.setLocalTranslation(params.location);
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 170f);
-        node.setUserData(UserDataStrings.MASS, 30f);
-        node.setUserData(UserDataStrings.DAMAGE, 200f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 170f);
+        node.setUserData(UserData.MASS, 30f);
+        node.setUserData(UserData.DAMAGE, 200f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(4);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserData.MASS));
 
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);

@@ -23,7 +23,7 @@ import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -121,8 +121,8 @@ public class ACharge extends EntityAction
     }
 
     private void collided(Spatial target) {
-        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
-        int targetTeam = target.getUserData(UserDataStrings.TEAM_ID);
+        int myTeam = spatial.getUserData(UserData.TEAM_ID);
+        int targetTeam = target.getUserData(UserData.TEAM_ID);
         
         if (myTeam == targetTeam) {
             return;
@@ -136,7 +136,7 @@ public class ACharge extends EntityAction
             return;
         }
 
-        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);
         float rawDamage = hitDamage * damageFactor;
 
         CInfluenceInterface targetInfluenceControl =

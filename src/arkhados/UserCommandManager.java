@@ -25,7 +25,7 @@ import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Sender;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.util.InputMappingStrings;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -284,7 +284,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        if (!spatial.getUserData(UserDataStrings.ENTITY_ID)
+        if (!spatial.getUserData(UserData.ENTITY_ID)
                 .equals(characterId)) {
             return false;
         }

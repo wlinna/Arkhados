@@ -26,7 +26,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.BuffTypeIds;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -82,7 +82,7 @@ class ACastDeepWounds extends EntityAction {
         charge.setChargeSpeed(255f);
         spatial.getControl(CActionQueue.class).enqueueAction(charge);
 
-        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);
 
         AbstractBuffBuilder bleedBuff = new BleedBuff.MyBuilder(4.2f)
                 .damagePerUnit(2 * damageFactor);
@@ -126,7 +126,7 @@ class BleedBuff extends AbstractBuff {
             return;
         }
 
-        float speed = spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
         float dmg = speed * time * dmgPerUnit;
         CharacterInteraction.harm(getOwnerInterface(), targetInterface, dmg,
                 null, false);

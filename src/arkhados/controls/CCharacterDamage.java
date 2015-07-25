@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -30,12 +30,12 @@ public class CCharacterDamage extends AbstractControl {
         }
 
         float healthBefore =
-                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+                spatial.getUserData(UserData.HEALTH_CURRENT);
 
         damage = me.mitigateDamage(damage);
 
         float health = FastMath.clamp(healthBefore - damage, 0, healthBefore);
-        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        spatial.setUserData(UserData.HEALTH_CURRENT, health);
 
         if (health == 0.0f) {
             me.death();

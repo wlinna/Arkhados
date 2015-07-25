@@ -31,7 +31,7 @@ import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.DistanceScaling;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -119,10 +119,10 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 140f);
-        node.setUserData(UserDataStrings.MASS, 0.20f);
-        node.setUserData(UserDataStrings.DAMAGE, 60f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 140f);
+        node.setUserData(UserData.MASS, 0.20f);
+        node.setUserData(UserData.DAMAGE, 60f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         if (worldManager.isClient()) {
             ParticleEmitter plasma = createPlasmaEmitter();
@@ -143,7 +143,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(5);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserData.MASS));
 
         physicsBody.setFriction(1f);
         physicsBody.setAngularDamping(1f);

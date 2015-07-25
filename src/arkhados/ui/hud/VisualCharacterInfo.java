@@ -16,7 +16,7 @@ package arkhados.ui.hud;
 
 import arkhados.PlayerData;
 import arkhados.util.PlayerDataStrings;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
@@ -48,7 +48,7 @@ public class VisualCharacterInfo {
         characters.add((Node) character);
         createHpBar();
 
-        int playerId = character.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = character.getUserData(UserData.PLAYER_ID);
         String name =
                 PlayerData.getStringData(playerId, PlayerDataStrings.NAME);
 
@@ -130,7 +130,7 @@ public class VisualCharacterInfo {
     private void updateHpBar(int index) {
         Node character = characters.get(index);
         BitmapText hpBar = hpBars.get(index);
-        float health = character.getUserData(UserDataStrings.HEALTH_CURRENT);
+        float health = character.getUserData(UserData.HEALTH_CURRENT);
         if (health == 0) {
             hpBar.setText("");
             return;

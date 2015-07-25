@@ -20,7 +20,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.messages.syncmessages.CmdBuff;
 import arkhados.messages.syncmessages.CmdBuffStacks;
 import arkhados.net.Sender;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 
 /**
@@ -66,7 +66,7 @@ public abstract class AbstractBuff {
 
     public CmdBuff generateBuffCommand(boolean added) {
         int entityId = targetInterface.getSpatial()
-                .getUserData(UserDataStrings.ENTITY_ID);
+                .getUserData(UserData.ENTITY_ID);
         return typeId == -1 ? null
                 : new CmdBuff(entityId, typeId, buffId, duration, added);
     }
@@ -92,7 +92,7 @@ public abstract class AbstractBuff {
     public void changeStackAmount(int amount) {
         stacks = amount;
         int entityId = targetInterface.getSpatial()
-                .getUserData(UserDataStrings.ENTITY_ID);
+                .getUserData(UserData.ENTITY_ID);
         CmdBuffStacks cmdStacks = new CmdBuffStacks(entityId, buffId, stacks);
         Spatial spatial = targetInterface.getSpatial();
         ServerFogManager fogManager = spatial

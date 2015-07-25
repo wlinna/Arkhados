@@ -23,7 +23,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.BuffTypeIds;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -95,14 +95,14 @@ class DamagePerHealthPercentBuff extends AbstractBuff {
     public void update(float time) {
         super.update(time);
         float healthCurrent =
-                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
-        float healthMax = spatial.getUserData(UserDataStrings.HEALTH_MAX);
-        float damageFactor = spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                spatial.getUserData(UserData.HEALTH_CURRENT);
+        float healthMax = spatial.getUserData(UserData.HEALTH_MAX);
+        float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);
 
         float healthPercent = healthCurrent / healthMax;
         damageFactor *= 1 + healthPercent / 10f;
 
-        spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, damageFactor);
+        spatial.setUserData(UserData.DAMAGE_FACTOR, damageFactor);
     }
 
     static class MyBuilder extends AbstractBuffBuilder {
@@ -137,12 +137,12 @@ class MovementSpeedPerHealthMissingBuff extends SpeedBuff {
             CInfluenceInterface influenceInterface) {
         super.attachToCharacter(influenceInterface);
         spatial = influenceInterface.getSpatial();
-        originalHealth = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        originalHealth = spatial.getUserData(UserData.HEALTH_CURRENT);
     }
 
     @Override
     public float getFactor() {
-        float healthMax = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        float healthMax = spatial.getUserData(UserData.HEALTH_MAX);
         float inverseHealthPercent = 1f - (originalHealth / healthMax);
         return 1 + inverseHealthPercent / 8f;
     }

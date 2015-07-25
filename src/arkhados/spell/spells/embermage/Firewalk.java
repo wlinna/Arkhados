@@ -34,7 +34,7 @@ import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -123,7 +123,7 @@ public class Firewalk extends Spell {
         private void motion() {
             Vector3f startLocation =
                     spatial.getLocalTranslation().clone().setY(1f);
-            int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+            int playerId = spatial.getUserData(UserData.PLAYER_ID);
             final int firewalkId = world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
             Spatial firewalkNode = world.getEntity(firewalkId);
@@ -151,7 +151,7 @@ public class Firewalk extends Spell {
             motionControl.setInitialDuration(
                     finalLocation.distance(startLocation) / 105f);
 
-            final int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            final int id = spatial.getUserData(UserData.ENTITY_ID);
             world.temporarilyRemoveEntity(id);
             path.addListener(new MotionPathListener() {
                 @Override
@@ -216,11 +216,11 @@ public class Firewalk extends Spell {
             material.setColor("Color", ColorRGBA.Yellow);
             node.setMaterial(material);
 
-            node.setUserData(UserDataStrings.SPEED_MOVEMENT, 100f);
-            node.setUserData(UserDataStrings.MASS, 0f);
-            node.setUserData(UserDataStrings.DAMAGE, 50f);
-            node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-            node.setUserData(UserDataStrings.FOLLOW_ME, true);
+            node.setUserData(UserData.SPEED_MOVEMENT, 100f);
+            node.setUserData(UserData.MASS, 0f);
+            node.setUserData(UserData.DAMAGE, 50f);
+            node.setUserData(UserData.IMPULSE_FACTOR, 0f);
+            node.setUserData(UserData.FOLLOW_ME, true);
 
             CSpellBuff buffControl = new CSpellBuff();
             AbstractBuffBuilder slowCC = new SlowCC.MyBuilder(1f, 0.2f);
@@ -269,7 +269,7 @@ class CFirewalkCollisionHandler extends AbstractControl {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
                 Integer entityId =
-                        spatial.getUserData(UserDataStrings.ENTITY_ID);
+                        spatial.getUserData(UserData.ENTITY_ID);
                 if (collidedWith.contains(entityId)) {
                     continue;
                 }

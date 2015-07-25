@@ -35,7 +35,7 @@ import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
@@ -127,7 +127,7 @@ class ACastMeteor extends EntityAction {
         final MotionPath path = new MotionPath();
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
-        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = spatial.getUserData(UserData.PLAYER_ID);
         final int entityId = worldManager.addNewEntity(spell.getId(), startingPoint,
                 Quaternion.IDENTITY, playerId);
         final Spatial meteor = worldManager.getEntity(entityId);
@@ -146,7 +146,7 @@ class ACastMeteor extends EntityAction {
                     int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
                     final float baseDamage =
-                            meteor.getUserData(UserDataStrings.DAMAGE);
+                            meteor.getUserData(UserData.DAMAGE);
 
                     CSpellBuff buffControl = meteor.getControl(CSpellBuff.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
@@ -154,7 +154,7 @@ class ACastMeteor extends EntityAction {
                             new ASplash(Meteor.SPLASH_RADIUS,
                             baseDamage, DistanceScaling.LINEAR, null);
                     splash.setCasterInterface(casterInterface);
-                    int teamId = meteor.getUserData(UserDataStrings.TEAM_ID);
+                    int teamId = meteor.getUserData(UserData.TEAM_ID);
                     splash.setExcludedTeam(teamId);
                     splash.setSpatial(meteor);
                     splash.update(0f);
@@ -226,8 +226,8 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.DAMAGE, 340f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 25000f);
+        node.setUserData(UserData.DAMAGE, 340f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 25000f);
 
         CSpellBuff spellBuffControl = new CSpellBuff();
         node.addControl(spellBuffControl);

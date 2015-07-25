@@ -17,7 +17,7 @@ package arkhados.effects;
 import arkhados.Globals;
 import arkhados.UserCommandManager;
 import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -49,7 +49,7 @@ public class BlindManager extends AbstractAppState {
         int myCharacterId = stateManager.getState(UserCommandManager.class)
                 .getCharacterId();
         Spatial spatial = params.buffControl.getSpatial();
-        int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = spatial.getUserData(UserData.ENTITY_ID);
 
         if (entityId == myCharacterId) {
             addEffect();

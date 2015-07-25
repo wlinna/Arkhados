@@ -32,7 +32,7 @@
 package arkhados.controls;
 
 import arkhados.ServerFogManager;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.FastMath;
@@ -94,7 +94,7 @@ public class PlayerEntityAwareness {
         if (other == null) {
             return false;
         }
-        if (other.getUserData(UserDataStrings.INVISIBLE_TO_ALL)) {
+        if (other.getUserData(UserData.INVISIBLE_TO_ALL)) {
             return false;
         }
         if (getOwnSpatial() == null) {
@@ -166,7 +166,7 @@ public class PlayerEntityAwareness {
     }
 
     public boolean isAwareOf(Spatial other) {
-        if (other == getOwnSpatial() && other.getUserData(UserDataStrings.INVISIBLE_TO_ALL) == false) {
+        if (other == getOwnSpatial() && other.getUserData(UserData.INVISIBLE_TO_ALL) == false) {
             return true;
         }
         if (!entityFlags.containsKey(other)) {

@@ -18,7 +18,7 @@ import arkhados.SpatialDistancePair;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
@@ -69,8 +69,8 @@ class TossPredicate implements Predicate<SpatialDistancePair> {
             CSpiritStonePhysics stone =
                     value.spatial.getControl(CSpiritStonePhysics.class);
             if (stone != null) {
-                int myTeamId = me.getUserData(UserDataStrings.TEAM_ID);
-                if (value.spatial.getUserData(UserDataStrings.TEAM_ID)
+                int myTeamId = me.getUserData(UserData.TEAM_ID);
+                if (value.spatial.getUserData(UserData.TEAM_ID)
                         .equals(myTeamId)) {
                     return true;
                 }

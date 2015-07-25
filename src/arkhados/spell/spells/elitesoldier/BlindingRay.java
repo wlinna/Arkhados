@@ -30,7 +30,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.BlindCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -128,10 +128,10 @@ class RayBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Cyan);
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 200f);
-        node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, 100f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 200f);
+        node.setUserData(UserData.MASS, 0.30f);
+        node.setUserData(UserData.DAMAGE, 100f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         if (worldManager.isClient()) {
             ParticleEmitter smoke = createTrailEmitter();
@@ -153,7 +153,7 @@ class RayBuilder extends AbstractNodeBuilder {
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));
+                (float) node.getUserData(UserData.MASS));
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that

@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -29,17 +29,17 @@ public class CCharacterHeal extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        recordLowHealth = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        recordLowHealth = spatial.getUserData(UserData.HEALTH_MAX);
     }
 
     private float getHealingCap() {
-        float max = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        float max = spatial.getUserData(UserData.HEALTH_MAX);
         return FastMath.clamp(recordLowHealth + HEALING_CAP_CONST,
                 HEALING_CAP_CONST, max);
     }
 
     public void regenerate(float healing) {
-        float max = spatial.getUserData(UserDataStrings.HEALTH_MAX);
+        float max = spatial.getUserData(UserData.HEALTH_MAX);
         recordLowHealth =
                 FastMath.clamp(recordLowHealth + healing, recordLowHealth, max);
         heal(healing);
@@ -47,7 +47,7 @@ public class CCharacterHeal extends AbstractControl {
 
     public void tookDamage() {
         float currentHealth = 
-                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+                spatial.getUserData(UserData.HEALTH_CURRENT);
         if (currentHealth < recordLowHealth) {
             recordLowHealth = currentHealth;
         }
@@ -61,10 +61,10 @@ public class CCharacterHeal extends AbstractControl {
         }
         // TODO: Healing mitigation from negative buff
         float healthBefore = 
-                spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+                spatial.getUserData(UserData.HEALTH_CURRENT);
         float health = FastMath.clamp(healthBefore + healing, healthBefore,
                 getHealingCap());
-        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        spatial.setUserData(UserData.HEALTH_CURRENT, health);
         return health - healthBefore;
     }
 

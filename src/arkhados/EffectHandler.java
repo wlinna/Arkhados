@@ -20,7 +20,7 @@ import arkhados.messages.CmdWorldEffect;
 import arkhados.messages.syncmessages.CmdAction;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class EffectHandler implements CommandHandler {
             return;
         }
 
-        int nodeBuilderId = entity.getUserData(UserDataStrings.NODE_BUILDER_ID);
+        int nodeBuilderId = entity.getUserData(UserData.NODE_BUILDER_ID);
 
         final EffectBox box = actionEffects.get(nodeBuilderId);
         if (box == null) {

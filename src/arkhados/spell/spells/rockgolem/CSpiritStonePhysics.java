@@ -18,7 +18,7 @@ import arkhados.WorldManager;
 import arkhados.controls.CSync;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -78,7 +78,7 @@ public class CSpiritStonePhysics extends RigidBodyControl implements CSync {
     @Override
     public StateData getSyncableData(StateData stateData) {
         return new GenericSyncData(
-                (int) spatial.getUserData(UserDataStrings.ENTITY_ID), spatial);
+                (int) spatial.getUserData(UserData.ENTITY_ID), spatial);
     }
 
     public Vector3f getLocation() {

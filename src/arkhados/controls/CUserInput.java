@@ -18,7 +18,7 @@ import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.ServerPlayerInputState;
 import arkhados.util.PlayerDataStrings;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -59,7 +59,7 @@ public class CUserInput extends AbstractControl {
         }
 
         if (!influenceInterface.isAbleToCastWhileMoving()) {
-            int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+            int playerId = spatial.getUserData(UserData.PLAYER_ID);
 
             Boolean commandMoveInterruptsBoolean =
                     PlayerData.getBooleanData(playerId,

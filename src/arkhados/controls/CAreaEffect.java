@@ -21,7 +21,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.influences.Influence;
 import arkhados.util.PlayerDataStrings;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -104,7 +104,7 @@ public class CAreaEffect extends AbstractControl
             return;
         }
 
-        int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int myTeamId = spatial.getUserData(UserData.TEAM_ID);
         List<PhysicsCollisionObject> collisionObjects =
                 ghostControl.getOverlappingObjects();
 
@@ -120,7 +120,7 @@ public class CAreaEffect extends AbstractControl
                 continue;
             }
 
-            int othersPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+            int othersPlayerId = other.getUserData(UserData.PLAYER_ID);
             int othersTeamId = PlayerData.getIntData(othersPlayerId,
                     PlayerDataStrings.TEAM_ID);
             boolean sameTeam = myTeamId == othersTeamId;

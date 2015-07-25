@@ -19,7 +19,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import arkhados.WorldManager;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 
 /**
@@ -51,7 +51,7 @@ public class CTimedExistence extends AbstractControl {
             if (removeEntity) {
                 if (worldManager.isServer()) {
                     worldManager.removeEntity((Integer) getSpatial()
-                            .getUserData(UserDataStrings.ENTITY_ID),
+                            .getUserData(UserData.ENTITY_ID),
                             RemovalReasons.EXPIRED);
                 }
             } else {

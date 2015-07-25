@@ -22,7 +22,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Builder;
 import arkhados.util.RoundStats;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,19 +53,19 @@ public class CharacterInteraction {
                 .doDamage(rawDamage, canBreakCC);
 
         int targetPlayerId = target.getSpatial()
-                .getUserData(UserDataStrings.PLAYER_ID);
+                .getUserData(UserData.PLAYER_ID);
         int attackerPlayerId;
 
         if (attacker != null) {
             Spatial attackerSpatial = attacker.getSpatial();
             float lifeSteal = attackerSpatial
-                    .getUserData(UserDataStrings.LIFE_STEAL);
+                    .getUserData(UserData.LIFE_STEAL);
             float lifeStolen = lifeSteal * damageDone;
 
             attackerSpatial.getControl(CCharacterHeal.class).heal(lifeStolen);
 
             attackerPlayerId =
-                    attackerSpatial.getUserData(UserDataStrings.PLAYER_ID);
+                    attackerSpatial.getUserData(UserData.PLAYER_ID);
             getCurrentRoundStats()
                     .addDamageForPlayer(attackerPlayerId, damageDone);
             getCurrentRoundStats()
@@ -117,7 +117,7 @@ public class CharacterInteraction {
 
         if (healer != null) {
             int healerPlayerId = healer.getSpatial()
-                    .getUserData(UserDataStrings.PLAYER_ID);
+                    .getUserData(UserData.PLAYER_ID);
             getCurrentRoundStats().addHealthRestorationForPlayer(
                     healerPlayerId, healingDone);
         }

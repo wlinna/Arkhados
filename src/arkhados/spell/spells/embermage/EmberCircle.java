@@ -31,7 +31,7 @@ import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.spell.influences.SlowInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -170,7 +170,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                 assetManager.loadTexture("Textures/EmberCircleAlphaMap.png"));
         node.setMaterial(material);
 
-        node.setUserData(UserDataStrings.DAMAGE_PER_SECOND, 100f);
+        node.setUserData(UserData.DAMAGE_PER_SECOND, 100f);
         CActionQueue actionQueue = new CActionQueue();
         node.addControl(actionQueue);
 
@@ -192,7 +192,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                 @Override
                 public boolean update(float tpf) {
                     float dps = spatial
-                            .getUserData(UserDataStrings.DAMAGE_PER_SECOND);
+                            .getUserData(UserData.DAMAGE_PER_SECOND);
                     areaEffectControl
                             .addInfluence(new DamageOverTimeInfluence(dps));
                     SlowInfluence slowInfluence = new SlowInfluence();

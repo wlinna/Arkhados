@@ -23,7 +23,7 @@ import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.DistanceScaling;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -112,7 +112,7 @@ public class ASplash extends EntityAction {
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 spatial, radius, predicate);
 
-        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int myTeam = spatial.getUserData(UserData.TEAM_ID);
 
         for (SpatialDistancePair pair : spatialsOnDistance) {
             CInfluenceInterface targetInterface =
@@ -137,7 +137,7 @@ public class ASplash extends EntityAction {
                 continue;
             }
 
-            if (spatial.getUserData(UserDataStrings.TEAM_ID).equals(myTeam)) {
+            if (spatial.getUserData(UserData.TEAM_ID).equals(myTeam)) {
                 positive(pair, targetInterface, buffsToApply);
             } else {
                 negative(pair, targetInterface, buffsToApply);
@@ -185,7 +185,7 @@ public class ASplash extends EntityAction {
         Float impulseFactor;
         if (customImpulse == null) {
             impulseFactor =
-                    spatial.getUserData(UserDataStrings.IMPULSE_FACTOR);
+                    spatial.getUserData(UserData.IMPULSE_FACTOR);
         } else {
             impulseFactor = customImpulse;
         }

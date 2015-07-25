@@ -21,7 +21,7 @@ import arkhados.controls.CGrenade;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -38,7 +38,7 @@ public class ACastGrenade extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = spatial.getUserData(UserData.PLAYER_ID);
 
         CSpellCast castControl =
                 spatial.getControl(CSpellCast.class);
@@ -64,7 +64,7 @@ public class ACastGrenade extends EntityAction {
         cGrenade.setOwnerInterface(spatial
                 .getControl(CInfluenceInterface.class));
         
-        int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int teamId = spatial.getUserData(UserData.TEAM_ID);
         cGrenade.getSplashAction().setExcludedTeam(teamId);
 
         cGrenade.setLaunchSpeedBasedOnRange(spell.getRange());

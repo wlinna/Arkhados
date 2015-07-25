@@ -16,7 +16,7 @@ package arkhados.controls;
 
 import arkhados.spell.Spell;
 import arkhados.util.AnimationData;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -59,7 +59,7 @@ public class CCharacterAnimation extends AbstractControl {
         cPhysics = spatial.getControl(CCharacterPhysics.class);
         cMovement = spatial.getControl(CCharacterMovement.class);
         channel = animControl.createChannel();
-        float health = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        float health = spatial.getUserData(UserData.HEALTH_CURRENT);
         if (health > 0f) {
             channel.setAnim(walkAnimation.getName());
             channel.setSpeed(walkAnimation.getSpeed());

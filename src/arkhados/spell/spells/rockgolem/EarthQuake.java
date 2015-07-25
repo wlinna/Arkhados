@@ -29,7 +29,7 @@ import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.DistanceScaling;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -97,7 +97,7 @@ class ACastEarthQuake extends EntityAction {
 
         ASplash splash = new ASplash(splashRadius, 180f, 0f,
                 DistanceScaling.CONSTANT, buffs);
-        final int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        final int teamId = spatial.getUserData(UserData.TEAM_ID);
         splash.setExcludedTeam(teamId);
         CInfluenceInterface casterInterface =
                 spatial.getControl(CInfluenceInterface.class);

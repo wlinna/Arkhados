@@ -20,7 +20,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.BuffTypeIds;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.scene.Node;
 
 /**
@@ -51,7 +51,7 @@ public class Ignite extends Spell {
         }
 
         float damagePerSecond = 20f;
-        float damageFactor = caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+        float damageFactor = caster.getUserData(UserData.DAMAGE_FACTOR);
 
         damagePerSecond *= damageFactor;
         

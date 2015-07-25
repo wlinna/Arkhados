@@ -30,7 +30,7 @@ import arkhados.spell.buffs.SpeedBuff;
 import arkhados.spell.influences.Influence;
 import arkhados.spell.influences.SlowInfluence;
 import arkhados.spell.influences.SpeedInfluence;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -102,8 +102,8 @@ public class CInfluenceInterface extends AbstractControl {
 
     public void setHealth(float health) {
         float healthBefore = spatial
-                .getUserData(UserDataStrings.HEALTH_CURRENT);
-        spatial.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+                .getUserData(UserData.HEALTH_CURRENT);
+        spatial.setUserData(UserData.HEALTH_CURRENT, health);
         if (healthBefore > 0f && health == 0f && !dead) {
             death();
         } else if (health < healthBefore && !isServer && health > 0f) {
@@ -170,10 +170,10 @@ public class CInfluenceInterface extends AbstractControl {
          * First set entity's attributes to their defaults like damagefactor and
          * movement speed.
          */
-        spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
+        spatial.setUserData(UserData.DAMAGE_FACTOR, 1f);
         float lifeStealBase =
-                spatial.getUserData(UserDataStrings.LIFE_STEAL_BASE);
-        spatial.setUserData(UserDataStrings.LIFE_STEAL, lifeStealBase);
+                spatial.getUserData(UserData.LIFE_STEAL_BASE);
+        spatial.setUserData(UserData.LIFE_STEAL, lifeStealBase);
         immuneToProjectiles = false;
 
         CCharacterMovement cMovement =
@@ -204,11 +204,11 @@ public class CInfluenceInterface extends AbstractControl {
             }
         }
         
-        spatial.setUserData(UserDataStrings.DAMAGE_FACTOR, damageFactor);
+        spatial.setUserData(UserData.DAMAGE_FACTOR, damageFactor);
     }
     
     private void applyLifeStealBuffs() {
-        float lifeSteal = spatial.getUserData(UserDataStrings.LIFE_STEAL_BASE);
+        float lifeSteal = spatial.getUserData(UserData.LIFE_STEAL_BASE);
         for (AbstractBuff buff : buffs) {
             if (buff instanceof LifeStealBuff) {
                 LifeStealBuff lifeStealBuff = (LifeStealBuff) buff;
@@ -216,7 +216,7 @@ public class CInfluenceInterface extends AbstractControl {
             }
         }
         
-        spatial.setUserData(UserDataStrings.LIFE_STEAL, lifeSteal);
+        spatial.setUserData(UserData.LIFE_STEAL, lifeSteal);
     }
 
     private void applySlowsAndSpeedBuffs() {
@@ -248,9 +248,9 @@ public class CInfluenceInterface extends AbstractControl {
             speedInfluences.clear();
 
             float msCurrent =
-                    spatial.getUserData(UserDataStrings.SPEED_MOVEMENT);
+                    spatial.getUserData(UserData.SPEED_MOVEMENT);
 
-            spatial.setUserData(UserDataStrings.SPEED_MOVEMENT,
+            spatial.setUserData(UserData.SPEED_MOVEMENT,
                     msCurrent * speedFactor + constantSpeedAddition);
         }
     }

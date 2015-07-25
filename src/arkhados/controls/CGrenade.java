@@ -25,7 +25,7 @@ import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -64,7 +64,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
                 splashAction.update(tpf);
             }
 
-            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            int entityId = spatial.getUserData(UserData.ENTITY_ID);
             WorldManager world =
                     Globals.app.getStateManager().getState(WorldManager.class);
             world.removeEntity(entityId, RemovalReasons.EXPIRED);
@@ -107,7 +107,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
 
     @Override
     public StateData getSyncableData(StateData stateData) {
-        int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
+        int id = spatial.getUserData(UserData.ENTITY_ID);
         return new ProjectileSyncData(id,
                 spatial.getControl(RigidBodyControl.class));
     }
@@ -133,8 +133,8 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
     }
 
     private void damage(Spatial other, CInfluenceInterface otherInterface) {
-        int grenadeTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
-        int targetPlayerId = other.getUserData(UserDataStrings.PLAYER_ID);
+        int grenadeTeamId = spatial.getUserData(UserData.TEAM_ID);
+        int targetPlayerId = other.getUserData(UserData.PLAYER_ID);
         int targetTeamId =
                 PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
 
@@ -147,7 +147,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
 
         RigidBodyControl body = spatial.getControl(RigidBodyControl.class);
 
-        final float damage = spatial.getUserData(UserDataStrings.DAMAGE);
+        final float damage = spatial.getUserData(UserData.DAMAGE);
         int removalReason = RemovalReasons.COLLISION;
         if (otherInterface.isImmuneToProjectiles()) {
             otherInterface.reducePurifyingFlame(damage);
@@ -160,7 +160,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
                 ATrance trance = (ATrance) currentAction;
                 trance.activate(other);
 
-                int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                int entityId = spatial.getUserData(UserData.ENTITY_ID);
                 world.removeEntity(entityId, removalReason);
 
                 return;
@@ -174,7 +174,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
                     damage, buffControl.getBuffs(), canBreakCC);
 
             Float impulseFactor = spatial
-                    .getUserData(UserDataStrings.IMPULSE_FACTOR);
+                    .getUserData(UserData.IMPULSE_FACTOR);
 
             Vector3f impulse = other.getLocalTranslation()
                     .subtract(body.getPhysicsLocation().setY(0))
@@ -189,7 +189,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
             }
         }
 
-        int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = spatial.getUserData(UserData.ENTITY_ID);
         world.removeEntity(entityId, removalReason);
     }
 

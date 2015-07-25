@@ -28,7 +28,7 @@ import arkhados.spell.influences.SlowInfluence;
 import arkhados.spell.influences.SpeedInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -93,7 +93,7 @@ class ASpiritStoneCast extends EntityAction {
         CSpellCast castControl =
                 spatial.getControl(CSpellCast.class);
         Vector3f target = castControl.getClosestPointToTarget(spell).setY(10f);
-        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = spatial.getUserData(UserData.PLAYER_ID);
         worldManager.addNewEntity(spell.getId(),
                 target, Quaternion.IDENTITY, playerId);
         return false;
@@ -121,11 +121,11 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
             childToScale.scale(3f);
         }
 
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 145f);
-        node.setUserData(UserDataStrings.MASS, 600f);
-        node.setUserData(UserDataStrings.DAMAGE, 0f);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
-        node.setUserData(UserDataStrings.INCAPACITATE_LENGTH, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 145f);
+        node.setUserData(UserData.MASS, 600f);
+        node.setUserData(UserData.DAMAGE, 0f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.INCAPACITATE_LENGTH, 0f);
 
         // TODO: Put sound effect that's different
 //        if (worldManager.isClient()) {
@@ -140,7 +140,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         SphereCollisionShape collisionShape = new SphereCollisionShape(5f);
         CSpiritStonePhysics physicsBody =
                 new CSpiritStonePhysics(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS), worldManager);
+                (float) node.getUserData(UserData.MASS), worldManager);
         node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);

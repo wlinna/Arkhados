@@ -23,7 +23,7 @@ import arkhados.controls.CSpellCast;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -122,7 +122,7 @@ class ACastRocketJump extends EntityAction {
         ASplash splash = new ASplash(30, 100, 23000,
                 DistanceScaling.CONSTANT, null);
         splash.setSpatial(spatial);
-        int teamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int teamId = spatial.getUserData(UserData.TEAM_ID);
         splash.setExcludedTeam(teamId);
         splash.setCasterInterface(
                 spatial.getControl(CInfluenceInterface.class));

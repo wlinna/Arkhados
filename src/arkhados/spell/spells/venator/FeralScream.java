@@ -23,7 +23,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.FearCC;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -108,7 +108,7 @@ class AFeralScream extends EntityAction {
         Plane rightPlane = new Plane(rightNormal,
                 spatial.getLocalTranslation().dot(rightNormal));
 
-        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int myTeam = spatial.getUserData(UserData.TEAM_ID);
         
         List<SpatialDistancePair> spatialDistances = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),

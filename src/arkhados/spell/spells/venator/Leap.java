@@ -29,7 +29,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
@@ -114,7 +114,7 @@ class ACastLeap extends EntityAction {
 
         path.addListener(new MotionPathListener() {
             private void landingEffect() {
-                int myTeamId = spatial.getUserData(UserDataStrings.TEAM_ID);
+                int myTeamId = spatial.getUserData(UserData.TEAM_ID);
                 List<SpatialDistancePair> spatialsOnDistance =
                         Selector.getSpatialsWithinDistance(
                         new ArrayList<SpatialDistancePair>(), spatial, 17.5f,
@@ -141,7 +141,7 @@ class ACastLeap extends EntityAction {
                     }
 
                     float damageFactor =
-                            spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                            spatial.getUserData(UserData.DAMAGE_FACTOR);
                     float damage = 200f * damageFactor;
 
                     List<AbstractBuffBuilder> buffs = new ArrayList<>(1);

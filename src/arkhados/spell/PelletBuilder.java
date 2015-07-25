@@ -23,7 +23,7 @@ import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -60,10 +60,10 @@ public class PelletBuilder extends AbstractNodeBuilder {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
-        node.setUserData(UserDataStrings.SPEED_MOVEMENT, 220f);
-        node.setUserData(UserDataStrings.MASS, 0.30f);
-        node.setUserData(UserDataStrings.DAMAGE, damage);
-        node.setUserData(UserDataStrings.IMPULSE_FACTOR, 0f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 220f);
+        node.setUserData(UserData.MASS, 0.30f);
+        node.setUserData(UserData.DAMAGE, damage);
+        node.setUserData(UserData.IMPULSE_FACTOR, 0f);
         if (worldManager.isClient()) {
             node.addControl(new CEntityEvent());
             /**
@@ -78,7 +78,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
         }
         SphereCollisionShape collisionShape = new SphereCollisionShape(1.7f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserDataStrings.MASS));       
+                (float) node.getUserData(UserData.MASS));       
         /**
          * We don't want projectiles to collide with each other so we give them
          * their own collision group and prevent them from colliding with that

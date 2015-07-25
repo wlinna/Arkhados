@@ -26,7 +26,7 @@ import arkhados.actions.ASplash;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import java.util.HashSet;
@@ -54,7 +54,7 @@ public class CProjectile extends AbstractControl implements CSync {
 
     public void setTarget(Vector3f target) {
         float speedMovement =
-                getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
+                getSpatial().getUserData(UserData.SPEED_MOVEMENT);
         direction = target.subtract(rigidBodyControl.getPhysicsLocation())
                 .setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
@@ -77,7 +77,7 @@ public class CProjectile extends AbstractControl implements CSync {
      */
     public void setDirection(Vector3f direction) {
         float speedMovement =
-                getSpatial().getUserData(UserDataStrings.SPEED_MOVEMENT);
+                getSpatial().getUserData(UserData.SPEED_MOVEMENT);
         this.direction =
                 direction.setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
@@ -110,7 +110,7 @@ public class CProjectile extends AbstractControl implements CSync {
                 splashAction.update(tpf);
             }
 
-            int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            int entityId = spatial.getUserData(UserData.ENTITY_ID);
             worldManager.removeEntity(entityId, RemovalReasons.EXPIRED);
         }
 
@@ -119,7 +119,7 @@ public class CProjectile extends AbstractControl implements CSync {
                 splashAction.update(tpf);
             }
             worldManager.removeEntity(
-                    (int) spatial.getUserData(UserDataStrings.ENTITY_ID),
+                    (int) spatial.getUserData(UserData.ENTITY_ID),
                     RemovalReasons.EXPIRED);
         }
     }
@@ -157,7 +157,7 @@ public class CProjectile extends AbstractControl implements CSync {
         if (needsSync) {
             needsSync = true;
             return new ProjectileSyncData(
-                    (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
+                    (int) getSpatial().getUserData(UserData.ENTITY_ID),
                     rigidBodyControl);
         }
 

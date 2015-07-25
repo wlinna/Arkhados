@@ -22,7 +22,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Selector;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class ACastBuff extends EntityAction {
         Vector3f targetLoc = spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 
-        int myTeam = spatial.getUserData(UserDataStrings.TEAM_ID);
+        int myTeam = spatial.getUserData(UserData.TEAM_ID);
         ArrayList<SpatialDistancePair> spatials = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
                 targetLoc, radius, new Selector.IsAlliedCharacter(myTeam));

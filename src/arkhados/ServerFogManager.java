@@ -26,7 +26,7 @@ import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.ConnectionHelper;
 import arkhados.util.RemovalReasons;
 import arkhados.settings.server.Settings;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -132,7 +132,7 @@ public class ServerFogManager extends AbstractAppState {
             }
 
             if (awareness.getOwnSpatial() == spatial) {
-                int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+                int entityId = spatial.getUserData(UserData.ENTITY_ID);
                 logger.log(Level.INFO,
                         "Character with id {0} belonged for player with id {1}."
                         + " Nulling",
@@ -144,7 +144,7 @@ public class ServerFogManager extends AbstractAppState {
 
     public void visibilityChanged(PlayerEntityAwareness awareness,
             Spatial target, boolean sees) {
-        int entityId = target.getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = target.getUserData(UserData.ENTITY_ID);
 
 //        logger.log(Level.INFO, "Visibility of target {0} changed for awareness {1}. Sees: {2}",
 //                new Object[]{entityId, awareness.getPlayerId(), sees});
@@ -154,12 +154,12 @@ public class ServerFogManager extends AbstractAppState {
 
         if (sees) {
             int nodeBuilderId =
-                    target.getUserData(UserDataStrings.NODE_BUILDER_ID);
-            int playerId = target.getUserData(UserDataStrings.PLAYER_ID);
-            float birthTime = target.getUserData(UserDataStrings.BIRTHTIME);
+                    target.getUserData(UserData.NODE_BUILDER_ID);
+            int playerId = target.getUserData(UserData.PLAYER_ID);
+            float birthTime = target.getUserData(UserData.BIRTHTIME);
             float age = world.getWorldTime() - birthTime;
             Object healthMaybe =
-                    target.getUserData(UserDataStrings.HEALTH_CURRENT);
+                    target.getUserData(UserData.HEALTH_CURRENT);
             if (healthMaybe != null) {
                 float health = (float) healthMaybe;
                 if (health <= 0f) {
@@ -248,7 +248,7 @@ public class ServerFogManager extends AbstractAppState {
     }
 
     public void registerCharacterForPlayer(int playerId, Spatial character) {
-        int entityId = character.getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = character.getUserData(UserData.ENTITY_ID);
         logger.log(Level.INFO, "Registering character with id {0}"
                 + " for player with id {1}",
                 new Object[]{entityId, playerId});

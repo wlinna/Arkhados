@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import arkhados.actions.EntityAction;
 import arkhados.messages.syncmessages.CmdAction;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 
 /**
  *
@@ -104,7 +104,7 @@ public class CActionQueue extends AbstractControl {
         PlayerEntityAwareness awareness =
                 spatial.getControl(CEntityVariable.class).getAwareness();
         if (awareness != null) {
-            int id = spatial.getUserData(UserDataStrings.ENTITY_ID);
+            int id = spatial.getUserData(UserData.ENTITY_ID);
             awareness.getFogManager().addCommand(spatial,
                     new CmdAction(id, action.getTypeId()));
         }

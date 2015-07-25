@@ -24,7 +24,7 @@ import arkhados.controls.CActionQueue;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -75,9 +75,9 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         CSpiritStonePhysics stonePhysics =
                 myStone.getControl(CSpiritStonePhysics.class);
 
-        int stoneId = myStone.getUserData(UserDataStrings.ENTITY_ID);
+        int stoneId = myStone.getUserData(UserData.ENTITY_ID);
 
-        Integer otherTeamId = other.getUserData(UserDataStrings.TEAM_ID);
+        Integer otherTeamId = other.getUserData(UserData.TEAM_ID);
         if (otherTeamId == null) {
             if (stonePhysics.isPunched()) {
                 worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
@@ -85,7 +85,7 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
             }
             return;
         }
-        int myTeamId = myStone.getUserData(UserDataStrings.TEAM_ID);
+        int myTeamId = myStone.getUserData(UserData.TEAM_ID);
 
         CInfluenceInterface influenceInterface =
                 other.getControl(CInfluenceInterface.class);
@@ -95,7 +95,7 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
             CActionQueue cQueue = other.getControl(CActionQueue.class);
             EntityAction currentAction = cQueue.getCurrent();
 
-            int ownerId = myStone.getUserData(UserDataStrings.PLAYER_ID);
+            int ownerId = myStone.getUserData(UserData.PLAYER_ID);
             int playerEntityId = PlayerData
                     .getIntData(ownerId, PlayerDataStrings.ENTITY_ID);
             Spatial playerEntity = worldManager.getEntity(playerEntityId);

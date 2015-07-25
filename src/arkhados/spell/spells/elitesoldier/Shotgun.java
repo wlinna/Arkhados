@@ -23,7 +23,7 @@ import arkhados.controls.CProjectile;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.PelletBuilder;
 import arkhados.spell.Spell;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -94,7 +94,7 @@ class ACastShotgun extends EntityAction {
         spatial.getControl(CCharacterPhysics.class)
                 .setViewDirection(viewDirection);
 
-        int playerId = spatial.getUserData(UserDataStrings.PLAYER_ID);
+        int playerId = spatial.getUserData(UserData.PLAYER_ID);
 
         Vector3f spawnLocation =
                 spatial.getLocalTranslation().add(0f, height, 0f);
@@ -111,10 +111,10 @@ class ACastShotgun extends EntityAction {
                     spawnLocation, Quaternion.IDENTITY, playerId);
             Spatial projectile = world.getEntity(projectileId);
 
-            float damage = projectile.getUserData(UserDataStrings.DAMAGE);
+            float damage = projectile.getUserData(UserData.DAMAGE);
             float damageFactor =
-                    spatial.getUserData(UserDataStrings.DAMAGE_FACTOR);
-            projectile.setUserData(UserDataStrings.DAMAGE,
+                    spatial.getUserData(UserData.DAMAGE_FACTOR);
+            projectile.setUserData(UserData.DAMAGE,
                     damage * damageFactor);
 
             CProjectile projectileControl =

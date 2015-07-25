@@ -17,7 +17,7 @@ package arkhados.actions;
 import arkhados.Globals;
 import arkhados.ServerFogManager;
 import arkhados.messages.syncmessages.CmdEndAction;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 
 /**
@@ -75,7 +75,7 @@ public abstract class EntityAction {
     }
     
     protected void announceEnd() {
-        int entityId = spatial.getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = spatial.getUserData(UserData.ENTITY_ID);
         CmdEndAction endAction = new CmdEndAction(entityId);
         Globals.app.getStateManager().getState(ServerFogManager.class)
                 .addCommand(spatial, endAction);

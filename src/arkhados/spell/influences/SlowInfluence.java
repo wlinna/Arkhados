@@ -15,7 +15,7 @@
 package arkhados.spell.influences;
 
 import arkhados.controls.CInfluenceInterface;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 
 /**

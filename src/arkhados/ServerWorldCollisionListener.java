@@ -25,7 +25,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.spell.spells.rockgolem.CSpiritStonePhysics;
 import arkhados.util.PlayerDataStrings;
 import arkhados.util.RemovalReasons;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.math.Vector3f;
@@ -116,8 +116,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
     private void projectileCharacterCollision(CProjectile projectile,
             CInfluenceInterface target) {
 
-        int projectileTeamId = projectile.getSpatial().getUserData(UserDataStrings.TEAM_ID);
-        int targetPlayerId = target.getSpatial().getUserData(UserDataStrings.PLAYER_ID);
+        int projectileTeamId = projectile.getSpatial().getUserData(UserData.TEAM_ID);
+        int targetPlayerId = target.getSpatial().getUserData(UserData.PLAYER_ID);
         int targetTeamId = PlayerData.getIntData(targetPlayerId, PlayerDataStrings.TEAM_ID);
 
         if (targetTeamId == projectileTeamId) {
@@ -128,7 +128,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             return;
         }
 
-        final float damage = projectile.getSpatial().getUserData(UserDataStrings.DAMAGE);
+        final float damage = projectile.getSpatial().getUserData(UserData.DAMAGE);
         int removalReason = RemovalReasons.COLLISION;
         if (target.isImmuneToProjectiles() && projectile.isProjectile()) {
             target.reducePurifyingFlame(damage);
@@ -144,7 +144,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
                 if (projectile.isProjectile()) {
                     int entityId = projectile.getSpatial()
-                            .getUserData(UserDataStrings.ENTITY_ID);
+                            .getUserData(UserData.ENTITY_ID);
                     worldManager.removeEntity(entityId, removalReason);
                 }
                 return;
@@ -159,7 +159,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                     damage, buffControl.getBuffs(), canBreakCC);
 
             Float impulseFactor = projectile.getSpatial()
-                    .getUserData(UserDataStrings.IMPULSE_FACTOR);
+                    .getUserData(UserData.IMPULSE_FACTOR);
 
             Vector3f impulse = target.getSpatial().getLocalTranslation()
                     .subtract(projectile.getRigidBodyControl()
@@ -176,7 +176,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         }
 
         int entityId = projectile.getSpatial()
-                .getUserData(UserDataStrings.ENTITY_ID);
+                .getUserData(UserData.ENTITY_ID);
         if (projectile.isProjectile()) {
             worldManager.removeEntity(entityId, removalReason);
         } else {
@@ -189,7 +189,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             projectile.getSplashAction().update(0);
         }
 
-        int entityId = projectile.getSpatial().getUserData(UserDataStrings.ENTITY_ID);
+        int entityId = projectile.getSpatial().getUserData(UserData.ENTITY_ID);
         worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
     }
 }

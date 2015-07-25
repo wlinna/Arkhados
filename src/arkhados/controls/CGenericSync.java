@@ -16,7 +16,7 @@ package arkhados.controls;
 
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -40,6 +40,6 @@ public class CGenericSync extends AbstractControl implements CSync{
     @Override
     public StateData getSyncableData(StateData stateData) {
         return new GenericSyncData((int) 
-                getSpatial().getUserData(UserDataStrings.ENTITY_ID), spatial);
+                getSpatial().getUserData(UserData.ENTITY_ID), spatial);
     }    
 }

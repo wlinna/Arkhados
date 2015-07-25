@@ -18,7 +18,7 @@ package arkhados.messages.syncmessages.statedata;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSyncInterpolation;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -45,7 +45,7 @@ public class CharacterSyncData extends StateData {
         CCharacterPhysics body = spatial.getControl(CCharacterPhysics.class);
         walkDirection.set(body.getWalkDirection());
         viewDirection.set(body.getViewDirection());
-        health = spatial.getUserData(UserDataStrings.HEALTH_CURRENT);
+        health = spatial.getUserData(UserData.HEALTH_CURRENT);
     }
 
     @Override

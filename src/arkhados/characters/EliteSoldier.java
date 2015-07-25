@@ -38,7 +38,7 @@ import arkhados.util.AnimationData;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.animation.SkeletonControl;
@@ -104,20 +104,20 @@ public class EliteSoldier extends AbstractNodeBuilder {
         weapon.setLocalRotation(yQuat.add(zQuat));
 
         float movementSpeed = 36f;
-        entity.setUserData(UserDataStrings.SPEED_MOVEMENT, movementSpeed);
-        entity.setUserData(UserDataStrings.SPEED_MOVEMENT_BASE, movementSpeed);
-        entity.setUserData(UserDataStrings.SPEED_ROTATION, 0f);
+        entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
+        entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
+        entity.setUserData(UserData.SPEED_ROTATION, 0f);
         float radius = 5f;
-        entity.setUserData(UserDataStrings.RADIUS, radius);
+        entity.setUserData(UserData.RADIUS, radius);
         float health = 1675f;
-        entity.setUserData(UserDataStrings.HEALTH_MAX, health);
-        entity.setUserData(UserDataStrings.HEALTH_CURRENT, health);
+        entity.setUserData(UserData.HEALTH_MAX, health);
+        entity.setUserData(UserData.HEALTH_CURRENT, health);
         if (params.age < 0f) {
-            entity.setUserData(UserDataStrings.HEALTH_CURRENT, 0f);
+            entity.setUserData(UserData.HEALTH_CURRENT, 0f);
         }
-        entity.setUserData(UserDataStrings.DAMAGE_FACTOR, 1f);
-        entity.setUserData(UserDataStrings.LIFE_STEAL_BASE, 0f);
-        entity.setUserData(UserDataStrings.LIFE_STEAL, 0f);
+        entity.setUserData(UserData.DAMAGE_FACTOR, 1f);
+        entity.setUserData(UserData.LIFE_STEAL_BASE, 0f);
+        entity.setUserData(UserData.LIFE_STEAL, 0f);
 
         entity.addControl(new CCharacterPhysics(radius, 20f, 75f));
 
@@ -222,7 +222,7 @@ class CEliteSoldierSync extends AbstractControl implements CSync {
     @Override
     public StateData getSyncableData(StateData stateData) {
         return new EliteSoldierSyncData(
-                (int) getSpatial().getUserData(UserDataStrings.ENTITY_ID),
+                (int) getSpatial().getUserData(UserData.ENTITY_ID),
                 getSpatial());
     }
 

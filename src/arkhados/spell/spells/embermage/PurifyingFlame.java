@@ -27,7 +27,7 @@ import arkhados.spell.buffs.AbsorbingShieldBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.util.PhysicsWorkaround;
-import arkhados.util.UserDataStrings;
+import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -69,12 +69,12 @@ public class PurifyingFlame extends Spell {
 
                 if (worldManager.isServer()) {
                     int playerId =
-                            caster.getUserData(UserDataStrings.PLAYER_ID);
+                            caster.getUserData(UserData.PLAYER_ID);
                     aoeContainer
-                            .setUserData(UserDataStrings.PLAYER_ID, playerId);
+                            .setUserData(UserData.PLAYER_ID, playerId);
 
-                    int teamId = caster.getUserData(UserDataStrings.TEAM_ID);
-                    aoeContainer.setUserData(UserDataStrings.TEAM_ID, teamId);
+                    int teamId = caster.getUserData(UserData.TEAM_ID);
+                    aoeContainer.setUserData(UserData.TEAM_ID, teamId);
 
                     GhostControl ghost =
                             new GhostControl(new SphereCollisionShape(8f));
@@ -95,7 +95,7 @@ public class PurifyingFlame extends Spell {
 
                     float baseDps = 100f;
                     float damageFactor =
-                            caster.getUserData(UserDataStrings.DAMAGE_FACTOR);
+                            caster.getUserData(UserData.DAMAGE_FACTOR);
                     float dps = baseDps * damageFactor;
                     DamageOverTimeInfluence damageOverTime =
                             new DamageOverTimeInfluence(dps);
