@@ -104,7 +104,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Dark Energy"), M2Id);
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
-        spellCastControl.putSpell(Spell.getSpell("Meteor"),
+        spellCastControl.putSpell(Spell.getSpell("Dark Spear"),
                 InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), RId);
         spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -RId);
@@ -141,7 +141,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Shadow Orb", attackAnim);
         characterAnimControl.addSpellAnimation("Dark Energy", attackAnim);
         characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
-        characterAnimControl.addSpellAnimation("Meteor", idleAnim);
+        characterAnimControl.addSpellAnimation("Dark Spear", attackAnim);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
         characterAnimControl.addSpellAnimation("Ethereal Flame", hitAnim);
         characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
