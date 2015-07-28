@@ -106,8 +106,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Dark Spear"),
                 InputMappingStrings.getId(InputMappingStrings.E));
-        spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), RId);
-        spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -RId);
+        spellCastControl.putSpell(Spell.getSpell("Shadow"), RId);
         spellCastControl.putSpell(Spell.getSpell("Firewalk"),
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
@@ -142,8 +141,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Dark Energy", attackAnim);
         characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
         characterAnimControl.addSpellAnimation("Dark Spear", attackAnim);
-        characterAnimControl.addSpellAnimation("Purifying Flame", null);
-        characterAnimControl.addSpellAnimation("Ethereal Flame", hitAnim);
+        characterAnimControl.addSpellAnimation("Shadow", null);
         characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
 
         entity.addControl(new CInfluenceInterface());

@@ -28,12 +28,14 @@ import com.jme3.util.TempVars;
  * @author william
  */
 public class CCharacterPhysics extends BetterCharacterControl {
+
     private static final float BASE_DAMPING = 1 / 30f;
     private Vector3f impulseToApply = null;
     private Vector3f queuedLinearVelocity = null;
     private Vector3f targetLocation = new Vector3f();
     private Vector3f dictatedDirection = new Vector3f();
     private boolean motionControlled = false;
+    private int defaultCollideWithGroups;
 
     public CCharacterPhysics(float radius, float height, float mass) {
         super(radius, height, mass);
@@ -49,6 +51,8 @@ public class CCharacterPhysics extends BetterCharacterControl {
         rigidBody.setFriction(1f);
         rigidBody.setRestitution(0f);
         rigidBody.setGravity(Vector3f.ZERO);
+
+        defaultCollideWithGroups = rigidBody.getCollideWithGroups();
     }
 
     public void lookAt(Vector3f targetlocation) {
@@ -59,8 +63,8 @@ public class CCharacterPhysics extends BetterCharacterControl {
     public void prePhysicsTick(PhysicsSpace space, float tpf) {
         // Most of this code is taken from BetterCharacterControl (BSD-licensed)
 
-        float dampScale =  space.getAccuracy()  / BASE_DAMPING;
-        
+        float dampScale = space.getAccuracy() / BASE_DAMPING;
+
         checkOnGround();
         if (wantToUnDuck && checkCanUnDuck()) {
             setHeightPercent(1);
@@ -120,6 +124,19 @@ public class CCharacterPhysics extends BetterCharacterControl {
         }
     }
 
+    public void makeEthereal() {
+        rigidBody.setCollisionGroup(CollisionGroups.NONE);
+        rigidBody.setCollideWithGroups(
+                CollisionGroups.TERRAIN
+                | CollisionGroups.WALLS
+                | CollisionGroups.SPIRIT_STONE);
+    }
+
+    public void defaultCollisionGroups() {
+        rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
+        rigidBody.setCollideWithGroups(defaultCollideWithGroups);
+    }
+
     @Override
     public void update(float tpf) {
         super.update(tpf);
@@ -156,7 +173,8 @@ public class CCharacterPhysics extends BetterCharacterControl {
     }
 
     public CapsuleCollisionShape getCapsuleShape() {
-        CapsuleCollisionShape capsuleCollisionShape = new CapsuleCollisionShape(getFinalRadius(),
+        CapsuleCollisionShape capsuleCollisionShape =
+                new CapsuleCollisionShape(getFinalRadius(),
                 (getFinalHeight() - (2 * getFinalRadius())));
         return capsuleCollisionShape;
     }
