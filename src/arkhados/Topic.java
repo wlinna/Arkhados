@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-/**
- *
- * @author william
- */
 public class Topic {
 
     public static final int START_GAME = 0;

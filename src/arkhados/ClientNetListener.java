@@ -140,21 +140,23 @@ public class ClientNetListener extends AbstractAppState
     }
 
     private void handleLoginCommand(CmdServerLogin loginCommand) {
-        if (loginCommand.isAccepted()) {
-            app.getStateManager().getState(UserCommandManager.class).
-                    setPlayerId(loginCommand.getPlayerId());
-            AppSettings settings = app.getContext().getSettings();
-
-            boolean movingInterrupts = settings
-                    .getBoolean(PlayerData.COMMAND_MOVE_INTERRUPTS);
-
-            CmdClientSettings clientSettingsCommand =
-                    new CmdClientSettings(movingInterrupts);
-            Sender sender = app.getStateManager().getState(Sender.class);
-            sender.addCommand(clientSettingsCommand);
-
-            app.setupGameMode(loginCommand.getGameMode());
+        if (!loginCommand.isAccepted()) {
+            return;
         }
+
+        app.getStateManager().getState(UserCommandManager.class).
+                setPlayerId(loginCommand.getPlayerId());
+        AppSettings settings = app.getContext().getSettings();
+
+        boolean movingInterrupts = settings
+                .getBoolean(PlayerData.COMMAND_MOVE_INTERRUPTS);
+
+        CmdClientSettings clientSettingsCommand =
+                new CmdClientSettings(movingInterrupts);
+        Sender sender = app.getStateManager().getState(Sender.class);
+        sender.addCommand(clientSettingsCommand);
+
+        app.setupGameMode(loginCommand.getGameMode());
     }
 
     private void handleSetPlayersCharacter(CmdSetPlayersCharacter message) {

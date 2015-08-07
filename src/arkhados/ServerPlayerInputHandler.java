@@ -22,7 +22,6 @@ import arkhados.net.CommandHandler;
 import com.jme3.app.Application;
 import com.jme3.network.HostedConnection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 

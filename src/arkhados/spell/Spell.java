@@ -56,11 +56,11 @@ import arkhados.spell.spells.venator.NumbingDagger;
 import arkhados.spell.spells.venator.SurvivalInstinct;
 import arkhados.util.EntityFactory;
 import arkhados.util.AbstractNodeBuilder;
-import arkhados.util.BuildParameters;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -78,8 +78,8 @@ public abstract class Spell {
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
      */
-    private static HashMap<Integer, Spell> Spells = new HashMap<>();
-    private static HashMap<String, Integer> SpellNameCreationIdMap =
+    private static Map<Integer, Spell> Spells = new HashMap<>();
+    private static Map<String, Integer> SpellNameCreationIdMap =
             new HashMap<>();
 
     /**
@@ -193,19 +193,19 @@ public abstract class Spell {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public float getCooldown() {
-        return this.cooldown;
+        return cooldown;
     }
 
     public float getRange() {
-        return this.range;
+        return range;
     }
 
     public float getCastTime() {
-        return this.castTime;
+        return castTime;
     }
 
     public String getIconName() {
@@ -221,10 +221,6 @@ public abstract class Spell {
      */
     public EntityAction buildCastAction(Node caster, Vector3f vec) {
         return castSpellActionBuilder.newAction(caster, vec);
-    }
-
-    public Node buildNode(BuildParameters params) {
-        return nodeBuilder.build(params);
     }
 
     public boolean canMoveWhileCasting() {
