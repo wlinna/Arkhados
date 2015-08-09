@@ -50,8 +50,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
 /**
- * EliteSoldiers's RocketLauncher (E) spell. Projectile has moderate speed and
- * deals high damage and small splash damage. Has big knockback effect on hit.
+ * Shadowmancer's main buff (M2) spell. 
  */
 public class DarkEnergy extends Spell {
 
@@ -175,6 +174,8 @@ class EnergyBuilder extends AbstractNodeBuilder {
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
 
+        node.addControl(new CSpellBuff());
+        
         node.addControl(projectileControl);
         physicsBody.setCollisionGroup(CollisionGroups.NONE);
         physicsBody.setCollideWithGroups(CollisionGroups.NONE);

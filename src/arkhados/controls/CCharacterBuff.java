@@ -32,10 +32,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author william
- */
 public class CCharacterBuff extends AbstractControl {
 
     private static final Logger logger =
@@ -175,8 +171,18 @@ public class CCharacterBuff extends AbstractControl {
     void setHudManager(ClientHudManager hudManager) {
         this.hudManager = hudManager;
         buffPanel = hudManager.getScreen().findElementByName("panel_buffs");
-    }
+    }    
 
+    public boolean hasBuff(int typeId) {
+        for (FakeBuff fakeBuff : buffs.values()) {
+            if (fakeBuff.typeId == typeId) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     public Map<Integer, FakeBuff> getBuffs() {
         return buffs;
     }

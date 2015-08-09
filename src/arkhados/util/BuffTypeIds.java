@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-/**
- *
- * @author william
- */
 public class BuffTypeIds {
     public static final int LIKE_A_PRO = 0;
     public static final int IGNITE = 1;
@@ -34,4 +30,5 @@ public class BuffTypeIds {
     public static final int BEDROCK = 12;
     public static final int BLIND = 13;
     public static final int BLOOD_FRENZY = 14;
+    public static final int SILENCE = 15;
 }

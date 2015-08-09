@@ -25,6 +25,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
+import arkhados.spell.buffs.SilenceCC;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.AbstractNodeBuilder;
@@ -38,6 +39,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 public class ShadowSickness extends Spell {
+    static final float DURATION = 5f;
 
     {
         iconName = "damaging_dagger.png";
@@ -94,7 +96,8 @@ class SicknessBuilder extends AbstractNodeBuilder {
 
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();        
-        buffControl.addBuff(new Sickness.MyBuilder(5f));
+        buffControl.addBuff(new Sickness.MyBuilder(ShadowSickness.DURATION));
+        buffControl.addBuff(new SilenceCC.MyBuilder(2f));
 
         node.addControl(buffControl);
 
@@ -121,8 +124,8 @@ class Sickness extends AbstractBuff {
         target = targetInterface.getSpatial();
         owner = getOwnerInterface().getSpatial();
 
-        speedBuff = (SpeedBuff) new SpeedBuff.MyBuilder(0, 0, 5f).build();
-        slowCc = (SlowCC) new SlowCC.MyBuilder(5f, 0f).build();
+        speedBuff = (SpeedBuff) new SpeedBuff.MyBuilder(0, 0, duration).build();
+        slowCc = (SlowCC) new SlowCC.MyBuilder(duration, 0f).build();
 
         speedBuff.attachToCharacter(getOwnerInterface());
         slowCc.attachToCharacter(targetInterface);
@@ -158,7 +161,7 @@ class Sickness extends AbstractBuff {
 
         @Override
         public AbstractBuff build() {
-            Sickness sickness = new Sickness(5f);
+            Sickness sickness = new Sickness(duration);
             return set(sickness);
         }
     }

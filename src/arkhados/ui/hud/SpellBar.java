@@ -14,8 +14,10 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
+import arkhados.controls.CCharacterBuff;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.NiftyUtils;
 import com.jme3.scene.Spatial;
@@ -66,15 +68,16 @@ public class SpellBar {
         if (playerCharacter == null) {
             return;
         }
-        CSpellCast castControl =
-                playerCharacter.getControl(CSpellCast.class);
+        CSpellCast cCast = playerCharacter.getControl(CSpellCast.class);
+        CCharacterBuff cBuff = playerCharacter.getControl(CCharacterBuff.class);
+        boolean hasSilence = cBuff.hasBuff(BuffTypeIds.SILENCE);
 
         for (Map.Entry<String, Element> entry : icons.entrySet()) {
-            float cooldown = castControl.getCooldown(Spell
+            float cooldown = cCast.getCooldown(Spell
                     .getSpell(entry.getKey()).getId());
             Element overlay = entry.getValue()
                     .findElementByName(entry.getKey() + "-overlay");
-            if (cooldown <= 0) {
+            if (cooldown <= 0 && !hasSilence) {
                 if (overlay.isVisible()) {
                     overlay.hide();
                 }
@@ -85,13 +88,15 @@ public class SpellBar {
 
                 Element cooldownText = overlay
                         .findElementByName(entry.getKey() + "-counter");
+                
+                TextRenderer txt = cooldownText.getRenderer(TextRenderer.class);
 
                 if (cooldown > 3) {
-                    cooldownText.getRenderer(TextRenderer.class)
-                            .setText(String.format("%d", (int) cooldown));
+                    txt.setText(String.format("%d", (int) cooldown));
+                } else if (cooldown > 0) {
+                    txt.setText(String.format("%.1f", cooldown));
                 } else {
-                    cooldownText.getRenderer(TextRenderer.class)
-                            .setText(String.format("%.1f", cooldown));
+                    txt.setText("");
                 }
             }
         }
@@ -99,7 +104,7 @@ public class SpellBar {
 
     void clean() {
         icons.clear();
-        NiftyUtils.removeChildren(screen, "panel_spells");        
+        NiftyUtils.removeChildren(screen, "panel_spells");
         setPlayerCharacter(null);
     }
 
