@@ -150,7 +150,7 @@ class Sickness extends AbstractBuff {
         speedBuff.setFactor(currentSpeedFactor + tpf * .1f);
 
         float currentSlowFactor = slowCc.getSlowFactor();
-        slowCc.setSlowFactor(currentSlowFactor + tpf * .1f);
+        slowCc.setSlowFactor(currentSlowFactor - tpf * .1f);
     }
 
     static class MyBuilder extends AbstractBuffBuilder {
