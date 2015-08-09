@@ -137,7 +137,7 @@ public class ASplash extends EntityAction {
                 continue;
             }
 
-            if (spatial.getUserData(UserData.TEAM_ID).equals(myTeam)) {
+            if (pair.spatial.getUserData(UserData.TEAM_ID).equals(myTeam)) {
                 positive(pair, targetInterface, buffsToApply);
             } else {
                 negative(pair, targetInterface, buffsToApply);
