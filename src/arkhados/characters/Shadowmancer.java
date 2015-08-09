@@ -44,8 +44,6 @@ import com.jme3.scene.Node;
 
 /**
  * Creates entity with EmberMage's features.
- *
- * @author william
  */
 public class Shadowmancer extends AbstractNodeBuilder {
 
@@ -102,7 +100,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Shadow Orb"),
                 InputMappingStrings.getId(InputMappingStrings.M1));
         spellCastControl.putSpell(Spell.getSpell("Dark Energy"), M2Id);
-        spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
+        spellCastControl.putSpell(Spell.getSpell("Shadow Sickness"),
                 InputMappingStrings.getId(InputMappingStrings.Q));
         spellCastControl.putSpell(Spell.getSpell("Dark Spear"),
                 InputMappingStrings.getId(InputMappingStrings.E));
@@ -139,7 +137,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation("Shadow Orb", attackAnim);
         characterAnimControl.addSpellAnimation("Dark Energy", attackAnim);
-        characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
+        characterAnimControl.addSpellAnimation("Shadow Sickness", idleAnim);
         characterAnimControl.addSpellAnimation("Dark Spear", attackAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
         characterAnimControl.addSpellAnimation("Firewalk", idleAnim);

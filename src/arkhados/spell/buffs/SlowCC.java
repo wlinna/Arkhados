@@ -16,10 +16,6 @@ package arkhados.spell.buffs;
 
 import arkhados.util.BuffTypeIds;
 
-/**
- *
- * @author william
- */
 public class SlowCC extends CrowdControlBuff {
 
     private float slowFactor;
@@ -31,6 +27,10 @@ public class SlowCC extends CrowdControlBuff {
 
     public float getSlowFactor() {
         return slowFactor;
+    }
+
+    public void setSlowFactor(float slowFactor) {
+        this.slowFactor = slowFactor;
     }
 
     public static class MyBuilder extends AbstractBuffBuilder {

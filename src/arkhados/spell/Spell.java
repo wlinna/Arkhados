@@ -46,6 +46,7 @@ import arkhados.spell.spells.rockgolem.Toss;
 import arkhados.spell.spells.shadowmancer.DarkEnergy;
 import arkhados.spell.spells.shadowmancer.DarkSpear;
 import arkhados.spell.spells.shadowmancer.Shadow;
+import arkhados.spell.spells.shadowmancer.ShadowSickness;
 import arkhados.spell.spells.venator.BloodFrenzy;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
@@ -62,10 +63,6 @@ import com.jme3.scene.Node;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author william
- */
 /**
  * Spell contains data of spell's base data. Each Spell is created only once
  * and their data does not change.
@@ -140,8 +137,9 @@ public abstract class Spell {
         
         addSpell(entityFactory, ShadowOrb.create());
         addSpell(entityFactory, DarkEnergy.create());
+        addSpell(entityFactory, ShadowSickness.create());
         addSpell(entityFactory, DarkSpear.create());
-        addSpell(entityFactory, Shadow.create());
+        addSpell(entityFactory, Shadow.create());        
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

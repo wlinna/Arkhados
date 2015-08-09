@@ -22,9 +22,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CSpellCast;
-import arkhados.controls.CUserInput;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.UserData;
 import com.jme3.math.Quaternion;
@@ -36,8 +34,6 @@ import java.util.List;
 /**
  * CastProjectileAction is proper action for basic projectile spells like Magma
  * Bash, Fireball etc.
- *
- * @author william
  */
 public class ACastProjectile extends EntityAction {
 
@@ -108,6 +104,8 @@ public class ACastProjectile extends EntityAction {
         for (AbstractBuffBuilder buffBuilder : additionalBuffs) {
             buffControl.addBuff(buffBuilder);
         }
+        
+        buffControl.setOwnerInterface(influenceInterface);
 
         return false;
     }

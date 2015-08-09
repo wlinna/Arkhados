@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-/**
- *
- * @author william
- */
 public class SpeedBuff extends AbstractBuff {
 
     private float factor;
@@ -36,6 +32,10 @@ public class SpeedBuff extends AbstractBuff {
 
     public float getConstant() {
         return constant;
+    }
+
+    public void setFactor(float factor) {
+        this.factor = factor;
     }
 
     public static class MyBuilder extends AbstractBuffBuilder {

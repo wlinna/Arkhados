@@ -29,10 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author william
- */
 public class CharacterInteraction {
 
     private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
@@ -90,11 +86,15 @@ public class CharacterInteraction {
 
         if (buffBuilders != null) {
             for (Builder<AbstractBuff> buffBuilder : buffBuilders) {
+                if (buffBuilder == null) {
+                    System.out.println("Null buffBuilder in buff-list");
+                    continue;
+                }
+
                 AbstractBuff buff = buffBuilder.build();
 
-                if (buff == null) {
-                    System.out.println("Null in buff-list");
-                    continue;
+                if (buff.getOwnerInterface() == null) {
+                    buff.setOwnerInterface(attacker);
                 }
 
                 if (!buff.isFriendly()) {
