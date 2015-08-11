@@ -17,6 +17,7 @@ package arkhados;
 import arkhados.ui.hud.ClientHudManager;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
+import arkhados.arena.PillarArena;
 import arkhados.controls.CCharacterBuff;
 import arkhados.controls.CCharacterHud;
 import com.jme3.app.Application;
@@ -75,15 +76,15 @@ public class WorldManager extends AbstractAppState {
     }
     // TODO: Read locations from terrain
     public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(-50, 0, -50),
-        new Vector3f(-50, 0, 50),
-        new Vector3f(50, 0, -50),
-        new Vector3f(50, 0, 50),
+        new Vector3f(-100, 0, -100),
+        new Vector3f(-100, 0, 100),
+        new Vector3f(100, 0, -100),
+        new Vector3f(100, 0, 100),
         new Vector3f(0, 0, 0)
     };
     private Node worldRoot;
     private Node fakeWorldRoot;
-    private AbstractArena arena = new BasicSquareArena();
+    private AbstractArena arena = new PillarArena();
     private HashMap<Integer, Spatial> entities = new HashMap<>();
     private SyncManager syncManager;
     private short idCounter = 0;
@@ -154,7 +155,9 @@ public class WorldManager extends AbstractAppState {
 
     public void loadLevel() {
         worldRoot = (Node) assetManager.loadModel(
-                "Scenes/LavaArenaWithFogWalls.j3o");
+                "Scenes/PillarArena.j3o");
+//        worldRoot = (Node) assetManager.loadModel(
+//                "Scenes/LavaArenaWithFogWalls.j3o");
         fakeWorldRoot = new Node("fake-world-root");
 
         RigidBodyControl physics = new RigidBodyControl(
