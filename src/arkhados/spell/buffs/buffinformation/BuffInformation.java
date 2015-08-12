@@ -70,6 +70,9 @@ public abstract class BuffInformation {
         
         BloodFrenzyInformation bloodFrenzy = new BloodFrenzyInformation();
         addBuff(BuffTypeIds.BLOOD_FRENZY, bloodFrenzy);
+        
+        ShadowInformation shadow = new ShadowInformation();
+        addBuff(BuffTypeIds.SHADOW, shadow);
     }
 
     public static BuffInformation getBuffInformation(int typeId) {
