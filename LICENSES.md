@@ -26,7 +26,7 @@ See CREDITS.md for attributions.
 - SurvivalInstinct.wav
 - RocketLauncher.wav
 - All Wall related files
-- All SpiritStone related files
+- SpiritStone 3D-model
 - VenatorDeath.wav
 - VenatorPain.wav
 - RockGolemPain.wav
@@ -56,6 +56,7 @@ See CREDITS.md for attributions.
 - StoneFist.png (rendered from Rock Golem and Elite Soldier)
 - EarthQuake.png (rendered from RockGolem)
 - SealingBoulder.png
+- SpiritStone.png
 - MineralArmor.png
 - Slow.png
 - Blind.png
