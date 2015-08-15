@@ -105,9 +105,8 @@ public class Shadowmancer extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Dark Spear"),
                 InputMappingStrings.getId(InputMappingStrings.E));
         spellCastControl.putSpell(Spell.getSpell("Shadow"), RId);
-        spellCastControl.putSpell(Spell.getSpell("Firewalk"),
+        spellCastControl.putSpell(Spell.getSpell("Into the Shadows"),
                 InputMappingStrings.getId(InputMappingStrings.SPACE));
-        spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
         spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
 
@@ -140,7 +139,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Shadow Sickness", idleAnim);
         characterAnimControl.addSpellAnimation("Dark Spear", attackAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
-        characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
+        characterAnimControl.addSpellAnimation("Into the Shadows", idleAnim);
 
         entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
