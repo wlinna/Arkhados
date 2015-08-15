@@ -30,11 +30,6 @@ import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william TODO: Currently SplashAction seems to be meant for negative
- * things only. There could be healing splash too or something like that.
- */
 public class ASplash extends EntityAction {
 
     private float radius;
@@ -197,12 +192,11 @@ public class ASplash extends EntityAction {
         if (colliderPhysics != null && !colliderPhysics.isKinematic()) {
             impulse = pair.spatial.getLocalTranslation()
                     .subtract(colliderPhysics.getPhysicsLocation().setY(0))
-                    .normalizeLocal()
-                    .multLocal(impulseFactor);
+                    .normalizeLocal().multLocal(impulseFactor);
         } else {
+            Vector3f from = new Vector3f(spatial.getLocalTranslation()).setY(0);
             impulse = pair.spatial.getLocalTranslation()
-                    .subtract(spatial.getLocalTranslation())
-                    .normalizeLocal().multLocal(impulseFactor)
+                    .subtract(from).normalizeLocal().multLocal(impulseFactor)
                     .multLocal(distanceFactor);
         }
 
