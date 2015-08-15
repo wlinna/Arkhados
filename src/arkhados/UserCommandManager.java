@@ -48,7 +48,7 @@ import java.util.HashMap;
 public class UserCommandManager extends AbstractAppState {
 
     private InputManager inputManager;
-    private WorldManager worldManager;
+    private World worldManager;
     private Application app;
     private Camera cam;
     private int playerId;
@@ -74,7 +74,7 @@ public class UserCommandManager extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
-        worldManager = stateManager.getState(WorldManager.class);
+        worldManager = stateManager.getState(World.class);
         listener = app.getListener();
         cam = app.getCamera();
 

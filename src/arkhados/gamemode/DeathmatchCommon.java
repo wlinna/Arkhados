@@ -22,7 +22,7 @@ import arkhados.ServerFogManager;
 import arkhados.SyncManager;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.controls.PlayerEntityAwareness;
 import arkhados.effects.DeathManager;
 import arkhados.messages.CmdPlayerKill;
@@ -74,7 +74,7 @@ public class DeathmatchCommon {
         comboAnnouncements.put(5, "Interface/Sound/Announcer/Massacre.wav");
     }
     private Application app;
-    private WorldManager worldManager;
+    private World world;
     private AppStateManager stateManager;
     private SyncManager syncManager;
     private AudioQueue audioQueue = new AudioQueue();
@@ -91,12 +91,12 @@ public class DeathmatchCommon {
     void initialize(Application app) {
         this.app = app;
         stateManager = app.getStateManager();
-        worldManager = stateManager.getState(WorldManager.class);
+        world = stateManager.getState(World.class);
         syncManager = stateManager.getState(SyncManager.class);
 
         CharacterInteraction.startNewRound();
 
-        syncManager.addObject(-1, worldManager);
+        syncManager.addObject(-1, world);
 
         firstBloodHappened = false;
 
@@ -260,16 +260,15 @@ public class DeathmatchCommon {
             public Void call() throws Exception {
                 int oldEntityId = PlayerData
                         .getIntData(playerId, PlayerData.ENTITY_ID);
-                worldManager.removeEntity(oldEntityId, RemovalReasons.DEATH);
+                world.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
                 Vector3f startingLocation = getNewSpawnLocation();
                 PlayerData playerData = PlayerData.getPlayerId(playerId);
 
                 int nodeBuilderId = NodeBuilderIdHeroNameMatcherSingleton
                         .get().getId(heroName);
-                int entityId = worldManager
-                        .addNewEntity(nodeBuilderId, startingLocation,
-                        new Quaternion(), playerId);
+                int entityId = world.addNewEntity(nodeBuilderId,
+                        startingLocation, new Quaternion(), playerId);
                 playerData.setData(PlayerData.ENTITY_ID, entityId);
 
                 CmdSetPlayersCharacter playersCharacterCommand =
@@ -330,7 +329,7 @@ public class DeathmatchCommon {
 
                     PlayerData.destroyAllData();
                     hudManager.endGame();
-                    stateManager.getState(WorldManager.class).clear();
+                    stateManager.getState(World.class).clear();
                     stateManager.getState(UserCommandManager.class)
                             .nullifyCharacter();
                     ((ClientMain) getApp()).gameEnded();
@@ -350,8 +349,8 @@ public class DeathmatchCommon {
 
     private Vector3f getNewSpawnLocation() {
         spawnLocationIndex = (spawnLocationIndex + 1)
-                % WorldManager.STARTING_LOCATIONS.length;
-        return WorldManager.STARTING_LOCATIONS[spawnLocationIndex].clone()
+                % World.STARTING_LOCATIONS.length;
+        return World.STARTING_LOCATIONS[spawnLocationIndex].clone()
                 .setY(1f);
     }
 
@@ -363,7 +362,7 @@ public class DeathmatchCommon {
                         stateManager.getState(UserCommandManager.class);
                 int characterId = userCommandManager.getCharacterId();
 
-                worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
+                world.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
 
                 userCommandManager.nullifyCharacter();
                 ClientHudManager hudManager =

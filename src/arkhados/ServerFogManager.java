@@ -46,8 +46,6 @@ import java.util.logging.Logger;
  * Manages things so that players are not aware of other entities behind walls
  * or too far away TODO: ServerFogManager is too complex and error prone.
  * Refactor it
- *
- * @author william
  */
 public class ServerFogManager extends AbstractAppState {
 
@@ -58,13 +56,13 @@ public class ServerFogManager extends AbstractAppState {
             new LinkedHashMap<>();
     private Node walls;
     private float checkTimer = 0;
-    private WorldManager world;
+    private World world;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
-        world = stateManager.getState(WorldManager.class);
+        world = stateManager.getState(World.class);
     }
 
     @Override

@@ -17,7 +17,7 @@ package arkhados.controls;
 import arkhados.CharacterInteraction;
 import arkhados.Globals;
 import arkhados.PlayerData;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.ASplash;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
@@ -64,8 +64,7 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
             }
 
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
-            WorldManager world =
-                    Globals.app.getStateManager().getState(WorldManager.class);
+            World world = Globals.app.getStateManager().getState(World.class);
             world.removeEntity(entityId, RemovalReasons.EXPIRED);
         }
     }
@@ -141,8 +140,8 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
             return;
         }
 
-        WorldManager world =
-                Globals.app.getStateManager().getState(WorldManager.class);
+        World world =
+                Globals.app.getStateManager().getState(World.class);
 
         RigidBodyControl body = spatial.getControl(RigidBodyControl.class);
 

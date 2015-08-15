@@ -14,26 +14,22 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.effects.EffectBox;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public abstract class AbstractNodeBuilder implements NodeBuilder {
 
-    protected static WorldManager worldManager;
+    protected static World world;
     protected static AssetManager assetManager;
     private EffectBox effectBox = null;
 
     @Override
     public abstract Node build(BuildParameters params);
 
-    public static void setWorldManager(WorldManager worldManager) {
-        AbstractNodeBuilder.worldManager = worldManager;
+    public static void setWorld(World world) {
+        AbstractNodeBuilder.world = world;
     }
 
     public static void setAssetManager(AssetManager assetManager) {

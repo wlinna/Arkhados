@@ -56,7 +56,7 @@ public class DarkSpear extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastProjectile(spell, worldManager);
+                return new ACastProjectile(spell, world);
             }
         };
 

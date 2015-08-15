@@ -14,14 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.entityevents;
 
-import com.jme3.scene.Node;
-import arkhados.WorldManager;
+import arkhados.World;
 
-/**
- *
- * @author william
- */
 public interface ARemovalEvent {
 
-    public void exec(WorldManager worldManager, int reason);
+    public void exec(World world, int reason);
 }

@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
 import arkhados.spell.spells.shadowmancer.ShadowOrb;
@@ -71,7 +71,7 @@ import java.util.Map;
 public abstract class Spell {
 
     protected static AssetManager assetManager = null;
-    protected static WorldManager worldManager = null;
+    protected static World world = null;
     /**
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
@@ -88,12 +88,12 @@ public abstract class Spell {
      * @param worldManager will be save to static variable worldManager
      */
     public static void initSpells(EntityFactory entityFactory,
-            AssetManager assetManager, WorldManager worldManager) {
+            AssetManager assetManager, World worldManager) {
         Spell.assetManager = assetManager;
-        Spell.worldManager = worldManager;
+        Spell.world = worldManager;
 
         AbstractNodeBuilder.setAssetManager(assetManager);
-        AbstractNodeBuilder.setWorldManager(worldManager);
+        AbstractNodeBuilder.setWorld(worldManager);
 
         CProjectile.setWorldManager(worldManager);
 

@@ -15,7 +15,7 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.ADelay;
@@ -72,7 +72,7 @@ public class IntoTheShadows extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastIntoTheShadows castAction =
-                        new ACastIntoTheShadows(spell, Spell.worldManager);
+                        new ACastIntoTheShadows(spell, world);
                 return castAction;
             }
         };
@@ -84,9 +84,9 @@ public class IntoTheShadows extends Spell {
     private static class ACastIntoTheShadows extends EntityAction {
 
         private final Spell spell;
-        private final WorldManager world;
+        private final World world;
 
-        public ACastIntoTheShadows(Spell spell, WorldManager world) {
+        public ACastIntoTheShadows(Spell spell, World world) {
             this.spell = spell;
             this.world = world;
         }
@@ -176,7 +176,7 @@ public class IntoTheShadows extends Spell {
             CActionQueue actionQueue = new CActionQueue();
             node.addControl(actionQueue);
 
-            if (worldManager.isServer()) {
+            if (world.isServer()) {
                 SphereCollisionShape collisionShape =
                         new SphereCollisionShape(8f);
 
@@ -185,7 +185,7 @@ public class IntoTheShadows extends Spell {
                 ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
                 node.addControl(new CTimedExistence(1f, true));
             }
-            if (worldManager.isClient()) {
+            if (world.isClient()) {
                 ParticleEmitter cloud = createCloudEmitter();
                 node.attachChild(cloud);
             }
@@ -213,12 +213,12 @@ class ATeleport extends EntityAction {
 
 class ARestoreEntity extends EntityAction {
 
-    private final WorldManager world;
+    private final World world;
     private final int id;
     private final Vector3f loc;
     private final Quaternion rot = Quaternion.IDENTITY;
 
-    public ARestoreEntity(WorldManager world, int id, Vector3f location) {
+    public ARestoreEntity(World world, int id, Vector3f location) {
         this.world = world;
         this.id = id;
         this.loc = location;

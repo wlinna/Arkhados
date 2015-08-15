@@ -38,10 +38,6 @@ import arkhados.util.RemovalReasons;
 import com.jme3.app.state.AppStateManager;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class ServerNetListener implements ConnectionListener,
         CommandHandler, ServerClientDataStrings {
 
@@ -97,8 +93,8 @@ public class ServerNetListener implements ConnectionListener,
                 int entityId = PlayerData.getIntData(playerId,
                         PlayerData.ENTITY_ID);
                 if (entityId > -1) {
-                    WorldManager world =
-                            stateManager.getState(WorldManager.class);
+                    World world =
+                            stateManager.getState(World.class);
                     world.removeEntity(entityId, RemovalReasons.DISCONNECT);
                 }
 

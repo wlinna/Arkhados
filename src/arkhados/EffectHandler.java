@@ -28,14 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class EffectHandler implements CommandHandler {
 
     private Application app;
-    private WorldManager worldManager;
+    private World world;
     private HashMap<Integer, EffectBox> actionEffects = new HashMap<>();
     private static int runningIndex = 0;
     private static List<WorldEffect> worldEffects = new ArrayList<>();
@@ -59,8 +55,7 @@ public class EffectHandler implements CommandHandler {
     }
 
     private void handleAction(final CmdAction actionCommand) {
-        final Spatial entity =
-                worldManager.getEntity(actionCommand.getSyncId());
+        final Spatial entity = world.getEntity(actionCommand.getSyncId());
         if (entity == null) {
             return;
         }
@@ -76,7 +71,7 @@ public class EffectHandler implements CommandHandler {
             @Override
             public Void call() throws Exception {
                 box.executeActionEffect(actionCommand.getActionId(),
-                        worldManager.getWorldRoot(),
+                        world.getWorldRoot(),
                         entity.getLocalTranslation());
                 return null;
             }
@@ -93,7 +88,7 @@ public class EffectHandler implements CommandHandler {
             public Void call() throws Exception {
                 WorldEffect worldEffect =
                         worldEffects.get(command.getEffectId());
-                worldEffect.execute(worldManager.getWorldRoot(),
+                worldEffect.execute(world.getWorldRoot(),
                         command.getLocation(), null);
                 return null;
             }
@@ -101,8 +96,8 @@ public class EffectHandler implements CommandHandler {
 
     }
 
-    public void setWorldManager(WorldManager worldManager) {
-        this.worldManager = worldManager;
+    public void setWorldManager(World world) {
+        this.world = world;
     }
 
     @Override

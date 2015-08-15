@@ -43,10 +43,6 @@ import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class Venator extends AbstractNodeBuilder {
 
     public static final int ANIM_LAND = 0;
@@ -202,7 +198,7 @@ public class Venator extends AbstractNodeBuilder {
         entity.addControl(new CCharacterHeal());
         entity.addControl(new CCharacterSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/VenatorPain.wav");
             soundControl.setDeathSound("Effects/Sound/VenatorDeath.wav");

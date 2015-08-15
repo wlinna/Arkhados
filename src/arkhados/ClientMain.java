@@ -354,9 +354,9 @@ public class ClientMain extends SimpleApplication {
         swappableStates.add(netListener);
 
         EffectHandler effectHandler = new EffectHandler(this);
-        WorldManager worldManager = new WorldManager(effectHandler);
-        effectHandler.setWorldManager(worldManager);
-        swappableStates.add(worldManager);
+        World world = new World(effectHandler);
+        effectHandler.setWorldManager(world);
+        swappableStates.add(world);
 
         SyncManager syncManager = new SyncManager(this);
         swappableStates.add(syncManager);

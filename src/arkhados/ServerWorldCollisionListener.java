@@ -30,16 +30,12 @@ import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
-    private WorldManager worldManager;
+    private World world;
 
-    public ServerWorldCollisionListener(WorldManager worldManager) {
-        this.worldManager = worldManager;
+    public ServerWorldCollisionListener(World world) {
+        this.world = world;
     }
 
     @Override
@@ -144,7 +140,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                 if (projectile.isProjectile()) {
                     int entityId = projectile.getSpatial()
                             .getUserData(UserData.ENTITY_ID);
-                    worldManager.removeEntity(entityId, removalReason);
+                    world.removeEntity(entityId, removalReason);
                 }
                 return;
             }
@@ -177,7 +173,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         int entityId = projectile.getSpatial()
                 .getUserData(UserData.ENTITY_ID);
         if (projectile.isProjectile()) {
-            worldManager.removeEntity(entityId, removalReason);
+            world.removeEntity(entityId, removalReason);
         } else {
             projectile.getHurted().add(target.getSpatial());
         }
@@ -189,6 +185,6 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         }
 
         int entityId = projectile.getSpatial().getUserData(UserData.ENTITY_ID);
-        worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
+        world.removeEntity(entityId, RemovalReasons.COLLISION);
     }
 }

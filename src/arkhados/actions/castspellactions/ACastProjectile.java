@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions.castspellactions;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.controls.CCharacterPhysics;
@@ -38,13 +38,13 @@ import java.util.List;
 public class ACastProjectile extends EntityAction {
 
     private final Spell spell;
-    private final WorldManager worldManager;
+    private final World world;
     private final List<AbstractBuffBuilder> additionalBuffs = new ArrayList<>();
     private boolean detonateAtTarget;
 
-    public ACastProjectile(Spell spell, WorldManager worldManager) {
+    public ACastProjectile(Spell spell, World world) {
         this.spell = spell;
-        this.worldManager = worldManager;
+        this.world = world;
     }
 
     public void addBuff(AbstractBuffBuilder buff) {
@@ -69,9 +69,9 @@ public class ACastProjectile extends EntityAction {
 
         int playerId = spatial.getUserData(UserData.PLAYER_ID);
 
-        int projectileId = worldManager.addNewEntity(spell.getId(),
+        int projectileId = world.addNewEntity(spell.getId(),
                 spawnLocation, Quaternion.IDENTITY, playerId);
-        Spatial projectile = worldManager.getEntity(projectileId);
+        Spatial projectile = world.getEntity(projectileId);
 
         float damage = projectile.getUserData(UserData.DAMAGE);
         float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);

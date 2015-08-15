@@ -15,7 +15,7 @@
 package arkhados.spell;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -64,7 +64,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.MASS, 0.30f);
         node.setUserData(UserData.DAMAGE, damage);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when pellet is
@@ -181,10 +181,10 @@ class APelletRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         Vector3f worldTranslation = pellet.getWorldTranslation();
-        createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
-        createSmallExplosion(worldManager.getWorldRoot(), worldTranslation);
+        createSmokePuff(world.getWorldRoot(), worldTranslation);
+        createSmallExplosion(world.getWorldRoot(), worldTranslation);
     }
 
     public void setPellet(Spatial pellet) {

@@ -21,7 +21,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.ASplash;
 import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
@@ -32,16 +32,12 @@ import com.jme3.math.Quaternion;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- *
- * @author william
- */
 public class CProjectile extends AbstractControl implements CSync {
 
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
     private float age = 0;
-    private static WorldManager worldManager;
+    private static World worldManager;
     private static final float timeToLive = 3.0f;
     private float range = 0f;
     private float speed = 0f;
@@ -132,7 +128,7 @@ public class CProjectile extends AbstractControl implements CSync {
         return rigidBodyControl;
     }
 
-    public static void setWorldManager(WorldManager worldManager) {
+    public static void setWorldManager(World worldManager) {
         CProjectile.worldManager = worldManager;
     }
 

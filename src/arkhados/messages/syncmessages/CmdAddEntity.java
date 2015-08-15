@@ -15,22 +15,18 @@
 
 package arkhados.messages.syncmessages;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.messages.syncmessages.statedata.StateData;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class CmdAddEntity extends StateData {
     private short entityId;
     private short nodeBuilderId;
-    private Vector3f location = new Vector3f();
-    private Quaternion rotation = new Quaternion();
+    private Vector3f loc = new Vector3f();
+    private Quaternion rot = new Quaternion();
     private byte playerId;
     private float age;
 
@@ -46,16 +42,15 @@ public class CmdAddEntity extends StateData {
             Quaternion rotation, int playerId, float age) {
         this.entityId = (short) entityId;
         this.nodeBuilderId = (short) nodeBuilderId;
-        this.location.set(location);
-        this.rotation.set(rotation);
+        this.loc.set(location);
+        this.rot.set(rotation);
         this.playerId = (byte) playerId;
         this.age = age;
     }
 
     @Override
     public void applyData(Object target) {
-        WorldManager worldManager = (WorldManager) target;
-        worldManager.addEntity(entityId, nodeBuilderId, location,
-                rotation, playerId, age);
+        World world = (World) target;
+        world.addEntity(entityId, nodeBuilderId, loc, rot, playerId, age);
     }
 }

@@ -43,7 +43,7 @@ import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 
 /**
- * Creates entity with EmberMage's features.
+ * Creates entity with Shadowmancer's features.
  */
 public class Shadowmancer extends AbstractNodeBuilder {
 
@@ -147,7 +147,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         entity.addControl(new CCharacterSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/EmberMagePain.wav");
             soundControl.setDeathSound("Effects/Sound/EmberMageDeath.wav");

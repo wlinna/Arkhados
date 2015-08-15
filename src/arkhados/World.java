@@ -61,14 +61,10 @@ import com.jme3.scene.control.LodControl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author william
- */
-public class WorldManager extends AbstractAppState {
+public class World extends AbstractAppState {
 
-    private final static Logger logger =
-            Logger.getLogger(WorldManager.class.getName());
+    private final static Logger logger = 
+            Logger.getLogger(World.class.getName());
 
     static {
         logger.setLevel(Level.WARNING);
@@ -90,10 +86,10 @@ public class WorldManager extends AbstractAppState {
     private boolean isClient = false;
     private EffectHandler effectHandler = null;
 
-    public WorldManager() {
+    public World() {
     }
 
-    public WorldManager(EffectHandler effectHandler) {
+    public World(EffectHandler effectHandler) {
         this.effectHandler = effectHandler;
         isClient = true;
     }

@@ -21,10 +21,6 @@ import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class Dagger extends Spell {
     {
         iconName = "damaging_dagger.png";
@@ -45,7 +41,7 @@ public class Dagger extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastProjectile(spell, worldManager);
+                return new ACastProjectile(spell, world);
             }
         };
 

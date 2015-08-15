@@ -24,13 +24,9 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 
-/**
- *
- * @author william
- */
 public class ServerGameManager extends AbstractAppState {
 
-    private WorldManager worldManager;
+    private World world;
     private ServerFogManager fogManager;
     private boolean running = false;
     private Application app;
@@ -55,7 +51,7 @@ public class ServerGameManager extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         gameMode.initialize(app);
-        worldManager = app.getStateManager().getState(WorldManager.class);
+        world = app.getStateManager().getState(World.class);
         fogManager = new ServerFogManager();
 
         stateManager.attach(fogManager);
@@ -74,8 +70,7 @@ public class ServerGameManager extends AbstractAppState {
         Sender sender = app.getStateManager().getState(Sender.class);
 
         Preloader.loadServer(Globals.assetManager);
-        app.getStateManager().getState(SyncManager.class)
-                .addObject(-1, worldManager);
+        app.getStateManager().getState(SyncManager.class).addObject(-1, world);
 
         running = true;
         sender.addCommand(new CmdTopicOnly(Topic.START_GAME));

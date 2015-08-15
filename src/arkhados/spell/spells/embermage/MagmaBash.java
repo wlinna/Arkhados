@@ -68,7 +68,7 @@ public class MagmaBash extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastProjectile action =
-                        new ACastProjectile(spell, worldManager);
+                        new ACastProjectile(spell, world);
                 return action;
             }
         };
@@ -100,7 +100,7 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
         node.setUserData(UserData.INCAPACITATE_LENGTH, 7.4f);
 
-        if (AbstractNodeBuilder.worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                     ParticleMesh.Type.Triangle, 80);
             Material materialRed = new Material(assetManager,

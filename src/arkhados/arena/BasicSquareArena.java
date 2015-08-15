@@ -15,13 +15,12 @@
 package arkhados.arena;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.Environment;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.AmbientLight;
@@ -34,26 +33,22 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class BasicSquareArena extends AbstractArena {
 
     private float radius;
 
     @Override
-    public void readWorld(WorldManager worldManager, AssetManager assetManager) {
-        super.readWorld(worldManager, assetManager);
+    public void readWorld(World world, AssetManager assetManager) {
+        super.readWorld(world, assetManager);
 
-        this.resetWallPhysics(worldManager.getSpace());
+        this.resetWallPhysics(world.getSpace());
 
         final Vector3f extent = ((BoundingBox) super.getTerrainNode().getWorldBound()).getExtent(new Vector3f());
         this.radius = extent.x - 15;
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             this.createLavaQuad();
-            worldManager.getClientMain().getAudioRenderer().setEnvironment(new Environment(Environment.Cavern));
+            world.getClientMain().getAudioRenderer().setEnvironment(new Environment(Environment.Cavern));
         }
     }
 

@@ -16,7 +16,7 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
 import arkhados.controls.CEntityVariable;
@@ -60,10 +60,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- *
- * @author william
- */
 public class Firewalk extends Spell {
 
     {
@@ -84,8 +80,7 @@ public class Firewalk extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastFirewalk castAction =
-                        new ACastFirewalk(spell, Spell.worldManager);
+                ACastFirewalk castAction = new ACastFirewalk(spell, world);
                 AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -104,9 +99,9 @@ public class Firewalk extends Spell {
         private final Spell spell;
         private final List<AbstractBuffBuilder> additionalBuffs =
                 new ArrayList<>();
-        private final WorldManager world;
+        private final World world;
 
-        public ACastFirewalk(Spell spell, WorldManager world) {
+        public ACastFirewalk(Spell spell, World world) {
             this.spell = spell;
             this.world = world;
             super.setTypeId(EmberMage.ACTION_FIREWALK);
@@ -229,7 +224,7 @@ public class Firewalk extends Spell {
 
             node.addControl(new CGenericSync());
 
-            if (worldManager.isServer()) {
+            if (world.isServer()) {
                 SphereCollisionShape collisionShape =
                         new SphereCollisionShape(8f);
 
@@ -241,7 +236,7 @@ public class Firewalk extends Spell {
 
                 node.addControl(new CFirewalkCollisionHandler());
             }
-            if (AbstractNodeBuilder.worldManager.isClient()) {
+            if (AbstractNodeBuilder.world.isClient()) {
                 final ParticleEmitter fire = createFireEmitter();
                 node.attachChild(fire);
             }

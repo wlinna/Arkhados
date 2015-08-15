@@ -20,7 +20,7 @@ import arkhados.PlayerData;
 import arkhados.ServerClientData;
 import arkhados.SyncManager;
 import arkhados.Topic;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdSelectTeam;
@@ -52,7 +52,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
     private DeathmatchCommon common = new DeathmatchCommon();
     private AppStateManager stateManager;
-    private WorldManager world;
+    private World world;
     private SyncManager sync;
     private Element teamSelectionLayer;
     private Nifty nifty;
@@ -82,7 +82,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
         stateManager = app.getStateManager();
         sync = stateManager.getState(SyncManager.class);
-        world = stateManager.getState(WorldManager.class);
+        world = stateManager.getState(World.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
 
         Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();

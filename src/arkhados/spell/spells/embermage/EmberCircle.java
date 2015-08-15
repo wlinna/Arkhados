@@ -45,7 +45,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 /**
@@ -74,8 +73,7 @@ public class EmberCircle extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastOnGround castOnGround =
-                        new ACastOnGround(worldManager, spell);
+                ACastOnGround castOnGround = new ACastOnGround(world, spell);
                 AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -177,7 +175,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         float delay = Math.max(0.8f - params.age, 0f);
         actionQueue.enqueueAction(new ADelay(delay));
 
-        if (worldManager.isServer()) {
+        if (world.isServer()) {
             node.addControl(new CEmberCircleVisibility(radius));
 
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
@@ -204,14 +202,14 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     return false;
                 }
             });
-        } else if (worldManager.isClient()) {
+        } else if (world.isClient()) {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
                 public boolean update(float tpf) {
                     Vector3f worldTranslation = spatial.getWorldTranslation();
 
                     final ParticleEmitter fire = createFire(radius);
-                    worldManager.getWorldRoot().attachChild(fire);
+                    world.getWorldRoot().attachChild(fire);
                     fire.setLocalTranslation(worldTranslation);
                     fire.move(0f, 1f, 0f);
                     fire.addControl(new CTimedExistence(10f));

@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions.castspellactions;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CInfluenceInterface;
@@ -29,20 +29,16 @@ import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class ACastOnGround extends EntityAction {
 
-    private WorldManager worldManager;
+    private World world;
     private Spell spell;
     private final List<AbstractBuffBuilder> additionalEnterBuffs
             = new ArrayList<>();
     // NOTE: Add additionalExitBuffs -list if needed
 
-    public ACastOnGround(WorldManager worldManager, Spell spell) {
-        this.worldManager = worldManager;
+    public ACastOnGround(World world, Spell spell) {
+        this.world = world;
         this.spell = spell;
     }
 
@@ -53,10 +49,10 @@ public class ACastOnGround extends EntityAction {
         Vector3f adjustedTarget =
                 castControl.getClosestPointToTarget(spell).setY(0.1f);
         Integer playerId = spatial.getUserData(UserData.PLAYER_ID);
-        int entityId = worldManager.addNewEntity(spell.getId(),
+        int entityId = world.addNewEntity(spell.getId(),
                 adjustedTarget, Quaternion.IDENTITY, playerId);
 
-        Spatial entity = worldManager.getEntity(entityId);
+        Spatial entity = world.getEntity(entityId);
         CAreaEffect aoeControl =
                 entity.getControl(CAreaEffect.class);
         aoeControl.setOwnerInterface(

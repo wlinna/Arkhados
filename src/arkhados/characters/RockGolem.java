@@ -46,10 +46,6 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class RockGolem extends AbstractNodeBuilder {
 
     public static final int ACTION_EARTHQUAKE = 0;
@@ -162,7 +158,7 @@ public class RockGolem extends AbstractNodeBuilder {
         entity.addControl(new CCharacterHeal());
         entity.addControl(new CCharacterSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             entity.addControl(soundControl);
             soundControl.setSufferSound("Effects/Sound/RockGolemPain.wav");

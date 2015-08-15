@@ -16,7 +16,7 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
 import arkhados.Globals;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.actions.castspellactions.ACastProjectile;
@@ -77,7 +77,7 @@ public class RocketLauncher extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile castProjectile =
-                        new ACastProjectile(spell, worldManager);
+                        new ACastProjectile(spell, world);
                 castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
                 return castProjectile;
             }
@@ -182,7 +182,7 @@ class RocketBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 180f);
         node.setUserData(UserData.IMPULSE_FACTOR, 23000f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
@@ -190,7 +190,7 @@ class RocketBuilder extends AbstractNodeBuilder {
             node.attachChild(smokeTrail);
 
             ParticleEmitter smokePuff = createSmokePuff();
-            worldManager.getWorldRoot().attachChild(smokePuff);
+            world.getWorldRoot().attachChild(smokePuff);
             smokePuff.setLocalTranslation(params.location);
             smokePuff.addControl(new CTimedExistence(5f));
             smokePuff.emitAllParticles();
@@ -329,11 +329,11 @@ class ARocketRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
 
         Node node = new Node("rocket-explosion");
-        worldManager.getWorldRoot().attachChild(node);
+        world.getWorldRoot().attachChild(node);
         node.setLocalTranslation(worldTranslation);
 
         leaveSmokeTrail(node);
@@ -361,7 +361,7 @@ class ARocketRemoval implements ARemovalEvent {
         fire.setParticlesPerSec(0.0f);
 
         ParticleEmitter wave = createShockwave();
-        worldManager.getWorldRoot().attachChild(wave);
+        world.getWorldRoot().attachChild(wave);
         wave.setLocalTranslation(worldTranslation);
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));

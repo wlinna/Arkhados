@@ -52,8 +52,6 @@ import com.jme3.scene.control.AbstractControl;
 
 /**
  * Creates entity with EliteSoldiers's features.
- *
- * @author william
  */
 public class EliteSoldier extends AbstractNodeBuilder {
 
@@ -197,7 +195,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
         entity.addControl(new CEliteSoldierSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             entity.addControl(soundControl);
             soundControl.setSufferSound("Effects/Sound/EliteSoldierPain.wav");

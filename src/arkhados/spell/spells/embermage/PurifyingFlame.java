@@ -34,10 +34,6 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class PurifyingFlame extends Spell {
 
     public static final float COOLDOWN = 12f;
@@ -67,7 +63,7 @@ public class PurifyingFlame extends Spell {
                 ACastSelfBuff action = new ACastSelfBuff();
                 Node aoeContainer = new Node("purifying-flame");
 
-                if (worldManager.isServer()) {
+                if (world.isServer()) {
                     int playerId =
                             caster.getUserData(UserData.PLAYER_ID);
                     aoeContainer

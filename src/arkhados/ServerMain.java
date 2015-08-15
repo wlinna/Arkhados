@@ -69,7 +69,7 @@ public class ServerMain extends SimpleApplication {
     private Server server;
     private ServerNetListener listenerManager;
     private ServerGameManager gameManager;
-    private WorldManager world;
+    private World world;
     private BulletAppState physics;
     private SyncManager syncManager;
     private RecordingServerSender sender;
@@ -79,7 +79,7 @@ public class ServerMain extends SimpleApplication {
     public void simpleInitApp() {
         Globals.assetManager = getAssetManager();
         Globals.app = this;
-        world = new WorldManager();
+        world = new World();
         gameManager = new ServerGameManager();
         physics = new BulletAppState();
         physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);

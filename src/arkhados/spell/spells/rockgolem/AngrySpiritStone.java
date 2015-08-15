@@ -39,7 +39,7 @@ public class AngrySpiritStone extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ASpiritStoneCast(spell, worldManager);
+                return new ASpiritStoneCast(spell, world);
             }
         };
 

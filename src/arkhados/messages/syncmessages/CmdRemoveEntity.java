@@ -16,13 +16,9 @@
 package arkhados.messages.syncmessages;
 
 import com.jme3.network.serializing.Serializable;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.messages.syncmessages.statedata.StateData;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class CmdRemoveEntity extends StateData {
 
@@ -40,7 +36,7 @@ public class CmdRemoveEntity extends StateData {
 
     @Override
     public void applyData(Object target) {
-        WorldManager worldManager = (WorldManager) target;
-        worldManager.removeEntity(entityId, reason);
+        World world = (World) target;
+        world.removeEntity(entityId, reason);
     }
 }

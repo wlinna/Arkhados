@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.rockgolem;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.controls.CSync;
 import arkhados.messages.syncmessages.statedata.GenericSyncData;
 import arkhados.messages.syncmessages.statedata.StateData;
@@ -25,28 +25,23 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class CSpiritStonePhysics extends RigidBodyControl implements CSync {
 
     private Vector3f tempVector = new Vector3f();
     private Vector3f punchDirection = null;
     private SpiritStoneCollisionListener collisionListener;
-    private WorldManager worldManager;
+    private World world;
 
-    public CSpiritStonePhysics(CollisionShape shape, float mass,
-            WorldManager worldManager) {
+    public CSpiritStonePhysics(CollisionShape shape, float mass, World world) {
         super(shape, mass);
         setKinematic(true);
-        this.worldManager = worldManager;
+        this.world = world;
     }
 
     @Override
     public void setPhysicsSpace(PhysicsSpace space) {
         super.setPhysicsSpace(space);
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             return;
         }
 
@@ -54,7 +49,7 @@ public class CSpiritStonePhysics extends RigidBodyControl implements CSync {
             setGravity(Vector3f.ZERO);
             setDamping(0.1f, 0.9f);
             collisionListener = new SpiritStoneCollisionListener((Node) spatial,
-                    worldManager);
+                    world);
             space.addCollisionListener(collisionListener);
         } else if (space == null && this.space != null) {
             this.space.removeCollisionListener(collisionListener);

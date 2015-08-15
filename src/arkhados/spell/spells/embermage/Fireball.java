@@ -15,7 +15,7 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.controls.CEntityEvent;
@@ -27,7 +27,6 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.BrimstoneBuff;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
@@ -74,7 +73,7 @@ public class Fireball extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile castProjectile =
-                        new ACastProjectile(spell, Spell.worldManager);
+                        new ACastProjectile(spell, world);
                 AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -168,7 +167,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 170f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
@@ -281,17 +280,17 @@ class AFireballRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         if (reason == RemovalReasons.DISAPPEARED) {
             return;
         }
 
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
-        leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-        createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
+        leaveSmokeTrail(world.getWorldRoot(), worldTranslation);
+        createSmokePuff(world.getWorldRoot(), worldTranslation);
 
         fire.removeFromParent();
-        worldManager.getWorldRoot().attachChild(fire);
+        world.getWorldRoot().attachChild(fire);
         fire.setLocalTranslation(worldTranslation);
         fire.addControl(new CTimedExistence(1f));
 

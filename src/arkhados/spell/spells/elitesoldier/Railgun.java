@@ -15,7 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.castspellactions.ACastProjectile;
 import arkhados.characters.EliteSoldier;
@@ -42,10 +42,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
-/**
- *
- * @author william
- */
 public class Railgun extends Spell {
 
     {
@@ -67,7 +63,7 @@ public class Railgun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastProjectile action = new ACastProjectile(spell, worldManager);
+                ACastProjectile action = new ACastProjectile(spell, world);
                 action.setTypeId(EliteSoldier.ACTION_RAILGUN);
                 return action;
             }
@@ -129,7 +125,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 300f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             final ParticleEmitter smoke = createTrailEmitter();
             node.attachChild(smoke);
 
@@ -199,9 +195,9 @@ class ARailgunRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         Vector3f worldTranslation = bullet.getLocalTranslation();
-        leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
+        leaveSmokeTrail(world.getWorldRoot(), worldTranslation);
     }
 
     public void setSmokeTrail(ParticleEmitter smoke) {

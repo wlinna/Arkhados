@@ -15,7 +15,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CRotation;
@@ -62,7 +62,7 @@ public class SpiritStone extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ASpiritStoneCast(spell, worldManager);
+                return new ASpiritStoneCast(spell, world);
             }
         };
 
@@ -81,9 +81,9 @@ public class SpiritStone extends Spell {
 class ASpiritStoneCast extends EntityAction {
 
     private Spell spell;
-    private WorldManager worldManager;
+    private World worldManager;
 
-    public ASpiritStoneCast(Spell spell, WorldManager worldManager) {
+    public ASpiritStoneCast(Spell spell, World worldManager) {
         this.spell = spell;
         this.worldManager = worldManager;
     }
@@ -140,7 +140,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         SphereCollisionShape collisionShape = new SphereCollisionShape(5f);
         CSpiritStonePhysics physicsBody =
                 new CSpiritStonePhysics(collisionShape,
-                (float) node.getUserData(UserData.MASS), worldManager);
+                (float) node.getUserData(UserData.MASS), world);
         node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);
@@ -152,7 +152,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         node.addControl(new CRotation(0f, 2f, 0f));
         node.addControl(new CSyncInterpolation());
 
-        if (worldManager.isServer()) {
+        if (world.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
                     new Vector3f(influenceRadius, 0.05f, influenceRadius), 1));
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);

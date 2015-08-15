@@ -15,24 +15,20 @@
 package arkhados.controls;
 
 import arkhados.CharacterInteraction;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.net.Sender;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CEntityVariable extends AbstractControl {
 
-    private WorldManager worldManager;
+    private World world;
     private PlayerEntityAwareness awareness;
     private Sender sender;
     
-    public CEntityVariable(WorldManager worldManager, Sender sender) {
-        this.worldManager = worldManager;        
+    public CEntityVariable(World worldManager, Sender sender) {
+        this.world = worldManager;        
         this.sender = sender;
     }
     
@@ -43,7 +39,7 @@ public class CEntityVariable extends AbstractControl {
             return;
         }
         
-        boolean validLoc = worldManager.validateLocation(spatial.getLocalTranslation());
+        boolean validLoc = world.validateLocation(spatial.getLocalTranslation());
         if (!validLoc) {
             CInfluenceInterface influenceInterface =
                     spatial.getControl(CInfluenceInterface.class);
@@ -58,8 +54,8 @@ public class CEntityVariable extends AbstractControl {
     }
 
 
-    public WorldManager getWorldManager() {
-        return this.worldManager;
+    public World getWorldManager() {
+        return this.world;
     }
 
     public Sender getSender() {

@@ -15,7 +15,7 @@
 package arkhados.actions.castspellactions;
 
 import arkhados.Globals;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CGrenade;
 import arkhados.controls.CInfluenceInterface;
@@ -51,8 +51,7 @@ public class ACastGrenade extends EntityAction {
 
         float distance = xz.length();
 
-        WorldManager world =
-                Globals.app.getStateManager().getState(WorldManager.class);
+        World world = Globals.app.getStateManager().getState(World.class);
 
         int entityId = world.addNewEntity(spell.getId(),
                 casterLocation, Quaternion.IDENTITY, playerId);
