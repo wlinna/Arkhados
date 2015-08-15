@@ -15,6 +15,7 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.AChannelingSpell;
@@ -23,16 +24,20 @@ import arkhados.actions.ASplash;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CEntityEvent;
 import arkhados.controls.CGenericSync;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
+import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.spells.embermage.Meteor;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.DistanceScaling;
+import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -53,9 +58,8 @@ public class IntoTheShadows extends Spell {
     {
         iconName = "flame_walk.png";
     }
-
     static final float RADIUS = 27.5f;
-    
+
     public IntoTheShadows(String name, float cooldown, float range,
             float castTime) {
         super(name, cooldown, range, castTime);
@@ -116,8 +120,9 @@ public class IntoTheShadows extends Spell {
             cloudActions.enqueueAction(splash);
             cloudActions.enqueueAction(
                     new ARestoreEntity(world, playerEntityId, target));
+            cloudActions.enqueueAction(new ARemoveCloud(world, cloudId));
 
-            world.temporarilyRemoveEntity(playerEntityId);
+            world.temporarilyRemoveEntity(playerEntityId);            
         }
     }
 
@@ -183,31 +188,70 @@ public class IntoTheShadows extends Spell {
                 GhostControl ghost = new GhostControl(collisionShape);
                 ghost.setCollisionGroup(CollisionGroups.NONE);
                 ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
-                node.addControl(new CTimedExistence(1f, true));
             }
             if (world.isClient()) {
                 ParticleEmitter cloud = createCloudEmitter();
                 node.attachChild(cloud);
+
+                CEntityEvent cEvent = new CEntityEvent();
+                node.addControl(cEvent);
+                cEvent.setOnRemoval(new CloudRemoval().setCloud(cloud));
             }
             return node;
         }
     }
 }
 
-class ATeleport extends EntityAction {
+class CloudRemoval implements ARemovalEvent {
 
-    private Vector3f targetLocation;
+    private Spatial cloud;
 
-    public ATeleport(Vector3f target) {
-        targetLocation = new Vector3f(target);
+    private ParticleEmitter createShockwave() {
+        ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
+                ParticleMesh.Type.Triangle, 3);
+        Material mat = new Material(Globals.assetManager,
+                "Common/MatDefs/Misc/Particle.j3md");
+        mat.setTexture("Texture", Globals.assetManager
+                .loadTexture("Effects/shockwave_alpha.png"));
+        mat.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
+        wave.setMaterial(mat);
+        wave.setImagesX(1);
+        wave.setImagesY(1);
+
+        wave.setGravity(Vector3f.ZERO);
+
+        wave.setStartColor(new ColorRGBA(0f, 0f, 0f, 1f));
+        wave.setEndColor(new ColorRGBA(0f, 0f, 0f, 0f));
+        wave.setLowLife(0.5f);
+        wave.setHighLife(0.5f);
+        wave.setStartSize(0.50f);
+        wave.setEndSize(IntoTheShadows.RADIUS);
+        wave.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        wave.getParticleInfluencer().setVelocityVariation(0f);
+        wave.setParticlesPerSec(0f);
+
+        return wave;
     }
 
     @Override
-    public boolean update(float tpf) {
-        CCharacterPhysics physics = spatial.getControl(CCharacterPhysics.class);
-        physics.warp(targetLocation);
+    public void exec(World world, int reason) {
+        if (reason != RemovalReasons.EXPIRED) {
+            return;
+        }
 
-        return false;
+        Vector3f worldTranslation = cloud.getParent().getWorldTranslation();
+
+        ParticleEmitter wave = createShockwave();
+        world.getWorldRoot().attachChild(wave);
+        wave.setLocalTranslation(worldTranslation);
+        wave.emitAllParticles();
+        wave.addControl(new CTimedExistence(4f));
+    }
+
+    public CloudRemoval setCloud(Spatial cloud) {
+        this.cloud = cloud;
+        return this;
     }
 }
 
@@ -227,6 +271,23 @@ class ARestoreEntity extends EntityAction {
     @Override
     public boolean update(float tpf) {
         world.restoreTemporarilyRemovedEntity(id, loc, rot);
+        return false;
+    }
+}
+
+class ARemoveCloud extends EntityAction {
+
+    private final World world;
+    private final int id;
+
+    public ARemoveCloud(World world, int id) {
+        this.world = world;
+        this.id = id;
+    }
+
+    @Override
+    public boolean update(float tpf) {
+        world.removeEntity(id, RemovalReasons.EXPIRED);
         return false;
     }
 }
