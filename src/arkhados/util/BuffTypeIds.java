@@ -31,4 +31,5 @@ public class BuffTypeIds {
     public static final int BLIND = 13;
     public static final int BLOOD_FRENZY = 14;
     public static final int SILENCE = 15;
+    public static final int SHADOW = 16;
 }

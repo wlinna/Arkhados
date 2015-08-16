@@ -17,7 +17,7 @@ package arkhados.spell.spells.rockgolem;
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.PlayerData;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
@@ -30,20 +30,15 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
 
     private Node myStone;
-    private WorldManager worldManager;
+    private World world;
     private static final float M1_COMBINATION_DAMAGE = 300f;
 
-    public SpiritStoneCollisionListener(Node myStone,
-            WorldManager worldManager) {
+    public SpiritStoneCollisionListener(Node myStone, World world) {
         this.myStone = myStone;
-        this.worldManager = worldManager;
+        this.world = world;
     }
 
     @Override
@@ -79,7 +74,7 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         Integer otherTeamId = other.getUserData(UserData.TEAM_ID);
         if (otherTeamId == null) {
             if (stonePhysics.isPunched()) {
-                worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
+                world.removeEntity(stoneId, RemovalReasons.COLLISION);
             } else {
             }
             return;
@@ -97,11 +92,11 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
             int ownerId = myStone.getUserData(UserData.PLAYER_ID);
             int playerEntityId = PlayerData
                     .getIntData(ownerId, PlayerData.ENTITY_ID);
-            Spatial playerEntity = worldManager.getEntity(playerEntityId);
+            Spatial playerEntity = world.getEntity(playerEntityId);
 
             if (currentAction != null && currentAction instanceof ATrance) {
                 ((ATrance) currentAction).activate(playerEntity);
-                worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
+                world.removeEntity(stoneId, RemovalReasons.COLLISION);
                 return;
             }
 
@@ -110,14 +105,14 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
 
             CharacterInteraction.harm(playerInterface, influenceInterface,
                     M1_COMBINATION_DAMAGE, null, true);
-            worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
+            world.removeEntity(stoneId, RemovalReasons.COLLISION);
         } else if (stonePhysics.isPunched()
                 && otherCollisionGroup == CollisionGroups.WALLS) {
-            worldManager.removeEntity(stoneId, RemovalReasons.COLLISION);
+            world.removeEntity(stoneId, RemovalReasons.COLLISION);
         }
     }
 
-    public void setWorldManager(WorldManager worldManager) {
-        this.worldManager = worldManager;
+    public void setWorld(World world) {
+        this.world = world;
     }
 }

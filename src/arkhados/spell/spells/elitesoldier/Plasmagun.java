@@ -15,11 +15,11 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
@@ -74,7 +74,7 @@ public class Plasmagun extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile projectileAction = 
-                        new ACastProjectile(spell, worldManager);
+                        new ACastProjectile(spell, world);
                 projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
                 AChannelingSpell channel = new AChannelingSpell(spell,
                         3, 0.12f, projectileAction, true);
@@ -136,7 +136,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 60f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter plasma = createPlasmaEmitter();
             node.attachChild(plasma);
 
@@ -202,11 +202,11 @@ class APlasmaRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         Vector3f worldTranslation = plasma.getParent().getLocalTranslation();
 
         plasma.removeFromParent();
-        worldManager.getWorldRoot().attachChild(plasma);
+        world.getWorldRoot().attachChild(plasma);
         plasma.setLocalTranslation(worldTranslation);
         plasma.addControl(new CTimedExistence(1f));
         plasma.setStartColor(new ColorRGBA(0.5f, 0.150f, 0.9f, 1.0f));

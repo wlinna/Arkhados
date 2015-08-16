@@ -18,24 +18,24 @@ import arkhados.CharacterInteraction;
 import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.PlayerData;
-import arkhados.ServerFogManager;
-import arkhados.SyncManager;
+import arkhados.ServerFog;
+import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.controls.PlayerEntityAwareness;
-import arkhados.effects.DeathManager;
+import arkhados.effects.Death;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerBuilder;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerController;
 import arkhados.util.AudioQueue;
-import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
+import arkhados.util.NodeBuilderIdHeroNameMatcher;
 import arkhados.util.RemovalReasons;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -74,9 +74,9 @@ public class DeathmatchCommon {
         comboAnnouncements.put(5, "Interface/Sound/Announcer/Massacre.wav");
     }
     private Application app;
-    private WorldManager worldManager;
+    private World world;
     private AppStateManager stateManager;
-    private SyncManager syncManager;
+    private Sync sync;
     private AudioQueue audioQueue = new AudioQueue();
     private boolean firstBloodHappened;
     private float respawnTime;
@@ -91,22 +91,22 @@ public class DeathmatchCommon {
     void initialize(Application app) {
         this.app = app;
         stateManager = app.getStateManager();
-        worldManager = stateManager.getState(WorldManager.class);
-        syncManager = stateManager.getState(SyncManager.class);
+        world = stateManager.getState(World.class);
+        sync = stateManager.getState(Sync.class);
 
         CharacterInteraction.startNewRound();
 
-        syncManager.addObject(-1, worldManager);
+        sync.addObject(-1, world);
 
         firstBloodHappened = false;
 
         if (stateManager.getState(Sender.class).isServer()) {
-            syncManager.setEnabled(true);
-            syncManager.startListening();
+            sync.setEnabled(true);
+            sync.startListening();
             Globals.worldRunning = true;
         } else {
             stateManager.getState(UserCommandManager.class).setEnabled(true);
-            stateManager.getState(ClientHudManager.class).clearMessages();
+            stateManager.getState(ClientHud.class).clearMessages();
 
             preloadAnnouncer();
         }
@@ -225,13 +225,11 @@ public class DeathmatchCommon {
                         new DeathMatchPlayerTracker(0.5f);
                 getTrackers().put(playerId, tracker);
 
-                ServerFogManager fogManager =
-                        stateManager.getState(ServerFogManager.class);
-                if (fogManager
-                        != null) { // Same as asking for if this is server
+                ServerFog fog =  stateManager.getState(ServerFog.class);
+                if (fog != null) { // Same as asking for if this is server
                     PlayerEntityAwareness awareness =
-                            fogManager.createAwarenessForPlayer(playerId);
-                    fogManager.teachAboutPrecedingEntities(awareness);
+                            fog.createAwarenessForPlayer(playerId);
+                    fog.teachAboutPrecedingEntities(awareness);
 
                     getCanPickHeroMap().put(playerId, Boolean.TRUE);
                     CharacterInteraction.addPlayer(playerId);
@@ -260,16 +258,15 @@ public class DeathmatchCommon {
             public Void call() throws Exception {
                 int oldEntityId = PlayerData
                         .getIntData(playerId, PlayerData.ENTITY_ID);
-                worldManager.removeEntity(oldEntityId, RemovalReasons.DEATH);
+                world.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
                 Vector3f startingLocation = getNewSpawnLocation();
                 PlayerData playerData = PlayerData.getPlayerId(playerId);
 
-                int nodeBuilderId = NodeBuilderIdHeroNameMatcherSingleton
+                int nodeBuilderId = NodeBuilderIdHeroNameMatcher
                         .get().getId(heroName);
-                int entityId = worldManager
-                        .addNewEntity(nodeBuilderId, startingLocation,
-                        new Quaternion(), playerId);
+                int entityId = world.addNewEntity(nodeBuilderId,
+                        startingLocation, new Quaternion(), playerId);
                 playerData.setData(PlayerData.ENTITY_ID, entityId);
 
                 CmdSetPlayersCharacter playersCharacterCommand =
@@ -296,13 +293,12 @@ public class DeathmatchCommon {
 
         if (sender.isClient()) {
 
-            final ClientHudManager hudManager =
-                    stateManager.getState(ClientHudManager.class);
+            final ClientHud hud = stateManager.getState(ClientHud.class);
             getApp().enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    hudManager.clear();
-                    hudManager.showStatistics();
+                    hud.clear();
+                    hud.showStatistics();
                     nifty.removeElement(nifty.getScreen("default_hud"), getHeroSelectionLayer());
                     return null;
                 }
@@ -311,11 +307,11 @@ public class DeathmatchCommon {
             getApp().enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    stateManager.getState(SyncManager.class).clear();
+                    stateManager.getState(Sync.class).clear();
                     // TODO: Find out why following line causes statistics to not appear
                     //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
-                    stateManager.getState(ClientHudManager.class)
-                            .disableCharacterHudControl();
+                    stateManager.getState(ClientHud.class)
+                            .disableCCharacterHud();
                     return null;
                 }
             });
@@ -329,8 +325,8 @@ public class DeathmatchCommon {
                     }
 
                     PlayerData.destroyAllData();
-                    hudManager.endGame();
-                    stateManager.getState(WorldManager.class).clear();
+                    hud.endGame();
+                    stateManager.getState(World.class).clear();
                     stateManager.getState(UserCommandManager.class)
                             .nullifyCharacter();
                     ((ClientMain) getApp()).gameEnded();
@@ -350,8 +346,8 @@ public class DeathmatchCommon {
 
     private Vector3f getNewSpawnLocation() {
         spawnLocationIndex = (spawnLocationIndex + 1)
-                % WorldManager.STARTING_LOCATIONS.length;
-        return WorldManager.STARTING_LOCATIONS[spawnLocationIndex].clone()
+                % World.STARTING_LOCATIONS.length;
+        return World.STARTING_LOCATIONS[spawnLocationIndex].clone()
                 .setY(1f);
     }
 
@@ -363,17 +359,16 @@ public class DeathmatchCommon {
                         stateManager.getState(UserCommandManager.class);
                 int characterId = userCommandManager.getCharacterId();
 
-                worldManager.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
+                world.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
 
                 userCommandManager.nullifyCharacter();
-                ClientHudManager hudManager =
-                        stateManager.getState(ClientHudManager.class);
+                ClientHud hud = stateManager.getState(ClientHud.class);
 
-                hudManager.clearAllButCharactersInfo();
+                hud.clearAllButCharactersInfo();
 
-                hudManager.showStatistics();
+                hud.showStatistics();
 
-                stateManager.getState(DeathManager.class).death();
+                stateManager.getState(Death.class).death();
                 if (!Globals.replayMode) {
                     getHeroSelectionLayer().showWithoutEffects();
                 }
@@ -388,8 +383,7 @@ public class DeathmatchCommon {
             int endedSpree) {
         String message = DeathMatchMessageMaker
                 .killed(playerName, killerName, endedSpree);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
     }
 
     private void firstBloodMessage(int killersId) {
@@ -402,8 +396,7 @@ public class DeathmatchCommon {
         String name = getPlayerName(killersId);
 
         String message = String.format("%s just drew First Blood!", name);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
 
         playAnnouncerSound(FIRST_BLOOD_PATH);
     }
@@ -416,8 +409,7 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.spree(playerName, spree);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
 
         String audioPath = spreeAnnouncements.get(spree);
 
@@ -432,8 +424,7 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.combo(playerName, combo);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
 
         String audioPath = comboAnnouncements.get(combo);
 
@@ -447,15 +438,15 @@ public class DeathmatchCommon {
     }
 
     private void preloadAnnouncer() {
-        Globals.assetManager.loadAudio(FIRST_BLOOD_PATH);
+        Globals.assets.loadAudio(FIRST_BLOOD_PATH);
 
         for (String path : spreeAnnouncements.values()) {
-            Globals.assetManager.loadAudio(path);
+            Globals.assets.loadAudio(path);
         }
     }
 
     private void playAnnouncerSound(final String path) {
-        AudioNode audio = new AudioNode(Globals.assetManager, path);
+        AudioNode audio = new AudioNode(Globals.assets, path);
         audio.setVolume(1.2f);
         audio.setPositional(false);
 

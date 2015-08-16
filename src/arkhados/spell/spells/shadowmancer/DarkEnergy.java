@@ -15,15 +15,14 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.controls.CSpellCast;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.CastSpellActionBuilder;
@@ -77,7 +76,7 @@ public class DarkEnergy extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile castProjectile =
-                        new ACastProjectile(spell, worldManager);
+                        new ACastProjectile(spell, world);
                 castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
                 castProjectile.detonateAtTarget(true);
                 return castProjectile;
@@ -138,7 +137,7 @@ class EnergyBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 0f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter energy = createEnergyEmitter();
             node.attachChild(energy);
 
@@ -202,11 +201,11 @@ class AEnergyRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         Vector3f worldTranslation = dark.getParent().getLocalTranslation();
 
         Node node = new Node("rocket-explosion");
-        worldManager.getWorldRoot().attachChild(node);
+        world.getWorldRoot().attachChild(node);
         node.setLocalTranslation(worldTranslation);
 
         dark.removeFromParent();

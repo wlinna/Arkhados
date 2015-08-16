@@ -18,13 +18,13 @@ import arkhados.controls.CCharacterHud;
 import arkhados.controls.CFreeCamera;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
-import arkhados.effects.DeathManager;
+import arkhados.effects.Death;
 import arkhados.messages.usercommands.CmdUcCastSpell;
 import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Sender;
-import arkhados.ui.hud.ClientHudManager;
-import arkhados.util.InputMappingStrings;
+import arkhados.ui.hud.ClientHud;
+import arkhados.util.InputMapping;
 import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -40,15 +40,12 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
+import java.util.Map;
 
-/**
- *
- * @author william
- */
 public class UserCommandManager extends AbstractAppState {
 
     private InputManager inputManager;
-    private WorldManager worldManager;
+    private World world;
     private Application app;
     private Camera cam;
     private int playerId;
@@ -60,7 +57,7 @@ public class UserCommandManager extends AbstractAppState {
     private float mouseTargetUpdateTimer = 0f;
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f mouseGroundPosition = new Vector3f();
-    private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
+    private Map<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private boolean characterChanged = false;
     private Listener listener;
     private boolean modifierFlag = false;
@@ -74,25 +71,23 @@ public class UserCommandManager extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
-        worldManager = stateManager.getState(WorldManager.class);
+        world = stateManager.getState(World.class);
         listener = app.getListener();
         cam = app.getCamera();
 
         inputManager.addListener(actionMoveDirection,
-                InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
-                InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+                InputMapping.MOVE_RIGHT, InputMapping.MOVE_LEFT,
+                InputMapping.MOVE_UP, InputMapping.MOVE_DOWN);
 
-        inputManager
-                .addListener(modifierListener, InputMappingStrings.MODIFIER);
+        inputManager.addListener(modifierListener, InputMapping.MODIFIER);
     }
 
     public void createCameraControl() {
         Node camNode = new Node("cam-node");
-        worldManager.getWorldRoot().attachChild(camNode);
-        CFreeCamera cameraControl =
-                new CFreeCamera(cam, inputManager);
-        camNode.addControl(cameraControl);
-        cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
+        world.getWorldRoot().attachChild(camNode);
+        CFreeCamera cCamera = new CFreeCamera(cam, inputManager);
+        camNode.addControl(cCamera);
+        cCamera.setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
     private ActionListener modifierListener = new ActionListener() {
         @Override
@@ -114,8 +109,8 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
 
-            if (InputMappingStrings.SEC1.equals(name)
-                    || InputMappingStrings.SEC2.equals(name)) {
+            if (InputMapping.SEC1.equals(name)
+                    || InputMapping.SEC2.equals(name)) {
                 Integer input = getCharacter().getControl(CSpellCast.class)
                         .getInput(name);
                 if (input != null) {
@@ -127,8 +122,7 @@ public class UserCommandManager extends AbstractAppState {
             }
 
             if (name != null) {
-                CmdUcCastSpell uc =
-                        new CmdUcCastSpell(InputMappingStrings.getId(name),
+                CmdUcCastSpell uc = new CmdUcCastSpell(InputMapping.getId(name),
                         modifierFlag, mouseGroundPosition);
                 app.getStateManager().getState(Sender.class).addCommand(uc);
             }
@@ -167,10 +161,10 @@ public class UserCommandManager extends AbstractAppState {
     private void enableInputListeners() {
         if (!inputListenersActive) {
             inputManager.addListener(actionCastSpell,
-                    InputMappingStrings.M1, InputMappingStrings.M2,
-                    InputMappingStrings.Q, InputMappingStrings.E,
-                    InputMappingStrings.R, InputMappingStrings.SPACE,
-                    InputMappingStrings.SEC1, InputMappingStrings.SEC2);
+                    InputMapping.M1, InputMapping.M2,
+                    InputMapping.Q, InputMapping.E,
+                    InputMapping.R, InputMapping.SPACE,
+                    InputMapping.SEC1, InputMapping.SEC2);
         }
 
         inputListenersActive = true;
@@ -198,12 +192,12 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void followPlayer() {
-        worldManager.getWorldRoot().getChild("cam-node")
+        world.getWorldRoot().getChild("cam-node")
                 .getControl(CFreeCamera.class).setCharacter(character);
     }
 
     public void followSpatial(Spatial spatial) {
-        worldManager.getWorldRoot().getChild("cam-node")
+        world.getWorldRoot().getChild("cam-node")
                 .getControl(CFreeCamera.class).setCharacter(spatial);
     }
 
@@ -245,7 +239,7 @@ public class UserCommandManager extends AbstractAppState {
 
     public Spatial getCharacter() {
         if (character == null) {
-            Spatial spatial = worldManager.getEntity(characterId);
+            Spatial spatial = world.getEntity(characterId);
             if (spatial != null) {
                 trySetPlayersCharacter(spatial);
             }
@@ -284,12 +278,11 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        if (!spatial.getUserData(UserData.ENTITY_ID)
-                .equals(characterId)) {
+        if (!spatial.getUserData(UserData.ENTITY_ID).equals(characterId)) {
             return false;
         }
 
-        app.getStateManager().getState(DeathManager.class).revive();
+        app.getStateManager().getState(Death.class).revive();
         character = (Node) spatial;
 
         if (characterChanged) {
@@ -298,13 +291,12 @@ public class UserCommandManager extends AbstractAppState {
             character.getControl(CSpellCast.class).restoreClientCooldowns();
         }
 
-        ClientHudManager hudManager = app.getStateManager()
-                .getState(ClientHudManager.class);
-        hudManager.newOwnCharacter(spatial, characterChanged);
-        hudManager.clearBuffIcons();
-        hudManager.hideStatistics();
+        ClientHud hud = app.getStateManager().getState(ClientHud.class);
+        hud.newOwnCharacter(spatial, characterChanged);
+        hud.clearBuffIcons();
+        hud.hideStatistics();
 
-        character.getControl(CCharacterHud.class).setHudManager(hudManager);
+        character.getControl(CCharacterHud.class).setHud(hud);
         followPlayer();
         characterChanged = false;
         return true;

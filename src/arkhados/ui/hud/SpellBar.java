@@ -18,7 +18,7 @@ import arkhados.controls.CCharacterBuff;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.util.BuffTypeIds;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.NiftyUtils;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
@@ -36,12 +36,12 @@ public class SpellBar {
     private Spatial playerCharacter;
 
     void loadIcons() {
-        addIcon(InputMappingStrings.getId(InputMappingStrings.M1));
-        addIcon(InputMappingStrings.getId(InputMappingStrings.M2));
-        addIcon(InputMappingStrings.getId(InputMappingStrings.Q));
-        addIcon(InputMappingStrings.getId(InputMappingStrings.E));
-        addIcon(InputMappingStrings.getId(InputMappingStrings.R));
-        addIcon(InputMappingStrings.getId(InputMappingStrings.SPACE));
+        addIcon(InputMapping.getId(InputMapping.M1));
+        addIcon(InputMapping.getId(InputMapping.M2));
+        addIcon(InputMapping.getId(InputMapping.Q));
+        addIcon(InputMapping.getId(InputMapping.E));
+        addIcon(InputMapping.getId(InputMapping.R));
+        addIcon(InputMapping.getId(InputMapping.SPACE));
     }
 
     void addIcon(int key) {

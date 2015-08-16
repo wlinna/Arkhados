@@ -26,19 +26,15 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class TossHitEffect implements WorldEffect {
 
     private ParticleEmitter createParticleEffect() {
         ParticleEmitter dust = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 80);
-        Material material = new Material(Globals.assetManager,
+        Material material = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/flame_alpha.png"));
+                Globals.assets.loadTexture("Effects/flame_alpha.png"));
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         dust.setMaterial(material);

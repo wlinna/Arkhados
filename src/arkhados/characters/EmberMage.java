@@ -34,7 +34,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.spells.embermage.EtherealFlame;
 import arkhados.util.AnimationData;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
@@ -44,8 +44,6 @@ import com.jme3.scene.Node;
 
 /**
  * Creates entity with EmberMage's features.
- *
- * @author william
  */
 public class EmberMage extends AbstractNodeBuilder {
 
@@ -95,26 +93,26 @@ public class EmberMage extends AbstractNodeBuilder {
          */
         CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
-        int M2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+        int M2Id = InputMapping.getId(InputMapping.M2);
 
-        int RId = InputMappingStrings.getId(InputMappingStrings.R);
+        int RId = InputMapping.getId(InputMapping.R);
 
         spellCastControl.putSpell(Spell.getSpell("Fireball"),
-                InputMappingStrings.getId(InputMappingStrings.M1));
+                InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(Spell.getSpell("Magma Bash"), M2Id);
         spellCastControl.putSpell(Spell.getSpell("Magma Release"), -M2Id);
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
-                InputMappingStrings.getId(InputMappingStrings.Q));
+                InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
-                InputMappingStrings.getId(InputMappingStrings.E));
+                InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), RId);
         spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -RId);
         spellCastControl.putSpell(Spell.getSpell("Firewalk"),
-                InputMappingStrings.getId(InputMappingStrings.SPACE));
+                InputMapping.getId(InputMapping.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2Id);
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -155,7 +153,7 @@ public class EmberMage extends AbstractNodeBuilder {
 
         entity.addControl(new CCharacterSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/EmberMagePain.wav");
             soundControl.setDeathSound("Effects/Sound/EmberMageDeath.wav");

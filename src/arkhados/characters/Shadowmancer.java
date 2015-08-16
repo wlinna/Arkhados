@@ -34,7 +34,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.spells.embermage.EtherealFlame;
 import arkhados.util.AnimationData;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
@@ -43,7 +43,7 @@ import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 
 /**
- * Creates entity with EmberMage's features.
+ * Creates entity with Shadowmancer's features.
  */
 public class Shadowmancer extends AbstractNodeBuilder {
 
@@ -93,23 +93,22 @@ public class Shadowmancer extends AbstractNodeBuilder {
          */
         CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
-        int M2Id = InputMappingStrings.getId(InputMappingStrings.M2);
+        int M2Id = InputMapping.getId(InputMapping.M2);
 
-        int RId = InputMappingStrings.getId(InputMappingStrings.R);
+        int RId = InputMapping.getId(InputMapping.R);
 
         spellCastControl.putSpell(Spell.getSpell("Shadow Orb"),
-                InputMappingStrings.getId(InputMappingStrings.M1));
+                InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(Spell.getSpell("Dark Energy"), M2Id);
         spellCastControl.putSpell(Spell.getSpell("Shadow Sickness"),
-                InputMappingStrings.getId(InputMappingStrings.Q));
+                InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(Spell.getSpell("Dark Spear"),
-                InputMappingStrings.getId(InputMappingStrings.E));
+                InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(Spell.getSpell("Shadow"), RId);
-        spellCastControl.putSpell(Spell.getSpell("Firewalk"),
-                InputMappingStrings.getId(InputMappingStrings.SPACE));
-        spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
+        spellCastControl.putSpell(Spell.getSpell("Into the Shadows"),
+                InputMapping.getId(InputMapping.SPACE));
 
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -140,7 +139,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Shadow Sickness", idleAnim);
         characterAnimControl.addSpellAnimation("Dark Spear", attackAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
-        characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
+        characterAnimControl.addSpellAnimation("Into the Shadows", idleAnim);
 
         entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
@@ -148,7 +147,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         entity.addControl(new CCharacterSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/EmberMagePain.wav");
             soundControl.setDeathSound("Effects/Sound/EmberMageDeath.wav");

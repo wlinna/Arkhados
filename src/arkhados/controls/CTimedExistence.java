@@ -17,18 +17,14 @@ package arkhados.controls;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 
-/**
- *
- * @author william
- */
 public class CTimedExistence extends AbstractControl {
 
-    private static WorldManager worldManager;
+    private static World world;
     private float timeOut;
     private float age = 0.0f;
     private boolean removeEntity;
@@ -49,8 +45,8 @@ public class CTimedExistence extends AbstractControl {
         age += tpf;
         if (age >= timeOut) {
             if (removeEntity) {
-                if (worldManager.isServer()) {
-                    worldManager.removeEntity((Integer) getSpatial()
+                if (world.isServer()) {
+                    world.removeEntity((Integer) getSpatial()
                             .getUserData(UserData.ENTITY_ID),
                             RemovalReasons.EXPIRED);
                 }
@@ -67,8 +63,8 @@ public class CTimedExistence extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public static void setWorldManager(WorldManager worldManager) {
-        CTimedExistence.worldManager = worldManager;
+    public static void setWorld(World world) {
+        CTimedExistence.world = world;
     }
 
     public void setSpace(PhysicsSpace space) {

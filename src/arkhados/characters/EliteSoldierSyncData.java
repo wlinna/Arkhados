@@ -1,15 +1,11 @@
 package arkhados.characters;
 
 import arkhados.controls.CEliteSoldierAmmunition;
-import arkhados.messages.syncmessages.statedata.CharacterSyncData;
+import arkhados.messages.sync.statedata.CharacterSyncData;
 import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class EliteSoldierSyncData extends CharacterSyncData {
 

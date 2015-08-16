@@ -34,7 +34,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
 import arkhados.util.AnimationData;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
@@ -43,10 +43,6 @@ import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class Venator extends AbstractNodeBuilder {
 
     public static final int ANIM_LAND = 0;
@@ -112,24 +108,24 @@ public class Venator extends AbstractNodeBuilder {
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
         Spell bloodFrenzy = Spell.getSpell("Blood Frenzy");
 
-        int M2Id = InputMappingStrings.getId(InputMappingStrings.M2);
-        int RId = InputMappingStrings.getId(InputMappingStrings.R);
+        int M2Id = InputMapping.getId(InputMapping.M2);
+        int RId = InputMapping.getId(InputMapping.R);
 
         spellCastControl.putSpell(rend,
-                InputMappingStrings.getId(InputMappingStrings.M1));
+                InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(dagger, M2Id);
         spellCastControl.putSpell(numb, -M2Id);
         spellCastControl.putSpell(leap,
-                InputMappingStrings.getId(InputMappingStrings.SPACE));
+                InputMapping.getId(InputMapping.SPACE));
         spellCastControl.putSpell(scream,
-                InputMappingStrings.getId(InputMappingStrings.Q));
+                InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(deepWounds,
-                InputMappingStrings.getId(InputMappingStrings.E));
+                InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(survivalInstinct, RId);
         spellCastControl.putSpell(bloodFrenzy, -RId);
         
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2Id);
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CCharacterAnimation characterAnimControl =
@@ -202,7 +198,7 @@ public class Venator extends AbstractNodeBuilder {
         entity.addControl(new CCharacterHeal());
         entity.addControl(new CCharacterSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             soundControl.setSufferSound("Effects/Sound/VenatorPain.wav");
             soundControl.setDeathSound("Effects/Sound/VenatorDeath.wav");

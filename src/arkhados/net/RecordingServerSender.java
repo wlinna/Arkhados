@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.net;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.replay.ReplayData;
 import arkhados.ui.hud.ServerClientDataStrings;
 import com.jme3.network.HostedConnection;
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 public class RecordingServerSender extends ServerSender {
 
-    private WorldManager world;
+    private World world;
     private ReplayData replayData = new ReplayData();
     private static SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
@@ -102,7 +102,7 @@ public class RecordingServerSender extends ServerSender {
         return true;
     }
 
-    public void setWorld(WorldManager world) {
+    public void setWorld(World world) {
         this.world = world;
     }
 }

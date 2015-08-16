@@ -14,12 +14,12 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.effects.BlindManager;
-import arkhados.effects.DeathManager;
+import arkhados.effects.ClientBlind;
+import arkhados.effects.Death;
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.gamemode.TeamDeathmatch;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.ui.KeySetter;
 import arkhados.messages.MessageUtils;
 import arkhados.net.ClientSender;
@@ -119,7 +119,7 @@ public class ClientMain extends SimpleApplication {
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
     private NetworkClient client;
-    private ClientHudManager clientHudManager;
+    private ClientHud hud;
     private Sender sender;
     private GameMode gameMode = null;
     private InputSettings inputSettings;
@@ -136,7 +136,7 @@ public class ClientMain extends SimpleApplication {
 
         threadPoolExecutor = new ScheduledThreadPoolExecutor(4);
 
-        Globals.assetManager = getAssetManager();
+        Globals.assets = getAssetManager();
         Globals.app = this;
         setDisplayStatView(false);
         ClientSettings.initialize(this);
@@ -147,12 +147,12 @@ public class ClientMain extends SimpleApplication {
 
         inputManager.setCursorVisible(true);
 
-        clientHudManager = new ClientHudManager(cam, guiNode, guiFont);
+        hud = new ClientHud(cam, guiNode, guiFont);
 
-        ClientFogManager fogManager = new ClientFogManager();
-        stateManager.attach(fogManager);
+        ClientFog fog = new ClientFog();
+        stateManager.attach(fog);
 
-        stateManager.attach(clientHudManager);
+        stateManager.attach(hud);
         stateManager.attach(bulletState);
         bulletState.getPhysicsSpace().setAccuracy(1f / 30f);
         flyCam.setEnabled(false);
@@ -194,11 +194,11 @@ public class ClientMain extends SimpleApplication {
                 new ConnectionMenu(),
                 new ReplayMenu(),
                 new KeySetter(this, inputManager, inputSettings),
-                clientHudManager,
+                hud,
                 ClientSettings.getClientSettings());
         guiViewPort.addProcessor(niftyDisplay);
 
-        clientHudManager.setNifty(nifty);
+        hud.setNifty(nifty);
     }
 
     public void connect(String username, final String address, final int port) {
@@ -349,17 +349,17 @@ public class ClientMain extends SimpleApplication {
         ConnectionMenu connectionMenu = (ConnectionMenu) nifty
                 .findScreenController("arkhados.ui.ConnectionMenu");
         ClientNetListener netListener = new ClientNetListener(connectionMenu);
-        swappableStates.add(new BlindManager());
-        swappableStates.add(new DeathManager());
+        swappableStates.add(new ClientBlind());
+        swappableStates.add(new Death());
         swappableStates.add(netListener);
 
         EffectHandler effectHandler = new EffectHandler(this);
-        WorldManager worldManager = new WorldManager(effectHandler);
-        effectHandler.setWorldManager(worldManager);
-        swappableStates.add(worldManager);
+        World world = new World(effectHandler);
+        effectHandler.setWorld(world);
+        swappableStates.add(world);
 
-        SyncManager syncManager = new SyncManager(this);
-        swappableStates.add(syncManager);
+        Sync sync = new Sync(this);
+        swappableStates.add(sync);
 
         UserCommandManager userCommandManager =
                 new UserCommandManager(inputManager);
@@ -372,7 +372,7 @@ public class ClientMain extends SimpleApplication {
 
         receiver.registerCommandHandler(netListener);
         receiver.registerCommandHandler(effectHandler);
-        receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(sync);
         receiver.registerCommandHandler(sender);
     }
 }

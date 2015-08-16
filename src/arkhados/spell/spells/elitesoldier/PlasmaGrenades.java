@@ -19,7 +19,7 @@ import arkhados.Globals;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
-import arkhados.actions.castspellactions.ACastGrenade;
+import arkhados.actions.cast.ACastGrenade;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CGrenade;
@@ -124,7 +124,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 60f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter plasma = createPlasmaEmitter();
             node.attachChild(plasma);
 
@@ -172,7 +172,7 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
         space.getGravity(gravity);
         physicsBody.setGravity(gravity);
 
-        if (worldManager.isServer()) {
+        if (world.isServer()) {
             CGrenade cGrenade = new CGrenade();
             node.addControl(cGrenade);
 

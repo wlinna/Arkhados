@@ -15,7 +15,7 @@
 package arkhados.util;
 
 import arkhados.SpatialDistancePair;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.controls.CInfluenceInterface;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
@@ -26,13 +26,9 @@ import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- *
- * @author william
- */
 public class Selector {
 
-    private static WorldManager world;
+    private static World world;
 
     public static <T extends Collection<SpatialDistancePair>> T coneSelect(
             T collection,
@@ -138,7 +134,7 @@ public class Selector {
         return smallest;
     }
 
-    public static void setWorldManager(WorldManager world) {
+    public static void setWorld(World world) {
         Selector.world = world;
     }
 

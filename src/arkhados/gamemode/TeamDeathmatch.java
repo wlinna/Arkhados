@@ -18,9 +18,9 @@ import arkhados.Globals;
 import arkhados.MusicManager;
 import arkhados.PlayerData;
 import arkhados.ServerClientData;
-import arkhados.SyncManager;
+import arkhados.Sync;
 import arkhados.Topic;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdSelectTeam;
@@ -52,8 +52,8 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
     private DeathmatchCommon common = new DeathmatchCommon();
     private AppStateManager stateManager;
-    private WorldManager world;
-    private SyncManager sync;
+    private World world;
+    private Sync sync;
     private Element teamSelectionLayer;
     private Nifty nifty;
     private Screen screen;
@@ -81,8 +81,8 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         common.initialize(app);
 
         stateManager = app.getStateManager();
-        sync = stateManager.getState(SyncManager.class);
-        world = stateManager.getState(WorldManager.class);
+        sync = stateManager.getState(Sync.class);
+        world = stateManager.getState(World.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
 
         Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();

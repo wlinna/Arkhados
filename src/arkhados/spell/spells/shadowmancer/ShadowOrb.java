@@ -15,9 +15,9 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -45,8 +45,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
-
-
 /**
  * Shadowmancer's ShadowOrb (M1) spell. Projectile has moderate speed and deals
  * moderate damage.
@@ -73,7 +71,7 @@ public class ShadowOrb extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastProjectile castProjectile =
-                        new ACastProjectile(spell, Spell.worldManager);
+                        new ACastProjectile(spell, Spell.world);
                 return castProjectile;
             }
         };
@@ -130,7 +128,7 @@ class OrbBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 140f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter purple = createPurpleEmitter();
             node.attachChild(purple);
             
@@ -191,7 +189,7 @@ class AOrbRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         if (reason == RemovalReasons.DISAPPEARED) {
             return;
         }
@@ -199,7 +197,7 @@ class AOrbRemoval implements ARemovalEvent {
         Vector3f worldTranslation = purple.getParent().getLocalTranslation();
 
         purple.removeFromParent();
-        worldManager.getWorldRoot().attachChild(purple);
+        world.getWorldRoot().attachChild(purple);
         purple.setLocalTranslation(worldTranslation);
         purple.addControl(new CTimedExistence(1f));
 

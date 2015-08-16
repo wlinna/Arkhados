@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
 import arkhados.spell.spells.shadowmancer.ShadowOrb;
@@ -45,6 +45,7 @@ import arkhados.spell.spells.rockgolem.StoneFist;
 import arkhados.spell.spells.rockgolem.Toss;
 import arkhados.spell.spells.shadowmancer.DarkEnergy;
 import arkhados.spell.spells.shadowmancer.DarkSpear;
+import arkhados.spell.spells.shadowmancer.IntoTheShadows;
 import arkhados.spell.spells.shadowmancer.Shadow;
 import arkhados.spell.spells.shadowmancer.ShadowSickness;
 import arkhados.spell.spells.venator.BloodFrenzy;
@@ -70,7 +71,7 @@ import java.util.Map;
 public abstract class Spell {
 
     protected static AssetManager assetManager = null;
-    protected static WorldManager worldManager = null;
+    protected static World world = null;
     /**
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
@@ -84,17 +85,17 @@ public abstract class Spell {
      * once
      *
      * @param assetManager will be saved to static variable assetManager
-     * @param worldManager will be save to static variable worldManager
+     * @param world will be save to static variable world
      */
     public static void initSpells(EntityFactory entityFactory,
-            AssetManager assetManager, WorldManager worldManager) {
+            AssetManager assetManager, World world) {
         Spell.assetManager = assetManager;
-        Spell.worldManager = worldManager;
+        Spell.world = world;
 
         AbstractNodeBuilder.setAssetManager(assetManager);
-        AbstractNodeBuilder.setWorldManager(worldManager);
+        AbstractNodeBuilder.setWorld(world);
 
-        CProjectile.setWorldManager(worldManager);
+        CProjectile.setWorld(world);
 
         // *************** INIT spells here ************************
 
@@ -139,7 +140,8 @@ public abstract class Spell {
         addSpell(entityFactory, DarkEnergy.create());
         addSpell(entityFactory, ShadowSickness.create());
         addSpell(entityFactory, DarkSpear.create());
-        addSpell(entityFactory, Shadow.create());        
+        addSpell(entityFactory, Shadow.create());      
+        addSpell(entityFactory, IntoTheShadows.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

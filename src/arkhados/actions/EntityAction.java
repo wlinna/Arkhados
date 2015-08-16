@@ -15,15 +15,11 @@
 package arkhados.actions;
 
 import arkhados.Globals;
-import arkhados.ServerFogManager;
-import arkhados.messages.syncmessages.CmdEndAction;
+import arkhados.ServerFog;
+import arkhados.messages.sync.CmdEndAction;
 import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public abstract class EntityAction {
 
     protected String name = null;
@@ -77,7 +73,7 @@ public abstract class EntityAction {
     protected void announceEnd() {
         int entityId = spatial.getUserData(UserData.ENTITY_ID);
         CmdEndAction endAction = new CmdEndAction(entityId);
-        Globals.app.getStateManager().getState(ServerFogManager.class)
+        Globals.app.getStateManager().getState(ServerFog.class)
                 .addCommand(spatial, endAction);
     }
 }

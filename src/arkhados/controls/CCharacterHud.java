@@ -14,18 +14,14 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CCharacterHud extends AbstractControl {
 
-    protected ClientHudManager hudManager;
+    protected ClientHud hud;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -35,9 +31,9 @@ public class CCharacterHud extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public void setHudManager(ClientHudManager hudManager) {
-        this.hudManager = hudManager;
-        spatial.getControl(CCharacterBuff.class).setHudManager(hudManager);
+    public void setHud(ClientHud hud) {
+        this.hud = hud;
+        spatial.getControl(CCharacterBuff.class).setHud(hud);
     }
 
     @Override

@@ -38,10 +38,6 @@ import arkhados.util.RemovalReasons;
 import com.jme3.app.state.AppStateManager;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class ServerNetListener implements ConnectionListener,
         CommandHandler, ServerClientDataStrings {
 
@@ -83,8 +79,7 @@ public class ServerNetListener implements ConnectionListener,
                 Integer playerId = conn.getAttribute(PLAYER_ID);
                 ServerSender sender = stateManager.getState(ServerSender.class);
                 sender.removeConnection(conn);
-                ServerFogManager fog =
-                        stateManager.getState(ServerFogManager.class);
+                ServerFog fog =  stateManager.getState(ServerFog.class);
                 fog.removeConnection(conn);
                 ServerClientData.remove(conn.getId());
 
@@ -97,8 +92,8 @@ public class ServerNetListener implements ConnectionListener,
                 int entityId = PlayerData.getIntData(playerId,
                         PlayerData.ENTITY_ID);
                 if (entityId > -1) {
-                    WorldManager world =
-                            stateManager.getState(WorldManager.class);
+                    World world =
+                            stateManager.getState(World.class);
                     world.removeEntity(entityId, RemovalReasons.DISCONNECT);
                 }
 
@@ -181,18 +176,16 @@ public class ServerNetListener implements ConnectionListener,
 
                 source.setAttribute(PLAYER_ID, playerId);
 
-                ServerPlayerInputHandler.get().addPlayerInputState(playerId);
+                ServerInput.get().addInputState(playerId);
 
                 ServerClientData.setConnected(clientId, true);
                 ServerClientData.setPlayerId(clientId, playerId);
                 ServerClientData.addConnection(playerId, source);
 
-                ServerGameManager gameManager =
-                        stateManager.getState(ServerGameManager.class);
-                gameManager.playerJoined(playerId);
+                ServerGame game = stateManager.getState(ServerGame.class);
+                game.playerJoined(playerId);
 
-                String modeKey =
-                        gameManager.getGameMode().getClass().getSimpleName();
+                String modeKey = game.getGameMode().getClass().getSimpleName();
                 CmdServerLogin serverLoginMessage =
                         new CmdServerLogin(commmand.getName(), playerId,
                         true, modeKey);

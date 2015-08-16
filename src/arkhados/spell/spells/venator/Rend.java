@@ -16,20 +16,15 @@ package arkhados.spell.spells.venator;
 
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.AMeleeAttack;
+import arkhados.actions.cast.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CSpellCast;
-import arkhados.controls.CUserInput;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class Rend extends Spell {
 
     {

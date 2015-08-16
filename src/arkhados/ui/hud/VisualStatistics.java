@@ -19,7 +19,7 @@ import arkhados.PlayerData;
 import arkhados.Topic;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.Sender;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.PlayerRoundStats;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -44,10 +44,10 @@ public class VisualStatistics implements ActionListener {
 
     void initialize(Application app) {
         stateManager = app.getStateManager();
-        app.getInputManager().addMapping(InputMappingStrings.TOGGLE_STATS,
+        app.getInputManager().addMapping(InputMapping.TOGGLE_STATS,
                 new KeyTrigger(KeyInput.KEY_TAB));
         app.getInputManager().addListener(this,
-                InputMappingStrings.TOGGLE_STATS);
+                InputMapping.TOGGLE_STATS);
     }
 
     void setLatestStatsList(List<PlayerRoundStats> latestStatsList) {

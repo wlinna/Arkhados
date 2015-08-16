@@ -21,10 +21,10 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.ASplash;
-import arkhados.messages.syncmessages.statedata.ProjectileSyncData;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.ProjectileSyncData;
+import arkhados.messages.sync.statedata.StateData;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.math.FastMath;
@@ -32,16 +32,12 @@ import com.jme3.math.Quaternion;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- *
- * @author william
- */
 public class CProjectile extends AbstractControl implements CSync {
 
     private Vector3f direction = null;
     private RigidBodyControl rigidBodyControl;
     private float age = 0;
-    private static WorldManager worldManager;
+    private static World world;
     private static final float timeToLive = 3.0f;
     private float range = 0f;
     private float speed = 0f;
@@ -111,15 +107,14 @@ public class CProjectile extends AbstractControl implements CSync {
             }
 
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
-            worldManager.removeEntity(entityId, RemovalReasons.EXPIRED);
+            world.removeEntity(entityId, RemovalReasons.EXPIRED);
         }
 
         if (age > CProjectile.timeToLive) {
             if (splashAction != null) {
                 splashAction.update(tpf);
             }
-            worldManager.removeEntity(
-                    (int) spatial.getUserData(UserData.ENTITY_ID),
+            world.removeEntity((int) spatial.getUserData(UserData.ENTITY_ID),
                     RemovalReasons.EXPIRED);
         }
     }
@@ -132,8 +127,8 @@ public class CProjectile extends AbstractControl implements CSync {
         return rigidBodyControl;
     }
 
-    public static void setWorldManager(WorldManager worldManager) {
-        CProjectile.worldManager = worldManager;
+    public static void setWorld(World world) {
+        CProjectile.world = world;
     }
 
     public void setRange(float range) {

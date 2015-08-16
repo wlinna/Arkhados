@@ -45,7 +45,7 @@ public class CEliteSoldierAmmunition extends AbstractControl
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (spatial.getControl(CEntityVariable.class).getWorldManager()
+        if (spatial.getControl(CEntityVariable.class).getWorld()
                 .isClient()) {
             return;
         }

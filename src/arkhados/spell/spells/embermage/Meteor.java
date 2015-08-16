@@ -15,7 +15,7 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.Globals;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.controls.CEntityEvent;
@@ -57,10 +57,6 @@ import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class Meteor extends Spell {
 
     static final float SPLASH_RADIUS = 25f;
@@ -83,7 +79,7 @@ public class Meteor extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastMeteor action = new ACastMeteor(worldManager, spell);
+                ACastMeteor action = new ACastMeteor(world, spell);
                 AbstractBuffBuilder ignite =
                         Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
                 if (ignite != null) {
@@ -101,12 +97,12 @@ public class Meteor extends Spell {
 class ACastMeteor extends EntityAction {
 
     private final Spell spell;
-    private final WorldManager worldManager;
+    private final World world;
     private final List<AbstractBuffBuilder> additionalBuffs = new ArrayList<>();
 
-    public ACastMeteor(WorldManager worldManager, Spell spell) {
+    public ACastMeteor(World world, Spell spell) {
         this.spell = spell;
-        this.worldManager = worldManager;
+        this.world = world;
     }
 
     public void addAdditionalBuff(AbstractBuffBuilder buff) {
@@ -128,9 +124,9 @@ class ACastMeteor extends EntityAction {
         path.addWayPoint(startingPoint);
         path.addWayPoint(target);
         int playerId = spatial.getUserData(UserData.PLAYER_ID);
-        final int entityId = worldManager.addNewEntity(spell.getId(), startingPoint,
+        final int entityId = world.addNewEntity(spell.getId(), startingPoint,
                 Quaternion.IDENTITY, playerId);
-        final Spatial meteor = worldManager.getEntity(entityId);
+        final Spatial meteor = world.getEntity(entityId);
 
         final MotionEvent motionControl = new MotionEvent(meteor, path);
         motionControl.setInitialDuration(0.6f);
@@ -163,7 +159,7 @@ class ACastMeteor extends EntityAction {
             }
 
             private void destroy() {
-                worldManager.removeEntity(entityId, RemovalReasons.COLLISION);
+                world.removeEntity(entityId, RemovalReasons.COLLISION);
             }
         });
 
@@ -174,7 +170,7 @@ class ACastMeteor extends EntityAction {
     private Vector3f raySelectPoint(Vector3f from, Vector3f to) {
         Vector3f direction = to.subtract(from);
         Ray ray = new Ray(from, direction);
-        Node wallsNode = (Node) worldManager.getWorldRoot().getChild("Walls");
+        Node wallsNode = (Node) world.getWorldRoot().getChild("Walls");
 
         CollisionResults results = new CollisionResults();
         wallsNode.collideWith(ray, results);
@@ -234,7 +230,7 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
 
         node.addControl(new CGenericSync());
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             node.addControl(new CSyncInterpolation());
             node.addControl(new CEntityEvent());
             ParticleEmitter fire = createFireEmitter();
@@ -266,11 +262,11 @@ class AMeteorRemoval implements ARemovalEvent {
     private ParticleEmitter createShockwave() {
         ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
                 ParticleMesh.Type.Triangle, 3);
-        Material materialRed = new Material(Globals.assetManager,
+        Material mat = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/shockwave.png"));
-        wave.setMaterial(materialRed);
+        mat.setTexture("Texture", 
+                Globals.assets.loadTexture("Effects/shockwave.png"));
+        wave.setMaterial(mat);
         wave.setImagesX(1);
         wave.setImagesY(1);
 
@@ -290,17 +286,17 @@ class AMeteorRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         if (reason != RemovalReasons.COLLISION) {
             return;
         }
         Vector3f worldTranslation = emitter.getParent().getLocalTranslation();
-        worldManager.getWorldRoot().attachChild(sound);
+        world.getWorldRoot().attachChild(sound);
         sound.setLocalTranslation(worldTranslation);
         sound.play();
 
         emitter.removeFromParent();
-        worldManager.getWorldRoot().attachChild(emitter);
+        world.getWorldRoot().attachChild(emitter);
 
         emitter.setLocalTranslation(worldTranslation);
         emitter.addControl(new CTimedExistence(4f));
@@ -318,7 +314,7 @@ class AMeteorRemoval implements ARemovalEvent {
         emitter.emitAllParticles();
         emitter.setParticlesPerSec(0f);
         ParticleEmitter wave = createShockwave();
-        worldManager.getWorldRoot().attachChild(wave);
+        world.getWorldRoot().attachChild(wave);
         wave.setLocalTranslation(worldTranslation);
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));

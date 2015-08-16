@@ -15,20 +15,16 @@
 package arkhados.gamemode;
 
 import arkhados.ClientMain;
-import arkhados.SyncManager;
+import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ServerSender;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public abstract class GameMode {
 
     private Application app;
@@ -56,9 +52,11 @@ public abstract class GameMode {
                 @Override
                 public Void call() throws Exception {
                     AppStateManager stateManager = app.getStateManager();
-                    stateManager.getState(SyncManager.class).clear();
-                    stateManager.getState(UserCommandManager.class).nullifyCharacter();
-                    stateManager.getState(ClientHudManager.class).disableCharacterHudControl();
+                    stateManager.getState(Sync.class).clear();
+                    stateManager.getState(UserCommandManager.class)
+                            .nullifyCharacter();
+                    stateManager.getState(ClientHud.class)
+                            .disableCCharacterHud();
                     return null;
                 }
             });

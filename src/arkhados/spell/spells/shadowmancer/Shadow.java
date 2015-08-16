@@ -14,26 +14,19 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.shadowmancer;
 
-import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastBuff;
+import arkhados.actions.cast.ACastBuff;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.ArmorBuff;
 import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-
-/**
- *
- * @author william
- */
 public class Shadow extends Spell {
 
     {
@@ -112,8 +105,7 @@ class ShadowBuff extends AbstractBuff {
 
         MyBuilder(float duration) {
             super(duration);
-            setTypeId(BuffTypeIds.MINERAL_ARMOR);
-
+            setTypeId(BuffTypeIds.SHADOW);
         }
 
         @Override

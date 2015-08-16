@@ -16,7 +16,7 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
@@ -31,10 +31,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class SealingBoulder extends Spell {
 
     {
@@ -56,8 +52,7 @@ public class SealingBoulder extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastProjectile action =
-                        new ACastProjectile(spell, worldManager);
+                ACastProjectile action = new ACastProjectile(spell, world);
                 return action;
             }
         };
@@ -81,7 +76,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
         node.setUserData(UserData.INCAPACITATE_LENGTH, 7.4f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             AudioNode sound = new AudioNode(assetManager,
                     "Effects/Sound/MagmaBash.wav");
             node.attachChild(sound);

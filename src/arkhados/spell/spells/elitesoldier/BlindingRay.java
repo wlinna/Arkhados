@@ -15,10 +15,10 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
-import arkhados.actions.castspellactions.ACastSelfBuff;
+import arkhados.actions.cast.ACastProjectile;
+import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
@@ -44,11 +44,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
-
-/**
- *
- * @author william
- */
 public class BlindingRay extends Spell {
 
     {
@@ -72,8 +67,8 @@ public class BlindingRay extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastProjectile action =
-                        new ACastProjectile(spell, worldManager);
-                action.setTypeId(EliteSoldier.ACTION_RAILGUN);                
+                        new ACastProjectile(spell, world);
+                action.setTypeId(EliteSoldier.ACTION_RAILGUN);
                 return action;
             }
         };
@@ -133,7 +128,7 @@ class RayBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.DAMAGE, 100f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        if (worldManager.isClient()) {
+        if (world.isClient()) {
             ParticleEmitter smoke = createTrailEmitter();
             node.attachChild(smoke);
 
@@ -204,9 +199,9 @@ class ARayRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(WorldManager worldManager, int reason) {
+    public void exec(World world, int reason) {
         Vector3f worldTranslation = bullet.getLocalTranslation();
-        leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
+        leaveSmokeTrail(world.getWorldRoot(), worldTranslation);
     }
 
     public void setSmokeTrail(ParticleEmitter smoke) {

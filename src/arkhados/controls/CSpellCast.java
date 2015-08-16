@@ -24,8 +24,8 @@ import arkhados.actions.ACastingSpell;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.CmdSetCooldown;
-import arkhados.messages.syncmessages.CmdStartCastingSpell;
+import arkhados.messages.sync.CmdSetCooldown;
+import arkhados.messages.sync.CmdStartCastingSpell;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
@@ -35,10 +35,6 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class CSpellCast extends AbstractControl {
 
     private static Map<Integer, Float> clientCooldowns;
@@ -217,7 +213,7 @@ public class CSpellCast extends AbstractControl {
                     .enqueueAction(castingAction);
             Vector3f direction = targetLocation
                     .subtract(spatial.getLocalTranslation());
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdStartCastingSpell(
                     (int) spatial.getUserData(UserData.ENTITY_ID),
                     spell.getId(), direction, castSpeedFactor));
@@ -251,7 +247,7 @@ public class CSpellCast extends AbstractControl {
         if (awareness != null) {
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdSetCooldown(entityId, spellId, cooldown, true));
         }
     }
@@ -264,7 +260,7 @@ public class CSpellCast extends AbstractControl {
 
         if (awareness != null) {
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdSetCooldown(entityId, spell.getId(),
                     spell.getCooldown(), true));
         }

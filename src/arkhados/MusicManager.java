@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -31,10 +31,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class MusicManager extends AbstractAppState {
 
     private final List<String> music = new ArrayList<>(2);
@@ -53,13 +49,13 @@ public class MusicManager extends AbstractAppState {
         this.app = app;
         this.inputManager = inputManager;
 
-        inputManager.addMapping(InputMappingStrings.VOLUME_UP,
+        inputManager.addMapping(InputMapping.VOLUME_UP,
                 new KeyTrigger(KeyInput.KEY_F10));
-        inputManager.addMapping(InputMappingStrings.VOLUME_DOWN,
+        inputManager.addMapping(InputMapping.VOLUME_DOWN,
                 new KeyTrigger(KeyInput.KEY_F9));
 
         inputManager.addListener(changeVolumeActionListener,
-                InputMappingStrings.VOLUME_UP, InputMappingStrings.VOLUME_DOWN);
+                InputMapping.VOLUME_UP, InputMapping.VOLUME_DOWN);
     }
     private ActionListener changeVolumeActionListener = new ActionListener() {
         @Override
@@ -69,9 +65,9 @@ public class MusicManager extends AbstractAppState {
             }
             float newVolume = volume;
 
-            if (InputMappingStrings.VOLUME_UP.equals(name)) {
+            if (InputMapping.VOLUME_UP.equals(name)) {
                 newVolume += 0.1f;
-            } else if (InputMappingStrings.VOLUME_DOWN.equals(name)) {
+            } else if (InputMapping.VOLUME_DOWN.equals(name)) {
                 newVolume -= 0.1f;
             }
 

@@ -16,8 +16,7 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastBuff;
-import arkhados.actions.castspellactions.ACastSelfBuff;
+import arkhados.actions.cast.ACastBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
@@ -27,10 +26,6 @@ import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class MineralArmor extends Spell {
 
     {

@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
@@ -31,10 +31,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class Machinegun extends Spell {
 
     {
@@ -58,7 +54,7 @@ public class Machinegun extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                AShootBullet shoot = new AShootBullet(spell, worldManager);
+                AShootBullet shoot = new AShootBullet(spell, world);
                 AChannelingSpell channeling =
                         new AChannelingSpell(spell, 10, 0.16f, shoot);
                 return channeling;
@@ -73,11 +69,11 @@ public class Machinegun extends Spell {
 class AShootBullet extends EntityAction {
 
     private Spell spell;
-    private WorldManager worldManager;
+    private World world;
 
-    public AShootBullet(Spell spell, WorldManager worldManager) {
+    public AShootBullet(Spell spell, World world) {
         this.spell = spell;
-        this.worldManager = worldManager;
+        this.world = world;
     }
 
     @Override
@@ -107,9 +103,9 @@ class AShootBullet extends EntityAction {
         Vector3f pelletDirection = viewDirection.clone();
         Vector3f spawnLocation = spatial.getLocalTranslation();
 
-        int projectileId = worldManager.addNewEntity(spell.getId(),
+        int projectileId = world.addNewEntity(spell.getId(),
                 spawnLocation, Quaternion.IDENTITY, playerId);
-        Spatial projectile = worldManager.getEntity(projectileId);
+        Spatial projectile = world.getEntity(projectileId);
 
         Float damage = projectile.getUserData(UserData.DAMAGE);
         Float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);

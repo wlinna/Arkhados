@@ -14,8 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.gamemode.DeathMatch;
-import arkhados.gamemode.TeamDeathmatch;
 import arkhados.messages.MessageUtils;
 import arkhados.net.DefaultReceiver;
 import com.jme3.app.SimpleApplication;
@@ -68,19 +66,19 @@ public class ServerMain extends SimpleApplication {
     }
     private Server server;
     private ServerNetListener listenerManager;
-    private ServerGameManager gameManager;
-    private WorldManager world;
+    private ServerGame game;
+    private World world;
     private BulletAppState physics;
-    private SyncManager syncManager;
+    private Sync sync;
     private RecordingServerSender sender;
     private Receiver receiver;
 
     @Override
     public void simpleInitApp() {
-        Globals.assetManager = getAssetManager();
+        Globals.assets = getAssetManager();
         Globals.app = this;
-        world = new WorldManager();
-        gameManager = new ServerGameManager();
+        world = new World();
+        game = new ServerGame();
         physics = new BulletAppState();
         physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         flyCam.setEnabled(false);
@@ -114,21 +112,20 @@ public class ServerMain extends SimpleApplication {
         Serializer.registerClass(ReplayData.class);
 
         listenerManager = new ServerNetListener(this, server);
-        syncManager = new SyncManager(this);
+        sync = new Sync(this);
 
-        ServerPlayerInputHandler serverPlayerInputHandler =
-                ServerPlayerInputHandler.get();
-        serverPlayerInputHandler.setApp(this);
+        ServerInput input = ServerInput.get();
+        input.setApp(this);
 
         receiver.registerCommandHandler(listenerManager);
-        receiver.registerCommandHandler(serverPlayerInputHandler);
-        receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(input);
+        receiver.registerCommandHandler(sync);
 
         stateManager.attach(sender);
         stateManager.attach(receiver);
-        stateManager.attach(syncManager);
+        stateManager.attach(sync);
         stateManager.attach(world);
-        stateManager.attach(gameManager);
+        stateManager.attach(game);
         stateManager.attach(physics);
 
         sender.setWorld(world);
@@ -147,7 +144,7 @@ public class ServerMain extends SimpleApplication {
         enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                gameManager.startGame();
+                game.start();
                 return null;
             }
         });

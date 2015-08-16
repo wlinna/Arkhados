@@ -14,19 +14,17 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs;
 
-import arkhados.ServerFogManager;
+import arkhados.ServerFog;
 import arkhados.controls.CEntityVariable;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.messages.syncmessages.CmdBuff;
-import arkhados.messages.syncmessages.CmdBuffStacks;
+import arkhados.messages.sync.CmdBuff;
+import arkhados.messages.sync.CmdBuffStacks;
 import arkhados.net.Sender;
 import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 
 /**
  * Base class for all buffs, negative or positive.
- *
- * @author william
  */
 public abstract class AbstractBuff {
 
@@ -57,10 +55,8 @@ public abstract class AbstractBuff {
         CmdBuff buffCommand = generateBuffCommand(true);
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
-            ServerFogManager fogManager = spatial
-                    .getControl(CEntityVariable.class).getAwareness()
-                    .getFogManager();
-            fogManager.addCommand(spatial, buffCommand);
+            spatial.getControl(CEntityVariable.class).getAwareness()
+                    .getFog().addCommand(spatial, buffCommand);
         }
     }
 
@@ -95,20 +91,18 @@ public abstract class AbstractBuff {
                 .getUserData(UserData.ENTITY_ID);
         CmdBuffStacks cmdStacks = new CmdBuffStacks(entityId, buffId, stacks);
         Spatial spatial = targetInterface.getSpatial();
-        ServerFogManager fogManager = spatial
-                .getControl(CEntityVariable.class).getAwareness()
-                .getFogManager();
-        fogManager.addCommand(spatial, cmdStacks);
+        ServerFog fog = spatial.getControl(CEntityVariable.class).getAwareness()
+                .getFog();
+        fog.addCommand(spatial, cmdStacks);
     }
 
     public void destroy() {
         CmdBuff buffCommand = generateBuffCommand(false);
         if (buffCommand != null) {
             Spatial spatial = targetInterface.getSpatial();
-            ServerFogManager fogManager = spatial
-                    .getControl(CEntityVariable.class).getAwareness()
-                    .getFogManager();
-            fogManager.addCommand(spatial, buffCommand);
+            ServerFog fog = spatial
+                    .getControl(CEntityVariable.class).getAwareness().getFog();
+            fog.addCommand(spatial, buffCommand);
         }
     }
 

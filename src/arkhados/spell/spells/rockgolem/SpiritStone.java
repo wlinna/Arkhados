@@ -15,7 +15,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CRotation;
@@ -42,6 +42,7 @@ import com.jme3.scene.Spatial;
  * @author william
  */
 public class SpiritStone extends Spell {
+
     static final float COOLDOWN = 8f;
     static final float RANGE = 80f;
     static final float CAST_TIME = 0.3f;
@@ -62,7 +63,7 @@ public class SpiritStone extends Spell {
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ASpiritStoneCast(spell, worldManager);
+                return new ASpiritStoneCast(spell, world);
             }
         };
 
@@ -81,21 +82,20 @@ public class SpiritStone extends Spell {
 class ASpiritStoneCast extends EntityAction {
 
     private Spell spell;
-    private WorldManager worldManager;
+    private World world;
 
-    public ASpiritStoneCast(Spell spell, WorldManager worldManager) {
+    public ASpiritStoneCast(Spell spell, World world) {
         this.spell = spell;
-        this.worldManager = worldManager;
+        this.world = world;
     }
 
     @Override
     public boolean update(float tpf) {
-        CSpellCast castControl =
-                spatial.getControl(CSpellCast.class);
+        CSpellCast castControl = spatial.getControl(CSpellCast.class);
         Vector3f target = castControl.getClosestPointToTarget(spell).setY(10f);
         int playerId = spatial.getUserData(UserData.PLAYER_ID);
-        worldManager.addNewEntity(spell.getId(),
-                target, Quaternion.IDENTITY, playerId);
+        world.addNewEntity(spell.getId(), target,
+                Quaternion.IDENTITY, playerId);
         return false;
     }
 }
@@ -128,7 +128,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.INCAPACITATE_LENGTH, 0f);
 
         // TODO: Put sound effect that's different
-//        if (worldManager.isClient()) {
+//        if (world.isClient()) {
 //            AudioNode sound = new AudioNode(assetManager, "Effects/Sound/MagmaBash.wav");
 //            node.attachChild(sound);
 //            sound.setPositional(true);
@@ -140,19 +140,19 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         SphereCollisionShape collisionShape = new SphereCollisionShape(5f);
         CSpiritStonePhysics physicsBody =
                 new CSpiritStonePhysics(collisionShape,
-                (float) node.getUserData(UserData.MASS), worldManager);
+                (float) node.getUserData(UserData.MASS), world);
         node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
                 | CollisionGroups.PROJECTILES);
         physicsBody.setAngularDamping(1f);
-                
+
         node.addControl(new CTimedExistence(duration, true));
         node.addControl(new CRotation(0f, 2f, 0f));
         node.addControl(new CSyncInterpolation());
 
-        if (worldManager.isServer()) {
+        if (world.isServer()) {
             GhostControl ghost = new GhostControl(new CylinderCollisionShape(
                     new Vector3f(influenceRadius, 0.05f, influenceRadius), 1));
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);

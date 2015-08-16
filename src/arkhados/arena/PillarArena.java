@@ -15,7 +15,7 @@
 package arkhados.arena;
 
 import arkhados.CollisionGroups;
-import arkhados.WorldManager;
+import arkhados.World;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.Environment;
 import com.jme3.bounding.BoundingBox;
@@ -43,7 +43,7 @@ public class PillarArena extends AbstractArena {
     private float radius;
 
     @Override
-    public void readWorld(WorldManager worldManager, AssetManager assetManager) {
+    public void readWorld(World worldManager, AssetManager assetManager) {
         super.readWorld(worldManager, assetManager);
 
         this.resetWallPhysics(worldManager.getSpace());
@@ -62,7 +62,7 @@ public class PillarArena extends AbstractArena {
         Geometry geom = new Geometry("lava-terrain", quad);
         final Material lavaMaterial = super.getAssetManager().loadMaterial("Materials/LavaTerrain.j3m");
         geom.setMaterial(lavaMaterial);
-        ((Node) super.getWorldManager().getWorldRoot().getChild("terrain")).attachChild(geom);
+        ((Node) super.getWorld().getWorldRoot().getChild("terrain")).attachChild(geom);
 
         geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
         geom.setLocalTranslation(-256, -2, -256);
@@ -82,7 +82,7 @@ public class PillarArena extends AbstractArena {
     }
 
     private void resetWallPhysics(PhysicsSpace space) {
-        List<Spatial> children = ((Node) getTerrainNode().getChild("Graves")).getChildren();
+        List<Spatial> children = ((Node) getTerrainNode().getChild("Walls")).getChildren();
         for (Spatial wallNode : children) {
             Spatial wall = ((Node) wallNode).getChild("Grave");
 //            wall.scale(6f);

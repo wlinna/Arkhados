@@ -17,11 +17,9 @@ package arkhados.gamemode;
 import arkhados.CharacterInteraction;
 import arkhados.Globals;
 import arkhados.MusicManager;
-import arkhados.ServerFogManager;
-import arkhados.SyncManager;
+import arkhados.Sync;
 import arkhados.Topic;
-import arkhados.WorldManager;
-import arkhados.controls.PlayerEntityAwareness;
+import arkhados.World;
 import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdTopicOnly;
@@ -39,26 +37,22 @@ import de.lessvoid.nifty.Nifty;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-/**
- *
- * @author william
- */
 public class DeathMatch extends GameMode implements CommandHandler {
 
     private static final Logger logger =
             Logger.getLogger(DeathMatch.class.getName());
     private DeathmatchCommon common = new DeathmatchCommon();
-    private WorldManager worldManager;
+    private World world;
     private AppStateManager stateManager;
-    private SyncManager syncManager;
+    private Sync sync;
     private Nifty nifty;
 
     @Override
     public void initialize(Application app) {
         super.initialize(app);
         stateManager = app.getStateManager();
-        worldManager = stateManager.getState(WorldManager.class);
-        syncManager = stateManager.getState(SyncManager.class);
+        world = stateManager.getState(World.class);
+        sync = stateManager.getState(Sync.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
         common.initialize(app);
         
@@ -72,9 +66,9 @@ public class DeathMatch extends GameMode implements CommandHandler {
         getApp().enqueue(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                worldManager.setEnabled(true);
-                worldManager.loadLevel();
-                worldManager.attachLevel();
+                world.setEnabled(true);
+                world.loadLevel();
+                world.attachLevel();
 
                 Sender sender = stateManager.getState(Sender.class);
 
@@ -84,8 +78,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     sender.addCommand(
                             new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
                 } else if (sender.isServer()) {
-                    syncManager.setEnabled(true);
-                    syncManager.startListening();
+                    sync.setEnabled(true);
+                    sync.startListening();
                 }
                 return null;
             }

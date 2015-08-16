@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
-import arkhados.WorldManager;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CCharacterPhysics;
@@ -56,7 +56,7 @@ public class Shotgun extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f location) {
                 ACastShotgun castShotgun =
-                        new ACastShotgun(spell, Spell.worldManager);
+                        new ACastShotgun(spell, Spell.world);
                 return castShotgun;
             }
         };
@@ -72,10 +72,10 @@ class ACastShotgun extends EntityAction {
     private static final int PELLETS = Shotgun.PELLETS_PER_SHOT;
     private static final float SPREAD = 13f * FastMath.DEG_TO_RAD;
     private static final float STEP = SPREAD / (PELLETS - 1);
-    private WorldManager world;
+    private World world;
     private final Shotgun spell;
 
-    ACastShotgun(Shotgun spell, WorldManager world) {
+    ACastShotgun(Shotgun spell, World world) {
         this.spell = spell;
         this.world = world;
         setTypeId(EliteSoldier.ACTION_SHOTGUN);
