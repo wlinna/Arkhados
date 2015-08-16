@@ -355,7 +355,7 @@ public class ClientMain extends SimpleApplication {
 
         EffectHandler effectHandler = new EffectHandler(this);
         World world = new World(effectHandler);
-        effectHandler.setWorldManager(world);
+        effectHandler.setWorld(world);
         swappableStates.add(world);
 
         SyncManager syncManager = new SyncManager(this);

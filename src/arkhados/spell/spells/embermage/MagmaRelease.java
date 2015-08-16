@@ -277,17 +277,17 @@ class AMagmaReleaseRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(World worldManager, int reason) {
+    public void exec(World world, int reason) {
         if (reason == RemovalReasons.DISAPPEARED) {
             return;
         }
 
         Vector3f worldTranslation = fire.getParent().getLocalTranslation();
-        leaveSmokeTrail(worldManager.getWorldRoot(), worldTranslation);
-        createSmokePuff(worldManager.getWorldRoot(), worldTranslation);
+        leaveSmokeTrail(world.getWorldRoot(), worldTranslation);
+        createSmokePuff(world.getWorldRoot(), worldTranslation);
 
         fire.removeFromParent();
-        worldManager.getWorldRoot().attachChild(fire);
+        world.getWorldRoot().attachChild(fire);
         fire.setLocalTranslation(worldTranslation);
         fire.addControl(new CTimedExistence(1f));
 

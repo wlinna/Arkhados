@@ -112,7 +112,7 @@ public class SpiritStoneCollisionListener implements PhysicsCollisionListener {
         }
     }
 
-    public void setWorldManager(World world) {
+    public void setWorld(World world) {
         this.world = world;
     }
 }

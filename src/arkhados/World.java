@@ -105,8 +105,8 @@ public class World extends AbstractAppState {
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-        CTimedExistence.setWorldManager(this);
-        Selector.setWorldManager(this);
+        CTimedExistence.setWorld(this);
+        Selector.setWorld(this);
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
         rootNode = this.app.getRootNode();

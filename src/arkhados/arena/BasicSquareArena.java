@@ -57,7 +57,7 @@ public class BasicSquareArena extends AbstractArena {
         Geometry geom = new Geometry("lava-terrain", quad);
         final Material lavaMaterial = super.getAssetManager().loadMaterial("Materials/LavaTerrain.j3m");
         geom.setMaterial(lavaMaterial);
-        ((Node) super.getWorldManager().getWorldRoot().getChild("terrain")).attachChild(geom);
+        ((Node) super.getWorld().getWorldRoot().getChild("terrain")).attachChild(geom);
 
         geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
         geom.setLocalTranslation(-256, -2, -256);

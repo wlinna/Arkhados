@@ -134,7 +134,7 @@ public class Selector {
         return smallest;
     }
 
-    public static void setWorldManager(World world) {
+    public static void setWorld(World world) {
         Selector.world = world;
     }
 

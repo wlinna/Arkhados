@@ -41,14 +41,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 
-/**
- *
- * @author william
- */
 public class UserCommandManager extends AbstractAppState {
 
     private InputManager inputManager;
-    private World worldManager;
+    private World world;
     private Application app;
     private Camera cam;
     private int playerId;
@@ -74,7 +70,7 @@ public class UserCommandManager extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = app;
-        worldManager = stateManager.getState(World.class);
+        world = stateManager.getState(World.class);
         listener = app.getListener();
         cam = app.getCamera();
 
@@ -88,7 +84,7 @@ public class UserCommandManager extends AbstractAppState {
 
     public void createCameraControl() {
         Node camNode = new Node("cam-node");
-        worldManager.getWorldRoot().attachChild(camNode);
+        world.getWorldRoot().attachChild(camNode);
         CFreeCamera cameraControl =
                 new CFreeCamera(cam, inputManager);
         camNode.addControl(cameraControl);
@@ -198,12 +194,12 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public void followPlayer() {
-        worldManager.getWorldRoot().getChild("cam-node")
+        world.getWorldRoot().getChild("cam-node")
                 .getControl(CFreeCamera.class).setCharacter(character);
     }
 
     public void followSpatial(Spatial spatial) {
-        worldManager.getWorldRoot().getChild("cam-node")
+        world.getWorldRoot().getChild("cam-node")
                 .getControl(CFreeCamera.class).setCharacter(spatial);
     }
 
@@ -245,7 +241,7 @@ public class UserCommandManager extends AbstractAppState {
 
     public Spatial getCharacter() {
         if (character == null) {
-            Spatial spatial = worldManager.getEntity(characterId);
+            Spatial spatial = world.getEntity(characterId);
             if (spatial != null) {
                 trySetPlayersCharacter(spatial);
             }

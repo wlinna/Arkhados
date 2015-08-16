@@ -85,17 +85,17 @@ public abstract class Spell {
      * once
      *
      * @param assetManager will be saved to static variable assetManager
-     * @param worldManager will be save to static variable worldManager
+     * @param world will be save to static variable world
      */
     public static void initSpells(EntityFactory entityFactory,
-            AssetManager assetManager, World worldManager) {
+            AssetManager assetManager, World world) {
         Spell.assetManager = assetManager;
-        Spell.world = worldManager;
+        Spell.world = world;
 
         AbstractNodeBuilder.setAssetManager(assetManager);
-        AbstractNodeBuilder.setWorld(worldManager);
+        AbstractNodeBuilder.setWorld(world);
 
-        CProjectile.setWorldManager(worldManager);
+        CProjectile.setWorld(world);
 
         // *************** INIT spells here ************************
 

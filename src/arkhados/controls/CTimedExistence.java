@@ -63,8 +63,8 @@ public class CTimedExistence extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public static void setWorldManager(World worldManager) {
-        CTimedExistence.world = worldManager;
+    public static void setWorld(World world) {
+        CTimedExistence.world = world;
     }
 
     public void setSpace(PhysicsSpace space) {

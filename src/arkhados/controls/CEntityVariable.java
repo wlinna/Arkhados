@@ -27,8 +27,8 @@ public class CEntityVariable extends AbstractControl {
     private PlayerEntityAwareness awareness;
     private Sender sender;
     
-    public CEntityVariable(World worldManager, Sender sender) {
-        this.world = worldManager;        
+    public CEntityVariable(World world, Sender sender) {
+        this.world = world;        
         this.sender = sender;
     }
     
@@ -54,8 +54,8 @@ public class CEntityVariable extends AbstractControl {
     }
 
 
-    public World getWorldManager() {
-        return this.world;
+    public World getWorld() {
+        return world;
     }
 
     public Sender getSender() {

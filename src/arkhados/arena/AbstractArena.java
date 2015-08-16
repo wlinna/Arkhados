@@ -33,14 +33,14 @@ public abstract class AbstractArena {
     public abstract boolean validateLocation(Vector3f location);
 
     public Node getTerrainNode() {
-        return this.terrain;
+        return terrain;
     }
 
-    public World getWorldManager() {
-        return this.world;
+    public World getWorld() {
+        return world;
     }
 
     protected AssetManager getAssetManager() {
-        return this.assetManager;
+        return assetManager;
     }
 }

@@ -217,7 +217,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
                     // Smoke causes performance problems so it's disabled now
                     // TODO: Find a way to make smoke useable performancewise
 //                    final ParticleEmitter smoke = createSmoke(radius);
-//                    worldManager.getWorldRoot().attachChild(smoke);
+//                    world.getWorldRoot().attachChild(smoke);
 //                    smoke.setLocalTranslation(worldTranslation);
 //                    smoke.move(0f, 1f, 0f);
 //                    smoke.addControl(new CTimedExistence(10f));

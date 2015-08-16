@@ -26,13 +26,14 @@ import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class EffectHandler implements CommandHandler {
 
     private Application app;
     private World world;
-    private HashMap<Integer, EffectBox> actionEffects = new HashMap<>();
+    private Map<Integer, EffectBox> actionEffects = new HashMap<>();
     private static int runningIndex = 0;
     private static List<WorldEffect> worldEffects = new ArrayList<>();
 
@@ -96,7 +97,7 @@ public class EffectHandler implements CommandHandler {
 
     }
 
-    public void setWorldManager(World world) {
+    public void setWorld(World world) {
         this.world = world;
     }
 

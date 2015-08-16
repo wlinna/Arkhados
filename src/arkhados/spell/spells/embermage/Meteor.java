@@ -286,17 +286,17 @@ class AMeteorRemoval implements ARemovalEvent {
     }
 
     @Override
-    public void exec(World worldManager, int reason) {
+    public void exec(World world, int reason) {
         if (reason != RemovalReasons.COLLISION) {
             return;
         }
         Vector3f worldTranslation = emitter.getParent().getLocalTranslation();
-        worldManager.getWorldRoot().attachChild(sound);
+        world.getWorldRoot().attachChild(sound);
         sound.setLocalTranslation(worldTranslation);
         sound.play();
 
         emitter.removeFromParent();
-        worldManager.getWorldRoot().attachChild(emitter);
+        world.getWorldRoot().attachChild(emitter);
 
         emitter.setLocalTranslation(worldTranslation);
         emitter.addControl(new CTimedExistence(4f));
@@ -314,7 +314,7 @@ class AMeteorRemoval implements ARemovalEvent {
         emitter.emitAllParticles();
         emitter.setParticlesPerSec(0f);
         ParticleEmitter wave = createShockwave();
-        worldManager.getWorldRoot().attachChild(wave);
+        world.getWorldRoot().attachChild(wave);
         wave.setLocalTranslation(worldTranslation);
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));
