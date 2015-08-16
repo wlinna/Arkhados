@@ -267,7 +267,7 @@ public class World extends AbstractAppState {
 
             CUserInput userInputControl = new CUserInput();
             if (isServer()) {
-                ServerInputState inputState = ServerPlayerInputHandler
+                ServerInputState inputState = ServerInput
                         .get().getInputState(playerId);
                 inputState.currentActiveSpatial = entity;
                 userInputControl.setInputState(inputState);

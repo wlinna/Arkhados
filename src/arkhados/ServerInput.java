@@ -30,18 +30,18 @@ import java.util.concurrent.Callable;
  *
  * TODO: Refactor later so that it's not singleton.
  */
-public class ServerPlayerInputHandler implements CommandHandler {
+public class ServerInput implements CommandHandler {
 
-    private static ServerPlayerInputHandler instance = null;
+    private static ServerInput instance = null;
     private Map<Integer, ServerInputState> inputStates = new HashMap<>();
     private Application app;
 
-    private ServerPlayerInputHandler() {
+    private ServerInput() {
     }
 
-    public static ServerPlayerInputHandler get() {
+    public static ServerInput get() {
         if (instance == null) {
-            instance = new ServerPlayerInputHandler();
+            instance = new ServerInput();
         }
 
         return instance;

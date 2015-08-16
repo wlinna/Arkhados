@@ -116,12 +116,11 @@ public class ServerMain extends SimpleApplication {
         listenerManager = new ServerNetListener(this, server);
         sync = new Sync(this);
 
-        ServerPlayerInputHandler serverPlayerInputHandler =
-                ServerPlayerInputHandler.get();
-        serverPlayerInputHandler.setApp(this);
+        ServerInput input = ServerInput.get();
+        input.setApp(this);
 
         receiver.registerCommandHandler(listenerManager);
-        receiver.registerCommandHandler(serverPlayerInputHandler);
+        receiver.registerCommandHandler(input);
         receiver.registerCommandHandler(sync);
 
         stateManager.attach(sender);

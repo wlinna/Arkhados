@@ -176,7 +176,7 @@ public class ServerNetListener implements ConnectionListener,
 
                 source.setAttribute(PLAYER_ID, playerId);
 
-                ServerPlayerInputHandler.get().addInputState(playerId);
+                ServerInput.get().addInputState(playerId);
 
                 ServerClientData.setConnected(clientId, true);
                 ServerClientData.setPlayerId(clientId, playerId);
