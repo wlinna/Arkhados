@@ -136,15 +136,15 @@ public class Shadowmancer extends AbstractNodeBuilder {
         entity.addControl(characterAnimControl);
 
 
-        float orbSpeed = AnimationData.calculateSpeedForAnimation(animControl,
+        float orbSpeed = AnimationData.calculateSpeed(animControl,
                 "Attack1", 1f, orb.getCastTime());
-        float energySpeed = AnimationData.calculateSpeedForAnimation(
+        float energySpeed = AnimationData.calculateSpeed(
                 animControl, "Attack2", 1f, energy.getCastTime());
-        float sicknessSpeed = AnimationData.calculateSpeedForAnimation(
+        float sicknessSpeed = AnimationData.calculateSpeed(
                 animControl, "Attack2", 1f, sickness.getCastTime());
-        float spearSpeed = AnimationData.calculateSpeedForAnimation(animControl,
+        float spearSpeed = AnimationData.calculateSpeed(animControl,
                 "Attack1", 1f, spear.getCastTime());
-        float intoShadowsSpeed = AnimationData.calculateSpeedForAnimation(
+        float intoShadowsSpeed = AnimationData.calculateSpeed(
                 animControl, "Dance", 1f, intoShadows.getCastTime());
 
         AnimationData orbAnim =

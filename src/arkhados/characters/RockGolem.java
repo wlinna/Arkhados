@@ -132,14 +132,14 @@ public class RockGolem extends AbstractNodeBuilder {
 
         entity.addControl(characterAnimControl);
 
-        float fistSpeed = AnimationData.calculateSpeedForAnimation(animControl, "Attack1",
+        float fistSpeed = AnimationData.calculateSpeed(animControl, "Attack1",
                 27f / 85f, stoneFist.getCastTime());
         AlternatingAnimation fistAnim = new AlternatingAnimation("Attack1", fistSpeed);
         fistAnim.addAnimation("Attack2");
 
         AnimationData chargeAnim = new AnimationData("Run", 10f, LoopMode.Loop);
 
-        float boulderThrowSpeed = AnimationData.calculateSpeedForAnimation(animControl,
+        float boulderThrowSpeed = AnimationData.calculateSpeed(animControl,
                 "Throw_Rock2", 56f / 130f, seal.getCastTime());
         AnimationData boulderThrowAnim =
                 new AnimationData("Throw_Rock2", boulderThrowSpeed, LoopMode.Loop);
