@@ -42,11 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
-public class ClientFogManager extends AbstractAppState implements SceneProcessor {
+public class ClientFog extends AbstractAppState implements SceneProcessor {
 
     private Geometry rangeFogQuad = null;
     private Vector3f playerPosition = new Vector3f(60, 0, 0);

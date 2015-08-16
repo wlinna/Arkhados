@@ -192,10 +192,10 @@ public class World extends AbstractAppState {
             app.getStateManager().getState(ServerFogManager.class)
                     .setWalls((Node) worldRoot.getChild("Walls"));
         } else {
-            ClientFogManager clientFogManager =
-                    app.getStateManager().getState(ClientFogManager.class);
-            app.getViewPort().addProcessor(clientFogManager);
-            clientFogManager.createFog(worldRoot);
+            ClientFog clientFog =
+                    app.getStateManager().getState(ClientFog.class);
+            app.getViewPort().addProcessor(clientFog);
+            clientFog.createFog(worldRoot);
         }
 
         UserCommandManager userCommandManager =
@@ -301,14 +301,14 @@ public class World extends AbstractAppState {
                     userCommandManager.trySetPlayersCharacter(entity);
 
             if (ownedByMe) {
-                app.getStateManager().getState(ClientFogManager.class)
+                app.getStateManager().getState(ClientFog.class)
                         .setPlayerNode(entity);
                 logger.log(Level.INFO,
                         "Setting player''s node. Id {0}, playerId {1}",
                         new Object[]{id, playerId});
             } else if (playerId == userCommandManager.getPlayerId()
                     && followMe) {
-                app.getStateManager().getState(ClientFogManager.class)
+                app.getStateManager().getState(ClientFog.class)
                         .setPlayerNode(entity);
                 userCommandManager.followSpatial(entity);
             }
@@ -468,8 +468,8 @@ public class World extends AbstractAppState {
         worldRoot = null;
 
         if (isClient()) {
-            ClientFogManager clientFogManager =
-                    app.getStateManager().getState(ClientFogManager.class);
+            ClientFog clientFogManager =
+                    app.getStateManager().getState(ClientFog.class);
             app.getViewPort().removeProcessor(clientFogManager);
         }
     }

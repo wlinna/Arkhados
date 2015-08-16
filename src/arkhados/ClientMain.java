@@ -149,8 +149,8 @@ public class ClientMain extends SimpleApplication {
 
         clientHudManager = new ClientHudManager(cam, guiNode, guiFont);
 
-        ClientFogManager fogManager = new ClientFogManager();
-        stateManager.attach(fogManager);
+        ClientFog fog = new ClientFog();
+        stateManager.attach(fog);
 
         stateManager.attach(clientHudManager);
         stateManager.attach(bulletState);
