@@ -19,7 +19,7 @@ import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
 import arkhados.spell.buffs.buffinformation.BuffInformation;
 import arkhados.spell.buffs.buffinformation.FakeBuff;
 import arkhados.ui.hud.BuffIconBuilder;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -39,7 +39,7 @@ public class CCharacterBuff extends AbstractControl {
     private Map<Integer, BuffEffect> effects = new HashMap<>();
     private Map<Integer, Element> buffIcons = new HashMap<>();
     private Map<Integer, FakeBuff> buffs = new HashMap<>();
-    private ClientHudManager hudManager = null;
+    private ClientHud hud = null;
     private Element buffPanel = null;
 
     @Override
@@ -82,7 +82,7 @@ public class CCharacterBuff extends AbstractControl {
             effects.put(buffId, buff);
         }
 
-        if (hudManager == null) {
+        if (hud == null) {
             return;
         }
 
@@ -92,7 +92,7 @@ public class CCharacterBuff extends AbstractControl {
         }
 
         Element icon = new BuffIconBuilder("buff-" + buffId, iconPath).build(
-                hudManager.getNifty(), hudManager.getScreen(), buffPanel);
+                hud.getNifty(), hud.getScreen(), buffPanel);
 
         buffIcons.put(buffId, icon);
     }
@@ -117,7 +117,7 @@ public class CCharacterBuff extends AbstractControl {
                     "buffEffect with id {0} NOT IN buffs or IS null!", buffId);
         }
 
-        if (hudManager == null) {
+        if (hud == null) {
             return;
         }
 
@@ -136,7 +136,7 @@ public class CCharacterBuff extends AbstractControl {
             BuffEffect buffEffect = entry.getValue();
             buffEffect.update(tpf);
 
-            if (hudManager == null) {
+            if (hud == null) {
                 continue;
             }
 
@@ -168,9 +168,9 @@ public class CCharacterBuff extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    void setHudManager(ClientHudManager hudManager) {
-        this.hudManager = hudManager;
-        buffPanel = hudManager.getScreen().findElementByName("panel_buffs");
+    void setHud(ClientHud hud) {
+        this.hud = hud;
+        buffPanel = hud.getScreen().findElementByName("panel_buffs");
     }    
 
     public boolean hasBuff(int typeId) {

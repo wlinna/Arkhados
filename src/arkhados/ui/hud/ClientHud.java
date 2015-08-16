@@ -34,11 +34,7 @@ import de.lessvoid.nifty.tools.Color;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
-public class ClientHudManager extends AbstractAppState
+public class ClientHud extends AbstractAppState
         implements ScreenController {
 
     private Nifty nifty;
@@ -50,7 +46,7 @@ public class ClientHudManager extends AbstractAppState
     private VisualCharacterInfo characterInfo;
     private HudMenu hudMenu = new HudMenu();
 
-    public ClientHudManager(Camera cam, Node guiNode, BitmapFont guiFont) {
+    public ClientHud(Camera cam, Node guiNode, BitmapFont guiFont) {
         characterInfo = new VisualCharacterInfo(cam, guiNode, guiFont);
         guiNode.addControl(new CActionQueue());
     }

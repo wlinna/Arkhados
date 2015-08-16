@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
 import arkhados.controls.CCharacterBuff;
@@ -272,9 +272,8 @@ public class World extends AbstractAppState {
                 inputState.currentActiveSpatial = entity;
                 userInputControl.setInputState(inputState);
             } else {
-                ClientHudManager hudManager =
-                        app.getStateManager().getState(ClientHudManager.class);
-                hudManager.addCharacter(entity);
+                ClientHud hud = app.getStateManager().getState(ClientHud.class);
+                hud.addCharacter(entity);
             }
             entity.addControl(userInputControl);
         }
@@ -405,7 +404,7 @@ public class World extends AbstractAppState {
                 }
             }
 
-            app.getStateManager().getState(ClientHudManager.class)
+            app.getStateManager().getState(ClientHud.class)
                     .entityDisappeared(spatial);
 
 //             TODO: Consider doing this to all controls to generalize destruction

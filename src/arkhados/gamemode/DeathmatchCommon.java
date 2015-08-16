@@ -31,7 +31,7 @@ import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerBuilder;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerController;
 import arkhados.util.AudioQueue;
@@ -106,7 +106,7 @@ public class DeathmatchCommon {
             Globals.worldRunning = true;
         } else {
             stateManager.getState(UserCommandManager.class).setEnabled(true);
-            stateManager.getState(ClientHudManager.class).clearMessages();
+            stateManager.getState(ClientHud.class).clearMessages();
 
             preloadAnnouncer();
         }
@@ -293,13 +293,12 @@ public class DeathmatchCommon {
 
         if (sender.isClient()) {
 
-            final ClientHudManager hudManager =
-                    stateManager.getState(ClientHudManager.class);
+            final ClientHud hud = stateManager.getState(ClientHud.class);
             getApp().enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    hudManager.clear();
-                    hudManager.showStatistics();
+                    hud.clear();
+                    hud.showStatistics();
                     nifty.removeElement(nifty.getScreen("default_hud"), getHeroSelectionLayer());
                     return null;
                 }
@@ -311,7 +310,7 @@ public class DeathmatchCommon {
                     stateManager.getState(SyncManager.class).clear();
                     // TODO: Find out why following line causes statistics to not appear
                     //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
-                    stateManager.getState(ClientHudManager.class)
+                    stateManager.getState(ClientHud.class)
                             .disableCharacterHudControl();
                     return null;
                 }
@@ -326,7 +325,7 @@ public class DeathmatchCommon {
                     }
 
                     PlayerData.destroyAllData();
-                    hudManager.endGame();
+                    hud.endGame();
                     stateManager.getState(World.class).clear();
                     stateManager.getState(UserCommandManager.class)
                             .nullifyCharacter();
@@ -363,12 +362,11 @@ public class DeathmatchCommon {
                 world.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
 
                 userCommandManager.nullifyCharacter();
-                ClientHudManager hudManager =
-                        stateManager.getState(ClientHudManager.class);
+                ClientHud hud = stateManager.getState(ClientHud.class);
 
-                hudManager.clearAllButCharactersInfo();
+                hud.clearAllButCharactersInfo();
 
-                hudManager.showStatistics();
+                hud.showStatistics();
 
                 stateManager.getState(DeathManager.class).death();
                 if (!Globals.replayMode) {
@@ -385,8 +383,7 @@ public class DeathmatchCommon {
             int endedSpree) {
         String message = DeathMatchMessageMaker
                 .killed(playerName, killerName, endedSpree);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
     }
 
     private void firstBloodMessage(int killersId) {
@@ -399,8 +396,7 @@ public class DeathmatchCommon {
         String name = getPlayerName(killersId);
 
         String message = String.format("%s just drew First Blood!", name);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
 
         playAnnouncerSound(FIRST_BLOOD_PATH);
     }
@@ -413,8 +409,7 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.spree(playerName, spree);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
 
         String audioPath = spreeAnnouncements.get(spree);
 
@@ -429,8 +424,7 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.combo(playerName, combo);
-        stateManager
-                .getState(ClientHudManager.class).addMessage(message);
+        stateManager.getState(ClientHud.class).addMessage(message);
 
         String audioPath = comboAnnouncements.get(combo);
 

@@ -28,17 +28,13 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.ui.ConnectionMenu;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.util.Timer;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.system.AppSettings;
 
-/**
- *
- * @author william
- */
 public class ClientNetListener extends AbstractAppState
         implements ClientStateListener, CommandHandler {
 
@@ -106,7 +102,7 @@ public class ClientNetListener extends AbstractAppState
         } else if (command instanceof BattleStatisticsResponse) {
             BattleStatisticsResponse response =
                     (BattleStatisticsResponse) command;
-            app.getStateManager().getState(ClientHudManager.class)
+            app.getStateManager().getState(ClientHud.class)
                     .setLatestStatsList(response.getPlayerRoundStatsList());
         } else if (command instanceof CmdSetPlayersCharacter) {
             handleSetPlayersCharacter((CmdSetPlayersCharacter) command);
@@ -178,8 +174,7 @@ public class ClientNetListener extends AbstractAppState
     }
 
     private void handlePlayerStatusChange(CmdPlayerStatusChange command) {
-        ClientHudManager hud =
-                app.getStateManager().getState(ClientHudManager.class);
+        ClientHud hud = app.getStateManager().getState(ClientHud.class);
 
         if (command.joined()) {
             String newPlayer = PlayerData.getStringData(command.getPlayerId(),

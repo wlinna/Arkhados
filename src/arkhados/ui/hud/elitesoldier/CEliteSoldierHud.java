@@ -15,7 +15,7 @@
 package arkhados.ui.hud.elitesoldier;
 
 import arkhados.controls.CCharacterHud;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.util.NiftyUtils;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.elements.Element;
@@ -30,17 +30,16 @@ public class CEliteSoldierHud extends CCharacterHud {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
-        if (spatial == null && hudManager != null) {
-            Element panel =
-                    hudManager.getScreen().findElementByName("panel_right");
+        if (spatial == null && hud != null) {
+            Element panel = hud.getScreen().findElementByName("panel_right");
             NiftyUtils.removeChildren(panel);
             pelletsCounter = plasmaCounter = rocketsCounter = null;
         }
     }
 
     @Override
-    public void setHudManager(ClientHudManager hud) {
-        super.setHudManager(hud);
+    public void setHud(ClientHud hud) {
+        super.setHud(hud);
 
         Element parent = hud.getScreen().findElementByName("panel_right");
 
@@ -60,7 +59,7 @@ public class CEliteSoldierHud extends CCharacterHud {
     }
 
     public void updateAmmo(int pellets, int plasma, int rockets) {
-        if (hudManager == null) {
+        if (hud == null) {
             return;
         }
 

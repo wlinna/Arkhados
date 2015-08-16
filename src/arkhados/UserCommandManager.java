@@ -23,7 +23,7 @@ import arkhados.messages.usercommands.CmdUcCastSpell;
 import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Sender;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.util.InputMappingStrings;
 import arkhados.util.UserData;
 import com.jme3.app.Application;
@@ -294,13 +294,12 @@ public class UserCommandManager extends AbstractAppState {
             character.getControl(CSpellCast.class).restoreClientCooldowns();
         }
 
-        ClientHudManager hudManager = app.getStateManager()
-                .getState(ClientHudManager.class);
-        hudManager.newOwnCharacter(spatial, characterChanged);
-        hudManager.clearBuffIcons();
-        hudManager.hideStatistics();
+        ClientHud hud = app.getStateManager().getState(ClientHud.class);
+        hud.newOwnCharacter(spatial, characterChanged);
+        hud.clearBuffIcons();
+        hud.hideStatistics();
 
-        character.getControl(CCharacterHud.class).setHudManager(hudManager);
+        character.getControl(CCharacterHud.class).setHud(hud);
         followPlayer();
         characterChanged = false;
         return true;

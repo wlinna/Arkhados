@@ -19,7 +19,7 @@ import arkhados.effects.DeathManager;
 import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.gamemode.TeamDeathmatch;
-import arkhados.ui.hud.ClientHudManager;
+import arkhados.ui.hud.ClientHud;
 import arkhados.ui.KeySetter;
 import arkhados.messages.MessageUtils;
 import arkhados.net.ClientSender;
@@ -119,7 +119,7 @@ public class ClientMain extends SimpleApplication {
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
     private NetworkClient client;
-    private ClientHudManager clientHudManager;
+    private ClientHud hud;
     private Sender sender;
     private GameMode gameMode = null;
     private InputSettings inputSettings;
@@ -147,12 +147,12 @@ public class ClientMain extends SimpleApplication {
 
         inputManager.setCursorVisible(true);
 
-        clientHudManager = new ClientHudManager(cam, guiNode, guiFont);
+        hud = new ClientHud(cam, guiNode, guiFont);
 
         ClientFog fog = new ClientFog();
         stateManager.attach(fog);
 
-        stateManager.attach(clientHudManager);
+        stateManager.attach(hud);
         stateManager.attach(bulletState);
         bulletState.getPhysicsSpace().setAccuracy(1f / 30f);
         flyCam.setEnabled(false);
@@ -194,11 +194,11 @@ public class ClientMain extends SimpleApplication {
                 new ConnectionMenu(),
                 new ReplayMenu(),
                 new KeySetter(this, inputManager, inputSettings),
-                clientHudManager,
+                hud,
                 ClientSettings.getClientSettings());
         guiViewPort.addProcessor(niftyDisplay);
 
-        clientHudManager.setNifty(nifty);
+        hud.setNifty(nifty);
     }
 
     public void connect(String username, final String address, final int port) {
