@@ -15,7 +15,7 @@
 package arkhados.effects;
 
 import arkhados.Globals;
-import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
+import arkhados.spell.buffs.info.BuffInfoParameters;
 
 
 public class BlindEffect extends BuffEffect {

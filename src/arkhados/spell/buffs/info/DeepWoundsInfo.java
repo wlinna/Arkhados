@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.Globals;
 import arkhados.controls.CCharacterPhysics;
@@ -25,7 +25,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-public class DeepWoundsInformation extends BuffInformation {
+
+public class DeepWoundsInfo extends BuffInfo {
 
     {
         setIconPath("Interface/Images/SpellIcons/deep_wounds.png");
@@ -38,7 +39,6 @@ public class DeepWoundsInformation extends BuffInformation {
         return effect;
     }
 }
-
 class DeepWoundsEffect extends BuffEffect {
 
     private ParticleEmitter emitter = null;

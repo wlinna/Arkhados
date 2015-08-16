@@ -12,14 +12,16 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.Globals;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
@@ -27,28 +29,26 @@ import com.jme3.scene.SceneGraphVisitorAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PetrifyInformation extends BuffInformation {
+public class ShadowInfo extends BuffInfo {
 
     {
-        // TODO: Find / make unique icon for Petrify
-        setIconPath("Interface/Images/SpellIcons/SealingBoulder.png");
+        setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        PetrifyEffect effect = new PetrifyEffect(params.duration);
+        ShadowEffect effect = new ShadowEffect(params.duration);
         effect.addToCharacter(params);
         return effect;
     }
 }
-
-class PetrifyEffect extends BuffEffect {
+class ShadowEffect extends BuffEffect {
 
     private Node characterNode = null;
     private List<Geometry> geometries = new ArrayList<>();
-    private static ColorRGBA color = new ColorRGBA(0.1f, 0.1f, 0.1f, 1f);
+    private static ColorRGBA color = new ColorRGBA(0f, 0f, 0f, 0.6f);
 
-    public PetrifyEffect(float timeLeft) {
+    public ShadowEffect(float timeLeft) {
         super(timeLeft);
     }
 
@@ -62,7 +62,11 @@ class PetrifyEffect extends BuffEffect {
                 MatParam param = material.getParam("Diffuse");
                 if (param != null) {
                     geometries.add(geom);
+                    // TODO: Take ghost like entities into account
+                    geom.setQueueBucket(RenderQueue.Bucket.Transparent);
                     material.setColor("Diffuse", color);
+                    material.getAdditionalRenderState()
+                            .setBlendMode(RenderState.BlendMode.Alpha);
                 }
             }
         };
@@ -87,6 +91,10 @@ class PetrifyEffect extends BuffEffect {
         for (Geometry geometry : geometries) {
             Material material = geometry.getMaterial();
             material.setColor("Diffuse", ColorRGBA.White);
+            geometry.setQueueBucket(RenderQueue.Bucket.Opaque);
+            material.getAdditionalRenderState()
+                    .setBlendMode(RenderState.BlendMode.Off);
+
         }
     }
 }

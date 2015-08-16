@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
@@ -23,11 +23,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.shape.Quad;
 
-/**
- *
- * @author william
- */
-public class FearInformation extends BuffInformation {
+public class FearInfo extends BuffInfo {
 
     {
         setIconPath("Textures/icons/skull.png");
@@ -40,7 +36,6 @@ public class FearInformation extends BuffInformation {
         return effect;
     }
 }
-
 class FearEffect extends BuffEffect {
 
     private Spatial fearIcon = null;

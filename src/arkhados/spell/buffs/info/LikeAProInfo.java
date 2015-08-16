@@ -12,17 +12,14 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.effects.BuffEffect;
 
-/**
- *
- * @author william
- */
-public class SlowInformation extends BuffInformation {
+public class LikeAProInfo extends BuffInfo {
+
     {
-        setIconPath("Interface/Images/BuffIcons/Slow.png");
+        setIconPath("Interface/Images/SpellIcons/like_a_pro.png");
     }
 
     @Override

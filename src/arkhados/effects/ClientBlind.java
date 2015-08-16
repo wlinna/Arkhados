@@ -16,7 +16,7 @@ package arkhados.effects;
 
 import arkhados.Globals;
 import arkhados.UserCommandManager;
-import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
+import arkhados.spell.buffs.info.BuffInfoParameters;
 import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;

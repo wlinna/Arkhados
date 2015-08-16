@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.Globals;
 import arkhados.controls.CTimedExistence;
@@ -25,7 +25,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-public class SurvivalInstinctInformation extends BuffInformation {
+public class SurvivalInstinctInfo extends BuffInfo {
 
     {
         setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
@@ -39,7 +39,6 @@ public class SurvivalInstinctInformation extends BuffInformation {
         return effect;
     }
 }
-
 class SurvivalInstinctEffect extends BuffEffect {  
 
     private Node characterNode = null;

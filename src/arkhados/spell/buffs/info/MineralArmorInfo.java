@@ -12,22 +12,18 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.spell.buffs.info;
 
-package arkhados.spell.buffs.buffinformation;
-
-import arkhados.effects.BlindEffect;
 import arkhados.effects.BuffEffect;
 
+public class MineralArmorInfo extends BuffInfo {
 
-public class BlindInformation extends BuffInformation {
     {
-        setIconPath("Interface/Images/BuffIcons/Blind.png");
+        setIconPath("Interface/Images/SpellIcons/MineralArmor.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        BlindEffect effect = new BlindEffect(params.duration);
-        effect.addToCharacter(params);
-        return effect;
+        return new BuffEffect(params.duration);
     }
 }

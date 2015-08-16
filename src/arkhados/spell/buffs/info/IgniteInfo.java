@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.effects.BuffEffect;
 import com.jme3.effect.ParticleEmitter;
@@ -22,11 +22,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
-public class IgniteInformation extends BuffInformation {
+public class IgniteInfo extends BuffInfo {
 
     {
         setIconPath("Interface/Images/BuffIcons/ignite.png");
@@ -39,7 +35,6 @@ public class IgniteInformation extends BuffInformation {
         return effect;
     }
 }
-
 class IgniteEffect extends BuffEffect {
 
     private ParticleEmitter fire = null;

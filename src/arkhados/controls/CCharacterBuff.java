@@ -15,9 +15,9 @@
 package arkhados.controls;
 
 import arkhados.effects.BuffEffect;
-import arkhados.spell.buffs.buffinformation.BuffInfoParameters;
-import arkhados.spell.buffs.buffinformation.BuffInformation;
-import arkhados.spell.buffs.buffinformation.FakeBuff;
+import arkhados.spell.buffs.info.BuffInfoParameters;
+import arkhados.spell.buffs.info.BuffInfo;
+import arkhados.spell.buffs.info.FakeBuff;
 import arkhados.ui.hud.BuffIconBuilder;
 import arkhados.ui.hud.ClientHud;
 import com.jme3.renderer.RenderManager;
@@ -58,8 +58,8 @@ public class CCharacterBuff extends AbstractControl {
 
         buffs.put(buffId, new FakeBuff(buffTypeId));
 
-        BuffInformation buffInfo =
-                BuffInformation.getBuffInformation(buffTypeId);
+        BuffInfo buffInfo =
+                BuffInfo.getBuffInfo(buffTypeId);
         if (buffInfo == null) {
             logger.log(Level.FINE,
                     "No buffinfo for type {0} . BuffId is {1}",

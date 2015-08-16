@@ -12,22 +12,21 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.spell.buffs.info;
 
-package arkhados.spell.buffs.buffinformation;
+import arkhados.effects.BuffEffect;
 
-import arkhados.controls.CCharacterBuff;
+public class BloodFrenzyInfo extends BuffInfo {
 
-
-public class BuffInfoParameters {
-    public final CCharacterBuff buffControl;
-    public final float duration;
-    public final boolean justCreated;
-
-    public BuffInfoParameters(CCharacterBuff buffControl, float duration,
-            boolean justCreated) {
-        this.buffControl = buffControl;
-        this.duration = duration;
-        this.justCreated = justCreated;
+    {
+        setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
     }
-            
+
+    @Override
+    public BuffEffect createBuffEffect(BuffInfoParameters params) {
+        SurvivalInstinctEffect effect =
+                new SurvivalInstinctEffect(params.duration, false);
+        effect.addToCharacter(params);
+        return effect;
+    }
 }

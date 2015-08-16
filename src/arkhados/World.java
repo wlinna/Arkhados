@@ -45,7 +45,7 @@ import arkhados.messages.syncmessages.CmdAddEntity;
 import arkhados.messages.syncmessages.CmdRemoveEntity;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.buffinformation.BuffInformation;
+import arkhados.spell.buffs.info.BuffInfo;
 import arkhados.util.BuildParameters;
 import arkhados.util.EntityFactory;
 import arkhados.util.PhysicsWorkaround;
@@ -144,7 +144,7 @@ public class World extends AbstractAppState {
         }
 
         Spell.initSpells(entityFactory, assetManager, this);
-        BuffInformation.initBuffs();
+        BuffInfo.initBuffs();
         BuffEffect.setAssetManager(assetManager);
     }
 

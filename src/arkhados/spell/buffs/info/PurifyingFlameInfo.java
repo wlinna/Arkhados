@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
@@ -24,11 +24,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
-/**
- *
- * @author william
- */
-public class PurifyingFlameInformation extends BuffInformation {
+public class PurifyingFlameInfo extends BuffInfo {
 
     {
         setIconPath("Interface/Images/SpellIcons/purifying_flame.png");
@@ -41,7 +37,6 @@ public class PurifyingFlameInformation extends BuffInformation {
         return flameShield;
     }
 }
-
 class FlameShield extends BuffEffect {
 
     public FlameShield(float timeLeft) {

@@ -12,34 +12,20 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
 
-import arkhados.Globals;
-import arkhados.controls.CTimedExistence;
+package arkhados.spell.buffs.info;
+
+import arkhados.effects.BlindEffect;
 import arkhados.effects.BuffEffect;
-import com.jme3.audio.AudioNode;
-import com.jme3.material.MatParam;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
-
-/**
- *
- * @author william
- */
-public class BloodFrenzyInformation extends BuffInformation {
-
+public class BlindInfo extends BuffInfo {
     {
-        setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
+        setIconPath("Interface/Images/BuffIcons/Blind.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        SurvivalInstinctEffect effect =
-                new SurvivalInstinctEffect(params.duration, false);
+        BlindEffect effect = new BlindEffect(params.duration);
         effect.addToCharacter(params);
         return effect;
     }

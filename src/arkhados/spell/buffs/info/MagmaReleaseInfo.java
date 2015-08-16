@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.actions.ADelay;
 import arkhados.actions.EntityAction;
@@ -30,7 +30,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-public class MagmaReleaseInformation extends BuffInformation {
+
+public class MagmaReleaseInfo extends BuffInfo {
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
@@ -49,7 +50,6 @@ public class MagmaReleaseInformation extends BuffInformation {
         return effect;
     }
 }
-
 class MagmaReleaseEffect extends BuffEffect {
 
     private int explosionCount;

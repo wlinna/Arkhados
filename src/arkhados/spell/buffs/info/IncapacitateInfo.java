@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
 import arkhados.controls.CRotation;
 import arkhados.effects.BuffEffect;
@@ -22,11 +22,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 
-/**
- *
- * @author william
- */
-public class IncapacitateInformation extends BuffInformation {
+public class IncapacitateInfo extends BuffInfo {
 
     {
         setIconPath("Interface/Images/BuffIcons/Incapacitate.png");
@@ -39,7 +35,6 @@ public class IncapacitateInformation extends BuffInformation {
         return effect;
     }
 }
-
 class IncapacitateEffect extends BuffEffect {
 
     private Node centralNode = null;

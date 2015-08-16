@@ -13,22 +13,21 @@
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.spell.buffs.buffinformation;
+package arkhados.spell.buffs.info;
 
-import arkhados.effects.BuffEffect;
+import arkhados.controls.CCharacterBuff;
 
 
-public class BedrockInformation extends BuffInformation {
+public class BuffInfoParameters {
+    public final CCharacterBuff buffControl;
+    public final float duration;
+    public final boolean justCreated;
 
-    {
-        // TODO: Find / make unique icon for Petrify
-        setIconPath("Interface/Images/SpellIcons/MineralArmor.png");
+    public BuffInfoParameters(CCharacterBuff buffControl, float duration,
+            boolean justCreated) {
+        this.buffControl = buffControl;
+        this.duration = duration;
+        this.justCreated = justCreated;
     }
-
-    @Override
-    public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        PetrifyEffect effect = new PetrifyEffect(params.duration);
-        effect.addToCharacter(params);
-        return effect;
-    }
+            
 }
