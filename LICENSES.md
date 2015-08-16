@@ -74,6 +74,7 @@ See CREDITS.md for attributions.
 - All Rock Golem 3D model related files
 - All EliteSoldier 3D model related files (includes textures and Weapon)
 - All SealingBoulder related files
+- All Shadowmancer 3D model related files
 - EliteSoldierPain.wav
 - EliteSoldierDeath.wav
 - DarkHall.ogg
