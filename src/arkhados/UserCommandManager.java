@@ -18,7 +18,7 @@ import arkhados.controls.CCharacterHud;
 import arkhados.controls.CFreeCamera;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
-import arkhados.effects.DeathManager;
+import arkhados.effects.Death;
 import arkhados.messages.usercommands.CmdUcCastSpell;
 import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
@@ -40,6 +40,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UserCommandManager extends AbstractAppState {
 
@@ -56,7 +57,7 @@ public class UserCommandManager extends AbstractAppState {
     private float mouseTargetUpdateTimer = 0f;
     private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f mouseGroundPosition = new Vector3f();
-    private HashMap<String, Boolean> movementKeyFlags = new HashMap<>(4);
+    private Map<String, Boolean> movementKeyFlags = new HashMap<>(4);
     private boolean characterChanged = false;
     private Listener listener;
     private boolean modifierFlag = false;
@@ -84,10 +85,9 @@ public class UserCommandManager extends AbstractAppState {
     public void createCameraControl() {
         Node camNode = new Node("cam-node");
         world.getWorldRoot().attachChild(camNode);
-        CFreeCamera cameraControl =
-                new CFreeCamera(cam, inputManager);
-        camNode.addControl(cameraControl);
-        cameraControl.setRelativePosition(new Vector3f(0f, 150f, 30f));
+        CFreeCamera cCamera = new CFreeCamera(cam, inputManager);
+        camNode.addControl(cCamera);
+        cCamera.setRelativePosition(new Vector3f(0f, 150f, 30f));
     }
     private ActionListener modifierListener = new ActionListener() {
         @Override
@@ -282,7 +282,7 @@ public class UserCommandManager extends AbstractAppState {
             return false;
         }
 
-        app.getStateManager().getState(DeathManager.class).revive();
+        app.getStateManager().getState(Death.class).revive();
         character = (Node) spatial;
 
         if (characterChanged) {

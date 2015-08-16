@@ -20,11 +20,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.post.FilterPostProcessor;
 import com.shaderblow.filter.grayscale.GrayScaleFilter;
 
-/**
- *
- * @author william
- */
-public class DeathManager extends AbstractAppState {
+public class Death extends AbstractAppState {
 
     private Application app;
     private FilterPostProcessor fpp;

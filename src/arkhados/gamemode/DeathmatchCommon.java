@@ -24,7 +24,7 @@ import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.World;
 import arkhados.controls.PlayerEntityAwareness;
-import arkhados.effects.DeathManager;
+import arkhados.effects.Death;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.CmdTopicOnly;
@@ -368,7 +368,7 @@ public class DeathmatchCommon {
 
                 hud.showStatistics();
 
-                stateManager.getState(DeathManager.class).death();
+                stateManager.getState(Death.class).death();
                 if (!Globals.replayMode) {
                     getHeroSelectionLayer().showWithoutEffects();
                 }
