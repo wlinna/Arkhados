@@ -17,12 +17,7 @@ package arkhados;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
-
-public class ServerPlayerInputState {
+public class ServerInputState {
     public Spatial currentActiveSpatial = null;
     public int previousRight = 0;
     public int previousDown = 0;

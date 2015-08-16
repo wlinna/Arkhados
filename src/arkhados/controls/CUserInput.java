@@ -16,20 +16,16 @@ package arkhados.controls;
 
 import arkhados.Globals;
 import arkhados.PlayerData;
-import arkhados.ServerPlayerInputState;
+import arkhados.ServerInputState;
 import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CUserInput extends AbstractControl {
 
-    private ServerPlayerInputState inputState;
+    private ServerInputState inputState;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -79,11 +75,11 @@ public class CUserInput extends AbstractControl {
                 0, inputState.previousDown);
     }
 
-    public ServerPlayerInputState getInputState() {
+    public ServerInputState getInputState() {
         return inputState;
     }
 
-    public void setInputState(ServerPlayerInputState inputState) {
+    public void setInputState(ServerInputState inputState) {
         this.inputState = inputState;
     }
 }

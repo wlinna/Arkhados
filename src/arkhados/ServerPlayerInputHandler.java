@@ -29,14 +29,11 @@ import java.util.concurrent.Callable;
  * Stores player input states.
  *
  * TODO: Refactor later so that it's not singleton.
- *
- * @author william
  */
 public class ServerPlayerInputHandler implements CommandHandler {
 
     private static ServerPlayerInputHandler instance = null;
-    private Map<Integer, ServerPlayerInputState> playerInputStates =
-            new HashMap<>();
+    private Map<Integer, ServerInputState> inputStates = new HashMap<>();
     private Application app;
 
     private ServerPlayerInputHandler() {
@@ -50,12 +47,12 @@ public class ServerPlayerInputHandler implements CommandHandler {
         return instance;
     }
 
-    public void addPlayerInputState(int id) {
-        playerInputStates.put(id, new ServerPlayerInputState());
+    public void addInputState(int id) {
+        inputStates.put(id, new ServerInputState());
     }
 
-    public ServerPlayerInputState getPlayerInputState(int playerId) {
-        return playerInputStates.get(playerId);
+    public ServerInputState getInputState(int playerId) {
+        return inputStates.get(playerId);
     }
 
     @Override
@@ -88,7 +85,7 @@ public class ServerPlayerInputHandler implements CommandHandler {
     }
 
     private void doMessage(int playerId, Command command) {
-        ServerPlayerInputState inputState = playerInputStates.get(playerId);
+        ServerInputState inputState = inputStates.get(playerId);
 
         if (inputState == null) {
             return;
