@@ -15,7 +15,7 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastSelfBuff;
+import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
@@ -28,10 +28,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class SurvivalInstinct extends Spell {
 
     static final float COOLDOWN = 12f;

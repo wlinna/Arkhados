@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.actions.castspellactions;
+package arkhados.actions.cast;
 
 import arkhados.CharacterInteraction;
 import arkhados.SpatialDistancePair;
@@ -21,7 +21,6 @@ import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
@@ -30,10 +29,6 @@ import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class AMeleeAttack extends EntityAction {
 
     private List<AbstractBuffBuilder> buffs = new ArrayList<>();

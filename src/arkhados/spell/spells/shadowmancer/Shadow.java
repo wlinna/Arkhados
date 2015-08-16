@@ -15,7 +15,7 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastBuff;
+import arkhados.actions.cast.ACastBuff;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;

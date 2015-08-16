@@ -16,7 +16,7 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;

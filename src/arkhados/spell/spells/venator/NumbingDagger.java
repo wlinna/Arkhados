@@ -15,7 +15,7 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;

@@ -15,7 +15,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastSelfBuff;
+import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.ArmorBuff;

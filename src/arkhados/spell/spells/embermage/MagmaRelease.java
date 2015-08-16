@@ -17,7 +17,7 @@ package arkhados.spell.spells.embermage;
 import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;

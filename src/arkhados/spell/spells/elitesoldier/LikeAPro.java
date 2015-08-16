@@ -15,7 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastSelfBuff;
+import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEliteSoldierAmmunition;
 import arkhados.spell.CastSpellActionBuilder;
@@ -31,8 +31,6 @@ import com.jme3.scene.Node;
 /**
  * Elite Soldiers buff spell that gives armor, ability to move while casting and
  * gives little bit ammo.
- *
- * @author william
  */
 public class LikeAPro extends Spell {
 

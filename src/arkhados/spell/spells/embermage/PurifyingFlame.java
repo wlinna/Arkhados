@@ -16,7 +16,7 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastSelfBuff;
+import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;

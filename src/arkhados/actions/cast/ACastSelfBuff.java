@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.actions.castspellactions;
+package arkhados.actions.cast;
 
 import arkhados.actions.EntityAction;
 import arkhados.controls.CInfluenceInterface;
@@ -21,10 +21,6 @@ import arkhados.spell.buffs.AbstractBuffBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class ACastSelfBuff extends EntityAction {
 
     private List<AbstractBuffBuilder> buffs = new ArrayList<>();

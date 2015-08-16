@@ -19,7 +19,7 @@ import arkhados.World;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;

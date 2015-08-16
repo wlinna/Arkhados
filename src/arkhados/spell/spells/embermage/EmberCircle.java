@@ -17,7 +17,7 @@ package arkhados.spell.spells.embermage;
 import arkhados.CollisionGroups;
 import arkhados.actions.ADelay;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastOnGround;
+import arkhados.actions.cast.ACastOnGround;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CAreaEffect;
 import arkhados.controls.CTimedExistence;

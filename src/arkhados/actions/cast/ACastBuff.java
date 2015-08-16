@@ -12,7 +12,7 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.actions.castspellactions;
+package arkhados.actions.cast;
 
 import arkhados.SpatialDistancePair;
 import arkhados.actions.EntityAction;

@@ -16,7 +16,7 @@ package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.CastSpellActionBuilder;
@@ -32,10 +32,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class DarkSpear extends Spell {
     {
         iconName = "damaging_dagger.png";

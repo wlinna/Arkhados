@@ -17,7 +17,7 @@ package arkhados.spell.spells.shadowmancer;
 import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.EntityAction;
-import arkhados.actions.castspellactions.ACastProjectile;
+import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -44,8 +44,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
-
-
 
 /**
  * Shadowmancer's ShadowOrb (M1) spell. Projectile has moderate speed and deals
