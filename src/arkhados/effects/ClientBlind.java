@@ -28,7 +28,7 @@ import com.shaderblow.filter.colorscale.ColorScaleFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlindManager extends AbstractAppState {
+public class ClientBlind extends AbstractAppState {
 
     private List<BlindEffect> blinds = new ArrayList<>();
     private AppStateManager stateManager;

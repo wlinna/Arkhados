@@ -25,16 +25,16 @@ public class BlindEffect extends BuffEffect {
     }
 
     public void addToCharacter(BuffInfoParameters params) {
-        BlindManager blindManager =
-                Globals.app.getStateManager().getState(BlindManager.class);
-        blindManager.addBlindIfSelf(this, params);        
+        ClientBlind blind =
+                Globals.app.getStateManager().getState(ClientBlind.class);
+        blind.addBlindIfSelf(this, params);        
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        BlindManager blindManager =
-                Globals.app.getStateManager().getState(BlindManager.class);
+        ClientBlind blindManager =
+                Globals.app.getStateManager().getState(ClientBlind.class);
         blindManager.removeBuffIfSelf(this);
     }    
 }
