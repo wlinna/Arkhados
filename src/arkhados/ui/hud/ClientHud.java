@@ -174,7 +174,7 @@ public class ClientHud extends AbstractAppState
         });
     }
 
-    public void disableCharacterHudControl() {
+    public void disableCCharacterHud() {
         if (playerCharacter == null) {
             return;
         }

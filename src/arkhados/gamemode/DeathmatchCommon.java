@@ -311,7 +311,7 @@ public class DeathmatchCommon {
                     // TODO: Find out why following line causes statistics to not appear
                     //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
                     stateManager.getState(ClientHud.class)
-                            .disableCharacterHudControl();
+                            .disableCCharacterHud();
                     return null;
                 }
             });

@@ -56,7 +56,7 @@ public abstract class GameMode {
                     stateManager.getState(UserCommandManager.class)
                             .nullifyCharacter();
                     stateManager.getState(ClientHud.class)
-                            .disableCharacterHudControl();
+                            .disableCCharacterHud();
                     return null;
                 }
             });
