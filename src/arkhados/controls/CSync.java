@@ -15,14 +15,8 @@
 
 package arkhados.controls;
 
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 import com.jme3.scene.control.Control;
-
-/**
- *
- * @author william
- */
-
 
 public interface CSync extends Control {
     public StateData getSyncableData(StateData stateData);

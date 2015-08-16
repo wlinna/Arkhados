@@ -12,17 +12,13 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
+package arkhados.messages.sync;
 
 import arkhados.controls.CCharacterBuff;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class CmdBuff extends StateData {
 

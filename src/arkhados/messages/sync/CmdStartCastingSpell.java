@@ -13,7 +13,7 @@
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages.syncmessages;
+package arkhados.messages.sync;
 
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
@@ -22,13 +22,9 @@ import arkhados.controls.CCharacterAnimation;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CCharacterSound;
 import arkhados.controls.CSpellCast;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 import arkhados.spell.Spell;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class CmdStartCastingSpell extends StateData {
     private short spellId;

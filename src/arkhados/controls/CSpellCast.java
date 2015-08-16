@@ -24,8 +24,8 @@ import arkhados.actions.ACastingSpell;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.CmdSetCooldown;
-import arkhados.messages.syncmessages.CmdStartCastingSpell;
+import arkhados.messages.sync.CmdSetCooldown;
+import arkhados.messages.sync.CmdStartCastingSpell;
 import arkhados.spell.Spell;
 import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
@@ -35,10 +35,6 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class CSpellCast extends AbstractControl {
 
     private static Map<Integer, Float> clientCooldowns;

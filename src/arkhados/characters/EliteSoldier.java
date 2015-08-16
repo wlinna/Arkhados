@@ -31,7 +31,7 @@ import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
 import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import arkhados.util.AnimationData;

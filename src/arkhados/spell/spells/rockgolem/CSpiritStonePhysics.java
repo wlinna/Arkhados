@@ -16,8 +16,8 @@ package arkhados.spell.spells.rockgolem;
 
 import arkhados.World;
 import arkhados.controls.CSync;
-import arkhados.messages.syncmessages.statedata.GenericSyncData;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.GenericSyncData;
+import arkhados.messages.sync.statedata.StateData;
 import arkhados.util.UserData;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;

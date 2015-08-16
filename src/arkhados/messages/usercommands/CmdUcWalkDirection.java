@@ -15,12 +15,8 @@
 package arkhados.messages.usercommands;
 
 import com.jme3.network.serializing.Serializable;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class CmdUcWalkDirection extends StateData {
 

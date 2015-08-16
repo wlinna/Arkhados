@@ -13,11 +13,11 @@
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 
-package arkhados.messages.syncmessages;
+package arkhados.messages.sync;
 
 import com.jme3.network.serializing.Serializable;
 import arkhados.World;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 
 @Serializable
 public class CmdRemoveEntity extends StateData {

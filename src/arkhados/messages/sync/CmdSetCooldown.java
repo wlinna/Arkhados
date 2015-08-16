@@ -12,43 +12,36 @@
 
     You should have received a copy of the GNU General Public License
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-package arkhados.messages.syncmessages;
+package arkhados.messages.sync;
 
-import arkhados.controls.CActionPlayer;
-import arkhados.controls.CCharacterAnimation;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.controls.CSpellCast;
+import arkhados.messages.sync.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
-
 @Serializable
-public class CmdAction extends StateData {
-    private byte actionId;
+public class CmdSetCooldown extends StateData {
+    private short spellId;
+    private float cooldown;
+    private boolean globalCooldown;
 
-    public CmdAction() {
+    public CmdSetCooldown() {
     }
 
-    public CmdAction(int id, int actionId) {
+    public CmdSetCooldown(int id, int spellId, float cooldown, boolean globalCooldown) {
         super(id);
-        this.actionId = (byte) actionId;
+        this.spellId = (short) spellId;
+        this.cooldown = cooldown;
+        this.globalCooldown = globalCooldown;
     }
 
     @Override
     public void applyData(Object target) {
-        Spatial character = (Spatial) target;
-        character.getControl(CCharacterAnimation.class).animateAction(actionId);
-        CActionPlayer actionPlayer = character.getControl(CActionPlayer.class);
-        
-        if (actionPlayer != null) {
-            actionPlayer.playEffect(actionId);
+        final Spatial character = (Spatial) target;
+        final CSpellCast castControl = character.getControl(CSpellCast.class);
+        castControl.setCooldown(this.spellId, this.cooldown);
+        if (this.globalCooldown) {
+            castControl.globalCooldown();
         }
-    }
-
-    public int getActionId() {
-        return actionId;
     }
 }

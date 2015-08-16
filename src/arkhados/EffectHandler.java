@@ -17,7 +17,7 @@ package arkhados;
 import arkhados.effects.EffectBox;
 import arkhados.effects.WorldEffect;
 import arkhados.messages.CmdWorldEffect;
-import arkhados.messages.syncmessages.CmdAction;
+import arkhados.messages.sync.CmdAction;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.util.UserData;

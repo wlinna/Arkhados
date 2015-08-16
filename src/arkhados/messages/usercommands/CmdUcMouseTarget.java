@@ -15,15 +15,11 @@
 package arkhados.messages.usercommands;
 
 import arkhados.controls.CCharacterPhysics;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class CmdUcMouseTarget extends StateData {
 

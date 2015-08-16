@@ -20,13 +20,9 @@ import com.jme3.scene.control.AbstractControl;
 import java.util.LinkedList;
 import java.util.Queue;
 import arkhados.actions.EntityAction;
-import arkhados.messages.syncmessages.CmdAction;
+import arkhados.messages.sync.CmdAction;
 import arkhados.util.UserData;
 
-/**
- *
- * @author william
- */
 public class CActionQueue extends AbstractControl {
 
     private Queue<EntityAction> actions = new LinkedList<>();

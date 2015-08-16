@@ -17,16 +17,14 @@ package arkhados.spell.buffs;
 import arkhados.ServerFog;
 import arkhados.controls.CEntityVariable;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.messages.syncmessages.CmdBuff;
-import arkhados.messages.syncmessages.CmdBuffStacks;
+import arkhados.messages.sync.CmdBuff;
+import arkhados.messages.sync.CmdBuffStacks;
 import arkhados.net.Sender;
 import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 
 /**
  * Base class for all buffs, negative or positive.
- *
- * @author william
  */
 public abstract class AbstractBuff {
 

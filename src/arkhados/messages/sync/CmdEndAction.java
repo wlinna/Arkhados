@@ -12,32 +12,30 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
+package arkhados.messages.sync;
 
-package arkhados.messages.syncmessages;
-
-import arkhados.controls.CCharacterBuff;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.controls.CActionPlayer;
+import arkhados.messages.sync.statedata.StateData;
 import com.jme3.network.serializing.Serializable;
-import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 @Serializable
-public class CmdBuffStacks extends StateData{
-    private int buffId;
-    private byte stacks;
+public class CmdEndAction extends StateData {
 
-    public CmdBuffStacks() {
+    public CmdEndAction() {
     }
 
-    public CmdBuffStacks(int entityId, int buffId, int stacks) {
-        super(entityId);
-        this.buffId = buffId;
-        this.stacks = (byte) stacks;
+    public CmdEndAction(int syncId) {
+        super(syncId);
     }
 
     @Override
     public void applyData(Object target) {
-        Node node = (Node) target;
-        node.getControl(CCharacterBuff.class).changeStacks(buffId, stacks);
-        
+        Spatial spatial = (Spatial) target;
+
+        CActionPlayer player = spatial.getControl(CActionPlayer.class);
+        if (player != null) {
+            player.endEffect();
+        }
     }
 }

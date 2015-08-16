@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import arkhados.controls.CSync;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.StateData;
 import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;

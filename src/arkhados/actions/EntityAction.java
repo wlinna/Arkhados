@@ -16,7 +16,7 @@ package arkhados.actions;
 
 import arkhados.Globals;
 import arkhados.ServerFog;
-import arkhados.messages.syncmessages.CmdEndAction;
+import arkhados.messages.sync.CmdEndAction;
 import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 

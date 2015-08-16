@@ -14,17 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.messages.syncmessages.statedata.CharacterSyncData;
-import arkhados.messages.syncmessages.statedata.StateData;
+import arkhados.messages.sync.statedata.CharacterSyncData;
+import arkhados.messages.sync.statedata.StateData;
 import arkhados.util.UserData;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CCharacterSync extends AbstractControl implements CSync {
 
     @Override
