@@ -33,10 +33,6 @@ import arkhados.net.Sender;
 import arkhados.settings.server.Settings;
 import java.util.Set;
 
-/**
- *
- * @author william
- */
 public class SyncManager extends AbstractAppState implements CommandHandler {
 
     private Application app;
@@ -85,8 +81,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
     }
 
     private void sendSyncData() {
-        ServerFogManager fogManager =
-                app.getStateManager().getState(ServerFogManager.class);
+        ServerFog fog = app.getStateManager().getState(ServerFog.class);
 
         Set<Entry<Integer, Object>> entrySet = syncObjects.entrySet();
 
@@ -103,7 +98,7 @@ public class SyncManager extends AbstractAppState implements CommandHandler {
             if (syncControl != null) {
                 StateData data = syncControl.getSyncableData(null);
                 if (data != null) {
-                    fogManager.addCommand(spatial, data);
+                    fog.addCommand(spatial, data);
                 }
             }
         }

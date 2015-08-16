@@ -27,7 +27,7 @@ import com.jme3.app.state.AppStateManager;
 public class ServerGameManager extends AbstractAppState {
 
     private World world;
-    private ServerFogManager fogManager;
+    private ServerFog fog;
     private boolean running = false;
     private Application app;
     private GameMode gameMode;
@@ -52,9 +52,9 @@ public class ServerGameManager extends AbstractAppState {
         super.initialize(stateManager, app);
         gameMode.initialize(app);
         world = app.getStateManager().getState(World.class);
-        fogManager = new ServerFogManager();
+        fog = new ServerFog();
 
-        stateManager.attach(fogManager);
+        stateManager.attach(fog);
 
         this.app = app;
 

@@ -63,7 +63,7 @@ import java.util.logging.Logger;
 
 public class World extends AbstractAppState {
 
-    private final static Logger logger = 
+    private final static Logger logger =
             Logger.getLogger(World.class.getName());
 
     static {
@@ -189,7 +189,7 @@ public class World extends AbstractAppState {
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         if (isServer()) {
-            app.getStateManager().getState(ServerFogManager.class)
+            app.getStateManager().getState(ServerFog.class)
                     .setWalls((Node) worldRoot.getChild("Walls"));
         } else {
             ClientFog clientFog =
@@ -282,14 +282,13 @@ public class World extends AbstractAppState {
         boolean followMe = entity.getUserDataKeys()
                 .contains(UserData.FOLLOW_ME);
 
-        ServerFogManager serverFogManager =
-                app.getStateManager().getState(ServerFogManager.class);
-        if (serverFogManager != null) {
+        ServerFog serverFog = app.getStateManager().getState(ServerFog.class);
+        if (serverFog != null) {
             if (isCharacter) {
-                serverFogManager.registerCharacterForPlayer(playerId, entity);
+                serverFog.registerCharacterForPlayer(playerId, entity);
             }
 
-            serverFogManager.createNewEntity(entity,
+            serverFog.createNewEntity(entity,
                     new CmdAddEntity(id, nodeBuilderId,
                     location, rotation, playerId));
         }
@@ -378,14 +377,12 @@ public class World extends AbstractAppState {
             return;
         }
 
-        ServerFogManager serverFogManager =
-                app.getStateManager().getState(ServerFogManager.class);
+        ServerFog serverFog = app.getStateManager().getState(ServerFog.class);
 
         syncManager.removeEntity(id);
 
-        if (serverFogManager != null) {
-            serverFogManager
-                    .removeEntity(spatial, new CmdRemoveEntity(id, reason));
+        if (serverFog != null) {
+            serverFog.removeEntity(spatial, new CmdRemoveEntity(id, reason));
         }
 
         if (isClient()) {
@@ -468,9 +465,9 @@ public class World extends AbstractAppState {
         worldRoot = null;
 
         if (isClient()) {
-            ClientFog clientFogManager =
+            ClientFog clientFog =
                     app.getStateManager().getState(ClientFog.class);
-            app.getViewPort().removeProcessor(clientFogManager);
+            app.getViewPort().removeProcessor(clientFog);
         }
     }
 

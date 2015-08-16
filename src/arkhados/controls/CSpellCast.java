@@ -217,7 +217,7 @@ public class CSpellCast extends AbstractControl {
                     .enqueueAction(castingAction);
             Vector3f direction = targetLocation
                     .subtract(spatial.getLocalTranslation());
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdStartCastingSpell(
                     (int) spatial.getUserData(UserData.ENTITY_ID),
                     spell.getId(), direction, castSpeedFactor));
@@ -251,7 +251,7 @@ public class CSpellCast extends AbstractControl {
         if (awareness != null) {
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
             // TODO: Consider NOT sending this message to all players
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdSetCooldown(entityId, spellId, cooldown, true));
         }
     }
@@ -264,7 +264,7 @@ public class CSpellCast extends AbstractControl {
 
         if (awareness != null) {
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdSetCooldown(entityId, spell.getId(),
                     spell.getCooldown(), true));
         }

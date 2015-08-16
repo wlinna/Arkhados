@@ -31,7 +31,7 @@
  */
 package arkhados.controls;
 
-import arkhados.ServerFogManager;
+import arkhados.ServerFog;
 import arkhados.util.UserData;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
@@ -45,10 +45,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author william
- */
 public class PlayerEntityAwareness {
 
     private static final float BLIND_RANGE_SQUARED = FastMath.sqr(20f);
@@ -61,13 +57,12 @@ public class PlayerEntityAwareness {
     private Ray ray = new Ray();
     private float rangeSquared = FastMath.sqr(170f);
     private Vector3f _reUsableVec = new Vector3f();
-    private ServerFogManager fogManager;
+    private ServerFog fog;
 
-    public PlayerEntityAwareness(int playerId, Node walls,
-            ServerFogManager fogManager) {
+    public PlayerEntityAwareness(int playerId, Node walls, ServerFog fog) {
         this.playerId = playerId;
         this.walls = walls;
-        this.fogManager = fogManager;
+        this.fog = fog;
     }
 
     public void update(float tpf) {
@@ -85,7 +80,7 @@ public class PlayerEntityAwareness {
             entry.setValue(newFlag);
 
             if (newFlag != previousFlag) {
-                fogManager.visibilityChanged(this, character, newFlag);
+                fog.visibilityChanged(this, character, newFlag);
             }
         }
     }
@@ -161,8 +156,8 @@ public class PlayerEntityAwareness {
         return false;
     }
 
-    public ServerFogManager getFogManager() {
-        return fogManager;
+    public ServerFog getFog() {
+        return fog;
     }
 
     public boolean isAwareOf(Spatial other) {

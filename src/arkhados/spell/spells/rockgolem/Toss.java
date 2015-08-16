@@ -15,7 +15,7 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
-import arkhados.ServerFogManager;
+import arkhados.ServerFog;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.actions.ATrance;
@@ -38,10 +38,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class Toss extends Spell {
 
     public static final float SPLASH_RADIUS = 20f;
@@ -187,11 +183,9 @@ class AToss extends EntityAction {
                     target.getLocalTranslation().setY(10f);
                 }
 
-                ServerFogManager fogManager = spatial
-                        .getControl(CEntityVariable.class).getAwareness()
-                        .getFogManager();
-
-                fogManager.addCommand(target,
+                ServerFog fog = spatial.getControl(CEntityVariable.class)
+                        .getAwareness().getFog();
+                fog.addCommand(target,
                         new CmdWorldEffect(RockGolem.WORLDEFFECT_TOSS_HIT,
                         target.getLocalTranslation()));
             }

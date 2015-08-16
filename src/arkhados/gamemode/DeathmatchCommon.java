@@ -18,7 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.PlayerData;
-import arkhados.ServerFogManager;
+import arkhados.ServerFog;
 import arkhados.SyncManager;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
@@ -225,13 +225,11 @@ public class DeathmatchCommon {
                         new DeathMatchPlayerTracker(0.5f);
                 getTrackers().put(playerId, tracker);
 
-                ServerFogManager fogManager =
-                        stateManager.getState(ServerFogManager.class);
-                if (fogManager
-                        != null) { // Same as asking for if this is server
+                ServerFog fog =  stateManager.getState(ServerFog.class);
+                if (fog != null) { // Same as asking for if this is server
                     PlayerEntityAwareness awareness =
-                            fogManager.createAwarenessForPlayer(playerId);
-                    fogManager.teachAboutPrecedingEntities(awareness);
+                            fog.createAwarenessForPlayer(playerId);
+                    fog.teachAboutPrecedingEntities(awareness);
 
                     getCanPickHeroMap().put(playerId, Boolean.TRUE);
                     CharacterInteraction.addPlayer(playerId);

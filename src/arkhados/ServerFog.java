@@ -44,13 +44,13 @@ import java.util.logging.Logger;
 
 /**
  * Manages things so that players are not aware of other entities behind walls
- * or too far away TODO: ServerFogManager is too complex and error prone.
+ * or too far away TODO: ServerFog is too complex and error prone.
  * Refactor it
  */
-public class ServerFogManager extends AbstractAppState {
+public class ServerFog extends AbstractAppState {
 
     private static final Logger logger =
-            Logger.getLogger(ServerFogManager.class.getName());
+            Logger.getLogger(ServerFog.class.getName());
     private Application app;
     private final Map<PlayerEntityAwareness, HostedConnection> awarenessConnectionMap =
             new LinkedHashMap<>();

@@ -79,8 +79,7 @@ public class ServerNetListener implements ConnectionListener,
                 Integer playerId = conn.getAttribute(PLAYER_ID);
                 ServerSender sender = stateManager.getState(ServerSender.class);
                 sender.removeConnection(conn);
-                ServerFogManager fog =
-                        stateManager.getState(ServerFogManager.class);
+                ServerFog fog =  stateManager.getState(ServerFog.class);
                 fog.removeConnection(conn);
                 ServerClientData.remove(conn.getId());
 

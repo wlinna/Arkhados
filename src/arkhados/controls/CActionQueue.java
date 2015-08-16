@@ -105,7 +105,7 @@ public class CActionQueue extends AbstractControl {
                 spatial.getControl(CEntityVariable.class).getAwareness();
         if (awareness != null) {
             int id = spatial.getUserData(UserData.ENTITY_ID);
-            awareness.getFogManager().addCommand(spatial,
+            awareness.getFog().addCommand(spatial,
                     new CmdAction(id, action.getTypeId()));
         }
     }
