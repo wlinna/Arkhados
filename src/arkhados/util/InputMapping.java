@@ -15,12 +15,9 @@
 package arkhados.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
-/**
- *
- * @author william
- */
-public class InputMappingStrings {
+public class InputMapping {
 
     public final static String MOVE_RIGHT = "move-right";
     public final static String MOVE_LEFT = "move-left";
@@ -35,7 +32,7 @@ public class InputMappingStrings {
     public final static String SEC1 = "sec1";
     public final static String SEC2 = "sec2";
     public final static String MODIFIER = "modifier";
-    private final static HashMap<String, Integer> StringNumberMap =
+    private final static Map<String, Integer> StringNumberMap =
             new HashMap<>(10);
 
     static {

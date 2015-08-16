@@ -35,7 +35,7 @@ import arkhados.messages.syncmessages.statedata.StateData;
 import arkhados.spell.Spell;
 import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import arkhados.util.AnimationData;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
@@ -140,24 +140,24 @@ public class EliteSoldier extends AbstractNodeBuilder {
         spellCastControl.addCastValidator(ammunitionControl);
         spellCastControl.addCastListeners(ammunitionControl);
 
-        int M2id = InputMappingStrings.getId(InputMappingStrings.M2);
-        int Qid = InputMappingStrings.getId(InputMappingStrings.Q);
+        int M2id = InputMapping.getId(InputMapping.M2);
+        int Qid = InputMapping.getId(InputMapping.Q);
 
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
-                InputMappingStrings.getId(InputMappingStrings.M1));
+                InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(Spell.getSpell("Railgun"), M2id);
         spellCastControl.putSpell(Spell.getSpell("Blinding Ray"), -M2id);
         spellCastControl.putSpell(Spell.getSpell("Plasmagun"), Qid);
         spellCastControl.putSpell(Spell.getSpell("Plasma Grenades"), -Qid);
         spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"),
-                InputMappingStrings.getId(InputMappingStrings.E));
+                InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(Spell.getSpell("Like a Pro"),
-                InputMappingStrings.getId(InputMappingStrings.R));
+                InputMapping.getId(InputMapping.R));
         spellCastControl.putSpell(Spell.getSpell("Rocket Jump"),
-                InputMappingStrings.getId(InputMappingStrings.SPACE));
+                InputMapping.getId(InputMapping.SPACE));
 
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -M2id);
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -Qid);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2id);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -Qid);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells

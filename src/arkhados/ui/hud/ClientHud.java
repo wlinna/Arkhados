@@ -17,7 +17,7 @@ package arkhados.ui.hud;
 import arkhados.Globals;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterHud;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.NiftyUtils;
 import arkhados.util.PlayerRoundStats;
 import com.jme3.app.Application;
@@ -61,7 +61,7 @@ public class ClientHud extends AbstractAppState
 
         hudMenu.initialize(nifty, screen);
         Globals.app.getInputManager().addListener(hudMenu,
-                InputMappingStrings.HUD_TOGGLE_MENU);
+                InputMapping.HUD_TOGGLE_MENU);
     }
 
     @Override

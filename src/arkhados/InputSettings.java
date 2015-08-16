@@ -14,7 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -28,22 +28,21 @@ import java.util.HashMap;
 public final class InputSettings {
 
     public static void setInputDefaultSettings(AppSettings settings) {
-        setKey(settings, InputMappingStrings.M1, false, MouseInput.BUTTON_LEFT);
-        setKey(settings, InputMappingStrings.M2, false,
-                MouseInput.BUTTON_RIGHT);
+        setKey(settings, InputMapping.M1, false, MouseInput.BUTTON_LEFT);
+        setKey(settings, InputMapping.M2, false, MouseInput.BUTTON_RIGHT);
 
-        setKey(settings, InputMappingStrings.MOVE_UP, true, KeyInput.KEY_W);
-        setKey(settings, InputMappingStrings.MOVE_DOWN, true, KeyInput.KEY_S);
-        setKey(settings, InputMappingStrings.MOVE_LEFT, true, KeyInput.KEY_A);
-        setKey(settings, InputMappingStrings.MOVE_RIGHT, true, KeyInput.KEY_D);
+        setKey(settings, InputMapping.MOVE_UP, true, KeyInput.KEY_W);
+        setKey(settings, InputMapping.MOVE_DOWN, true, KeyInput.KEY_S);
+        setKey(settings, InputMapping.MOVE_LEFT, true, KeyInput.KEY_A);
+        setKey(settings, InputMapping.MOVE_RIGHT, true, KeyInput.KEY_D);
 
-        setKey(settings, InputMappingStrings.Q, true, KeyInput.KEY_Q);
-        setKey(settings, InputMappingStrings.E, true, KeyInput.KEY_E);
-        setKey(settings, InputMappingStrings.R, true, KeyInput.KEY_R);
-        setKey(settings, InputMappingStrings.SPACE, true, KeyInput.KEY_SPACE);
+        setKey(settings, InputMapping.Q, true, KeyInput.KEY_Q);
+        setKey(settings, InputMapping.E, true, KeyInput.KEY_E);
+        setKey(settings, InputMapping.R, true, KeyInput.KEY_R);
+        setKey(settings, InputMapping.SPACE, true, KeyInput.KEY_SPACE);
 
-        setKey(settings, InputMappingStrings.SEC1, true, KeyInput.KEY_1);
-        setKey(settings, InputMappingStrings.SEC2, true, KeyInput.KEY_2);
+        setKey(settings, InputMapping.SEC1, true, KeyInput.KEY_1);
+        setKey(settings, InputMapping.SEC2, true, KeyInput.KEY_2);
 
         if (!settings.containsKey(PlayerData.COMMAND_MOVE_INTERRUPTS)) {
             settings.putBoolean(PlayerData.COMMAND_MOVE_INTERRUPTS,
@@ -64,34 +63,31 @@ public final class InputSettings {
     private HashMap<String, String> buttonIdInputMappingMap = new HashMap<>(10);
 
     {
-        buttonIdInputMappingMap.put("button_up", InputMappingStrings.MOVE_UP);
-        buttonIdInputMappingMap.put("button_down",
-                InputMappingStrings.MOVE_DOWN);
-        buttonIdInputMappingMap.put("button_left",
-                InputMappingStrings.MOVE_LEFT);
-        buttonIdInputMappingMap.put("button_right",
-                InputMappingStrings.MOVE_RIGHT);
+        buttonIdInputMappingMap.put("button_up", InputMapping.MOVE_UP);
+        buttonIdInputMappingMap.put("button_down", InputMapping.MOVE_DOWN);
+        buttonIdInputMappingMap.put("button_left", InputMapping.MOVE_LEFT);
+        buttonIdInputMappingMap.put("button_right", InputMapping.MOVE_RIGHT);
 
-        buttonIdInputMappingMap.put("button_m1", InputMappingStrings.M1);
-        buttonIdInputMappingMap.put("button_m2", InputMappingStrings.M2);
+        buttonIdInputMappingMap.put("button_m1", InputMapping.M1);
+        buttonIdInputMappingMap.put("button_m2", InputMapping.M2);
 
-        buttonIdInputMappingMap.put("button_q", InputMappingStrings.Q);
-        buttonIdInputMappingMap.put("button_e", InputMappingStrings.E);
-        buttonIdInputMappingMap.put("button_r", InputMappingStrings.R);
-        buttonIdInputMappingMap.put("button_space", InputMappingStrings.SPACE);
+        buttonIdInputMappingMap.put("button_q", InputMapping.Q);
+        buttonIdInputMappingMap.put("button_e", InputMapping.E);
+        buttonIdInputMappingMap.put("button_r", InputMapping.R);
+        buttonIdInputMappingMap.put("button_space", InputMapping.SPACE);
 
-        buttonIdInputMappingMap.put("button_sec1", InputMappingStrings.SEC1);
-        buttonIdInputMappingMap.put("button_sec2", InputMappingStrings.SEC2);
+        buttonIdInputMappingMap.put("button_sec1", InputMapping.SEC1);
+        buttonIdInputMappingMap.put("button_sec2", InputMapping.SEC2);
     }
 
     public InputSettings(InputManager inputManager) {
         inputManager.deleteTrigger(SimpleApplication.INPUT_MAPPING_EXIT,
                 new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-        inputManager.addMapping(InputMappingStrings.HUD_TOGGLE_MENU,
+        inputManager.addMapping(InputMapping.HUD_TOGGLE_MENU,
                 new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-        inputManager.addMapping(InputMappingStrings.MODIFIER,
+        inputManager.addMapping(InputMapping.MODIFIER,
                 new KeyTrigger(KeyInput.KEY_LSHIFT));
 
         for (String inputMapping : buttonIdInputMappingMap.values()) {

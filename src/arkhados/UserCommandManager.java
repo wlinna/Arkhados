@@ -24,7 +24,7 @@ import arkhados.messages.usercommands.CmdUcMouseTarget;
 import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Sender;
 import arkhados.ui.hud.ClientHud;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -75,11 +75,10 @@ public class UserCommandManager extends AbstractAppState {
         cam = app.getCamera();
 
         inputManager.addListener(actionMoveDirection,
-                InputMappingStrings.MOVE_RIGHT, InputMappingStrings.MOVE_LEFT,
-                InputMappingStrings.MOVE_UP, InputMappingStrings.MOVE_DOWN);
+                InputMapping.MOVE_RIGHT, InputMapping.MOVE_LEFT,
+                InputMapping.MOVE_UP, InputMapping.MOVE_DOWN);
 
-        inputManager
-                .addListener(modifierListener, InputMappingStrings.MODIFIER);
+        inputManager.addListener(modifierListener, InputMapping.MODIFIER);
     }
 
     public void createCameraControl() {
@@ -110,8 +109,8 @@ public class UserCommandManager extends AbstractAppState {
 
             calculateMouseGroundPosition();
 
-            if (InputMappingStrings.SEC1.equals(name)
-                    || InputMappingStrings.SEC2.equals(name)) {
+            if (InputMapping.SEC1.equals(name)
+                    || InputMapping.SEC2.equals(name)) {
                 Integer input = getCharacter().getControl(CSpellCast.class)
                         .getInput(name);
                 if (input != null) {
@@ -123,8 +122,7 @@ public class UserCommandManager extends AbstractAppState {
             }
 
             if (name != null) {
-                CmdUcCastSpell uc =
-                        new CmdUcCastSpell(InputMappingStrings.getId(name),
+                CmdUcCastSpell uc = new CmdUcCastSpell(InputMapping.getId(name),
                         modifierFlag, mouseGroundPosition);
                 app.getStateManager().getState(Sender.class).addCommand(uc);
             }
@@ -163,10 +161,10 @@ public class UserCommandManager extends AbstractAppState {
     private void enableInputListeners() {
         if (!inputListenersActive) {
             inputManager.addListener(actionCastSpell,
-                    InputMappingStrings.M1, InputMappingStrings.M2,
-                    InputMappingStrings.Q, InputMappingStrings.E,
-                    InputMappingStrings.R, InputMappingStrings.SPACE,
-                    InputMappingStrings.SEC1, InputMappingStrings.SEC2);
+                    InputMapping.M1, InputMapping.M2,
+                    InputMapping.Q, InputMapping.E,
+                    InputMapping.R, InputMapping.SPACE,
+                    InputMapping.SEC1, InputMapping.SEC2);
         }
 
         inputListenersActive = true;
@@ -280,8 +278,7 @@ public class UserCommandManager extends AbstractAppState {
     }
 
     public boolean trySetPlayersCharacter(Spatial spatial) {
-        if (!spatial.getUserData(UserData.ENTITY_ID)
-                .equals(characterId)) {
+        if (!spatial.getUserData(UserData.ENTITY_ID).equals(characterId)) {
             return false;
         }
 

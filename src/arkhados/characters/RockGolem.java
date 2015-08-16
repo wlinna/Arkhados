@@ -38,7 +38,7 @@ import arkhados.spell.spells.rockgolem.TossValidator;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.AnimationData;
 import arkhados.util.BuildParameters;
-import arkhados.util.InputMappingStrings;
+import arkhados.util.InputMapping;
 import arkhados.util.UserData;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -100,24 +100,24 @@ public class RockGolem extends AbstractNodeBuilder {
         Spell bedrock = Spell.getSpell("Bedrock");
         Spell quake = Spell.getSpell("EarthQuake");
 
-        int RId = InputMappingStrings.getId(InputMappingStrings.R);
-        int QId = InputMappingStrings.getId(InputMappingStrings.Q);
+        int RId = InputMapping.getId(InputMapping.R);
+        int QId = InputMapping.getId(InputMapping.Q);
         
         spellCastControl.putSpell(stoneFist,
-                InputMappingStrings.getId(InputMappingStrings.M1));
+                InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(seal,
-                InputMappingStrings.getId(InputMappingStrings.M2));
+                InputMapping.getId(InputMapping.M2));
         spellCastControl.putSpell(spirit, QId);
         spellCastControl.putSpell(angrySpirit, -QId);
         spellCastControl.putSpell(toss,
-                InputMappingStrings.getId(InputMappingStrings.E));
+                InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(mineral, RId);
         spellCastControl.putSpell(bedrock, -RId);
         spellCastControl.putSpell(quake,
-                InputMappingStrings.getId(InputMappingStrings.SPACE));
+                InputMapping.getId(InputMapping.SPACE));
         
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC1, -QId);
-        spellCastControl.putSecondaryMapping(InputMappingStrings.SEC2, -RId);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -QId);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
         
         TossValidator tossValidator = new TossValidator(toss);
         spellCastControl.addCastValidator(tossValidator);
