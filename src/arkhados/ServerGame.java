@@ -24,7 +24,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 
-public class ServerGameManager extends AbstractAppState {
+public class ServerGame extends AbstractAppState {
 
     private World world;
     private ServerFog fog;
@@ -32,7 +32,7 @@ public class ServerGameManager extends AbstractAppState {
     private Application app;
     private GameMode gameMode;
 
-    public ServerGameManager() {
+    public ServerGame() {
         
         switch (Settings.get().General().getGameMode()) {
             case "Deathmatch":
@@ -62,7 +62,7 @@ public class ServerGameManager extends AbstractAppState {
         serverApp.startGame();
     }
 
-    public synchronized boolean startGame() {
+    public synchronized boolean start() {
         if (running) {
             return false;
         }

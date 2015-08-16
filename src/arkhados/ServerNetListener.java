@@ -182,12 +182,10 @@ public class ServerNetListener implements ConnectionListener,
                 ServerClientData.setPlayerId(clientId, playerId);
                 ServerClientData.addConnection(playerId, source);
 
-                ServerGameManager gameManager =
-                        stateManager.getState(ServerGameManager.class);
-                gameManager.playerJoined(playerId);
+                ServerGame game = stateManager.getState(ServerGame.class);
+                game.playerJoined(playerId);
 
-                String modeKey =
-                        gameManager.getGameMode().getClass().getSimpleName();
+                String modeKey = game.getGameMode().getClass().getSimpleName();
                 CmdServerLogin serverLoginMessage =
                         new CmdServerLogin(commmand.getName(), playerId,
                         true, modeKey);
