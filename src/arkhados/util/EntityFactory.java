@@ -67,8 +67,8 @@ public class EntityFactory {
         int golemId = addNodeBuilder(new RockGolem());
         int shadowmancerId = addNodeBuilder(new Shadowmancer());
 
-        NodeBuilderIdHeroNameMatcherSingleton mappings =
-                NodeBuilderIdHeroNameMatcherSingleton.get();
+        NodeBuilderIdHeroNameMatcher mappings =
+                NodeBuilderIdHeroNameMatcher.get();
         mappings.addMapping("EmberMage", mageId);
         mappings.addMapping("Venator", venatorId);
         mappings.addMapping("EliteSoldier", soldierId);

@@ -15,34 +15,29 @@
 package arkhados.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
-/**
- *
- * @author william
- */
-public class NodeBuilderIdHeroNameMatcherSingleton {
-    private static NodeBuilderIdHeroNameMatcherSingleton instance = null;
-    
-    private final HashMap<String, Integer> nameIdMap = new HashMap<>(3);
+public class NodeBuilderIdHeroNameMatcher {
 
-    private NodeBuilderIdHeroNameMatcherSingleton() {
+    private static NodeBuilderIdHeroNameMatcher instance = null;
+    private final Map<String, Integer> nameIdMap = new HashMap<>(3);
+
+    private NodeBuilderIdHeroNameMatcher() {
     }
-    
-    
-    
-    public static NodeBuilderIdHeroNameMatcherSingleton get() {
+
+    public static NodeBuilderIdHeroNameMatcher get() {
         if (instance == null) {
-            instance = new NodeBuilderIdHeroNameMatcherSingleton();
+            instance = new NodeBuilderIdHeroNameMatcher();
         }
-        
+
         return instance;
     }
-    
+
     public void addMapping(String name, int id) {
-        this.nameIdMap.put(name, id);
+        nameIdMap.put(name, id);
     }
-    
+
     public Integer getId(String name) {
-        return this.nameIdMap.get(name);
+        return nameIdMap.get(name);
     }
 }

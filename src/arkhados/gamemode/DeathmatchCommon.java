@@ -35,7 +35,7 @@ import arkhados.ui.hud.ClientHud;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerBuilder;
 import arkhados.ui.hud.DeathMatchHeroSelectionLayerController;
 import arkhados.util.AudioQueue;
-import arkhados.util.NodeBuilderIdHeroNameMatcherSingleton;
+import arkhados.util.NodeBuilderIdHeroNameMatcher;
 import arkhados.util.RemovalReasons;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -263,7 +263,7 @@ public class DeathmatchCommon {
                 Vector3f startingLocation = getNewSpawnLocation();
                 PlayerData playerData = PlayerData.getPlayerId(playerId);
 
-                int nodeBuilderId = NodeBuilderIdHeroNameMatcherSingleton
+                int nodeBuilderId = NodeBuilderIdHeroNameMatcher
                         .get().getId(heroName);
                 int entityId = world.addNewEntity(nodeBuilderId,
                         startingLocation, new Quaternion(), playerId);
