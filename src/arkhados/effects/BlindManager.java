@@ -32,8 +32,7 @@ public class BlindManager extends AbstractAppState {
 
     private List<BlindEffect> blinds = new ArrayList<>();
     private AppStateManager stateManager;
-    private FilterPostProcessor fpp =
-            new FilterPostProcessor(Globals.assetManager);
+    private FilterPostProcessor fpp = new FilterPostProcessor(Globals.assets);
     private ColorScaleFilter filter;
     private Application app;
 

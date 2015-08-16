@@ -75,7 +75,7 @@ public class ServerMain extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        Globals.assetManager = getAssetManager();
+        Globals.assets = getAssetManager();
         Globals.app = this;
         world = new World();
         game = new ServerGame();

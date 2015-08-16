@@ -438,15 +438,15 @@ public class DeathmatchCommon {
     }
 
     private void preloadAnnouncer() {
-        Globals.assetManager.loadAudio(FIRST_BLOOD_PATH);
+        Globals.assets.loadAudio(FIRST_BLOOD_PATH);
 
         for (String path : spreeAnnouncements.values()) {
-            Globals.assetManager.loadAudio(path);
+            Globals.assets.loadAudio(path);
         }
     }
 
     private void playAnnouncerSound(final String path) {
-        AudioNode audio = new AudioNode(Globals.assetManager, path);
+        AudioNode audio = new AudioNode(Globals.assets, path);
         audio.setVolume(1.2f);
         audio.setPositional(false);
 

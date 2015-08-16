@@ -27,10 +27,6 @@ import com.jme3.scene.SceneGraphVisitorAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class PetrifyInformation extends BuffInformation {
 
     {
@@ -74,7 +70,7 @@ class PetrifyEffect extends BuffEffect {
         characterNode.depthFirstTraversal(visitor);
 
         if (params.justCreated) {
-            AudioNode sound = new AudioNode(Globals.assetManager,
+            AudioNode sound = new AudioNode(Globals.assets,
                     "Effects/Sound/Petrify.wav");
             sound.setPositional(true);
             sound.setReverbEnabled(false);

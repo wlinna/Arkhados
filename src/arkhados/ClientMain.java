@@ -136,7 +136,7 @@ public class ClientMain extends SimpleApplication {
 
         threadPoolExecutor = new ScheduledThreadPoolExecutor(4);
 
-        Globals.assetManager = getAssetManager();
+        Globals.assets = getAssetManager();
         Globals.app = this;
         setDisplayStatView(false);
         ClientSettings.initialize(this);

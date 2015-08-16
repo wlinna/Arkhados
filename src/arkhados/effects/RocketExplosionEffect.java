@@ -27,10 +27,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class RocketExplosionEffect implements WorldEffect {
 
     public RocketExplosionEffect() {
@@ -39,12 +35,12 @@ public class RocketExplosionEffect implements WorldEffect {
     private ParticleEmitter createSmokePuff() {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
-        Material material = new Material(Globals.assetManager,
+        Material mat = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        material.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/flame_alpha.png"));
-        material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        smokePuff.setMaterial(material);
+        mat.setTexture("Texture",
+                Globals.assets.loadTexture("Effects/flame_alpha.png"));
+        mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        smokePuff.setMaterial(mat);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);
         smokePuff.setSelectRandomImage(true);
@@ -72,10 +68,10 @@ public class RocketExplosionEffect implements WorldEffect {
     private ParticleEmitter createFire() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material material = new Material(Globals.assetManager,
+        Material material = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/flame.png"));
+                Globals.assets.loadTexture("Effects/flame.png"));
         fire.setMaterial(material);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -99,10 +95,10 @@ public class RocketExplosionEffect implements WorldEffect {
     private ParticleEmitter createShockwave() {
         ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
                 ParticleMesh.Type.Triangle, 2);
-        Material materialRed = new Material(Globals.assetManager,
+        Material materialRed = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/shockwave.png"));
+                Globals.assets.loadTexture("Effects/shockwave.png"));
         wave.setMaterial(materialRed);
         wave.setImagesX(1);
         wave.setImagesY(1);
@@ -133,7 +129,7 @@ public class RocketExplosionEffect implements WorldEffect {
         explosion.setLocalTranslation(location);
         explosion.move(0f, 3f, 0f);
 
-        AudioNode sound = new AudioNode(Globals.assetManager,
+        AudioNode sound = new AudioNode(Globals.assets,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);

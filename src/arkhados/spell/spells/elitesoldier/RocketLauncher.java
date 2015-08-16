@@ -271,11 +271,11 @@ class ARocketRemoval implements ARemovalEvent {
     private ParticleEmitter createShockwave() {
         ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
                 ParticleMesh.Type.Triangle, 2);
-        Material materialRed = new Material(Globals.assetManager,
+        Material mat = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/shockwave.png"));
-        wave.setMaterial(materialRed);
+        mat.setTexture("Texture",
+                Globals.assets.loadTexture("Effects/shockwave.png"));
+        wave.setMaterial(mat);
         wave.setImagesX(1);
         wave.setImagesY(1);
 

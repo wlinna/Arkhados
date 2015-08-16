@@ -17,30 +17,23 @@ package arkhados.effects;
 import arkhados.Globals;
 import arkhados.controls.CTimedExistence;
 import arkhados.spell.spells.rockgolem.EarthQuake;
-import arkhados.spell.spells.rockgolem.Toss;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.influencers.RadialParticleInfluencer;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class EarthQuakeEffect implements WorldEffect {
 
     private ParticleEmitter createParticleEffect() {
         ParticleEmitter dust = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, (int)(10 * EarthQuake.RADIUS));
-        Material material = new Material(Globals.assetManager,
+        Material material = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                Globals.assetManager.loadTexture("Effects/flame_alpha.png"));
+                Globals.assets.loadTexture("Effects/flame_alpha.png"));
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         dust.setMaterial(material);

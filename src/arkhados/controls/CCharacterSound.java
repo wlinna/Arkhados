@@ -46,7 +46,7 @@ public class CCharacterSound extends AbstractControl {
             return;
         }
 
-        AudioNode sound = new AudioNode(Globals.assetManager, sufferPath);
+        AudioNode sound = new AudioNode(Globals.assets, sufferPath);
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
@@ -61,7 +61,7 @@ public class CCharacterSound extends AbstractControl {
             return;
         }
 
-        AudioNode sound = new AudioNode(Globals.assetManager, deathPath);
+        AudioNode sound = new AudioNode(Globals.assets, deathPath);
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);

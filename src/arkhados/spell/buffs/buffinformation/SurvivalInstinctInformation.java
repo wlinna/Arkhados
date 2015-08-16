@@ -25,10 +25,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class SurvivalInstinctInformation extends BuffInformation {
 
     {
@@ -72,7 +68,7 @@ class SurvivalInstinctEffect extends BuffEffect {
         }
 
         if (params.justCreated) {
-            AudioNode sound = new AudioNode(Globals.assetManager,
+            AudioNode sound = new AudioNode(Globals.assets,
                     "Effects/Sound/SurvivalInstinct.wav");
 
             characterNode.attachChild(sound);

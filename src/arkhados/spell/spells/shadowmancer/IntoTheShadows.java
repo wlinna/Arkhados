@@ -209,9 +209,9 @@ class CloudRemoval implements ARemovalEvent {
     private ParticleEmitter createShockwave() {
         ParticleEmitter wave = new ParticleEmitter("shockwave-emitter",
                 ParticleMesh.Type.Triangle, 3);
-        Material mat = new Material(Globals.assetManager,
+        Material mat = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("Texture", Globals.assetManager
+        mat.setTexture("Texture", Globals.assets
                 .loadTexture("Effects/shockwave_alpha.png"));
         mat.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);

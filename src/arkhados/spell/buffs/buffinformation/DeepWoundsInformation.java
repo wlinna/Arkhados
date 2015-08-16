@@ -25,10 +25,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class DeepWoundsInformation extends BuffInformation {
 
     {
@@ -86,7 +82,7 @@ class DeepWoundsEffect extends BuffEffect {
         physics = characterNode.getControl(CCharacterPhysics.class);
 
         if (params.justCreated) {
-            AudioNode sound = new AudioNode(Globals.assetManager,
+            AudioNode sound = new AudioNode(Globals.assets,
                     "Effects/Sound/DeepWounds.wav");
             sound.setPositional(true);
             sound.setReverbEnabled(false);

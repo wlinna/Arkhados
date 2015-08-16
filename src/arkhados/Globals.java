@@ -21,13 +21,12 @@ import com.jme3.bullet.PhysicsSpace;
 
 /**
  * This has static references to few instances that are used globally.
- * @author william
  */
 public class Globals {
     public static String SERVER = "localhost";
     public static boolean replayMode = false;
     
-    public static AssetManager assetManager = null;
+    public static AssetManager assets = null;
     public static Application app = null;
     public static PhysicsSpace space = null;
     

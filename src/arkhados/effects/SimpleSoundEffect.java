@@ -20,10 +20,6 @@ import com.jme3.audio.AudioNode;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class SimpleSoundEffect implements WorldEffect {
     private final String path;
     private float volume = 1f;
@@ -34,7 +30,7 @@ public class SimpleSoundEffect implements WorldEffect {
     
     @Override
     public EffectHandle execute(Node root, Vector3f location, String parameter) {
-        AudioNode sound = new AudioNode(Globals.assetManager, this.path);
+        AudioNode sound = new AudioNode(Globals.assets, this.path);
         sound.setPositional(true);
         sound.setLocalTranslation(location);
         sound.addControl(new CTimedExistence(sound.getAudioData().getDuration()));
