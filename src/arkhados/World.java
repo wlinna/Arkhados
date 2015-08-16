@@ -81,7 +81,7 @@ public class World extends AbstractAppState {
     private Node fakeWorldRoot;
     private AbstractArena arena = new BasicSquareArena();
     private HashMap<Integer, Spatial> entities = new HashMap<>();
-    private SyncManager syncManager;
+    private Sync sync;
     private short idCounter = 0;
     private boolean isClient = false;
     private EffectHandler effectHandler = null;
@@ -116,7 +116,7 @@ public class World extends AbstractAppState {
 
         cam = app.getCamera();
 
-        syncManager = app.getStateManager().getState(SyncManager.class);
+        sync = app.getStateManager().getState(Sync.class);
 
         Sender sender = stateManager.getState(Sender.class);
 
@@ -248,7 +248,7 @@ public class World extends AbstractAppState {
         }
 
         entities.put(id, entity);
-        syncManager.addObject(id, entity);
+        sync.addObject(id, entity);
 
         PhysicsWorkaround.addAll(space, entity);
 
@@ -318,7 +318,7 @@ public class World extends AbstractAppState {
         Spatial spatial = getEntity(id);
         spatial.setUserData(UserData.INVISIBLE_TO_ALL, true);
         spatial.removeFromParent();
-        syncManager.removeEntity(id);
+        sync.removeEntity(id);
 
         CCharacterPhysics characterPhysics =
                 spatial.getControl(CCharacterPhysics.class);
@@ -334,7 +334,7 @@ public class World extends AbstractAppState {
         Spatial spatial = getEntity(id);
         spatial.setUserData(UserData.INVISIBLE_TO_ALL, false);
         worldRoot.attachChild(spatial);
-        syncManager.addObject(id, spatial);
+        sync.addObject(id, spatial);
 
         CCharacterPhysics characterPhysics =
                 spatial.getControl(CCharacterPhysics.class);
@@ -378,7 +378,7 @@ public class World extends AbstractAppState {
 
         ServerFog serverFog = app.getStateManager().getState(ServerFog.class);
 
-        syncManager.removeEntity(id);
+        sync.removeEntity(id);
 
         if (serverFog != null) {
             serverFog.removeEntity(spatial, new CmdRemoveEntity(id, reason));
@@ -435,10 +435,6 @@ public class World extends AbstractAppState {
         worldTime += tpf;
     }
 
-    public SyncManager getSyncManager() {
-        return syncManager;
-    }
-
     public boolean isServer() {
         Sender sender = app.getStateManager().getState(Sender.class);
         return sender.isServer();
@@ -457,7 +453,7 @@ public class World extends AbstractAppState {
             rootNode.detachChild(worldRoot);
         }
         entities.clear();
-        syncManager.clear();
+        sync.clear();
 
         idCounter = 0;
 

@@ -17,7 +17,7 @@ package arkhados.gamemode;
 import arkhados.CharacterInteraction;
 import arkhados.Globals;
 import arkhados.MusicManager;
-import arkhados.SyncManager;
+import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.World;
 import arkhados.messages.CmdSelectHero;
@@ -44,7 +44,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     private DeathmatchCommon common = new DeathmatchCommon();
     private World world;
     private AppStateManager stateManager;
-    private SyncManager syncManager;
+    private Sync sync;
     private Nifty nifty;
 
     @Override
@@ -52,7 +52,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
         super.initialize(app);
         stateManager = app.getStateManager();
         world = stateManager.getState(World.class);
-        syncManager = stateManager.getState(SyncManager.class);
+        sync = stateManager.getState(Sync.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
         common.initialize(app);
         
@@ -78,8 +78,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
                     sender.addCommand(
                             new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
                 } else if (sender.isServer()) {
-                    syncManager.setEnabled(true);
-                    syncManager.startListening();
+                    sync.setEnabled(true);
+                    sync.startListening();
                 }
                 return null;
             }

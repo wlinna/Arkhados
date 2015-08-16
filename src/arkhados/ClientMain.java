@@ -358,8 +358,8 @@ public class ClientMain extends SimpleApplication {
         effectHandler.setWorld(world);
         swappableStates.add(world);
 
-        SyncManager syncManager = new SyncManager(this);
-        swappableStates.add(syncManager);
+        Sync sync = new Sync(this);
+        swappableStates.add(sync);
 
         UserCommandManager userCommandManager =
                 new UserCommandManager(inputManager);
@@ -372,7 +372,7 @@ public class ClientMain extends SimpleApplication {
 
         receiver.registerCommandHandler(netListener);
         receiver.registerCommandHandler(effectHandler);
-        receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(sync);
         receiver.registerCommandHandler(sender);
     }
 }

@@ -71,7 +71,7 @@ public class ServerMain extends SimpleApplication {
     private ServerGameManager gameManager;
     private World world;
     private BulletAppState physics;
-    private SyncManager syncManager;
+    private Sync sync;
     private RecordingServerSender sender;
     private Receiver receiver;
 
@@ -114,7 +114,7 @@ public class ServerMain extends SimpleApplication {
         Serializer.registerClass(ReplayData.class);
 
         listenerManager = new ServerNetListener(this, server);
-        syncManager = new SyncManager(this);
+        sync = new Sync(this);
 
         ServerPlayerInputHandler serverPlayerInputHandler =
                 ServerPlayerInputHandler.get();
@@ -122,11 +122,11 @@ public class ServerMain extends SimpleApplication {
 
         receiver.registerCommandHandler(listenerManager);
         receiver.registerCommandHandler(serverPlayerInputHandler);
-        receiver.registerCommandHandler(syncManager);
+        receiver.registerCommandHandler(sync);
 
         stateManager.attach(sender);
         stateManager.attach(receiver);
-        stateManager.attach(syncManager);
+        stateManager.attach(sync);
         stateManager.attach(world);
         stateManager.attach(gameManager);
         stateManager.attach(physics);

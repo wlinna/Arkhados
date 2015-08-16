@@ -19,7 +19,7 @@ import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.PlayerData;
 import arkhados.ServerFog;
-import arkhados.SyncManager;
+import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.World;
@@ -76,7 +76,7 @@ public class DeathmatchCommon {
     private Application app;
     private World world;
     private AppStateManager stateManager;
-    private SyncManager syncManager;
+    private Sync sync;
     private AudioQueue audioQueue = new AudioQueue();
     private boolean firstBloodHappened;
     private float respawnTime;
@@ -92,17 +92,17 @@ public class DeathmatchCommon {
         this.app = app;
         stateManager = app.getStateManager();
         world = stateManager.getState(World.class);
-        syncManager = stateManager.getState(SyncManager.class);
+        sync = stateManager.getState(Sync.class);
 
         CharacterInteraction.startNewRound();
 
-        syncManager.addObject(-1, world);
+        sync.addObject(-1, world);
 
         firstBloodHappened = false;
 
         if (stateManager.getState(Sender.class).isServer()) {
-            syncManager.setEnabled(true);
-            syncManager.startListening();
+            sync.setEnabled(true);
+            sync.startListening();
             Globals.worldRunning = true;
         } else {
             stateManager.getState(UserCommandManager.class).setEnabled(true);
@@ -307,7 +307,7 @@ public class DeathmatchCommon {
             getApp().enqueue(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    stateManager.getState(SyncManager.class).clear();
+                    stateManager.getState(Sync.class).clear();
                     // TODO: Find out why following line causes statistics to not appear
                     //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
                     stateManager.getState(ClientHud.class)

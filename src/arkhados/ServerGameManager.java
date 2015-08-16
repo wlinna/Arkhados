@@ -70,7 +70,7 @@ public class ServerGameManager extends AbstractAppState {
         Sender sender = app.getStateManager().getState(Sender.class);
 
         Preloader.loadServer(Globals.assetManager);
-        app.getStateManager().getState(SyncManager.class).addObject(-1, world);
+        app.getStateManager().getState(Sync.class).addObject(-1, world);
 
         running = true;
         sender.addCommand(new CmdTopicOnly(Topic.START_GAME));

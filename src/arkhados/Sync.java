@@ -31,18 +31,19 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.settings.server.Settings;
+import java.util.Map;
 import java.util.Set;
 
-public class SyncManager extends AbstractAppState implements CommandHandler {
+public class Sync extends AbstractAppState implements CommandHandler {
 
     private Application app;
-    HashMap<Integer, Object> syncObjects = new HashMap<>();
+    private Map<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
     private float defaultSyncFrequency;
     private Queue<StateData> stateDataQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
 
-    public SyncManager(Application app) {
+    public Sync(Application app) {
         this.app = app;
     }
 

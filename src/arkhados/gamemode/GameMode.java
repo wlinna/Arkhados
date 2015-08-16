@@ -15,7 +15,7 @@
 package arkhados.gamemode;
 
 import arkhados.ClientMain;
-import arkhados.SyncManager;
+import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.messages.CmdTopicOnly;
@@ -52,7 +52,7 @@ public abstract class GameMode {
                 @Override
                 public Void call() throws Exception {
                     AppStateManager stateManager = app.getStateManager();
-                    stateManager.getState(SyncManager.class).clear();
+                    stateManager.getState(Sync.class).clear();
                     stateManager.getState(UserCommandManager.class)
                             .nullifyCharacter();
                     stateManager.getState(ClientHud.class)
