@@ -2,7 +2,7 @@
 port = 12345
 physicsTicksPerSecond = 60.0
 defaultSyncFrequency = 0.05
-gameMode = "Deathmatch"
+gameMode = "TeamDeathmatch"
 
 [GameModes]
 [GameModes.Deathmatch]

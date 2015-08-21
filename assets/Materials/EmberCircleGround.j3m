@@ -4,11 +4,7 @@ Material EmberCircleGround : Common/MatDefs/Light/Lighting.j3md {
         AlphaMap : Textures/EmberCircleAlphaMap.png
         AlphaDiscardThreshold : 0.0
         FilterMode : 0
-        VTangent : false
-        HighQuality : false
-        LATC : false
-        UseAlpha : true
-     }
+    }
     AdditionalRenderState {
       Blend Alpha
     }

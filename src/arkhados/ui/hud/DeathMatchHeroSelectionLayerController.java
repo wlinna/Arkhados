@@ -19,30 +19,17 @@ import arkhados.net.Sender;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.Parameters;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.xml.xpp3.Attributes;
 import java.util.Properties;
 
-/**
- *
- * @author william
- */
 public class DeathMatchHeroSelectionLayerController implements Controller {
+
     private AppStateManager stateManager;
     private Element element;
-
-    @Override
-    public void bind(Nifty nifty, Screen screen, Element element,
-            Properties parameter, Attributes controlDefinitionAttributes) {
-        this.element = element;
-    }
-
-    @Override
-    public void init(Properties parameter,
-            Attributes controlDefinitionAttributes) {
-    }
 
     @Override
     public void onStartScreen() {
@@ -65,5 +52,15 @@ public class DeathMatchHeroSelectionLayerController implements Controller {
 
     public void setStateManager(AppStateManager stateManager) {
         this.stateManager = stateManager;
+    }
+
+    @Override
+    public void bind(Nifty nifty, Screen screen,
+            Element elmnt, Parameters prmtrs) {
+        this.element = elmnt;
+    }
+
+    @Override
+    public void init(Parameters prmtrs) {
     }
 }
