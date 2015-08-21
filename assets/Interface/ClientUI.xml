@@ -295,7 +295,7 @@
         </layer>
     </screen>
     
-    <screen id="default_hud" controller="arkhados.ui.hud.ClientHudManager">        
+    <screen id="default_hud" controller="arkhados.ui.hud.ClientHud">        
         <layer id="bars" childLayout="vertical" valign="bottom">
             <panel id="hud_panels" height="100%" childLayout="vertical" align="center">
                 <panel id="panel_top" height="0px" valign="top"></panel>
