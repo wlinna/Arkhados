@@ -65,7 +65,7 @@ from [OGA](http://opengameart.org/content/animated-mage).
 Dennis Rodriguez (ThetankOmeter) for Warwolf. William Linna (the main programmer)
 created animations. Original model (without animations) can be found from [Blendswap](http://www.blendswap.com/blends/view/56015)
 
-Danimal for [Animated Goblin](http://www.blendswap.com/blends/view/77353). [Goblin](http://www.blendswap.com/blends/view/72394) was done by xGhostx7 and shared under CC0-license. [Knife](http://opengameart.org/content/wind-weapon-pack-1) was done by Wind astella and shared under CC-BY 3.0 -license.
+Danimal for [Animated Goblin](http://www.blendswap.com/blends/view/77353). [Goblin](http://www.blendswap.com/blends/view/72394) was done by xGhostx7 and shared under CC0-license. [Staff](http://opengameart.org/content/staff-1) is made by yd and is CC0-licensed. The entirety of Goblin is licensed under CC-BY 3.0.
 
 
 hendori-sama for

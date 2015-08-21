@@ -51,6 +51,7 @@ material Goblin-body
                 texture goblin-texture.png
                 tex_address_mode wrap
                 scale 1.0 1.0
+                tex_coord_set 0
                 colour_op modulate
             }
             texture_unit 
@@ -58,24 +59,25 @@ material Goblin-body
                 texture goblin-normal.png
                 tex_address_mode wrap
                 scale 1.0 1.0
+                tex_coord_set 0
                 colour_op modulate
             }
         }
     }
 }
-// Goblin-Knife genrated by blender2ogre 0.5.8
+// Goblin-staff genrated by blender2ogre 0.5.8
 
-material Goblin-Knife 
+material Goblin-staff 
 {
     receive_shadows on 
 
     technique
     {
-        pass Goblin-Knife
+        pass Goblin-staff
         {
             ambient 0.800000011920929 0.800000011920929 0.800000011920929 1.0
             diffuse 0.6400000190734865 0.6400000190734865 0.6400000190734865 1.0
-            specular 0.36206895112991333 0.36206895112991333 0.36206895112991333 1.0 12.5
+            specular 0.0 0.0 0.0 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
             alpha_to_coverage off
@@ -97,7 +99,7 @@ material Goblin-Knife
 
             texture_unit 
             {
-                texture Goblin-Knife-texture.png
+                texture staff01Ds.png
                 tex_address_mode wrap
                 scale 1.0 1.0
                 tex_coord_set 1

@@ -64,9 +64,9 @@ public class Shadowmancer extends AbstractNodeBuilder {
         entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserData.SPEED_ROTATION, 0f);
-        float radius = 5f;
+        float radius = 4.1f;
         entity.setUserData(UserData.RADIUS, radius);
-        float health = 1700f;
+        float health = 1600f;
         entity.setUserData(UserData.HEALTH_MAX, health);
 
         entity.setUserData(UserData.HEALTH_CURRENT, health);
@@ -82,7 +82,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
             childToScale.scale(3f);
         }
 
-        entity.addControl(new CCharacterPhysics(radius, 20f, 75f));
+        entity.addControl(new CCharacterPhysics(radius, 17f, 55f));
 
         /**
          * By setting physics damping to low value, we can effectively apply
