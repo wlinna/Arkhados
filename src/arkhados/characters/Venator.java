@@ -140,19 +140,19 @@ public class Venator extends AbstractNodeBuilder {
 
         entity.addControl(characterAnimControl);
 
-        float swipeSpeed = AnimationData.calculateSpeedForAnimation(
+        float swipeSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Swipe-Left", 2f / 5f,
                 rend.getCastTime());
-        float throwSpeed = AnimationData.calculateSpeedForAnimation(
+        float throwSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Throw", 4f / 9f,
                 dagger.getCastTime());
-        float jumpSpeed = AnimationData.calculateSpeedForAnimation(
+        float jumpSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Jump", 9f / 17f,
                 leap.getCastTime());
-        float roarSpeed = AnimationData.calculateSpeedForAnimation(
+        float roarSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Roar", 4f / 9f,
                 scream.getCastTime());
-        float chargeSpeed = AnimationData.calculateSpeedForAnimation(
+        float chargeSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Charge", 2f / 5f,
                 deepWounds.getCastTime());
 
@@ -180,7 +180,7 @@ public class Venator extends AbstractNodeBuilder {
                 new AnimationData("Land", 1f, LoopMode.DontLoop);
         characterAnimControl.addActionAnimation(landAnim);
 
-        float swipeUpSpeed = AnimationData.calculateSpeedForAnimation(
+        float swipeUpSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Swipe-Up", 3f / 5f,
                 0.2f);
         AnimationData swipeUpAnim =

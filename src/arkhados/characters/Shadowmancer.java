@@ -41,6 +41,7 @@ import arkhados.util.UserData;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  * Creates entity with Shadowmancer's features.
@@ -58,14 +59,14 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Node entity = (Node) assetManager.loadModel("Models/Mage.j3o");
+        Node entity = (Node) assetManager.loadModel("Models/Shadowmancer.j3o");
         float movementSpeed = 36.1f;
         entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
         entity.setUserData(UserData.SPEED_ROTATION, 0f);
-        float radius = 5f;
+        float radius = 4.1f;
         entity.setUserData(UserData.RADIUS, radius);
-        float health = 1700f;
+        float health = 1600f;
         entity.setUserData(UserData.HEALTH_MAX, health);
 
         entity.setUserData(UserData.HEALTH_CURRENT, health);
@@ -77,7 +78,11 @@ public class Shadowmancer extends AbstractNodeBuilder {
         entity.setUserData(UserData.LIFE_STEAL_BASE, 0f);
         entity.setUserData(UserData.LIFE_STEAL, 0f);
 
-        entity.addControl(new CCharacterPhysics(radius, 20f, 75f));
+        for (Spatial childToScale : entity.getChildren()) {
+            childToScale.scale(3f);
+        }
+
+        entity.addControl(new CCharacterPhysics(radius, 17f, 55f));
 
         /**
          * By setting physics damping to low value, we can effectively apply
@@ -96,16 +101,19 @@ public class Shadowmancer extends AbstractNodeBuilder {
         int M2Id = InputMapping.getId(InputMapping.M2);
 
         int RId = InputMapping.getId(InputMapping.R);
+        Spell orb = Spell.getSpell("Shadow Orb");
+        Spell energy = Spell.getSpell("Dark Energy");
+        Spell sickness = Spell.getSpell("Shadow Sickness");
+        Spell spear = Spell.getSpell("Dark Spear");
+        Spell shadow = Spell.getSpell("Shadow");
+        Spell intoShadows = Spell.getSpell("Into the Shadows");
 
-        spellCastControl.putSpell(Spell.getSpell("Shadow Orb"),
-                InputMapping.getId(InputMapping.M1));
-        spellCastControl.putSpell(Spell.getSpell("Dark Energy"), M2Id);
-        spellCastControl.putSpell(Spell.getSpell("Shadow Sickness"),
-                InputMapping.getId(InputMapping.Q));
-        spellCastControl.putSpell(Spell.getSpell("Dark Spear"),
-                InputMapping.getId(InputMapping.E));
-        spellCastControl.putSpell(Spell.getSpell("Shadow"), RId);
-        spellCastControl.putSpell(Spell.getSpell("Into the Shadows"),
+        spellCastControl.putSpell(orb, InputMapping.getId(InputMapping.M1));
+        spellCastControl.putSpell(energy, M2Id);
+        spellCastControl.putSpell(sickness, InputMapping.getId(InputMapping.Q));
+        spellCastControl.putSpell(spear, InputMapping.getId(InputMapping.E));
+        spellCastControl.putSpell(shadow, RId);
+        spellCastControl.putSpell(intoShadows,
                 InputMapping.getId(InputMapping.SPACE));
 
         spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
@@ -121,25 +129,42 @@ public class Shadowmancer extends AbstractNodeBuilder {
         AnimationData deathAnim =
                 new AnimationData("Die", 1f, LoopMode.DontLoop);
         AnimationData walkAnim =
-                new AnimationData("Walk", 1f, LoopMode.DontLoop);
+                new AnimationData("Flee", 1f, LoopMode.DontLoop);
 
         characterAnimControl.setDeathAnimation(deathAnim);
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-        AnimationData idleAnim =
-                new AnimationData("Idle", 1f, LoopMode.Loop);
 
-        AnimationData hitAnim = new AnimationData("Hit", 1f, LoopMode.DontLoop);
-        AnimationData attackAnim =
-                new AnimationData("Attack", 1f, LoopMode.DontLoop);
+        float orbSpeed = AnimationData.calculateSpeed(animControl,
+                "Attack1", 1f, orb.getCastTime());
+        float energySpeed = AnimationData.calculateSpeed(
+                animControl, "Attack2", 1f, energy.getCastTime());
+        float sicknessSpeed = AnimationData.calculateSpeed(
+                animControl, "Attack2", 1f, sickness.getCastTime());
+        float spearSpeed = AnimationData.calculateSpeed(animControl,
+                "Attack1", 1f, spear.getCastTime());
+        float intoShadowsSpeed = AnimationData.calculateSpeed(
+                animControl, "Dance", 1f, intoShadows.getCastTime());
 
-        characterAnimControl.addSpellAnimation("Shadow Orb", attackAnim);
-        characterAnimControl.addSpellAnimation("Dark Energy", attackAnim);
-        characterAnimControl.addSpellAnimation("Shadow Sickness", idleAnim);
-        characterAnimControl.addSpellAnimation("Dark Spear", attackAnim);
+        AnimationData orbAnim =
+                new AnimationData("Attack1", orbSpeed, LoopMode.DontLoop);
+        AnimationData energyAnim =
+                new AnimationData("Attack2", energySpeed, LoopMode.DontLoop);
+        AnimationData sicknessAnim =
+                new AnimationData("Attack2", sicknessSpeed, LoopMode.DontLoop);
+        AnimationData spearAnim =
+                new AnimationData("Attack1", spearSpeed, LoopMode.DontLoop);        
+        AnimationData intoShadowsAnim =
+                new AnimationData("Dance", intoShadowsSpeed, LoopMode.DontLoop);
+
+        characterAnimControl.addSpellAnimation("Shadow Orb", orbAnim);
+        characterAnimControl.addSpellAnimation("Dark Energy", energyAnim);
+        characterAnimControl.addSpellAnimation("Shadow Sickness", sicknessAnim);
+        characterAnimControl.addSpellAnimation("Dark Spear", spearAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
-        characterAnimControl.addSpellAnimation("Into the Shadows", idleAnim);
+        characterAnimControl.addSpellAnimation("Into the Shadows", 
+                intoShadowsAnim);
 
         entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
@@ -157,7 +182,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class).setIsServer(false);
-            
+
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putEffect(ACTION_ETHEREAL_FLAME,
                     new EtherealFlame.Effect());

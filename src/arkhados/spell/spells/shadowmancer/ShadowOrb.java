@@ -52,7 +52,7 @@ import com.jme3.scene.shape.Sphere;
 public class ShadowOrb extends Spell {
 
     {
-        iconName = "fireball.png";
+        iconName = "ShadowOrb.png";
     }
 
     public ShadowOrb(String name, float cooldown, float range, float castTime) {
