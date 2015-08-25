@@ -48,8 +48,8 @@ import java.util.logging.Logger;
 public class PlayerEntityAwareness {
 
     private static final float BLIND_RANGE_SQUARED = FastMath.sqr(20f);
-    private static final Logger logger =
-            Logger.getLogger(PlayerEntityAwareness.class.getName());
+    private static final Logger logger
+            = Logger.getLogger(PlayerEntityAwareness.class.getName());
     private Spatial ownSpatial;
     private Map<Spatial, Boolean> entityFlags = new HashMap<>(6);
     private final int playerId;
@@ -123,8 +123,8 @@ public class PlayerEntityAwareness {
             return false;
         }
 
-        CInfluenceInterface influenceInterface =
-                getOwnSpatial().getControl(CInfluenceInterface.class);
+        CInfluenceInterface influenceInterface
+                = getOwnSpatial().getControl(CInfluenceInterface.class);
         if (influenceInterface != null
                 && influenceInterface.isBlind()
                 && distanceSquared > BLIND_RANGE_SQUARED) {
@@ -161,7 +161,8 @@ public class PlayerEntityAwareness {
     }
 
     public boolean isAwareOf(Spatial other) {
-        if (other == getOwnSpatial() && other.getUserData(UserData.INVISIBLE_TO_ALL) == false) {
+        if (other == getOwnSpatial() && !((boolean) other
+                .getUserData(UserData.INVISIBLE_TO_ALL))) {
             return true;
         }
         if (!entityFlags.containsKey(other)) {

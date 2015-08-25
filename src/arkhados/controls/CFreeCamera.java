@@ -86,7 +86,7 @@ public class CFreeCamera extends AbstractControl {
         }
 
         cam.setLocation(cam.getLocation()
-                .interpolate(targetDestination, factor));
+                .interpolateLocal(targetDestination, factor));
     }
 
     @Override

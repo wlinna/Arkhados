@@ -43,8 +43,8 @@ public class CSyncInterpolation extends AbstractControl {
         }
         float factor = FastMath.clamp(timeInterpolated / timeBetween,
                 0f, 1f);
-        Vector3f trans = spatial.getLocalTranslation().interpolate(oldLocation,
-                targetLocation, factor);
+        Vector3f trans = spatial.getLocalTranslation()
+                .interpolateLocal(oldLocation, targetLocation, factor);
         spatial.setLocalTranslation(trans);
     }
 

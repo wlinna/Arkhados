@@ -86,13 +86,13 @@ public class VisualStatistics implements ActionListener {
             return;
         }
 
-        Element root = screen.findElementByName("panel_statistics");
+        Element root = screen.findElementById("panel_statistics");
         for (PlayerRoundStats stats : latestStatsList) {
 
-            Element damage = root.findElementByName(stats.playerId + "-damage");
-            Element restoration = root.findElementByName(
+            Element damage = root.findElementById(stats.playerId + "-damage");
+            Element restoration = root.findElementById(
                     stats.playerId + "-restoration");
-            Element kills = root.findElementByName(stats.playerId + "-kills");            
+            Element kills = root.findElementById(stats.playerId + "-kills");            
 
             // FIXME: NullPointerError happens here
             // Possibly related problem is that after this nifty complains

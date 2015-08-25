@@ -19,11 +19,10 @@ import arkhados.messages.CmdSelectTeam;
 import arkhados.net.Sender;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.Parameters;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.xml.xpp3.Attributes;
-import java.util.Properties;
 
 public class TeamSelectionController implements Controller {
 
@@ -32,16 +31,15 @@ public class TeamSelectionController implements Controller {
     private Element element;
 
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element,
-            Properties parameter, Attributes controlDefinitionAttributes) {
-        this.nifty = nifty;
+    public void bind(Nifty nifty, Screen screen, Element elmnt,
+            Parameters prmtrs) {
+                this.nifty = nifty;
         this.screen = screen;
-        this.element = element;
+        element = elmnt;
     }
 
     @Override
-    public void init(Properties parameter,
-            Attributes controlDefinitionAttributes) {
+    public void init(Parameters prmtrs) {
     }
 
     @Override
