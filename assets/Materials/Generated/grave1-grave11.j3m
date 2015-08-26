@@ -1,13 +1,11 @@
 Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
-        Minnaert : false
         Specular : 1.0 1.0 1.0 1.0
         Diffuse : 1.0 1.0 1.0 1.0
         UseMaterialColors : true
         ParallaxHeight : 0.05
         Ambient : 0.0 0.0 0.0 1.0
         Shininess : 20.0
-        WardIso : false
         DiffuseMap : Flip Textures/cemetary/grave1-tex.tga
     }
     AdditionalRenderState {
