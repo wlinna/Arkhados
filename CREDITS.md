@@ -270,4 +270,4 @@ Independent.nu's [squish and and splatter sequences](http://opengameart.org/cont
 
 [skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
 
-pOss for the Grave models used in PillarArena (http://opengameart.org/content/savinos-cemetery-redux) - licensed under CC-BY 3.0. These models are based on models created by Savino (http://opengameart.org/content/cemetery) - licensed under CC0.
+pOss for the [Grave models used in PillarArena] (http://opengameart.org/content/savinos-cemetery-redux) - licensed under CC-BY 3.0. These models are based on the [models created by Savino] (http://opengameart.org/content/cemetery) - licensed under CC0.
