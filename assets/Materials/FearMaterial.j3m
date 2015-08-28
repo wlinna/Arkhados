@@ -1,7 +1,6 @@
 Material My Material : Common/MatDefs/Light/Lighting.j3md {
      MaterialParameters {
         DiffuseMap : Textures/icons/skull.png
-        UseAlpha : true
      }
     AdditionalRenderState {
         Blend Alpha

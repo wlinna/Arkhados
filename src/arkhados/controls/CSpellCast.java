@@ -282,7 +282,7 @@ public class CSpellCast extends AbstractControl {
         }
 
         Vector3f target = spatial.getLocalTranslation().clone()
-                .interpolate(targetLocation, interpolationFactor);
+                .interpolateLocal(targetLocation, interpolationFactor);
         return target;
     }
 

@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -62,11 +63,11 @@ public final class PlayerData {
     private static HashMap<Integer, PlayerData> players = new HashMap<>();
     private int id;
     private int aiControl = -1;
-    private HashMap<String, Float> floatData = new HashMap<>();
-    private HashMap<String, Integer> intData = new HashMap<>();
-    private HashMap<String, Long> longData = new HashMap<>();
-    private HashMap<String, Boolean> booleanData = new HashMap<>();
-    private HashMap<String, String> stringData = new HashMap<>();
+    private Map<String, Float> floatData = new HashMap<>();
+    private Map<String, Integer> intData = new HashMap<>();
+    private Map<String, Long> longData = new HashMap<>();
+    private Map<String, Boolean> booleanData = new HashMap<>();
+    private Map<String, String> stringData = new HashMap<>();
 
     public static synchronized PlayerData getPlayerId(int id) {
         return players.get(id);
@@ -222,9 +223,6 @@ public final class PlayerData {
         this.id = id;
     }
 
-    /**
-     * Object implementation of PlayerData
-     */
     public PlayerData(int id, String name) {
         this(id, name, -1);
     }

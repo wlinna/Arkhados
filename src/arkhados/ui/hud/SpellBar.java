@@ -76,7 +76,7 @@ public class SpellBar {
             float cooldown = cCast.getCooldown(Spell
                     .getSpell(entry.getKey()).getId());
             Element overlay = entry.getValue()
-                    .findElementByName(entry.getKey() + "-overlay");
+                    .findElementById(entry.getKey() + "-overlay");
             if (cooldown <= 0 && !hasSilence) {
                 if (overlay.isVisible()) {
                     overlay.hide();
@@ -87,7 +87,7 @@ public class SpellBar {
                 }
 
                 Element cooldownText = overlay
-                        .findElementByName(entry.getKey() + "-counter");
+                        .findElementById(entry.getKey() + "-counter");
                 
                 TextRenderer txt = cooldownText.getRenderer(TextRenderer.class);
 

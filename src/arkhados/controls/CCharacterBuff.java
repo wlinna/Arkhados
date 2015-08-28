@@ -144,7 +144,7 @@ public class CCharacterBuff extends AbstractControl {
             // FIXME: java.lang.IndexOutOfBoundsException
             // Workaroud:
             List<Element> cooldownChildren =
-                    buffIcons.get(entry.getKey()).getElements();
+                    buffIcons.get(entry.getKey()).getChildren();
             if (cooldownChildren.isEmpty()) {
                 logger.warning("cooldown element is empty");
                 continue;

@@ -44,8 +44,8 @@ public class ServerMain extends SimpleApplication {
     public static void main(String[] args) {
         Logger.getLogger("").setLevel(Level.ALL);
         try {
-            FileHandler fileHandler =
-                    new FileHandler("./Arkhados_Server_%u_gen_%g.log", 0, 10);
+            FileHandler fileHandler
+                    = new FileHandler("./Arkhados_Server_%u_gen_%g.log", 0, 10);
             fileHandler.setLevel(Level.INFO);
             fileHandler.setFormatter(new SimpleFormatter());
             Logger.getLogger("").addHandler(fileHandler);
@@ -75,6 +75,13 @@ public class ServerMain extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        MessageUtils.registerDataClasses();
+        MessageUtils.registerMessages();
+
+        Serializer.registerClass(ReplayHeader.class);
+        Serializer.registerClass(ReplayCmdData.class);
+        Serializer.registerClass(ReplayData.class);
+
         Globals.assets = getAssetManager();
         Globals.app = this;
         world = new World();
@@ -84,7 +91,7 @@ public class ServerMain extends SimpleApplication {
         flyCam.setEnabled(false);
 
         int port = Settings.get().General().getPort();
-        if (port <= 0 ||  port > 65535) {
+        if (port <= 0 || port > 65535) {
             System.out.println("Port must be between 0 and 65535");
             System.exit(1);
         }
@@ -103,13 +110,6 @@ public class ServerMain extends SimpleApplication {
         AbstractBuff.setSender(sender);
 
         receiver.registerCommandHandler(sender);
-
-        MessageUtils.registerDataClasses();
-        MessageUtils.registerMessages();
-
-        Serializer.registerClass(ReplayHeader.class);
-        Serializer.registerClass(ReplayCmdData.class);
-        Serializer.registerClass(ReplayData.class);
 
         listenerManager = new ServerNetListener(this, server);
         sync = new Sync(this);
@@ -131,8 +131,8 @@ public class ServerMain extends SimpleApplication {
         sender.setWorld(world);
         // Accuracy should be > 45 or projectiles might "disappear" before
         // exploding. This is because of FogOfWar
-        physics.getPhysicsSpace().setAccuracy(1f / 
-                Settings.get().General().getPhysicsTicksPerSecond());
+        physics.getPhysicsSpace().setAccuracy(1f
+                / Settings.get().General().getPhysicsTicksPerSecond());
 
         Globals.space = physics.getPhysicsSpace();
     }

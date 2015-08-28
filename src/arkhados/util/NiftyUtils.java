@@ -23,7 +23,7 @@ import java.util.Iterator;
 public class NiftyUtils {
     public static void removeChildren(Element element) {
         for (Iterator<Element> it = element
-                .getElements().iterator(); it.hasNext();) {
+                .getChildren().iterator(); it.hasNext();) {
 
             Element child = it.next();
             child.markForRemoval();
