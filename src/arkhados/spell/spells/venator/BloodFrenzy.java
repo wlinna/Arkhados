@@ -37,7 +37,7 @@ public class BloodFrenzy extends Spell {
                 SurvivalInstinct.COOLDOWN, 0f, SurvivalInstinct.CAST_TIME);
 
         final AbstractBuffBuilder lifeStealBuff = new LifeStealBuff.MyBuilder(
-                1.4f, SurvivalInstinct.DURATION);
+                1.7f, SurvivalInstinct.DURATION);
         lifeStealBuff.setTypeId(BuffTypeIds.BLOOD_FRENZY);
 
 
