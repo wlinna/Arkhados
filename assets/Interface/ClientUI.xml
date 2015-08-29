@@ -454,7 +454,7 @@
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="Due to a nifty related issue the third credits panel has been temporarily disabled " />
-<!--                <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
+                <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
                 <control name="credits_panel" who="spookymodem" for="sound effects" />
                 <control name="credits_panel" who="midimagician" for="Ember Circle sound" />
                 <control name="credits_panel" who="Mike Koenig (SoundBible)" for="Shotgun reload sound" />
@@ -475,7 +475,7 @@
                 <control name="credits_panel" who="Savino and pOss" for="Grave models for Pillar Arena" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>-->
+                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>

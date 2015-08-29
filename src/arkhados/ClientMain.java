@@ -306,6 +306,7 @@ public class ClientMain extends SimpleApplication {
             client.close();
         }
         super.destroy();
+        System.exit(0);
     }
 
     @Override
