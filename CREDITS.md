@@ -86,6 +86,8 @@ Rock is used for SpiritStone and it's licensed under CC0.
 
 [OliverHM](http://www.blendswap.com/users/view/OliverMH) for [Low Poly Rocks #2](http://www.blendswap.com/blends/view/71209). Low Poly Rocks #2 has been modified slightly and is used for SealingBoulder. Work is licensed under CC-BY 3.0.
 
+pOss for the [Grave models] (http://opengameart.org/content/savinos-cemetery-redux) which are licensed under CC-BY 3.0. These models are based on the [models created by Savino] (http://opengameart.org/content/cemetery) which are licensed under CC0.
+
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)
@@ -243,6 +245,8 @@ are licensed under CC-BY-SA 3.0.
 - [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)
 - [Predator Attack](https://www.jamendo.com/en/track/681764/predator-attack) (with cut by Teemu Salminen)
 
+[Marcelo Fernandez](http://www.marcelofernandezmusic.com) for [Small Epic Intro](http://opengameart.org/content/small-epic-intro). It is licensed under CC-BY 3.0.
+
 
 [Michael Baradari](apollo-music.de) for following sound effects:
 - [Projectile launches](http://opengameart.org/content/4-projectile-launches) (Railgun and Plasmagun)
@@ -269,5 +273,3 @@ Independent.nu for DeepWounds sound effect. DeepWounds.wav is based on
 Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). Sound is licensed under CC0
 
 [skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
-
-pOss for the [Grave models used in PillarArena] (http://opengameart.org/content/savinos-cemetery-redux) - licensed under CC-BY 3.0. These models are based on the [models created by Savino] (http://opengameart.org/content/cemetery) - licensed under CC0.

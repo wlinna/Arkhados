@@ -4,7 +4,6 @@ Note: Most of the assets are done by artists that are not part of the project.
 See CREDITS.md for attributions.
 
 ## CC0 or Public Domain ##
-
 - circle.blend and all its derivatives
 - EmberCircleAlphaMap.png
 - Werewolf and all its derivatives
@@ -80,16 +79,15 @@ See CREDITS.md for attributions.
 - DarkHall.ogg
 - GreyLand.ogg
 - DwarvesGathering.ogg
+- Menu.ogg
 - All announcer sounds
 - Grave models used in Pillar Arena
 
 ## CC-BY-SA 3.0 ##
-
 - All LavaArena related files (except Wall and lava)
 - rocket_jump.jpeg
 - AntiGravity.orgg
 - Olympus.ogg
-- Menu.ogg
 - GodsWar.ogg
 - TimeOfBlood.ogg
 - PredatorAttack.ogg
