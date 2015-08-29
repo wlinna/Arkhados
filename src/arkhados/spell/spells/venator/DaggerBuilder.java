@@ -62,7 +62,7 @@ public class DaggerBuilder extends AbstractNodeBuilder {
         if (primary) {
             buffControl.addBuff(new SlowCC.MyBuilder(6f, 0.33f));
         } else {
-            buffControl.addBuff(new CastSpeedBuff.MyBuilder(6f, -0.33f));
+            buffControl.addBuff(new CastSpeedBuff.MyBuilder(6f, -0.50f));
         }
         node.addControl(buffControl);
 
