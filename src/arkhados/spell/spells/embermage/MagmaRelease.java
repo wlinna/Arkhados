@@ -162,8 +162,8 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
 
         node.setUserData(UserData.SPEED_MOVEMENT, 180f);
         node.setUserData(UserData.MASS, 10f);
-        node.setUserData(UserData.DAMAGE, 170f);
-        node.setUserData(UserData.IMPULSE_FACTOR, 0f);                
+        node.setUserData(UserData.DAMAGE, 220f);
+        node.setUserData(UserData.IMPULSE_FACTOR, 25000f);                
 
         if (world.isClient()) {
             ParticleEmitter fire = createFireEmitter();
