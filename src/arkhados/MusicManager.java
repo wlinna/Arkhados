@@ -144,6 +144,8 @@ public class MusicManager extends AbstractAppState {
                 music.add(generateHeroMusicPath(category, "Olympus"));
                 music.add(generateHeroMusicPath(category, "DwarvesGathering"));
                 break;
+            case "Shadowmancer":
+                music.add(generateHeroMusicPath(category, "Transylvania"));
             default:
                 break;
         }

@@ -91,6 +91,7 @@ See CREDITS.md for attributions.
 - GodsWar.ogg
 - TimeOfBlood.ogg
 - PredatorAttack.ogg
+- Transylvania.ogg
 
 ## GPL 2.0 ##
 - EmberMagePain.wav
