@@ -125,7 +125,7 @@ class RayBuilder extends AbstractNodeBuilder {
 
         node.setUserData(UserData.SPEED_MOVEMENT, 200f);
         node.setUserData(UserData.MASS, 0.30f);
-        node.setUserData(UserData.DAMAGE, 100f);
+        node.setUserData(UserData.DAMAGE, 150f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         if (world.isClient()) {
@@ -171,7 +171,7 @@ class RayBuilder extends AbstractNodeBuilder {
         node.addControl(projectileControl);
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BlindCC.MyBuilder(2.5f));
+        buffControl.addBuff(new BlindCC.MyBuilder(3f));
 
         return node;
     }
