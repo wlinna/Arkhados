@@ -168,7 +168,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
                 cAreaOfEffect.addInfluence(speedInfluence);
             } else {
                 SlowInfluence slowInfluence = new SlowInfluence();
-                slowInfluence.setSlowFactor(0.8f);
+                slowInfluence.setSlowFactor(0.6f);
                 cAreaOfEffect.addInfluence(slowInfluence);
             }
 
