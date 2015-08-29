@@ -19,7 +19,7 @@ import arkhados.controls.CInfluenceInterface;
 public class CastSpeedBuff extends AbstractBuff {
     // TODO: Add type id and icon
 
-    private float factor;
+    private final float factor;
 
     private CastSpeedBuff(float duration, float by) {
         super(duration);
@@ -42,6 +42,11 @@ public class CastSpeedBuff extends AbstractBuff {
         return factor;
     }
 
+    @Override
+    public boolean isFriendly() {
+        return factor >= 1f;
+    }
+ 
     public static class MyBuilder extends AbstractBuffBuilder {
         private final float amount;
 
