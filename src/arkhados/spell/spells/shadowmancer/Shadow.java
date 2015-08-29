@@ -22,6 +22,7 @@ import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
+import arkhados.spell.buffs.SilenceCC;
 import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -33,6 +34,8 @@ public class Shadow extends Spell {
         iconName = "MineralArmor.png";
     }
 
+    static final float DURATION = 3f;
+    
     public Shadow(String name, float cooldown, float range,
             float castTime) {
         super(name, cooldown, range, castTime);
@@ -49,9 +52,10 @@ public class Shadow extends Spell {
             @Override
             public EntityAction newAction(Node caster, Vector3f vec) {
                 ACastBuff action = new ACastBuff(spell, range);
-                AbstractBuffBuilder armor =
-                        new ShadowBuff.MyBuilder(3f);
-                action.addBuff(armor);
+                AbstractBuffBuilder shadow =
+                        new ShadowBuff.MyBuilder(DURATION);
+                action.addBuff(shadow);
+                action.addBuff(new SilenceCC.MyBuilder(DURATION));
 
                 return action;
             }
