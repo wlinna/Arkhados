@@ -81,6 +81,7 @@ See CREDITS.md for attributions.
 - GreyLand.ogg
 - DwarvesGathering.ogg
 - All announcer sounds
+- Grave models used in Pillar Arena
 
 ## CC-BY-SA 3.0 ##
 
