@@ -20,6 +20,7 @@ import arkhados.PlayerData;
 import arkhados.ServerClientData;
 import arkhados.Sync;
 import arkhados.Topic;
+import arkhados.UserCommandManager;
 import arkhados.World;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSelectHero;
@@ -49,14 +50,14 @@ import java.util.Map;
 
 public class TeamDeathmatch extends GameMode implements CommandHandler {
 
-    private DeathmatchCommon common = new DeathmatchCommon();
+    private final DeathmatchCommon common = new DeathmatchCommon();
     private AppStateManager stateManager;
     private World world;
     private Sync sync;
     private Element teamSelectionLayer;
     private Nifty nifty;
     private Screen screen;
-    private Map<String, Integer> teamNameId = new HashMap<>();
+    private final Map<String, Integer> teamNameId = new HashMap<>();
 
     {
         teamNameId.put("0", 0);
@@ -64,7 +65,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         teamNameId.put("2", 2);
         teamNameId.put("3", 3);
     }
-    private Map<Integer, Integer> teamKills = new HashMap<>();
+    private final Map<Integer, Integer> teamKills = new HashMap<>();
 
     {
         teamKills.put(0, 0);
@@ -106,8 +107,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             
             if (sender.isClient() && !Globals.replayMode) {
                 nifty.gotoScreen("default_hud");
-                sender.addCommand(
-                        new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
+                sender.addCommand(new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
             } else if (sender.isServer()) {
                 sync.setEnabled(true);
                 sync.startListening();
@@ -173,7 +173,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             Integer teamId = teamNameId.get(cmd.team);
 
             if (teamId == null) {
-                sender.addCommandForSingle(new CmdTeamAcceptance(false),
+                sender.addCommandForSingle(new CmdTeamAcceptance(-2),
                         source);
                 return;
             }
@@ -184,7 +184,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
             common.preparePlayer(playerId);
 
-            sender.addCommandForSingle(new CmdTeamAcceptance(true), source);
+            sender.addCommandForSingle(new CmdTeamAcceptance(teamId), source);
 
         } else if (command instanceof CmdTopicOnly) {
             serverHandleTopicOnly(source, (CmdTopicOnly) command);
@@ -212,7 +212,13 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             });
 
         } else if (command instanceof CmdTeamAcceptance) {
-            if (((CmdTeamAcceptance) command).isAccepted()) {
+            CmdTeamAcceptance cmd = (CmdTeamAcceptance)  command;
+            if (cmd.getTeamId() != -1) {
+                int playerId = stateManager.getState(UserCommandManager.class)
+                        .getPlayerId();
+                
+                PlayerData.setData(playerId, PlayerData.TEAM_ID,
+                        cmd.getTeamId());
                 common.getHeroSelectionLayer().show();
             } else {
                 // FIXME: Show error message instead
@@ -231,8 +237,6 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
                 sender.addCommandForSingle(
                         new CmdTeamOptions(teamOpts), source);
         }
-
-
     }
 
     @Override

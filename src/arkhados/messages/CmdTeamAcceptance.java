@@ -12,30 +12,28 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.messages;
 
 import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
 @Serializable
-public class CmdTeamAcceptance implements Command{
-    private boolean accepted;
+public class CmdTeamAcceptance implements Command {
+
+    private int teamId;
 
     public CmdTeamAcceptance() {
     }
 
-    public CmdTeamAcceptance(boolean accepted) {
-        this.accepted = accepted;
-    }
-        
-    
-    @Override
-    public boolean isGuaranteed() {
-        return true;
+    public CmdTeamAcceptance(int teamId) {
+        this.teamId = teamId;
     }
 
-    public boolean isAccepted() {
-        return accepted;
+    public int getTeamId() {
+        return teamId;
+    }
+        @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }
