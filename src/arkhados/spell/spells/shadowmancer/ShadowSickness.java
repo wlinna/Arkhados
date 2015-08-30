@@ -50,9 +50,9 @@ public class ShadowSickness extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 6f;
+        final float cooldown = 7f;
         final float range = 100f;
-        final float castTime = 0.35f;
+        final float castTime = 0.37f;
 
         final ShadowSickness spell = new ShadowSickness("Shadow Sickness",
                 cooldown, range, castTime);
@@ -97,7 +97,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();        
         buffControl.addBuff(new Sickness.MyBuilder(ShadowSickness.DURATION));
-        buffControl.addBuff(new SilenceCC.MyBuilder(2f));
+        buffControl.addBuff(new SilenceCC.MyBuilder(1.5f));
 
         node.addControl(buffControl);
 

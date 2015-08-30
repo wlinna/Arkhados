@@ -63,7 +63,7 @@ public class PlasmaGrenades extends Spell {
                 ACastGrenade action = new ACastGrenade(spell);
                 action.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
                 AChannelingSpell channel = new AChannelingSpell(spell,
-                        3, 0.12f, action, true);
+                        9, 0.12f, action, true);
                 return channel;
             }
         };
@@ -75,7 +75,9 @@ public class PlasmaGrenades extends Spell {
 }
 
 class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
-    private static AbstractBuffBuilder slowBuilder =
+    private static final float SIZE_FACTOR = 0.5f;
+    
+    private static final AbstractBuffBuilder slowBuilder =
             new SlowCC.MyBuilder(1f, 0.3f);
 
     private ParticleEmitter createPlasmaEmitter() {
@@ -92,8 +94,8 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
         plasma.setStartColor(new ColorRGBA(0.8f, 0.350f, 0.9f, 1.0f));
         plasma.setEndColor(new ColorRGBA(0.80f, 0.30f, 0.9f, 0.95f));
         plasma.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-        plasma.setStartSize(5.5f);
-        plasma.setEndSize(4.5f);
+        plasma.setStartSize(5.5f * SIZE_FACTOR);
+        plasma.setEndSize(4.5f * SIZE_FACTOR);
         plasma.setGravity(Vector3f.ZERO);
         plasma.setLowLife(0.05f);
         plasma.setHighLife(0.05f);
@@ -141,7 +143,8 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
                     .setOnRemoval(removalAction);
         }
 
-        SphereCollisionShape collisionShape = new SphereCollisionShape(5);
+        SphereCollisionShape collisionShape =
+                new SphereCollisionShape(5 * SIZE_FACTOR);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
 
@@ -176,8 +179,8 @@ class PlasmaGrenadeBuilder extends AbstractNodeBuilder {
             CGrenade cGrenade = new CGrenade();
             node.addControl(cGrenade);
 
-            cGrenade.setDetonationTime(3f);
-            ASplash splash = new ASplash(20f, 23f,
+            cGrenade.setDetonationTime(14f);
+            ASplash splash = new ASplash(20f * SIZE_FACTOR, 23f,
                     DistanceScaling.CONSTANT, null);
             splash.setSpatial(node);
             cGrenade.setSplashAction(splash);

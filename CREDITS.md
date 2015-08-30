@@ -86,6 +86,8 @@ Rock is used for SpiritStone and it's licensed under CC0.
 
 [OliverHM](http://www.blendswap.com/users/view/OliverMH) for [Low Poly Rocks #2](http://www.blendswap.com/blends/view/71209). Low Poly Rocks #2 has been modified slightly and is used for SealingBoulder. Work is licensed under CC-BY 3.0.
 
+pOss for the [Grave models] (http://opengameart.org/content/savinos-cemetery-redux) which are licensed under CC-BY 3.0. These models are based on the [models created by Savino] (http://opengameart.org/content/cemetery) which are licensed under CC0.
+
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)
@@ -237,11 +239,14 @@ are licensed under CC-BY-SA 3.0.
 - [Gods War](https://www.jamendo.com/en/track/989064/gods-war-finale) (Rock Golem)
 - [Olympus](https://www.jamendo.com/en/track/1063183/olympus) (Rock Golem)
 - [Anti-gravity](https://www.jamendo.com/en/track/1103297/anti-gravity) (Elite Soldier)
+- [Transylvania](https://www.jamendo.com/en/track/1188993/transylvania)(Shadowmancer)
 - [Mutant rises](https://www.jamendo.com/en/list/a116374/cinematic-volume-2) (Menu)
 
 [Kondi](https://www.jamendo.com/en/artist/362508/kondi) for multiple soundtracks. All Kondi's music used in Arkhados are licensed under CC-BY-SA 3.0:
 - [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)
 - [Predator Attack](https://www.jamendo.com/en/track/681764/predator-attack) (with cut by Teemu Salminen)
+
+[Marcelo Fernandez](http://www.marcelofernandezmusic.com) for [Small Epic Intro](http://opengameart.org/content/small-epic-intro). It is licensed under CC-BY 3.0.
 
 
 [Michael Baradari](apollo-music.de) for following sound effects:

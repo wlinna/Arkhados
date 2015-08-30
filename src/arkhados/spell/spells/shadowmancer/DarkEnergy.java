@@ -65,7 +65,7 @@ public class DarkEnergy extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 1f;
+        final float cooldown = 2f;
         final float range = 120f;
         final float castTime = 0.4f;
 

@@ -17,6 +17,7 @@ package arkhados;
 import arkhados.ui.hud.ClientHud;
 import arkhados.arena.AbstractArena;
 import arkhados.arena.BasicSquareArena;
+import arkhados.arena.PillarArena;
 import arkhados.controls.CCharacterBuff;
 import arkhados.controls.CCharacterHud;
 import com.jme3.app.Application;
@@ -58,6 +59,7 @@ import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
 import com.jme3.scene.control.LodControl;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,17 +72,11 @@ public class World extends AbstractAppState {
         logger.setLevel(Level.WARNING);
     }
     // TODO: Read locations from terrain
-    public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(-50, 0, -50),
-        new Vector3f(-50, 0, 50),
-        new Vector3f(50, 0, -50),
-        new Vector3f(50, 0, 50),
-        new Vector3f(0, 0, 0)
-    };
+
     private Node worldRoot;
     private Node fakeWorldRoot;
-    private AbstractArena arena = new BasicSquareArena();
-    private HashMap<Integer, Spatial> entities = new HashMap<>();
+    private AbstractArena arena = new PillarArena();
+    private final Map<Integer, Spatial> entities = new HashMap<>();
     private Sync sync;
     private short idCounter = 0;
     private boolean isClient = false;
@@ -150,7 +146,9 @@ public class World extends AbstractAppState {
 
     public void loadLevel() {
         worldRoot = (Node) assetManager.loadModel(
-                "Scenes/LavaArenaWithFogWalls.j3o");
+                "Scenes/PillarArena.j3o");
+//        worldRoot = (Node) assetManager.loadModel(
+//                "Scenes/LavaArenaWithFogWalls.j3o");
         fakeWorldRoot = new Node("fake-world-root");
 
         RigidBodyControl physics = new RigidBodyControl(
@@ -500,5 +498,9 @@ public class World extends AbstractAppState {
 
     public Node getFakeWorldRoot() {
         return fakeWorldRoot;
+    }
+
+    public AbstractArena getArena() {
+        return arena;
     }
 }

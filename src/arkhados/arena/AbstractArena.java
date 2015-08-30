@@ -40,6 +40,8 @@ public abstract class AbstractArena {
         return world;
     }
 
+    public abstract Vector3f getSpawnPoint(int teamId);
+    
     protected AssetManager getAssetManager() {
         return assetManager;
     }

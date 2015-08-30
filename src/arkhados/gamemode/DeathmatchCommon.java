@@ -23,6 +23,7 @@ import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.World;
+import arkhados.arena.AbstractArena;
 import arkhados.controls.PlayerEntityAwareness;
 import arkhados.effects.Death;
 import arkhados.messages.CmdPlayerKill;
@@ -242,7 +243,7 @@ public class DeathmatchCommon {
 
     void playerChoseHero(final int playerId, final String heroName) {
         Boolean canPickHero = canPickHeroMap.get(playerId);
-        if (canPickHero == null || canPickHero == Boolean.FALSE) {
+        if (canPickHero == null || Boolean.FALSE.equals(canPickHero)) {
             return;
         }
         canPickHeroMap.put(playerId, Boolean.FALSE);
@@ -260,7 +261,10 @@ public class DeathmatchCommon {
                         .getIntData(playerId, PlayerData.ENTITY_ID);
                 world.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
-                Vector3f startingLocation = getNewSpawnLocation();
+                int teamId = PlayerData.getIntData(playerId, 
+                        PlayerData.TEAM_ID);
+                
+                Vector3f startingLocation = getNewSpawnLocation(teamId);
                 PlayerData playerData = PlayerData.getPlayerId(playerId);
 
                 int nodeBuilderId = NodeBuilderIdHeroNameMatcher
@@ -344,11 +348,9 @@ public class DeathmatchCommon {
         }
     }
 
-    private Vector3f getNewSpawnLocation() {
-        spawnLocationIndex = (spawnLocationIndex + 1)
-                % World.STARTING_LOCATIONS.length;
-        return World.STARTING_LOCATIONS[spawnLocationIndex].clone()
-                .setY(1f);
+    private Vector3f getNewSpawnLocation(int teamId) {
+        AbstractArena arena = stateManager.getState(World.class).getArena();
+        return arena.getSpawnPoint(teamId).setY(1f);
     }
 
     private void handleOwnDeath() {

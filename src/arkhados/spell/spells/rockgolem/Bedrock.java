@@ -44,10 +44,10 @@ public class Bedrock extends Spell {
                 range, castTime);
 
         final ArmorBuff.MyBuilder armorBuilder =
-                new ArmorBuff.MyBuilder(4f, 500, 0.55f);
+                new ArmorBuff.MyBuilder(4f, 500, 0.85f);
         armorBuilder.setTypeId(BuffTypeIds.BEDROCK);
         
-        final SlowCC.MyBuilder slowBuilder = new SlowCC.MyBuilder(4f, 0.75f);
+        final SlowCC.MyBuilder slowBuilder = new SlowCC.MyBuilder(4f, 0.33f);
         slowBuilder.setTypeId(-1);
 
         spell.castSpellActionBuilder = new CastSpellActionBuilder() {
