@@ -40,6 +40,9 @@ import com.jme3.app.state.AppStateManager;
 public class ServerNetListener implements ConnectionListener,
         CommandHandler, ServerClientDataStrings {
 
+    private static final Logger logger
+            = Logger.getLogger(ServerNetListener.class.getName());
+
     private final ServerMain app;
     private final AppStateManager stateManager;
     private boolean someoneJoined = false;
@@ -59,12 +62,11 @@ public class ServerNetListener implements ConnectionListener,
             sender.addConnection(conn);
             stateManager.getState(Receiver.class).addConnection(conn);
 
-            CmdTopicOnly connectionEstablishendCommand =
-                    new CmdTopicOnly(Topic.CONNECTION_ESTABLISHED);
+            CmdTopicOnly connectionEstablishendCommand
+                    = new CmdTopicOnly(Topic.CONNECTION_ESTABLISHED);
             sender.addCommand(connectionEstablishendCommand);
         } else {
-            Logger.getLogger(ServerNetListener.class.getName())
-                    .log(Level.SEVERE, "Client ID exists!");
+            logger.log(Level.SEVERE, "Client ID exists!");
             conn.close("ID exists already");
         }
     }
@@ -76,33 +78,31 @@ public class ServerNetListener implements ConnectionListener,
             Integer playerId = conn.getAttribute(PLAYER_ID);
             ServerSender sender = stateManager.getState(ServerSender.class);
             sender.removeConnection(conn);
-            ServerFog fog =  stateManager.getState(ServerFog.class);
+            ServerFog fog = stateManager.getState(ServerFog.class);
             fog.removeConnection(conn);
             ServerClientData.remove(conn.getId());
-            
+
             if (playerId == null) {
                 return null;
             }
-            
+
             ServerClientData.removeConnection(playerId);
-            
+
             int entityId = PlayerData.getIntData(playerId,
                     PlayerData.ENTITY_ID);
             if (entityId > -1) {
-                World world =
-                        stateManager.getState(World.class);
+                World world = stateManager.getState(World.class);
                 world.removeEntity(entityId, RemovalReasons.DISCONNECT);
             }
-            
+
             PlayerData.remove(playerId);
             CharacterInteraction.removePlayer(playerId);
-            
+
             if (!server.hasConnections() && someoneJoined) {
                 app.stop();
             }
-            
-            sender.addCommand(
-                    new CmdPlayerStatusChange(playerId).setLeft());
+
+            sender.addCommand(new CmdPlayerStatusChange(playerId).setLeft());
             return null;
         });
 
@@ -136,15 +136,13 @@ public class ServerNetListener implements ConnectionListener,
 
         switch (topicCommand.getTopicId()) {
             case Topic.BATTLE_STATISTICS_REQUEST:
-                BattleStatisticsResponse response =
-                        BattleStatisticsResponse
+                BattleStatisticsResponse response = BattleStatisticsResponse
                         .buildBattleStatisticsResponse();
                 sender.addCommand(response);
                 break;
             case Topic.UDP_HANDSHAKE_REQUEST:
-                sender.addCommandForSingle(
-                        new CmdTopicOnly(Topic.UDP_HANDSHAKE_ACK, false),
-                        source);
+                sender.addCommandForSingle(new CmdTopicOnly(
+                        Topic.UDP_HANDSHAKE_ACK, false), source);
                 break;
         }
     }
@@ -154,8 +152,7 @@ public class ServerNetListener implements ConnectionListener,
         final int clientId = source.getId();
 
         if (!ServerClientData.exists(clientId)) {
-            Logger.getLogger(ServerNetListener.class.getName()).log(
-                    Level.WARNING,
+            logger.log(Level.WARNING,
                     "Receiving join message from unknown client (id: {0})",
                     clientId);
             return;
@@ -163,32 +160,28 @@ public class ServerNetListener implements ConnectionListener,
 
         app.enqueue(() -> {
             final int playerId = PlayerData.getNew(commmand.getName());
-            PlayerData
-                    .setData(playerId, PlayerData.HERO, "EmberMage");
-            PlayerData
-                    .setData(playerId, PlayerData.TEAM_ID, playerId);
-            
+            PlayerData.setData(playerId, PlayerData.HERO, "EmberMage");
+            PlayerData.setData(playerId, PlayerData.TEAM_ID, playerId);
+
             source.setAttribute(PLAYER_ID, playerId);
-            
+
             ServerInput.get().addInputState(playerId);
-            
+
             ServerClientData.setConnected(clientId, true);
             ServerClientData.setPlayerId(clientId, playerId);
             ServerClientData.addConnection(playerId, source);
-            
+
             ServerGame game = stateManager.getState(ServerGame.class);
             game.playerJoined(playerId);
-            
+
             String modeKey = game.getGameMode().getClass().getSimpleName();
-            CmdServerLogin serverLoginMessage =
-                    new CmdServerLogin(commmand.getName(), playerId,
-                            true, modeKey);
+            CmdServerLogin serverLoginMessage = new CmdServerLogin(
+                    commmand.getName(), playerId, true, modeKey);
             someoneJoined = true;
             ServerSender sender = stateManager.getState(ServerSender.class);
             sender.addCommandForSingle(serverLoginMessage, source);
             sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
-            sender.addCommand(
-                    new CmdPlayerStatusChange(playerId).setJoined());
+            sender.addCommand(new CmdPlayerStatusChange(playerId).setJoined());
             return null;
         });
     }
@@ -199,8 +192,7 @@ public class ServerNetListener implements ConnectionListener,
                 ((HostedConnection) source).getId());
 
         // TODO: Check hero name validity
-        PlayerData.setData(playerId, PlayerData.HERO,
-                command.getHeroName());
+        PlayerData.setData(playerId, PlayerData.HERO, command.getHeroName());
     }
 
     private void handleClientSettingsCommand(HostedConnection source,
