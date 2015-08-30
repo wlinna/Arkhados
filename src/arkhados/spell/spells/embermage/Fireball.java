@@ -15,15 +15,14 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.BrimstoneBuff;
@@ -31,7 +30,6 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -66,21 +64,18 @@ public class Fireball extends Spell {
         final float range = 85f;
         final float castTime = 0.37f;
 
-        final Fireball spell =
-                new Fireball("Fireball", cooldown, range, castTime);
+        final Fireball spell
+                = new Fireball("Fireball", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastProjectile castProjectile =
-                        new ACastProjectile(spell, world);
-                AbstractBuffBuilder ignite =
-                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
-                if (ignite != null) {
-                    castProjectile.addBuff(ignite);
-                }
-                return castProjectile;
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastProjectile castProjectile
+                    = new ACastProjectile(spell, world);
+            AbstractBuffBuilder ignite
+                    = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            if (ignite != null) {
+                castProjectile.addBuff(ignite);
             }
+            return castProjectile;
         };
 
         spell.nodeBuilder = new FireballBuilder();
@@ -105,8 +100,6 @@ class FireballBuilder extends AbstractNodeBuilder {
         smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
         smoke.setStartColor(new ColorRGBA(0.5f, 0.5f, 0.5f, 0.1f));
         smoke.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
         smoke.setStartSize(2.0f);
         smoke.setEndSize(6.0f);
         smoke.setGravity(Vector3f.ZERO);
@@ -132,8 +125,6 @@ class FireballBuilder extends AbstractNodeBuilder {
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
         fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
         fire.setStartSize(2.5f);
         fire.setEndSize(1.0f);
         fire.setGravity(Vector3f.ZERO);
@@ -157,8 +148,8 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material =
-                new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
@@ -179,11 +170,9 @@ class FireballBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            AFireballRemoval removalAction =
-                    new AFireballRemoval(assetManager);
+            AFireballRemoval removalAction = new AFireballRemoval();
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smoke);
-
 
             node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
@@ -223,12 +212,10 @@ class AFireballRemoval implements ARemovalEvent {
 
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
-    private AssetManager assetManager;
-    private AudioNode sound;
+    private final AudioNode sound;
 
-    public AFireballRemoval(AssetManager assetManager) {
-        this.assetManager = assetManager;
-        sound = new AudioNode(assetManager,
+    public AFireballRemoval() {
+        sound = new AudioNode(Globals.assets,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
@@ -249,10 +236,10 @@ class AFireballRemoval implements ARemovalEvent {
     private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(assetManager,
+        Material materialGray = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                Globals.assets.loadTexture("Effects/flame.png"));
         smokePuff.setMaterial(materialGray);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);

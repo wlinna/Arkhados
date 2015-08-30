@@ -22,9 +22,7 @@ import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Predicate;
 import arkhados.util.Selector;
@@ -35,10 +33,6 @@ import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class StoneFist extends Spell {
 
     {
@@ -57,12 +51,9 @@ public class StoneFist extends Spell {
         StoneFist spell = new StoneFist("StoneFist", cooldown, range, castTime);
 
         spell.setCanMoveWhileCasting(true);
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                AStoneFist action = new AStoneFist(130, range);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            AStoneFist action = new AStoneFist(130, range);
+            return action;
         };
 
         spell.nodeBuilder = null;
@@ -73,9 +64,9 @@ public class StoneFist extends Spell {
 
 class AStoneFist extends EntityAction {
 
-    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
-    private float damage;
-    private float range;
+    private final List<AbstractBuffBuilder> buffs = new ArrayList<>();
+    private final float damage;
+    private final float range;
 
     public AStoneFist(float damage, float range) {
         this.damage = damage;
@@ -88,69 +79,61 @@ class AStoneFist extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        CCharacterPhysics physicsControl =
-                spatial.getControl(CCharacterPhysics.class);
+        CCharacterPhysics physicsControl
+                = spatial.getControl(CCharacterPhysics.class);
         final int myTeamId = spatial.getUserData(UserData.TEAM_ID);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
                 .normalize().multLocal(range);
 
         physicsControl.setViewDirection(hitDirection);
 
-        Predicate<SpatialDistancePair> pred =
-                new Predicate<SpatialDistancePair>() {
-            @Override
-            public boolean test(SpatialDistancePair value) {
-                if (value.spatial == spatial) {
-                    return false;
-                }
-
-                Integer nullableTeamId =
-                        value.spatial.getUserData(UserData.TEAM_ID);
-                if (nullableTeamId == null) {
-                    return false;
-                }
-
-                CInfluenceInterface influenceInterface = value.spatial
-                        .getControl(CInfluenceInterface.class);
-
-                if (influenceInterface != null
-                        && !nullableTeamId.equals(myTeamId)) {
-                    return true;
-                }
-
-                CSpiritStonePhysics stonePhysics = value.spatial
-                        .getControl(CSpiritStonePhysics.class);
-
-                if (stonePhysics != null && nullableTeamId.equals(myTeamId)) {
-                    return true;
-                }
-
+        Predicate<SpatialDistancePair> pred = (SpatialDistancePair value) -> {
+            if (value.spatial == spatial) {
                 return false;
-
             }
+
+            Integer nullableTeam = value.spatial.getUserData(UserData.TEAM_ID);
+            if (nullableTeam == null) {
+                return false;
+            }
+
+            CInfluenceInterface influenceInterface = value.spatial
+                    .getControl(CInfluenceInterface.class);
+
+            if (influenceInterface != null && !nullableTeam.equals(myTeamId)) {
+                return true;
+            }
+
+            CSpiritStonePhysics stonePhysics = value.spatial
+                    .getControl(CSpiritStonePhysics.class);
+
+            if (stonePhysics != null && nullableTeam.equals(myTeamId)) {
+                return true;
+            }
+
+            return false;
         };
-        SpatialDistancePair closest = Selector.giveClosest(
-                Selector.coneSelect(new ArrayList<SpatialDistancePair>(), pred,
-                spatial.getLocalTranslation(), hitDirection, range, 50f));
+        SpatialDistancePair closest = Selector.giveClosest(Selector.coneSelect(
+                new ArrayList<>(), pred, spatial.getLocalTranslation(),
+                hitDirection, range, 50f));
 
         if (closest == null) {
             return false;
         }
 
-        CInfluenceInterface targetInterface =
-                closest.spatial.getControl(CInfluenceInterface.class);
+        CInfluenceInterface targetInterface
+                = closest.spatial.getControl(CInfluenceInterface.class);
         if (targetInterface != null) {
-            EntityAction current =
-                    closest.spatial.getControl(CActionQueue.class).getCurrent();
+            EntityAction current = closest.spatial
+                    .getControl(CActionQueue.class).getCurrent();
 
             if (current != null && current instanceof ATrance) {
                 ((ATrance) current).activate(spatial);
                 return false;
             }
 
-            final float damageFactor =
-                    spatial.getUserData(UserData.DAMAGE_FACTOR);
-            final float rawDamage = damage * damageFactor;
+            float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);
+            float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
             CharacterInteraction.harm(
                     spatial.getControl(CInfluenceInterface.class),
@@ -163,8 +146,8 @@ class AStoneFist extends EntityAction {
     }
 
     private void pushSpiritStone(Spatial stone, Vector3f hitDirection) {
-        CSpiritStonePhysics physics =
-                stone.getControl(CSpiritStonePhysics.class);
+        CSpiritStonePhysics physics
+                = stone.getControl(CSpiritStonePhysics.class);
 
         Vector3f direction = hitDirection.normalize();
         physics.punch(direction.multLocal(160f));

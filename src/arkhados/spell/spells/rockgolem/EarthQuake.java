@@ -22,9 +22,7 @@ import arkhados.characters.RockGolem;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.DistanceScaling;
@@ -37,11 +35,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 
-/**
- *
- * @author william
- */
 public class EarthQuake extends Spell {
+
     public static final float RADIUS = 22f;
 
     {
@@ -58,16 +53,12 @@ public class EarthQuake extends Spell {
         final float range = 90f;
         final float castTime = 0.3f;
 
-        EarthQuake quake =
-                new EarthQuake("EarthQuake", cooldown, range, castTime);
+        EarthQuake quake
+                = new EarthQuake("EarthQuake", cooldown, range, castTime);
         quake.nodeBuilder = null;
 
-        quake.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastEarthQuake();
-            }
-        };
+        quake.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new ACastEarthQuake();
 
         return quake;
     }
@@ -85,10 +76,9 @@ class ACastEarthQuake extends EntityAction {
         ACharge charge = new ACharge(chargeRange);
         charge.setChargeSpeed(150f);
         charge.setHitDamage(30f);
-        
+
         // TODO: ACharge takes ATrance into action, but we need to do something
         // here too.
-
         AbstractBuffBuilder incapacitate = new IncapacitateCC.MyBuilder(1.2f);
         ArrayList<AbstractBuffBuilder> buffs = new ArrayList<>();
         buffs.add(incapacitate);
@@ -99,8 +89,8 @@ class ACastEarthQuake extends EntityAction {
                 DistanceScaling.CONSTANT, buffs);
         final int teamId = spatial.getUserData(UserData.TEAM_ID);
         splash.setExcludedTeam(teamId);
-        CInfluenceInterface casterInterface =
-                spatial.getControl(CInfluenceInterface.class);
+        CInfluenceInterface casterInterface
+                = spatial.getControl(CInfluenceInterface.class);
         splash.setCasterInterface(casterInterface);
 
         CActionQueue queue = spatial.getControl(CActionQueue.class);
@@ -113,9 +103,9 @@ class ACastEarthQuake extends EntityAction {
             public boolean update(float tpf) {
                 ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
                         .getSpatialsWithinDistance(
-                        new ArrayList<SpatialDistancePair>(),
-                        spatial.getLocalTranslation(), splashRadius,
-                        new Selector.IsCharacterOfOtherTeam(teamId));
+                                new ArrayList<SpatialDistancePair>(),
+                                spatial.getLocalTranslation(), splashRadius,
+                                new Selector.IsCharacterOfOtherTeam(teamId));
 
                 for (SpatialDistancePair pair : spatialsWithinDistance) {
                     pair.spatial.getControl(CActionQueue.class)
@@ -130,9 +120,6 @@ class ACastEarthQuake extends EntityAction {
     }
 }
 
-/**
- * @author william
- */
 class AKnockup extends EntityAction {
 
     private boolean firstTime = true;
@@ -162,15 +149,11 @@ class AKnockup extends EntityAction {
         motionControl.setInitialDuration(0.75f);
         motionControl.setSpeed(1f);
 
-        MotionPathListener pathListener = new MotionPathListener() {
-            @Override
-            public void onWayPointReach(MotionEvent motionControl,
-                    int wayPointIndex) {
-                if (wayPointIndex == path.getNbWayPoints() - 1) {
-                    spatial.getControl(CCharacterPhysics.class)
-                            .switchToNormalPhysicsMode();
-                    shouldContinue = false;
-                }
+        MotionPathListener pathListener = (MotionEvent cM, int wpIndex) -> {
+            if (wpIndex == path.getNbWayPoints() - 1) {
+                spatial.getControl(CCharacterPhysics.class)
+                        .switchToNormalPhysicsMode();
+                shouldContinue = false;
             }
         };
 

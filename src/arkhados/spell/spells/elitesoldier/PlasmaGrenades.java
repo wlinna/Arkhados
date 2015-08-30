@@ -57,15 +57,12 @@ public class PlasmaGrenades extends Spell {
         final PlasmaGrenades spell = new PlasmaGrenades("Plasma Grenades",
                 Plasmagun.COOLDOWN, Plasmagun.RANGE, Plasmagun.CAST_TIME);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastGrenade action = new ACastGrenade(spell);
-                action.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
-                AChannelingSpell channel = new AChannelingSpell(spell,
-                        9, 0.12f, action, true);
-                return channel;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastGrenade action = new ACastGrenade(spell);
+            action.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
+            AChannelingSpell channel = new AChannelingSpell(spell,
+                    9, 0.12f, action, true);
+            return channel;
         };
 
         spell.nodeBuilder = new PlasmaGrenadeBuilder();

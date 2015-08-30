@@ -14,8 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.rockgolem;
 
-import arkhados.actions.EntityAction;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -36,12 +34,8 @@ public class AngrySpiritStone extends Spell {
                 "Angry Spirit Stone", SpiritStone.COOLDOWN,
                 SpiritStone.RANGE, SpiritStone.CAST_TIME);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ASpiritStoneCast(spell, world);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new ASpiritStoneCast(spell, world);
 
         spell.nodeBuilder = new SpiritStoneBuilder(false);
 

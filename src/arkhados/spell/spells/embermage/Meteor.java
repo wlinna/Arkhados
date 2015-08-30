@@ -26,17 +26,13 @@ import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
@@ -76,17 +72,14 @@ public class Meteor extends Spell {
 
         final Meteor spell = new Meteor("Meteor", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastMeteor action = new ACastMeteor(world, spell);
-                AbstractBuffBuilder ignite =
-                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
-                if (ignite != null) {
-                    action.addAdditionalBuff(ignite);
-                }
-                return action;
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastMeteor action = new ACastMeteor(world, spell);
+            AbstractBuffBuilder ignite =
+                    Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            if (ignite != null) {
+                action.addAdditionalBuff(ignite);
             }
+            return action;
         };
 
         spell.nodeBuilder = new MeteorNodeBuilder();
@@ -236,8 +229,7 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
-            AMeteorRemoval removalAction =
-                    new AMeteorRemoval(assetManager);
+            AMeteorRemoval removalAction = new AMeteorRemoval();
             removalAction.setEmitter(fire);
 
             node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
@@ -250,10 +242,10 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
 class AMeteorRemoval implements ARemovalEvent {
 
     private ParticleEmitter emitter;
-    private AudioNode sound;
+    private final AudioNode sound;
 
-    AMeteorRemoval(AssetManager assetManager) {
-        sound = new AudioNode(assetManager, "Effects/Sound/MeteorBoom.wav");
+    AMeteorRemoval() {
+        sound = new AudioNode(Globals.assets, "Effects/Sound/MeteorBoom.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(5f);
@@ -318,7 +310,6 @@ class AMeteorRemoval implements ARemovalEvent {
         wave.setLocalTranslation(worldTranslation);
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));
-
     }
 
     void setEmitter(ParticleEmitter emitter) {

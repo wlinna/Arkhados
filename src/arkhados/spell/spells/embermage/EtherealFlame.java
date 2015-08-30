@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
-import arkhados.Globals;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
@@ -26,11 +25,9 @@ import arkhados.controls.CTimedExistence;
 import arkhados.effects.EffectHandle;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.effects.WorldEffect;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
-import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -58,12 +55,8 @@ public class EtherealFlame extends Spell {
         final EtherealFlame spell = new EtherealFlame("Ethereal Flame",
                 PurifyingFlame.COOLDOWN, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new AFireTrance(spell);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new AFireTrance(spell);
 
         return spell;
     }
@@ -73,9 +66,9 @@ public class EtherealFlame extends Spell {
         private ParticleEmitter createFire(float radius) {
             ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                     ParticleMesh.Type.Triangle, 20 * (int) radius);
-            Material material =
-                    new Material(assetManager,
-                    "Common/MatDefs/Misc/Particle.j3md");
+            Material material
+                    = new Material(assetManager,
+                            "Common/MatDefs/Misc/Particle.j3md");
             material.setTexture("Texture",
                     assetManager.loadTexture("Effects/flame.png"));
             fire.setMaterial(material);
@@ -95,8 +88,8 @@ public class EtherealFlame extends Spell {
             fire.getParticleInfluencer().setVelocityVariation(0.05f);
             fire.setRandomAngle(true);
 
-            EmitterCircleShape emitterShape =
-                    new EmitterCircleShape(Vector3f.ZERO, radius);
+            EmitterCircleShape emitterShape
+                    = new EmitterCircleShape(Vector3f.ZERO, radius);
             fire.setShape(emitterShape);
 
             return fire;
@@ -116,16 +109,13 @@ public class EtherealFlame extends Spell {
             sound.setVolume(1f);
             sound.play();
 
-            return new EffectHandle() {
-                @Override
-                public void end() {
-                    sound.stop();
-                    sound.removeFromParent();
-                    fire.setParticlesPerSec(0f);
-
-                    CTimedExistence timedExistence = new CTimedExistence(1f);
-                    fire.addControl(timedExistence);
-                }
+            return () -> {
+                sound.stop();
+                sound.removeFromParent();
+                fire.setParticlesPerSec(0f);
+                
+                CTimedExistence timedExistence = new CTimedExistence(1f);
+                fire.addControl(timedExistence);
             };
         }
     }
@@ -136,7 +126,7 @@ class AFireTrance extends EntityAction implements ATrance {
     {
         setTypeId(EmberMage.ACTION_ETHEREAL_FLAME);
     }
-    private Spell spell;
+    private final Spell spell;
     private float timeLeft = EtherealFlame.DURATION;
     private CInfluenceInterface cInfluence;
     private CCharacterMovement cMovement;
@@ -178,9 +168,9 @@ class AFireTrance extends EntityAction implements ATrance {
 
     private void motion(final Vector3f target) {
         final Node worldRoot = spatial.getParent();
-        final Node fakeRoot = 
-                (Node) worldRoot.getParent().getChild("fake-world-root");
-        
+        final Node fakeRoot
+                = (Node) worldRoot.getParent().getChild("fake-world-root");
+
         Vector3f start = spatial.getLocalTranslation();
 
         final MotionPath path = new MotionPath();
@@ -193,25 +183,21 @@ class AFireTrance extends EntityAction implements ATrance {
         motionControl.setInitialDuration(
                 target.distance(start) / EtherealFlame.SPEED);
 
-        final CCharacterPhysics body =
-                spatial.getControl(CCharacterPhysics.class);
+        final CCharacterPhysics body
+                = spatial.getControl(CCharacterPhysics.class);
         body.lookAt(target);
         body.switchToMotionCollisionMode();
-        
+
         spatial.removeFromParent();
         fakeRoot.attachChild(spatial);
 
-        path.addListener(new MotionPathListener() {
-            @Override
-            public void onWayPointReach(MotionEvent motionControl,
-                    int wayPointIndex) {
-                if (path.getNbWayPoints() == wayPointIndex + 1) {
-                    spatial.removeFromParent();
-                    worldRoot.attachChild(spatial);
-                    body.switchToNormalPhysicsMode();
-                    body.warp(target);
-                    timeLeft = 0f;
-                }
+        path.addListener((MotionEvent motionControl1, int wayPointIndex) -> {
+            if (path.getNbWayPoints() == wayPointIndex + 1) {
+                spatial.removeFromParent();
+                worldRoot.attachChild(spatial);
+                body.switchToNormalPhysicsMode();
+                body.warp(target);
+                timeLeft = 0f;
             }
         });
 

@@ -19,7 +19,6 @@ import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.FearCC;
 import arkhados.util.Selector;
@@ -32,10 +31,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class FeralScream extends Spell {
 
     {
@@ -55,12 +50,8 @@ public class FeralScream extends Spell {
         FeralScream spell = new FeralScream("Feral Scream", cooldown,
                 range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new AFeralScream(range, 45f);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new AFeralScream(range, 45f);
         return spell;
     }
 }
@@ -77,16 +68,16 @@ class AFeralScream extends EntityAction {
                     + "higher rotational differences than 90 degrees");
         }
 
-        this.maxRotationalDifference =
-                (float) Math.toRadians(maxRotationalDifference);
+        this.maxRotationalDifference
+                = (float) Math.toRadians(maxRotationalDifference);
         setTypeId(Venator.ACTION_FERALSCREAM);
     }
 
     @Override
     public boolean update(float tpf) {
         // TODO: Replace with Selector.coneSelect
-        CCharacterPhysics physicsControl =
-                spatial.getControl(CCharacterPhysics.class);
+        CCharacterPhysics physicsControl
+                = spatial.getControl(CCharacterPhysics.class);
 
         Vector3f targetLocation = physicsControl.getTargetLocation();
         final Vector3f viewDirection = targetLocation
@@ -109,19 +100,19 @@ class AFeralScream extends EntityAction {
                 spatial.getLocalTranslation().dot(rightNormal));
 
         int myTeam = spatial.getUserData(UserData.TEAM_ID);
-        
+
         List<SpatialDistancePair> spatialDistances = Selector
                 .getSpatialsWithinDistance(new ArrayList<SpatialDistancePair>(),
-                spatial, range, new Selector.IsCharacterOfOtherTeam(myTeam));
+                        spatial, range, new Selector.IsCharacterOfOtherTeam(myTeam));
 
         FearCC.MyBuilder fearBuilder = new FearCC.MyBuilder(2f);
         fearBuilder.setOwnerInterface(
                 spatial.getControl(CInfluenceInterface.class));
 
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
-            CInfluenceInterface influenceInterface =
-                    spatialDistancePair.spatial
-                    .getControl(CInfluenceInterface.class);           
+            CInfluenceInterface influenceInterface
+                    = spatialDistancePair.spatial
+                    .getControl(CInfluenceInterface.class);
 
             if (!Selector.isInCone(leftPlane, rightPlane,
                     spatialDistancePair.spatial)) {

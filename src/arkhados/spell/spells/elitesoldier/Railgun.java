@@ -16,7 +16,6 @@ package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
 import arkhados.World;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
@@ -24,7 +23,6 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -60,13 +58,10 @@ public class Railgun extends Spell {
 
         final Railgun spell = new Railgun("Railgun", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastProjectile action = new ACastProjectile(spell, world);
-                action.setTypeId(EliteSoldier.ACTION_RAILGUN);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastProjectile action = new ACastProjectile(spell, world);
+            action.setTypeId(EliteSoldier.ACTION_RAILGUN);
+            return action;
         };
 
         spell.nodeBuilder = new RailgunBuilder();

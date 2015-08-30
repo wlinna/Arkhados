@@ -15,18 +15,16 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.MagmaReleaseBuff;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -71,18 +69,15 @@ public class MagmaRelease extends Spell {
         final MagmaRelease spell =
                 new MagmaRelease("Magma Release", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastProjectile castProjectile =
-                        new ACastProjectile(spell, Spell.world);
-                AbstractBuffBuilder ignite =
-                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
-                if (ignite != null) {
-                    castProjectile.addBuff(ignite);
-                }
-                return castProjectile;
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastProjectile castProjectile =
+                    new ACastProjectile(spell, Spell.world);
+            AbstractBuffBuilder ignite =
+                    Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            if (ignite != null) {
+                castProjectile.addBuff(ignite);
             }
+            return castProjectile;
         };
 
         spell.nodeBuilder = new MagmaReleaseBuilder();
@@ -177,8 +172,7 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            AFireballRemoval removalAction =
-                    new AFireballRemoval(assetManager);
+            AFireballRemoval removalAction = new AFireballRemoval();
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smoke);
 
@@ -220,13 +214,12 @@ class AMagmaReleaseRemoval implements ARemovalEvent {
 
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
-    private AssetManager assetManager;
-    private AudioNode sound;
+    private final AssetManager assets;
+    private final AudioNode sound;
 
-    public AMagmaReleaseRemoval(AssetManager assetManager) {
-        this.assetManager = assetManager;
-        sound = new AudioNode(assetManager,
-                "Effects/Sound/FireballExplosion.wav");
+    public AMagmaReleaseRemoval() {
+        assets = Globals.assets;
+        sound = new AudioNode(assets, "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
@@ -246,10 +239,10 @@ class AMagmaReleaseRemoval implements ARemovalEvent {
     private void createSmokePuff(Node worldRoot, Vector3f worldTranslation) {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
-        Material materialGray = new Material(assetManager,
+        Material materialGray = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         smokePuff.setMaterial(materialGray);
         smokePuff.setImagesX(2);
         smokePuff.setImagesY(2);

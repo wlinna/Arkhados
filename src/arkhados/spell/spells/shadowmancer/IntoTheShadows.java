@@ -17,13 +17,10 @@ package arkhados.spell.spells.shadowmancer;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
 import arkhados.World;
-import arkhados.actions.ACastingSpell;
-import arkhados.actions.AChannelingSpell;
 import arkhados.actions.ADelay;
 import arkhados.actions.ASplash;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
-import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CGenericSync;
 import arkhados.controls.CSpellBuff;
@@ -31,9 +28,7 @@ import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.spells.embermage.Meteor;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.DistanceScaling;
@@ -72,13 +67,10 @@ public class IntoTheShadows extends Spell {
         final IntoTheShadows spell = new IntoTheShadows("Into the Shadows",
                 cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastIntoTheShadows castAction =
-                        new ACastIntoTheShadows(spell, world);
-                return castAction;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastIntoTheShadows castAction =
+                    new ACastIntoTheShadows(spell, world);
+            return castAction;
         };
 
         spell.nodeBuilder = new IntoTheShadowsBuilder();

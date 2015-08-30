@@ -14,11 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.shadowmancer;
 
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastBuff;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -48,17 +46,14 @@ public class Shadow extends Spell {
 
         final Shadow spell = new Shadow("Shadow", cooldown,
                 range, castTime);
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastBuff action = new ACastBuff(spell, range);
-                AbstractBuffBuilder shadow =
-                        new ShadowBuff.MyBuilder(DURATION);
-                action.addBuff(shadow);
-                action.addBuff(new SilenceCC.MyBuilder(DURATION));
-
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastBuff action = new ACastBuff(spell, range);
+            AbstractBuffBuilder shadow =
+                    new ShadowBuff.MyBuilder(DURATION);
+            action.addBuff(shadow);
+            action.addBuff(new SilenceCC.MyBuilder(DURATION));
+            
+            return action;
         };
 
         spell.nodeBuilder = null;

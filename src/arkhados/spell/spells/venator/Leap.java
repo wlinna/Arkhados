@@ -23,15 +23,12 @@ import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
-import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
@@ -39,10 +36,6 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class Leap extends Spell {
 
     {
@@ -60,12 +53,8 @@ public class Leap extends Spell {
 
         final Leap spell = new Leap("Leap", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastLeap(spell);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new ACastLeap(spell);
         spell.nodeBuilder = null;
 
         return spell;
@@ -74,7 +63,7 @@ public class Leap extends Spell {
 
 class ACastLeap extends EntityAction {
 
-    private float forwardSpeed = 130f;
+    private final float forwardSpeed = 130f;
     private final Spell spell;
     private boolean motionSet = false;
     private Vector3f direction;
@@ -85,8 +74,8 @@ class ACastLeap extends EntityAction {
     }
 
     private void motionPathVersion() {
-        final CCharacterPhysics physics =
-                spatial.getControl(CCharacterPhysics.class);
+        final CCharacterPhysics physics
+                = spatial.getControl(CCharacterPhysics.class);
         physics.switchToMotionCollisionMode();
 
         // We set y to 1 to prevent ground collision on start
@@ -98,7 +87,7 @@ class ACastLeap extends EntityAction {
         path.addWayPoint(startLocation);
         path.addWayPoint(spatial.getLocalTranslation().add(finalLocation)
                 .divideLocal(2).setY(
-                finalLocation.distance(startLocation) / 2f));
+                        finalLocation.distance(startLocation) / 2f));
         path.addWayPoint(finalLocation);
 
         path.setPathSplineType(Spline.SplineType.CatmullRom);
@@ -112,66 +101,62 @@ class ACastLeap extends EntityAction {
         direction = finalLocation.subtract(startLocation);
         physics.setViewDirection(direction);
 
-        path.addListener(new MotionPathListener() {
-            private void landingEffect() {
-                int myTeamId = spatial.getUserData(UserData.TEAM_ID);
-                List<SpatialDistancePair> spatialsOnDistance =
-                        Selector.getSpatialsWithinDistance(
-                        new ArrayList<SpatialDistancePair>(), spatial, 17.5f,
-                        new Selector.IsCharacterOfOtherTeam(myTeamId));
-
-                SpatialDistancePair pairSmallestDistance = null;
-                for (SpatialDistancePair pair : spatialsOnDistance) {
-                    // Check if spatial is character
-
-                    if (pairSmallestDistance == null
-                            || pair.distance < pairSmallestDistance.distance) {
-                        pairSmallestDistance = pair;
-                    }
-                }
-
-                if (pairSmallestDistance != null) {
-                    EntityAction currentAction = pairSmallestDistance.spatial
-                            .getControl(CActionQueue.class).getCurrent();
-
-                    if (currentAction != null
-                            && currentAction instanceof ATrance) {
-                        ((ATrance) currentAction).activate(spatial);
-                        return;
-                    }
-
-                    float damageFactor =
-                            spatial.getUserData(UserData.DAMAGE_FACTOR);
-                    float damage = 200f * damageFactor;
-
-                    List<AbstractBuffBuilder> buffs = new ArrayList<>(1);
-                    buffs.add(0, new IncapacitateCC.MyBuilder(1f));
-
-                    CInfluenceInterface myInterface =
-                            spatial.getControl(CInfluenceInterface.class);
-                    CInfluenceInterface targetInterface =
-                            pairSmallestDistance.spatial
-                            .getControl(CInfluenceInterface.class);
-
-                    CharacterInteraction.harm(myInterface, targetInterface,
-                            damage, buffs, true);
-                }
-            }
-
-            @Override
-            public void onWayPointReach(MotionEvent cMotion, int index) {
-                if (index == path.getNbWayPoints() - 2) {
-                } else if (index == path.getNbWayPoints() - 1) {
-                    physics.switchToNormalPhysicsMode();
-                    spatial.getControl(CActionQueue.class).enqueueAction(
-                            new AChangeAnimation(Venator.ANIM_LAND));
-                    landingEffect();
-                    motionPending = false;
-                }
+        path.addListener((MotionEvent cMotion, int index) -> {
+            if (index == path.getNbWayPoints() - 2) {
+            } else if (index == path.getNbWayPoints() - 1) {
+                physics.switchToNormalPhysicsMode();
+                spatial.getControl(CActionQueue.class).enqueueAction(
+                        new AChangeAnimation(Venator.ANIM_LAND));
+                landingEffect();
+                motionPending = false;
             }
         });
 
         motionControl.play();
+    }
+
+    private void landingEffect() {
+        int myTeamId = spatial.getUserData(UserData.TEAM_ID);
+        List<SpatialDistancePair> spatialsOnDistance
+                = Selector.getSpatialsWithinDistance(
+                        new ArrayList<SpatialDistancePair>(), spatial, 17.5f,
+                        new Selector.IsCharacterOfOtherTeam(myTeamId));
+
+        SpatialDistancePair pairSmallestDistance = null;
+        for (SpatialDistancePair pair : spatialsOnDistance) {
+            // Check if spatial is character
+
+            if (pairSmallestDistance == null
+                    || pair.distance < pairSmallestDistance.distance) {
+                pairSmallestDistance = pair;
+            }
+        }
+
+        if (pairSmallestDistance != null) {
+            EntityAction currentAction = pairSmallestDistance.spatial
+                    .getControl(CActionQueue.class).getCurrent();
+
+            if (currentAction != null
+                    && currentAction instanceof ATrance) {
+                ((ATrance) currentAction).activate(spatial);
+                return;
+            }
+
+            float damageFactor  = spatial.getUserData(UserData.DAMAGE_FACTOR);
+            float damage = 200f * damageFactor;
+
+            List<AbstractBuffBuilder> buffs = new ArrayList<>(1);
+            buffs.add(0, new IncapacitateCC.MyBuilder(1f));
+
+            CInfluenceInterface myInterface
+                    = spatial.getControl(CInfluenceInterface.class);
+            CInfluenceInterface targetInterface
+                    = pairSmallestDistance.spatial
+                    .getControl(CInfluenceInterface.class);
+
+            CharacterInteraction.harm(myInterface, targetInterface,
+                    damage, buffs, true);
+        }
     }
 
     @Override
@@ -187,8 +172,6 @@ class ACastLeap extends EntityAction {
 
 /**
  * EntityAction that does nothing but chages animation by having name
- *
- * @author william
  */
 class AChangeAnimation extends EntityAction {
 

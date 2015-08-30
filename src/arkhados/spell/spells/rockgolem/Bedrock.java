@@ -14,9 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.rockgolem;
 
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastSelfBuff;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.SlowCC;
@@ -50,14 +48,11 @@ public class Bedrock extends Spell {
         final SlowCC.MyBuilder slowBuilder = new SlowCC.MyBuilder(4f, 0.33f);
         slowBuilder.setTypeId(-1);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastSelfBuff action = new ACastSelfBuff();
-                action.addBuff(armorBuilder);
-                action.addBuff(slowBuilder);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastSelfBuff action = new ACastSelfBuff();
+            action.addBuff(armorBuilder);
+            action.addBuff(slowBuilder);
+            return action;
         };
 
         spell.nodeBuilder = null;

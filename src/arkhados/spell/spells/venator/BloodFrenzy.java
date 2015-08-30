@@ -14,9 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastSelfBuff;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageBuff;
@@ -33,7 +31,7 @@ public class BloodFrenzy extends Spell {
     }
 
     public static Spell create() {
-        final BloodFrenzy spell = new BloodFrenzy("Blood Frenzy",
+        BloodFrenzy spell = new BloodFrenzy("Blood Frenzy",
                 SurvivalInstinct.COOLDOWN, 0f, SurvivalInstinct.CAST_TIME);
 
         final AbstractBuffBuilder lifeStealBuff = new LifeStealBuff.MyBuilder(
@@ -44,14 +42,11 @@ public class BloodFrenzy extends Spell {
         final AbstractBuffBuilder damageBuff =
                 new DamageBuff.MyBuilder(SurvivalInstinct.DURATION, -0.5f);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastSelfBuff buffAction = new ACastSelfBuff();
-                buffAction.addBuff(lifeStealBuff);
-                buffAction.addBuff(damageBuff);
-                return buffAction;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastSelfBuff buffAction = new ACastSelfBuff();
+            buffAction.addBuff(lifeStealBuff);
+            buffAction.addBuff(damageBuff);
+            return buffAction;
         };
 
         return spell;

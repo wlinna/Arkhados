@@ -15,8 +15,8 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
-import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
@@ -25,7 +25,6 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.ArmorBuff;
 import arkhados.spell.buffs.HealOverTimeBuff;
@@ -33,7 +32,6 @@ import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -72,15 +70,11 @@ public class DarkEnergy extends Spell {
         final DarkEnergy spell = new DarkEnergy("Dark Energy",
                 cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastProjectile castProjectile =
-                        new ACastProjectile(spell, world);
-                castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
-                castProjectile.detonateAtTarget(true);
-                return castProjectile;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastProjectile castProjectile = new ACastProjectile(spell, world);
+            castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
+            castProjectile.detonateAtTarget(true);
+            return castProjectile;
         };
 
         spell.nodeBuilder = new EnergyBuilder();
@@ -98,7 +92,8 @@ class EnergyBuilder extends AbstractNodeBuilder {
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
                 assetManager.loadTexture("Effects/flame_alpha.png"));
-        material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        material.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
         energy.setMaterial(material);
         energy.setImagesX(2);
         energy.setImagesY(2);
@@ -143,7 +138,7 @@ class EnergyBuilder extends AbstractNodeBuilder {
 
             node.addControl(new CEntityEvent());
 
-            AEnergyRemoval removalAction = new AEnergyRemoval(assetManager);
+            AEnergyRemoval removalAction = new AEnergyRemoval();
             removalAction.setEnergyEmitter(energy);
 
             node.getControl(CEntityEvent.class)
@@ -186,10 +181,10 @@ class EnergyBuilder extends AbstractNodeBuilder {
 class AEnergyRemoval implements ARemovalEvent {
 
     private ParticleEmitter dark;
-    private AudioNode sound;
+    private final AudioNode sound;
 
-    public AEnergyRemoval(AssetManager assetManager) {
-        sound = new AudioNode(assetManager,
+    public AEnergyRemoval() {
+        sound = new AudioNode(Globals.assets,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);

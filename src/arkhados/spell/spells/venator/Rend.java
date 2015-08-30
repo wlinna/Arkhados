@@ -20,7 +20,6 @@ import arkhados.actions.cast.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CSpellCast;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -43,14 +42,11 @@ public class Rend extends Spell {
         final Rend spell = new Rend("Rend", cooldown, range, castTime);
         spell.setCanMoveWhileCasting(true);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ADoubleMeleeAttack action =
-                        new ADoubleMeleeAttack(spell);
-                action.setTypeId(Venator.ANIM_SWIPE_LEFT);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ADoubleMeleeAttack action =
+                    new ADoubleMeleeAttack(spell);
+            action.setTypeId(Venator.ANIM_SWIPE_LEFT);
+            return action;
         };
 
         spell.nodeBuilder = null;

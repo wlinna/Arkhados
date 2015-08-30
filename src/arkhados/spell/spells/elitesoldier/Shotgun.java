@@ -20,7 +20,6 @@ import arkhados.characters.EliteSoldier;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.PelletBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.UserData;
@@ -52,13 +51,10 @@ public class Shotgun extends Spell {
 
         final Shotgun spell = new Shotgun("Shotgun", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastShotgun castShotgun =
-                        new ACastShotgun(spell, Spell.world);
-                return castShotgun;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastShotgun castShotgun =
+                    new ACastShotgun(spell, Spell.world);
+            return castShotgun;
         };
 
         spell.nodeBuilder = new PelletBuilder(35);

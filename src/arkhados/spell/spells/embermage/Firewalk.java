@@ -26,11 +26,8 @@ import arkhados.controls.PlayerEntityAwareness;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -39,7 +36,6 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.cinematic.MotionPath;
-import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -74,20 +70,17 @@ public class Firewalk extends Spell {
         final float cooldown = 9f;
         final float range = 90f;
         final float castTime = 0.15f;
-        final Firewalk spell =
-                new Firewalk("Firewalk", cooldown, range, castTime);
+        final Firewalk spell
+                = new Firewalk("Firewalk", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastFirewalk castAction = new ACastFirewalk(spell, world);
-                AbstractBuffBuilder ignite =
-                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
-                if (ignite != null) {
-                    castAction.additionalBuffs.add(ignite);
-                }
-                return castAction;
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastFirewalk castAction = new ACastFirewalk(spell, world);
+            AbstractBuffBuilder ignite
+                    = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            if (ignite != null) {
+                castAction.additionalBuffs.add(ignite);
             }
+            return castAction;
         };
 
         spell.nodeBuilder = new FirewalkNodeBuilder();
@@ -97,8 +90,8 @@ public class Firewalk extends Spell {
     private static class ACastFirewalk extends EntityAction {
 
         private final Spell spell;
-        private final List<AbstractBuffBuilder> additionalBuffs =
-                new ArrayList<>();
+        private final List<AbstractBuffBuilder> additionalBuffs
+                = new ArrayList<>();
         private final World world;
 
         public ACastFirewalk(Spell spell, World world) {
@@ -116,15 +109,15 @@ public class Firewalk extends Spell {
         }
 
         private void motion() {
-            Vector3f startLocation =
-                    spatial.getLocalTranslation().clone().setY(1f);
+            Vector3f startLocation
+                    = spatial.getLocalTranslation().clone().setY(1f);
             int playerId = spatial.getUserData(UserData.PLAYER_ID);
             final int firewalkId = world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
             Spatial firewalkNode = world.getEntity(firewalkId);
 
-            final PlayerEntityAwareness awareness =
-                    spatial.getControl(CEntityVariable.class).getAwareness();
+            final PlayerEntityAwareness awareness
+                    = spatial.getControl(CEntityVariable.class).getAwareness();
             awareness.setOwnSpatial(firewalkNode);
 
             CSpellBuff buffControl = firewalkNode.getControl(CSpellBuff.class);
@@ -136,8 +129,8 @@ public class Firewalk extends Spell {
             path.setPathSplineType(Spline.SplineType.Linear);
 
             CSpellCast castControl = spatial.getControl(CSpellCast.class);
-            final Vector3f finalLocation =
-                    castControl.getClosestPointToTarget(spell).setY(1f);
+            final Vector3f finalLocation
+                    = castControl.getClosestPointToTarget(spell).setY(1f);
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
 
@@ -148,16 +141,12 @@ public class Firewalk extends Spell {
 
             final int id = spatial.getUserData(UserData.ENTITY_ID);
             world.temporarilyRemoveEntity(id);
-            path.addListener(new MotionPathListener() {
-                @Override
-                public void onWayPointReach(MotionEvent motionControl,
-                        int wayPointIndex) {
-                    if (path.getNbWayPoints() == wayPointIndex + 1) {
-                        world.restoreTemporarilyRemovedEntity(id, finalLocation,
-                                spatial.getLocalRotation());
-                        world.removeEntity(firewalkId, -1);
-                        awareness.setOwnSpatial(spatial);
-                    }
+            path.addListener((MotionEvent cMotion, int wayPointIndex) -> {
+                if (path.getNbWayPoints() == wayPointIndex + 1) {
+                    world.restoreTemporarilyRemovedEntity(id, finalLocation,
+                            spatial.getLocalRotation());
+                    world.removeEntity(firewalkId, -1);
+                    awareness.setOwnSpatial(spatial);
                 }
             });
 
@@ -225,8 +214,8 @@ public class Firewalk extends Spell {
             node.addControl(new CGenericSync());
 
             if (world.isServer()) {
-                SphereCollisionShape collisionShape =
-                        new SphereCollisionShape(8f);
+                SphereCollisionShape collisionShape
+                        = new SphereCollisionShape(8f);
 
                 GhostControl ghost = new GhostControl(collisionShape);
                 ghost.setCollisionGroup(CollisionGroups.NONE);
@@ -258,13 +247,13 @@ class CFirewalkCollisionHandler extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        List<PhysicsCollisionObject> collisionObjects =
-                ghost.getOverlappingObjects();
+        List<PhysicsCollisionObject> collisionObjects
+                = ghost.getOverlappingObjects();
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
-                Integer entityId =
-                        spatial.getUserData(UserData.ENTITY_ID);
+                Integer entityId
+                        = spatial.getUserData(UserData.ENTITY_ID);
                 if (collidedWith.contains(entityId)) {
                     continue;
                 }
@@ -276,8 +265,8 @@ class CFirewalkCollisionHandler extends AbstractControl {
     }
 
     private void collisionEffect(Spatial target) {
-        CInfluenceInterface targetInterface =
-                target.getControl(CInfluenceInterface.class);
+        CInfluenceInterface targetInterface
+                = target.getControl(CInfluenceInterface.class);
         if (targetInterface == null) {
             return;
         }

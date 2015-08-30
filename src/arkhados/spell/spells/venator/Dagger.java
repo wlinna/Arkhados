@@ -14,9 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -38,12 +36,8 @@ public class Dagger extends Spell {
         final Dagger spell = new Dagger("Damaging Dagger", cooldown,
                 range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastProjectile(spell, world);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) ->
+                new ACastProjectile(spell, world);
 
         spell.nodeBuilder = new DaggerBuilder(true);
 

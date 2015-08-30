@@ -64,13 +64,10 @@ public class MagmaBash extends Spell {
         final MagmaBash spell = new MagmaBash("Magma Bash", cooldown, range,
                 castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastProjectile action =
-                        new ACastProjectile(spell, world);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastProjectile action =
+                    new ACastProjectile(spell, world);
+            return action;
         };
 
         spell.nodeBuilder = new MagmaBashBuilder();

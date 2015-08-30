@@ -14,10 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -53,14 +51,11 @@ public class SurvivalInstinct extends Spell {
         final AbstractBuffBuilder speedBuilder =
                 new MovementSpeedPerHealthMissingBuff.MyBuilder(DURATION);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastSelfBuff buffAction = new ACastSelfBuff();
-                buffAction.addBuff(damageBuff);
-                buffAction.addBuff(speedBuilder);
-                return buffAction;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastSelfBuff buffAction = new ACastSelfBuff();
+            buffAction.addBuff(damageBuff);
+            buffAction.addBuff(speedBuilder);
+            return buffAction;
         };
 
         spell.nodeBuilder = null;

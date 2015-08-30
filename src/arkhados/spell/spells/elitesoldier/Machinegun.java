@@ -22,7 +22,6 @@ import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEliteSoldierAmmunition;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.PelletBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.UserData;
@@ -51,14 +50,11 @@ public class Machinegun extends Spell {
         final Machinegun spell = new Machinegun("Machinegun", cooldown,
                 range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                AShootBullet shoot = new AShootBullet(spell, world);
-                AChannelingSpell channeling =
-                        new AChannelingSpell(spell, 10, 0.16f, shoot);
-                return channeling;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            AShootBullet shoot = new AShootBullet(spell, world);
+            AChannelingSpell channeling =
+                    new AChannelingSpell(spell, 10, 0.16f, shoot);
+            return channeling;
         };
 
         spell.nodeBuilder = new PelletBuilder(40);

@@ -21,7 +21,6 @@ import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -31,10 +30,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
+
 public class DeepWounds extends Spell {
 
     {
@@ -55,12 +51,8 @@ public class DeepWounds extends Spell {
         final DeepWounds spell = new DeepWounds("Deep Wounds", cooldown, range,
                 castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastDeepWounds(spell);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new ACastDeepWounds(spell);
 
         return spell;
     }

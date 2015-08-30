@@ -17,7 +17,6 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
 import arkhados.World;
-import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
@@ -26,7 +25,6 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
 import arkhados.util.AbstractNodeBuilder;
@@ -61,7 +59,8 @@ public class RocketLauncher extends Spell {
         setMoveTowardsTarget(false);
     }
 
-    public RocketLauncher(String name, float cooldown, float range, float castTime) {
+    public RocketLauncher(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -73,14 +72,11 @@ public class RocketLauncher extends Spell {
         final RocketLauncher spell = new RocketLauncher("Rocket Launcher",
                 cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastProjectile castProjectile =
-                        new ACastProjectile(spell, world);
-                castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
-                return castProjectile;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastProjectile castProjectile =
+                    new ACastProjectile(spell, world);
+            castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
+            return castProjectile;
         };
 
         spell.nodeBuilder = new RocketBuilder();

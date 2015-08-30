@@ -16,12 +16,10 @@ package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -45,7 +43,8 @@ public class ShadowSickness extends Spell {
         iconName = "damaging_dagger.png";
     }
 
-    public ShadowSickness(String name, float cooldown, float range, float castTime) {
+    public ShadowSickness(String name, float cooldown, float range,
+            float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -57,12 +56,8 @@ public class ShadowSickness extends Spell {
         final ShadowSickness spell = new ShadowSickness("Shadow Sickness",
                 cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastProjectile(spell, world);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) ->
+                new ACastProjectile(spell, world);
 
         spell.nodeBuilder = new SicknessBuilder();
 

@@ -26,7 +26,6 @@ import arkhados.controls.CEntityVariable;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.messages.CmdWorldEffect;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
 import arkhados.util.UserData;
@@ -58,12 +57,8 @@ public class Toss extends Spell {
 
         final Toss toss = new Toss("Toss", cooldown, range, castTime);
 
-        toss.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastToss(toss);
-            }
-        };
+        toss.castSpellActionBuilder = (Node caster, Vector3f vec) 
+                -> new ACastToss(toss);
 
         toss.nodeBuilder = null;
         return toss;
@@ -74,7 +69,7 @@ public class Toss extends Spell {
 
 class ACastToss extends EntityAction {
 
-    private Spell spell;
+    private final Spell spell;
 
     public ACastToss(Spell spell) {
         this.spell = spell;
@@ -92,7 +87,7 @@ class ACastToss extends EntityAction {
 
 class AToss extends EntityAction {
 
-    private Spell spell;
+    private final Spell spell;
     private final float forwardSpeed = 105f;
 
     public AToss(Spell spell) {

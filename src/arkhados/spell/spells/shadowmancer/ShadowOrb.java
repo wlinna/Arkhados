@@ -15,22 +15,19 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -67,13 +64,10 @@ public class ShadowOrb extends Spell {
         final ShadowOrb spell =
                 new ShadowOrb("Shadow Orb", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastProjectile castProjectile =
-                        new ACastProjectile(spell, Spell.world);
-                return castProjectile;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastProjectile castProjectile =
+                    new ACastProjectile(spell, Spell.world);
+            return castProjectile;
         };
 
         spell.nodeBuilder = new OrbBuilder();
@@ -134,12 +128,10 @@ class OrbBuilder extends AbstractNodeBuilder {
             
             node.addControl(new CEntityEvent());
             
-            AOrbRemoval removalAction =
-                    new AOrbRemoval(assetManager);
+            AOrbRemoval removalAction = new AOrbRemoval();
             removalAction.setPurpleEmitter(purple);
 
-            node.getControl(CEntityEvent.class)
-                    .setOnRemoval(removalAction);
+            node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(3);
@@ -174,10 +166,10 @@ class OrbBuilder extends AbstractNodeBuilder {
 class AOrbRemoval implements ARemovalEvent {
 
     private ParticleEmitter purple;
-    private AudioNode sound;
+    private final AudioNode sound;
 
-    public AOrbRemoval(AssetManager assetManager) {
-        sound = new AudioNode(assetManager,
+    public AOrbRemoval() {
+        sound = new AudioNode(Globals.assets,
                 "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);

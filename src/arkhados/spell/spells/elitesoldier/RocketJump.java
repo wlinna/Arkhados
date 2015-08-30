@@ -20,7 +20,6 @@ import arkhados.characters.EliteSoldier;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
 import arkhados.util.UserData;
@@ -52,12 +51,9 @@ public class RocketJump extends Spell {
         final RocketJump spell =
                 new RocketJump("Rocket Jump", cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                EntityAction action = new ACastRocketJump(spell);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            EntityAction action = new ACastRocketJump(spell);
+            return action;
         };
 
         spell.nodeBuilder = null;

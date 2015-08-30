@@ -15,11 +15,9 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CollisionGroups;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.PetrifyCC;
 import arkhados.util.AbstractNodeBuilder;
@@ -49,12 +47,9 @@ public class SealingBoulder extends Spell {
 
         final SealingBoulder spell =
                 new SealingBoulder("SealingBoulder", cooldown, range, castTime);
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastProjectile action = new ACastProjectile(spell, world);
-                return action;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastProjectile action = new ACastProjectile(spell, world);
+            return action;
         };
 
         spell.nodeBuilder = new SealingBoulderBuilder();

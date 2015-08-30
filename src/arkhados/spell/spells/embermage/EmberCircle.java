@@ -23,10 +23,8 @@ import arkhados.controls.CAreaEffect;
 import arkhados.controls.CTimedExistence;
 import arkhados.controls.CVisibility;
 import arkhados.effects.EmitterCircleShape;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.influences.DamageOverTimeInfluence;
 import arkhados.spell.influences.SlowInfluence;
 import arkhados.util.AbstractNodeBuilder;
@@ -70,17 +68,14 @@ public class EmberCircle extends Spell {
         final EmberCircle spell = new EmberCircle("Ember Circle", cooldown,
                 range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastOnGround castOnGround = new ACastOnGround(world, spell);
-                AbstractBuffBuilder ignite =
-                        Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
-                if (ignite != null) {
-                    castOnGround.addEnterBuff(ignite);
-                }
-                return castOnGround;
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastOnGround castOnGround = new ACastOnGround(world, spell);
+            AbstractBuffBuilder ignite =
+                    Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            if (ignite != null) {
+                castOnGround.addEnterBuff(ignite);
             }
+            return castOnGround;
         };
 
         spell.nodeBuilder = new EmberCircleBuilder();

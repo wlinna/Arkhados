@@ -14,11 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastSelfBuff;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEliteSoldierAmmunition;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbleToCastWhileMovingBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -54,24 +52,21 @@ public class LikeAPro extends Spell {
         final SpeedBuff.MyBuilder speedBuilder =
                 new SpeedBuff.MyBuilder(0, 6, 5);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                ACastSelfBuff buffAction = new ACastSelfBuff();
-                buffAction.setTypeId(EliteSoldier.ACTION_LIKE_A_PRO);
-                AbleToCastWhileMovingBuff.MyBuilder likeAPro =
-                        new AbleToCastWhileMovingBuff.MyBuilder(5f);
-                likeAPro.setName("Like a Pro");
-                likeAPro.setTypeId(BuffTypeIds.LIKE_A_PRO);
-                buffAction.addBuff(likeAPro);
-                buffAction.addBuff(speedBuilder);
-                buffAction.addBuff(armorBuilder);
-
-                CEliteSoldierAmmunition ammunitionControl =
-                        caster.getControl(CEliteSoldierAmmunition.class);
-                ammunitionControl.likeAPro();
-                return buffAction;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            ACastSelfBuff buffAction = new ACastSelfBuff();
+            buffAction.setTypeId(EliteSoldier.ACTION_LIKE_A_PRO);
+            AbleToCastWhileMovingBuff.MyBuilder likeAPro =
+                    new AbleToCastWhileMovingBuff.MyBuilder(5f);
+            likeAPro.setName("Like a Pro");
+            likeAPro.setTypeId(BuffTypeIds.LIKE_A_PRO);
+            buffAction.addBuff(likeAPro);
+            buffAction.addBuff(speedBuilder);
+            buffAction.addBuff(armorBuilder);
+            
+            CEliteSoldierAmmunition ammunitionControl =
+                    caster.getControl(CEliteSoldierAmmunition.class);
+            ammunitionControl.likeAPro();
+            return buffAction;
         };
 
         spell.nodeBuilder = null;

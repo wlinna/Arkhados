@@ -15,11 +15,9 @@
 package arkhados.spell.spells.shadowmancer;
 
 import arkhados.CollisionGroups;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -49,12 +47,8 @@ public class DarkSpear extends Spell {
         final DarkSpear spell = new DarkSpear("Dark Spear", cooldown,
                 range, castTime);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ACastProjectile(spell, world);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec) 
+                -> new ACastProjectile(spell, world);
 
         spell.nodeBuilder = new SpearBuilder();
 

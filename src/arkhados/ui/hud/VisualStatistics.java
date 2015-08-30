@@ -38,7 +38,7 @@ public class VisualStatistics implements ActionListener {
     private Nifty nifty;
     private Screen screen;
     private AppStateManager stateManager;
-    private List<Element> statisticsPanels = new ArrayList<>();
+    private final List<Element> statisticsPanels = new ArrayList<>();
     private List<PlayerRoundStats> latestStatsList = null;
 
     void initialize(Application app) {
@@ -51,7 +51,7 @@ public class VisualStatistics implements ActionListener {
 
     void setLatestStatsList(List<PlayerRoundStats> latestStatsList) {
         this.latestStatsList = latestStatsList;
-        Element statisticsLayer = screen.findElementByName("layer_statistics");
+        Element statisticsLayer = screen.findElementById("layer_statistics");
 
         if (statisticsLayer.isVisible()) {
             update();
@@ -63,16 +63,16 @@ public class VisualStatistics implements ActionListener {
         Sender sender = stateManager.getState(Sender.class);
         sender.addCommand(
                 new CmdTopicOnly(Topic.BATTLE_STATISTICS_REQUEST));
-        screen.findElementByName("layer_statistics").show();
+        screen.findElementById("layer_statistics").show();
     }
 
     void hide() {
-        screen.findElementByName("layer_statistics").hideWithoutEffect();
+        screen.findElementById("layer_statistics").hideWithoutEffect();
     }
 
     private void initializePlayerStatisticsPanels() {
         clean();
-        Element statisticsPanel = screen.findElementByName("panel_statistics");
+        Element statisticsPanel = screen.findElementById("panel_statistics");
         List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
             statisticsPanels.add(new PlayerStatisticsPanelBuilder(

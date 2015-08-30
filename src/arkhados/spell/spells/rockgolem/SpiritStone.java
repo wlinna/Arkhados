@@ -22,7 +22,6 @@ import arkhados.controls.CRotation;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.influences.SlowInfluence;
 import arkhados.spell.influences.SpeedInfluence;
@@ -37,10 +36,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class SpiritStone extends Spell {
 
     static final float COOLDOWN = 8f;
@@ -57,15 +52,11 @@ public class SpiritStone extends Spell {
     }
 
     public static Spell create() {
-        final SpiritStone spell =
-                new SpiritStone("Spirit Stone", COOLDOWN, RANGE, CAST_TIME);
+        final SpiritStone spell
+                = new SpiritStone("Spirit Stone", COOLDOWN, RANGE, CAST_TIME);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f vec) {
-                return new ASpiritStoneCast(spell, world);
-            }
-        };
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new ASpiritStoneCast(spell, world);
 
         spell.nodeBuilder = new SpiritStoneBuilder(true);
 
@@ -76,13 +67,11 @@ public class SpiritStone extends Spell {
 /**
  * SpiritStoneCastAction. NOTE: This is very much like CastOnGroundAction.
  * Consider reusing that one
- *
- * @author william
  */
 class ASpiritStoneCast extends EntityAction {
 
-    private Spell spell;
-    private World world;
+    private final Spell spell;
+    private final World world;
 
     public ASpiritStoneCast(Spell spell, World world) {
         this.spell = spell;
@@ -136,11 +125,10 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 //            sound.setVolume(1f);
 //            sound.play();
 //        }
-
         SphereCollisionShape collisionShape = new SphereCollisionShape(5f);
-        CSpiritStonePhysics physicsBody =
-                new CSpiritStonePhysics(collisionShape,
-                (float) node.getUserData(UserData.MASS), world);
+        CSpiritStonePhysics physicsBody
+                = new CSpiritStonePhysics(collisionShape,
+                        (float) node.getUserData(UserData.MASS), world);
         node.addControl(physicsBody);
         physicsBody.setCollisionGroup(CollisionGroups.SPIRIT_STONE);
         physicsBody.removeCollideWithGroup(CollisionGroups.SPIRIT_STONE);

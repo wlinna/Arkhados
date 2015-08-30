@@ -17,7 +17,6 @@ package arkhados.spell.spells.elitesoldier;
 import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.AChannelingSpell;
-import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
@@ -26,7 +25,6 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.DistanceScaling;
@@ -70,16 +68,13 @@ public class Plasmagun extends Spell {
         final Plasmagun spell =
                 new Plasmagun("Plasmagun", COOLDOWN, RANGE, CAST_TIME);
 
-        spell.castSpellActionBuilder = new CastSpellActionBuilder() {
-            @Override
-            public EntityAction newAction(Node caster, Vector3f location) {
-                ACastProjectile projectileAction = 
-                        new ACastProjectile(spell, world);
-                projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
-                AChannelingSpell channel = new AChannelingSpell(spell,
-                        3, 0.12f, projectileAction, true);
-                return channel;
-            }
+        spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
+            ACastProjectile projectileAction =
+                    new ACastProjectile(spell, world);
+            projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
+            AChannelingSpell channel = new AChannelingSpell(spell,
+                    3, 0.12f, projectileAction, true);
+            return channel;
         };
 
         spell.nodeBuilder = new PlasmaBuilder();
