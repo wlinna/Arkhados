@@ -76,12 +76,12 @@ public class DeathmatchCommon {
     }
     private Application app;
     private World world;
-    private AppStateManager stateManager;
+    private AppStateManager states;
     private Sync sync;
     private final AudioQueue audioQueue = new AudioQueue();
     private boolean firstBloodHappened;
     private float respawnTime;
-    private final HashMap<Integer, DeathMatchPlayerTracker> trackers
+    private final Map<Integer, DeathMatchPlayerTracker> trackers
             = new HashMap<>();
     private int killLimit;
     private final HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
@@ -90,9 +90,9 @@ public class DeathmatchCommon {
 
     void initialize(Application app) {
         this.app = app;
-        stateManager = app.getStateManager();
-        world = stateManager.getState(World.class);
-        sync = stateManager.getState(Sync.class);
+        states = app.getStateManager();
+        world = states.getState(World.class);
+        sync = states.getState(Sync.class);
 
         CharacterInteraction.startNewRound();
 
@@ -100,13 +100,13 @@ public class DeathmatchCommon {
 
         firstBloodHappened = false;
 
-        if (stateManager.getState(Sender.class).isServer()) {
+        if (states.getState(Sender.class).isServer()) {
             sync.setEnabled(true);
             sync.startListening();
             Globals.worldRunning = true;
         } else {
-            stateManager.getState(UserCommandManager.class).setEnabled(true);
-            stateManager.getState(ClientHud.class).clearMessages();
+            states.getState(UserCommandManager.class).setEnabled(true);
+            states.getState(ClientHud.class).clearMessages();
 
             preloadAnnouncer();
         }
@@ -128,10 +128,9 @@ public class DeathmatchCommon {
                 .build(nifty, screen, screen.getRootElement());
         heroSelectionLayer.hideWithoutEffect();
 
-        DeathMatchHeroSelectionLayerController control
-                = heroSelectionLayer.getControl(
-                        DeathMatchHeroSelectionLayerController.class);
-        control.setStateManager(stateManager);
+        DeathMatchHeroSelectionLayerController control = heroSelectionLayer
+                .getControl(DeathMatchHeroSelectionLayerController.class);
+        control.setStateManager(states);
     }
 
     void update(float tpf) {
@@ -159,8 +158,7 @@ public class DeathmatchCommon {
         switch (command.getTopicId()) {
             case Topic.CLIENT_WORLD_CREATED:
                 if (firstBloodHappened) {
-                    ServerSender sender
-                            = stateManager.getState(ServerSender.class);
+                    ServerSender sender = states.getState(ServerSender.class);
                     sender.addCommandForSingle(
                             new CmdTopicOnly(Topic.FIRST_BLOOD_HAPPENED),
                             source);
@@ -179,7 +177,7 @@ public class DeathmatchCommon {
 
         canPickHeroMap.put(playerId, Boolean.TRUE);
 
-        Sender sender = stateManager.getState(ServerSender.class);
+        Sender sender = states.getState(ServerSender.class);
 
         int killingSpree = 0;
         int combo = 0;
@@ -191,15 +189,13 @@ public class DeathmatchCommon {
             combo = killer.getCombo();
         }
 
-        sender.addCommand(
-                new CmdPlayerKill(playerId, killersPlayerId,
-                        killingSpree, combo, endedSpree));
+        sender.addCommand(new CmdPlayerKill(playerId, killersPlayerId,
+                killingSpree, combo, endedSpree));
     }
 
     void clientPlayerDied(int playerId, int killersId,
             int killingSpree, int combo, int endedSpree) {
-        int myPlayerId
-                = stateManager.getState(UserCommandManager.class).getPlayerId();
+        int myPlayer = states.getState(UserCommandManager.class).getPlayerId();
 
         String playerName = getPlayerName(playerId);
         String killerName = getPlayerName(killersId);
@@ -211,27 +207,26 @@ public class DeathmatchCommon {
         comboMessage(killerName, combo);
 
         killingSpreeMessage(killerName, killingSpree);
-        if (playerId == myPlayerId) {
+        if (playerId == myPlayer) {
             handleOwnDeath();
         }
     }
 
     void preparePlayer(final int playerId) {
         app.enqueue(() -> {
-            DeathMatchPlayerTracker tracker
-                    = new DeathMatchPlayerTracker(0.5f);
+            DeathMatchPlayerTracker tracker = new DeathMatchPlayerTracker(0.5f);
             getTrackers().put(playerId, tracker);
-            
-            ServerFog fog = stateManager.getState(ServerFog.class);
+
+            ServerFog fog = states.getState(ServerFog.class);
             if (fog != null) { // Same as asking for if this is server
                 PlayerEntityAwareness awareness
                         = fog.createAwarenessForPlayer(playerId);
                 fog.teachAboutPrecedingEntities(awareness);
-                
+
                 getCanPickHeroMap().put(playerId, Boolean.TRUE);
                 CharacterInteraction.addPlayer(playerId);
             }
-            
+
             return null;
         });
     }
@@ -253,8 +248,7 @@ public class DeathmatchCommon {
                     .getIntData(playerId, PlayerData.ENTITY_ID);
             world.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
-            int teamId = PlayerData.getIntData(playerId,
-                    PlayerData.TEAM_ID);
+            int teamId = PlayerData.getIntData(playerId, PlayerData.TEAM_ID);
 
             Vector3f startingLocation = getNewSpawnLocation(teamId);
             PlayerData playerData = PlayerData.getPlayerId(playerId);
@@ -265,12 +259,10 @@ public class DeathmatchCommon {
                     startingLocation, new Quaternion(), playerId);
             playerData.setData(PlayerData.ENTITY_ID, entityId);
 
-            CmdSetPlayersCharacter playersCharacterCommand
+            CmdSetPlayersCharacter cmdPlayersCharacter
                     = new CmdSetPlayersCharacter(entityId, playerId);
 
-            stateManager
-                    .getState(ServerSender.class)
-                    .addCommand(playersCharacterCommand);
+            states.getState(ServerSender.class).addCommand(cmdPlayersCharacter);
 
             return null;
         };
@@ -284,11 +276,11 @@ public class DeathmatchCommon {
     }
 
     void gameEnded() {
-        final Sender sender = stateManager.getState(Sender.class);
+        final Sender sender = states.getState(Sender.class);
 
         if (sender.isClient()) {
 
-            final ClientHud hud = stateManager.getState(ClientHud.class);
+            final ClientHud hud = states.getState(ClientHud.class);
             getApp().enqueue(() -> {
                 hud.clear();
                 hud.showStatistics();
@@ -298,11 +290,10 @@ public class DeathmatchCommon {
             });
 
             getApp().enqueue(() -> {
-                stateManager.getState(Sync.class).clear();
+                states.getState(Sync.class).clear();
                 // TODO: Find out why following line causes statistics to not appear
                 //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
-                stateManager.getState(ClientHud.class)
-                        .disableCCharacterHud();
+                states.getState(ClientHud.class).disableCCharacterHud();
                 return null;
             });
 
@@ -313,9 +304,8 @@ public class DeathmatchCommon {
 
                 PlayerData.destroyAllData();
                 hud.endGame();
-                stateManager.getState(World.class).clear();
-                stateManager.getState(UserCommandManager.class)
-                        .nullifyCharacter();
+                states.getState(World.class).clear();
+                states.getState(UserCommandManager.class).nullifyCharacter();
                 ((ClientMain) getApp()).gameEnded();
                 getTrackers().clear();
                 return null;
@@ -331,30 +321,30 @@ public class DeathmatchCommon {
     }
 
     private Vector3f getNewSpawnLocation(int teamId) {
-        AbstractArena arena = stateManager.getState(World.class).getArena();
+        AbstractArena arena = states.getState(World.class).getArena();
         return arena.getSpawnPoint(teamId).setY(1f);
     }
 
     private void handleOwnDeath() {
         getApp().enqueue(() -> {
             UserCommandManager userCommandManager
-                    = stateManager.getState(UserCommandManager.class);
+                    = states.getState(UserCommandManager.class);
             int characterId = userCommandManager.getCharacterId();
-            
+
             world.removeEntity(characterId, RemovalReasons.DEATH); // TODO: Get rid of this
-            
+
             userCommandManager.nullifyCharacter();
-            ClientHud hud = stateManager.getState(ClientHud.class);
-            
+            ClientHud hud = states.getState(ClientHud.class);
+
             hud.clearAllButCharactersInfo();
-            
+
             hud.showStatistics();
-            
-            stateManager.getState(Death.class).death();
+
+            states.getState(Death.class).death();
             if (!Globals.replayMode) {
                 getHeroSelectionLayer().showWithoutEffects();
             }
-            
+
             return null;
         });
     }
@@ -363,7 +353,7 @@ public class DeathmatchCommon {
             int endedSpree) {
         String message = DeathMatchMessageMaker
                 .killed(playerName, killerName, endedSpree);
-        stateManager.getState(ClientHud.class).addMessage(message);
+        states.getState(ClientHud.class).addMessage(message);
     }
 
     private void firstBloodMessage(int killersId) {
@@ -376,7 +366,7 @@ public class DeathmatchCommon {
         String name = getPlayerName(killersId);
 
         String message = String.format("%s just drew First Blood!", name);
-        stateManager.getState(ClientHud.class).addMessage(message);
+        states.getState(ClientHud.class).addMessage(message);
 
         playAnnouncerSound(FIRST_BLOOD_PATH);
     }
@@ -389,7 +379,7 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.spree(playerName, spree);
-        stateManager.getState(ClientHud.class).addMessage(message);
+        states.getState(ClientHud.class).addMessage(message);
 
         String audioPath = spreeAnnouncements.get(spree);
 
@@ -404,7 +394,7 @@ public class DeathmatchCommon {
         }
 
         String message = DeathMatchMessageMaker.combo(playerName, combo);
-        stateManager.getState(ClientHud.class).addMessage(message);
+        states.getState(ClientHud.class).addMessage(message);
 
         String audioPath = comboAnnouncements.get(combo);
 
