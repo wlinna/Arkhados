@@ -145,8 +145,7 @@ public class World extends AbstractAppState {
     }
 
     public void loadLevel() {
-        worldRoot = (Node) assetManager.loadModel(
-                "Scenes/PillarArena.j3o");
+        worldRoot = (Node) assetManager.loadModel("Scenes/PillarArena.j3o");
 //        worldRoot = (Node) assetManager.loadModel(
 //                "Scenes/LavaArenaWithFogWalls.j3o");
         fakeWorldRoot = new Node("fake-world-root");
@@ -190,10 +189,9 @@ public class World extends AbstractAppState {
             app.getStateManager().getState(ServerFog.class)
                     .setWalls((Node) worldRoot.getChild("Walls"));
         } else {
-            ClientFog clientFog =
-                    app.getStateManager().getState(ClientFog.class);
-            app.getViewPort().addProcessor(clientFog);
-            clientFog.createFog(worldRoot);
+            ClientFog fog = app.getStateManager().getState(ClientFog.class);
+            app.getViewPort().addProcessor(fog);
+            fog.createFog(worldRoot);
         }
 
         UserCommandManager userCommandManager =
@@ -251,9 +249,8 @@ public class World extends AbstractAppState {
         PhysicsWorkaround.addAll(space, entity);
 
         worldRoot.attachChild(entity);
-        CEntityVariable variableControl =
-                new CEntityVariable(this, sender);
-        entity.addControl(variableControl);
+        CEntityVariable cVariable = new CEntityVariable(this, sender);
+        entity.addControl(cVariable);
 
         boolean isCharacter =
                 entity.getControl(CCharacterPhysics.class) != null;
@@ -263,17 +260,17 @@ public class World extends AbstractAppState {
                     new Object[]{id, playerId});
             entity.setUserData(UserData.FOLLOW_ME, true);
 
-            CUserInput userInputControl = new CUserInput();
+            CUserInput cUserInput = new CUserInput();
             if (isServer()) {
-                ServerInputState inputState = ServerInput
-                        .get().getInputState(playerId);
+                ServerInputState inputState = ServerInput.get()
+                        .getInputState(playerId);
                 inputState.currentActiveSpatial = entity;
-                userInputControl.setInputState(inputState);
+                cUserInput.setInputState(inputState);
             } else {
                 ClientHud hud = app.getStateManager().getState(ClientHud.class);
                 hud.addCharacter(entity);
             }
-            entity.addControl(userInputControl);
+            entity.addControl(cUserInput);
         }
 
         boolean followMe = entity.getUserDataKeys()
@@ -285,9 +282,8 @@ public class World extends AbstractAppState {
                 serverFog.registerCharacterForPlayer(playerId, entity);
             }
 
-            serverFog.createNewEntity(entity,
-                    new CmdAddEntity(id, nodeBuilderId,
-                    location, rotation, playerId));
+            serverFog.createNewEntity(entity, new CmdAddEntity(id,
+                    nodeBuilderId, location, rotation, playerId));
         }
 
         if (isClient()) {
@@ -318,10 +314,9 @@ public class World extends AbstractAppState {
         spatial.removeFromParent();
         sync.removeEntity(id);
 
-        CCharacterPhysics characterPhysics =
-                spatial.getControl(CCharacterPhysics.class);
-        if (characterPhysics != null) {
-            characterPhysics.setEnabled(false);
+        CCharacterPhysics physics = spatial.getControl(CCharacterPhysics.class);
+        if (physics != null) {
+            physics.setEnabled(false);
         }
     }
 
@@ -334,16 +329,15 @@ public class World extends AbstractAppState {
         worldRoot.attachChild(spatial);
         sync.addObject(id, spatial);
 
-        CCharacterPhysics characterPhysics =
-                spatial.getControl(CCharacterPhysics.class);
-        if (characterPhysics != null) {
-            characterPhysics.setEnabled(true);
+        CCharacterPhysics physics = spatial.getControl(CCharacterPhysics.class);
+        if (physics != null) {
+            physics.setEnabled(true);
         }
 
-        CSyncInterpolation interpolationControl =
+        CSyncInterpolation cInterpolation =
                 spatial.getControl(CSyncInterpolation.class);
-        if (interpolationControl != null) {
-            interpolationControl.ignoreNext();
+        if (cInterpolation != null) {
+            cInterpolation.ignoreNext();
         }
 
         setEntityTranslation(spatial, location, rotation);
@@ -384,11 +378,10 @@ public class World extends AbstractAppState {
 
         if (isClient()) {
             if (reason != -1) {
-                CEntityEvent eventControl =
-                        spatial.getControl(CEntityEvent.class);
-                if (eventControl != null
+                CEntityEvent cEvent = spatial.getControl(CEntityEvent.class);
+                if (cEvent != null
                         && reason != RemovalReasons.DISAPPEARED) {
-                    eventControl.getOnRemoval().exec(this, reason);
+                    cEvent.getOnRemoval().exec(this, reason);
                 }
 
                 if (reason == RemovalReasons.DISAPPEARED) {
@@ -406,19 +399,17 @@ public class World extends AbstractAppState {
                     .entityDisappeared(spatial);
 
 //             TODO: Consider doing this to all controls to generalize destruction
-            CCharacterBuff buffControl =
-                    spatial.getControl(CCharacterBuff.class);
-            spatial.removeControl(buffControl);
+            CCharacterBuff cBuff = spatial.getControl(CCharacterBuff.class);
+            spatial.removeControl(cBuff);
 
             CCharacterHud cHud = spatial.getControl(CCharacterHud.class);
             spatial.removeControl(cHud);
         }
 
-
         spatial.removeFromParent();
-        LightControl lightControl = spatial.getControl(LightControl.class);
-        if (lightControl != null) {
-            Light light = lightControl.getLight();
+        LightControl cLight = spatial.getControl(LightControl.class);
+        if (cLight != null) {
+            Light light = cLight.getLight();
             if (light != null) {
                 getWorldRoot().removeLight(light);
             }
@@ -458,9 +449,8 @@ public class World extends AbstractAppState {
         worldRoot = null;
 
         if (isClient()) {
-            ClientFog clientFog =
-                    app.getStateManager().getState(ClientFog.class);
-            app.getViewPort().removeProcessor(clientFog);
+            ClientFog fog = app.getStateManager().getState(ClientFog.class);
+            app.getViewPort().removeProcessor(fog);
         }
     }
 
