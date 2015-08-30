@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.Globals;
 import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -22,10 +21,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CCharacterMovement extends AbstractControl {
 
     private boolean speedConstant = false;
@@ -41,8 +36,8 @@ public class CCharacterMovement extends AbstractControl {
     }
 
     public void setWalkDirection(Vector3f direction) {
-        CInfluenceInterface cInfluence =
-                spatial.getControl(CInfluenceInterface.class);
+        CInfluenceInterface cInfluence
+                = spatial.getControl(CInfluenceInterface.class);
 
         if (cPhysics.isMotionControlled() || !cInfluence.canMove()) {
             return;
@@ -63,8 +58,8 @@ public class CCharacterMovement extends AbstractControl {
 
         float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
 
-        Vector3f scaledDirection =
-                getWalkDirection().normalize().multLocal(speed);
+        Vector3f scaledDirection
+                = getWalkDirection().normalize().multLocal(speed);
 
         cPhysics.setWalkDirection(scaledDirection);
     }
@@ -79,32 +74,30 @@ public class CCharacterMovement extends AbstractControl {
 
     public void setSpeedToBase() {
         if (!isSpeedConstant()) {
-            float msBase =
-                    spatial.getUserData(UserData.SPEED_MOVEMENT_BASE);
+            float msBase
+                    = spatial.getUserData(UserData.SPEED_MOVEMENT_BASE);
             spatial.setUserData(UserData.SPEED_MOVEMENT, msBase);
         }
     }
 
     public void updateMovement(float tpf) {
 
-        CInfluenceInterface cInfluence =
-                spatial.getControl(CInfluenceInterface.class);
-        CSpellCast cSpellCast =
-                spatial.getControl(CSpellCast.class);
+        CInfluenceInterface cInfluence
+                = spatial.getControl(CInfluenceInterface.class);
+        CSpellCast cSpell
+                = spatial.getControl(CSpellCast.class);
 
         if (!cPhysics.getDictatedDirection().equals(Vector3f.ZERO)
                 || cPhysics.isMotionControlled() || cInfluence.isDead()) {
             return;
         }
 
-        /**
-         * This code here applies changes to movement if player can move.
-         */
+        CUserInput cInput = spatial.getControl(CUserInput.class);
+
         if (cInfluence.canMove() && (cInfluence.isAbleToCastWhileMoving()
-                || (!cSpellCast.isCasting() && !cSpellCast.isChanneling()))) {
+                || (!cSpell.isCasting() && !cSpell.isChanneling()))) {
             if (cInfluence.canControlMovement()) {
-                Vector3f direction = spatial
-                        .getControl(CUserInput.class).giveInputDirection();
+                Vector3f direction = cInput.giveInputDirection();
                 if (!direction.equals(Vector3f.ZERO) && cPhysics.isEnabled()) {
                     spatial.getControl(CCharacterPhysics.class)
                             .setViewDirection(direction);
@@ -118,6 +111,12 @@ public class CCharacterMovement extends AbstractControl {
                     recalculateWalkVelocity();
                 }
             }
+        }
+
+        if (cSpell.isCasting() || cSpell.isChanneling()) {
+            Vector3f targetDir = cInput.giveTargetDirection();
+            spatial.getControl(CCharacterPhysics.class)
+                    .setViewDirection(targetDir);
         }
     }
 

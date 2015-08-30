@@ -74,6 +74,10 @@ public class CUserInput extends AbstractControl {
         return new Vector3f(inputState.previousRight,
                 0, inputState.previousDown);
     }
+    
+    public Vector3f giveTargetDirection() {
+        return inputState.mouseTarget.subtract(spatial.getLocalTranslation());
+    }
 
     public ServerInputState getInputState() {
         return inputState;
