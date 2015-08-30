@@ -30,12 +30,18 @@ import java.util.List;
 
 public class VisualCharacterInfo {
 
-    private Camera cam;
-    private Node guiNode;
-    private BitmapFont guiFont;
-    private List<Node> characters = new ArrayList<>();
-    private List<BitmapText> hpBars = new ArrayList<>();
-    private List<BitmapText> playerNames = new ArrayList<>();
+    private final Camera cam;
+    private final Node guiNode;
+    private final BitmapFont guiFont;
+    private final List<Node> characters = new ArrayList<>();
+    private final List<BitmapText> hpBars = new ArrayList<>();
+    private final List<BitmapText> playerNames = new ArrayList<>();
+    
+    private static final ColorRGBA[] TEAM_COLORS = new ColorRGBA[] {
+        ColorRGBA.Blue, ColorRGBA.Red, ColorRGBA.Green, ColorRGBA.Black,
+        ColorRGBA.Magenta, ColorRGBA.Yellow, ColorRGBA.Orange,
+        ColorRGBA.Pink, ColorRGBA.White, ColorRGBA.Brown, ColorRGBA.Gray
+    };
 
     VisualCharacterInfo(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;
@@ -50,8 +56,10 @@ public class VisualCharacterInfo {
         int playerId = character.getUserData(UserData.PLAYER_ID);
         String name =
                 PlayerData.getStringData(playerId, PlayerData.NAME);
+        int team = PlayerData.getIntData(playerId, PlayerData.TEAM_ID);
+        team = Math.abs(team); // If -1 for some reason
 
-        createPlayerName(name);
+        createPlayerName(name, team);
     }
 
     void removeCharacter(Node node) {
@@ -112,13 +120,13 @@ public class VisualCharacterInfo {
         hpBars.add(hpBar);
     }
 
-    private void createPlayerName(String name) {
+    private void createPlayerName(String name, int teamId) {
         BitmapText text = new BitmapText(guiFont);
 
         text.setSize(guiFont.getCharSet().getRenderedSize() * 0.8f);
         text.setBox(new Rectangle(0, 0, 80, 10));
         text.setText(name);
-        text.setColor(ColorRGBA.Cyan);
+        text.setColor(TEAM_COLORS[teamId].clone());
         text.setAlignment(BitmapFont.Align.Center);
         text.center();
         guiNode.attachChild(text);
