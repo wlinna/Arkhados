@@ -59,6 +59,7 @@ import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
 import com.jme3.scene.control.LodControl;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,17 +72,11 @@ public class World extends AbstractAppState {
         logger.setLevel(Level.WARNING);
     }
     // TODO: Read locations from terrain
-    public final static Vector3f[] STARTING_LOCATIONS = new Vector3f[]{
-        new Vector3f(-100, 0, -100),
-        new Vector3f(-100, 0, 100),
-        new Vector3f(100, 0, -100),
-        new Vector3f(100, 0, 100),
-        new Vector3f(0, 0, 0)
-    };
+
     private Node worldRoot;
     private Node fakeWorldRoot;
     private AbstractArena arena = new PillarArena();
-    private HashMap<Integer, Spatial> entities = new HashMap<>();
+    private final Map<Integer, Spatial> entities = new HashMap<>();
     private Sync sync;
     private short idCounter = 0;
     private boolean isClient = false;
@@ -503,5 +498,9 @@ public class World extends AbstractAppState {
 
     public Node getFakeWorldRoot() {
         return fakeWorldRoot;
+    }
+
+    public AbstractArena getArena() {
+        return arena;
     }
 }

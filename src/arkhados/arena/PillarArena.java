@@ -34,72 +34,83 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class PillarArena extends AbstractArena {
 
+    private final static Vector3f[] SPAWN_POINTS = new Vector3f[]{
+        new Vector3f(-100, 0, -100),
+        new Vector3f(-100, 0, 100),
+        new Vector3f(100, 0, -100),
+        new Vector3f(100, 0, 100)};
+
+    private int spawnLocationIndex;
     private float radius;
 
     @Override
     public void readWorld(World worldManager, AssetManager assetManager) {
         super.readWorld(worldManager, assetManager);
 
-        this.resetWallPhysics(worldManager.getSpace());
+        resetWallPhysics(worldManager.getSpace());
 
-        final Vector3f extent = ((BoundingBox) super.getTerrainNode().getWorldBound()).getExtent(new Vector3f());
-        this.radius = extent.x - 15;
+        Vector3f extent = ((BoundingBox) getTerrainNode().getWorldBound())
+                .getExtent(new Vector3f());
+        radius = extent.x - 15;
 
         if (worldManager.isClient()) {
-            this.createLavaQuad();
-            worldManager.getClientMain().getAudioRenderer().setEnvironment(new Environment(Environment.Cavern));
+            createLavaQuad();
+            worldManager.getClientMain().getAudioRenderer()
+                    .setEnvironment(new Environment(Environment.Cavern));
         }
     }
 
     private void createLavaQuad() {
         Quad quad = new Quad(512, 512, true);
         Geometry geom = new Geometry("lava-terrain", quad);
-        final Material lavaMaterial = super.getAssetManager().loadMaterial("Materials/LavaTerrain.j3m");
+        Material lavaMaterial = getAssetManager()
+                .loadMaterial("Materials/LavaTerrain.j3m");
         geom.setMaterial(lavaMaterial);
-        ((Node) super.getWorld().getWorldRoot().getChild("terrain")).attachChild(geom);
+        ((Node) getWorld().getWorldRoot()
+                .getChild("terrain")).attachChild(geom);
 
         geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
         geom.setLocalTranslation(-256, -2, -256);
 
-        final AmbientLight ambientLight = new AmbientLight();
+        AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(ColorRGBA.White.mult(0.3f));
-        super.getTerrainNode().getParent().addLight(ambientLight);
+        getTerrainNode().getParent().addLight(ambientLight);
     }
 
     @Override
     public boolean validateLocation(Vector3f location) {
-        if (location.x < -radius || location.x > radius || location.z > radius || location.z < -radius) {
-            return false;
-        }
-
-        return true;
+        return !(location.x < -radius || location.x > radius
+                || location.z > radius || location.z < -radius);
     }
 
     private void resetWallPhysics(PhysicsSpace space) {
-        List<Spatial> children = ((Node) getTerrainNode().getChild("Walls")).getChildren();
+        List<Spatial> children = ((Node) getTerrainNode().getChild("Walls"))
+                .getChildren();
         for (Spatial wallNode : children) {
             Spatial wall = ((Node) wallNode).getChild("Grave");
-//            wall.scale(6f);
 
             space.removeAll(wallNode);
 
-            CollisionShape meshShape = CollisionShapeFactory.createMeshShape(wall);
+            CollisionShape meshShape = CollisionShapeFactory
+                    .createMeshShape(wall);
 
-//            wall.scale(1f / 6f);
             RigidBodyControl wallPhysics = new RigidBodyControl(meshShape, 0);
             wallPhysics.setCollideWithGroups(CollisionGroups.NONE);
 
             wallPhysics.setFriction(0.5f);
             wall.addControl(wallPhysics);
-            wall.getControl(RigidBodyControl.class).setCollisionGroup(CollisionGroups.WALLS);
+            wall.getControl(RigidBodyControl.class)
+                    .setCollisionGroup(CollisionGroups.WALLS);
 
             space.addAll(wall);
         }
+    }
+
+    @Override
+    public Vector3f getSpawnPoint(int teamId) {
+        spawnLocationIndex = (spawnLocationIndex + 1) % SPAWN_POINTS.length;
+        return SPAWN_POINTS[spawnLocationIndex].clone();
     }
 }
