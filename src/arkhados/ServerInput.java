@@ -23,7 +23,6 @@ import com.jme3.app.Application;
 import com.jme3.network.HostedConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Stores player input states.
@@ -33,7 +32,7 @@ import java.util.concurrent.Callable;
 public class ServerInput implements CommandHandler {
 
     private static ServerInput instance = null;
-    private Map<Integer, ServerInputState> inputStates = new HashMap<>();
+    private final Map<Integer, ServerInputState> inputStates = new HashMap<>();
     private Application app;
 
     private ServerInput() {
@@ -71,12 +70,9 @@ public class ServerInput implements CommandHandler {
 
         if (playerId != -1) {
             // TODO: Consider if this is the best place to put app.enqueue
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    doMessage(playerId, command);
-                    return null;
-                }
+            app.enqueue(() -> {
+                doMessage(playerId, command);
+                return null;
             });
         } else {
             System.out.println("There is no playerId for sourceId "

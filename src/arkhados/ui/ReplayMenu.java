@@ -20,7 +20,6 @@ import arkhados.replay.ReplayInputHandler;
 import arkhados.replay.ReplayReader;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.ListBox;
-import de.lessvoid.nifty.controls.menu.PopupMenuControl;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -34,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,8 +50,8 @@ public class ReplayMenu implements ScreenController {
     }
 
     public void selectReplay() {
-        ListBox replayBox =
-                screen.findNiftyControl("replay_list", ListBox.class);
+        ListBox replayBox
+                = screen.findNiftyControl("replay_list", ListBox.class);
         List selection = replayBox.getSelection();
         if (selection.isEmpty()) {
             return;
@@ -66,18 +64,18 @@ public class ReplayMenu implements ScreenController {
             ReplayReader replayReader = Globals.app.getStateManager()
                     .getState(ReplayReader.class);
             replayReader.loadReplay(path.toString());
-            Map<Integer, String> playerMap =
-                    replayReader.getData().getHeader().getPlayers();
+            Map<Integer, String> playerMap
+                    = replayReader.getData().getHeader().getPlayers();
             List<Integer> playersList = new ArrayList<>(playerMap.keySet());
             Collections.sort(playersList);
-            ListBox playerBox =
-                    popup.findNiftyControl("player_list", ListBox.class);
+            ListBox playerBox
+                    = popup.findNiftyControl("player_list", ListBox.class);
             playerBox.clear();
 
             for (int playerId : playersList) {
                 String playerName = playerMap.get(playerId);
-                ReplayPlayerLBModel model =
-                        new ReplayPlayerLBModel(playerId, playerName);
+                ReplayPlayerLBModel model
+                        = new ReplayPlayerLBModel(playerId, playerName);
                 playerBox.addItem(model);
             }
 
@@ -120,20 +118,16 @@ public class ReplayMenu implements ScreenController {
     @Override
     public void onEndScreen() {
         popup.findNiftyControl("player_list", ListBox.class).clear();
-        if (screen.findElementByName(popup.getId()) != null) {
+        if (screen.findElementById(popup.getId()) != null) {
             nifty.closePopup(popup.getId());
         }
 
-        ListBox replayBox =
-                screen.findNiftyControl("replay_list", ListBox.class);
+        ListBox replayBox
+                = screen.findNiftyControl("replay_list", ListBox.class);
         replayBox.clear();
     }
-    private FilenameFilter filenameFilter = new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".rep");
-        }
-    };
+    private final FilenameFilter filenameFilter = (File dir, String name)
+            -> name.endsWith(".rep");
 
     private void findReplays() {
         ListBox box = screen.findNiftyControl("replay_list", ListBox.class);
@@ -147,12 +141,9 @@ public class ReplayMenu implements ScreenController {
     }
 
     public void gotoMenu(final String menu) {
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                nifty.gotoScreen(menu);
-                return null;
-            }
+        Globals.app.enqueue(() -> {
+            nifty.gotoScreen(menu);
+            return null;
         });
     }
 }

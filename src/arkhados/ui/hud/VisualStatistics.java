@@ -32,7 +32,6 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class VisualStatistics implements ActionListener {
 
@@ -127,17 +126,14 @@ public class VisualStatistics implements ActionListener {
             return;
         }
 
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                Element layer = screen.findElementByName("layer_statistics");
-                if (!layer.isVisible()) {
-                    show();
-                } else {
-                    hide();
-                }
-                return null;
+        Globals.app.enqueue(() -> {
+            Element layer = screen.findElementById("layer_statistics");
+            if (!layer.isVisible()) {
+                show();
+            } else {
+                hide();
             }
+            return null;
         });
     }
 

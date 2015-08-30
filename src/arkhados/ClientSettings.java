@@ -19,15 +19,10 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 
-/**
- *
- * @author william
- */
 public class ClientSettings implements ScreenController {
 
     public static ClientSettings getClientSettings() {
@@ -51,7 +46,8 @@ public class ClientSettings implements ScreenController {
     public static void setAppSettings(AppSettings aAppSettings) {
         clientSettings.appSettings = aAppSettings;
         if (getAppSettings().containsKey("free_camera_speed")) {
-            final float freeCamSpeed = getAppSettings().getInteger("free_camera_speed");
+            float freeCamSpeed = getAppSettings()
+                    .getInteger("free_camera_speed");
             if (freeCamSpeed > 0f) {
                 clientSettings.freeCameraSpeed = freeCamSpeed;
             }
@@ -65,7 +61,8 @@ public class ClientSettings implements ScreenController {
     public static void setFreeCameraSpeed(float freeCameraSpeed) {
         clientSettings.freeCameraSpeed = freeCameraSpeed;
         if (getAppSettings() != null) {
-            getAppSettings().putInteger("free_camera_speed", (int) freeCameraSpeed);
+            getAppSettings().putInteger("free_camera_speed",
+                    (int) freeCameraSpeed);
         }
     }
 
@@ -73,30 +70,33 @@ public class ClientSettings implements ScreenController {
         this.nifty = nifty;
         this.screen = screen;
 
-        TextField freeCameraSpeedTextField = this.screen.findNiftyControl("free_camera_speed", TextField.class);
-        freeCameraSpeedTextField.setText(String.valueOf((int) getFreeCameraSpeed()));
+        TextField freeCameraSpeedTextField = screen
+                .findNiftyControl("free_camera_speed", TextField.class);
+        freeCameraSpeedTextField
+                .setText(String.valueOf((int) getFreeCameraSpeed()));
     }
 
+    @Override
     public void onStartScreen() {
     }
 
+    @Override
     public void onEndScreen() {
     }
 
     public void gotoMenu(final String menu) {
-        this.clientMain.enqueue(new Callable<Void>() {
-            public Void call() throws Exception {
-                nifty.gotoScreen(menu);
-                return null;
-            }
+        clientMain.enqueue(() -> {
+            nifty.gotoScreen(menu);
+            return null;
         });
     }
 
     public void applyGraphicsSettings() {
-        final TextField freeCameraSpeedField = this.nifty.getCurrentScreen().findNiftyControl("free_camera_speed", TextField.class);
-        final String freeCameraSpeedString = freeCameraSpeedField.getDisplayedText();
+        TextField freeCameraSpeedField = nifty.getCurrentScreen()
+                .findNiftyControl("free_camera_speed", TextField.class);
+        String freeCameraSpeedString = freeCameraSpeedField.getDisplayedText();
         try {
-            final float freeCamSpeed = Integer.parseInt(freeCameraSpeedString);
+            float freeCamSpeed = Integer.parseInt(freeCameraSpeedString);
             if (freeCamSpeed > 0f) {
                 ClientSettings.setFreeCameraSpeed(freeCamSpeed);
             }
@@ -106,7 +106,8 @@ public class ClientSettings implements ScreenController {
         try {
             appSettings.save(ClientMain.PREFERENCES_KEY);
         } catch (BackingStoreException ex) {
-            Logger.getLogger(ClientSettings.class.getName()).log(Level.SEVERE, "Failed to save graphic settings", ex);
+            Logger.getLogger(ClientSettings.class.getName()).log(Level.SEVERE,
+                    "Failed to save graphic settings", ex);
         }
     }
 }

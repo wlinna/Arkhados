@@ -18,7 +18,6 @@ import arkhados.Globals;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import java.util.concurrent.Callable;
 
 public class Menu implements ScreenController {
 
@@ -26,18 +25,15 @@ public class Menu implements ScreenController {
     protected Screen screen;
 
     public void gotoMenu(final String menu) {
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                nifty.gotoScreen(menu);
-                return null;
-            }
+        Globals.app.enqueue(() -> {
+            nifty.gotoScreen(menu);
+            return null;
         });
     }
 
     public void switchElement(String oldElement, String newElement) {
-        nifty.getCurrentScreen().findElementByName(oldElement).hide();
-        nifty.getCurrentScreen().findElementByName(newElement).show();
+        nifty.getCurrentScreen().findElementById(oldElement).hide();
+        nifty.getCurrentScreen().findElementById(newElement).show();
     }
 
     @Override

@@ -53,12 +53,12 @@ import java.util.concurrent.Callable;
 
 public class DeathmatchCommon {
 
-    private static final Map<Integer, String> spreeAnnouncements =
-            new HashMap<>();
-    private static final Map<Integer, String> comboAnnouncements =
-            new HashMap<>();
-    private static final String FIRST_BLOOD_PATH =
-            "Interface/Sound/Announcer/FirstBlood.wav";
+    private static final Map<Integer, String> spreeAnnouncements
+            = new HashMap<>();
+    private static final Map<Integer, String> comboAnnouncements
+            = new HashMap<>();
+    private static final String FIRST_BLOOD_PATH
+            = "Interface/Sound/Announcer/FirstBlood.wav";
 
     static {
         spreeAnnouncements.put(3, "Interface/Sound/Announcer/KillingSpree.wav");
@@ -78,14 +78,13 @@ public class DeathmatchCommon {
     private World world;
     private AppStateManager stateManager;
     private Sync sync;
-    private AudioQueue audioQueue = new AudioQueue();
+    private final AudioQueue audioQueue = new AudioQueue();
     private boolean firstBloodHappened;
     private float respawnTime;
-    private final HashMap<Integer, DeathMatchPlayerTracker> trackers =
-            new HashMap<>();
+    private final HashMap<Integer, DeathMatchPlayerTracker> trackers
+            = new HashMap<>();
     private int killLimit;
     private final HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
-    private int spawnLocationIndex = 0;
     private Element heroSelectionLayer;
     private Nifty nifty;
 
@@ -120,8 +119,8 @@ public class DeathmatchCommon {
             return;
         }
 
-        DeathMatchHeroSelectionLayerBuilder layerBuilder =
-                new DeathMatchHeroSelectionLayerBuilder();
+        DeathMatchHeroSelectionLayerBuilder layerBuilder
+                = new DeathMatchHeroSelectionLayerBuilder();
 
         Screen screen = nifty.getScreen("default_hud");
 
@@ -129,9 +128,9 @@ public class DeathmatchCommon {
                 .build(nifty, screen, screen.getRootElement());
         heroSelectionLayer.hideWithoutEffect();
 
-        DeathMatchHeroSelectionLayerController control =
-                heroSelectionLayer.getControl(
-                DeathMatchHeroSelectionLayerController.class);
+        DeathMatchHeroSelectionLayerController control
+                = heroSelectionLayer.getControl(
+                        DeathMatchHeroSelectionLayerController.class);
         control.setStateManager(stateManager);
     }
 
@@ -152,7 +151,6 @@ public class DeathmatchCommon {
                 firstBloodHappened = true;
                 break;
 
-
         }
     }
 
@@ -161,8 +159,8 @@ public class DeathmatchCommon {
         switch (command.getTopicId()) {
             case Topic.CLIENT_WORLD_CREATED:
                 if (firstBloodHappened) {
-                    ServerSender sender =
-                            stateManager.getState(ServerSender.class);
+                    ServerSender sender
+                            = stateManager.getState(ServerSender.class);
                     sender.addCommandForSingle(
                             new CmdTopicOnly(Topic.FIRST_BLOOD_HAPPENED),
                             source);
@@ -195,13 +193,13 @@ public class DeathmatchCommon {
 
         sender.addCommand(
                 new CmdPlayerKill(playerId, killersPlayerId,
-                killingSpree, combo, endedSpree));
+                        killingSpree, combo, endedSpree));
     }
 
     void clientPlayerDied(int playerId, int killersId,
             int killingSpree, int combo, int endedSpree) {
-        int myPlayerId =
-                stateManager.getState(UserCommandManager.class).getPlayerId();
+        int myPlayerId
+                = stateManager.getState(UserCommandManager.class).getPlayerId();
 
         String playerName = getPlayerName(playerId);
         String killerName = getPlayerName(killersId);
@@ -219,25 +217,22 @@ public class DeathmatchCommon {
     }
 
     void preparePlayer(final int playerId) {
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                DeathMatchPlayerTracker tracker =
-                        new DeathMatchPlayerTracker(0.5f);
-                getTrackers().put(playerId, tracker);
-
-                ServerFog fog =  stateManager.getState(ServerFog.class);
-                if (fog != null) { // Same as asking for if this is server
-                    PlayerEntityAwareness awareness =
-                            fog.createAwarenessForPlayer(playerId);
-                    fog.teachAboutPrecedingEntities(awareness);
-
-                    getCanPickHeroMap().put(playerId, Boolean.TRUE);
-                    CharacterInteraction.addPlayer(playerId);
-                }
-
-                return null;
+        app.enqueue(() -> {
+            DeathMatchPlayerTracker tracker
+                    = new DeathMatchPlayerTracker(0.5f);
+            getTrackers().put(playerId, tracker);
+            
+            ServerFog fog = stateManager.getState(ServerFog.class);
+            if (fog != null) { // Same as asking for if this is server
+                PlayerEntityAwareness awareness
+                        = fog.createAwarenessForPlayer(playerId);
+                fog.teachAboutPrecedingEntities(awareness);
+                
+                getCanPickHeroMap().put(playerId, Boolean.TRUE);
+                CharacterInteraction.addPlayer(playerId);
             }
+            
+            return null;
         });
     }
 
@@ -253,35 +248,31 @@ public class DeathmatchCommon {
             delay = 100;
         }
 
-        final Callable<Void> callable =
-                new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                int oldEntityId = PlayerData
-                        .getIntData(playerId, PlayerData.ENTITY_ID);
-                world.removeEntity(oldEntityId, RemovalReasons.DEATH);
+        final Callable<Void> callable = () -> {
+            int oldEntityId = PlayerData
+                    .getIntData(playerId, PlayerData.ENTITY_ID);
+            world.removeEntity(oldEntityId, RemovalReasons.DEATH);
 
-                int teamId = PlayerData.getIntData(playerId, 
-                        PlayerData.TEAM_ID);
-                
-                Vector3f startingLocation = getNewSpawnLocation(teamId);
-                PlayerData playerData = PlayerData.getPlayerId(playerId);
+            int teamId = PlayerData.getIntData(playerId,
+                    PlayerData.TEAM_ID);
 
-                int nodeBuilderId = NodeBuilderIdHeroNameMatcher
-                        .get().getId(heroName);
-                int entityId = world.addNewEntity(nodeBuilderId,
-                        startingLocation, new Quaternion(), playerId);
-                playerData.setData(PlayerData.ENTITY_ID, entityId);
+            Vector3f startingLocation = getNewSpawnLocation(teamId);
+            PlayerData playerData = PlayerData.getPlayerId(playerId);
 
-                CmdSetPlayersCharacter playersCharacterCommand =
-                        new CmdSetPlayersCharacter(entityId, playerId);
+            int nodeBuilderId = NodeBuilderIdHeroNameMatcher
+                    .get().getId(heroName);
+            int entityId = world.addNewEntity(nodeBuilderId,
+                    startingLocation, new Quaternion(), playerId);
+            playerData.setData(PlayerData.ENTITY_ID, entityId);
 
-                stateManager
-                        .getState(ServerSender.class)
-                        .addCommand(playersCharacterCommand);
+            CmdSetPlayersCharacter playersCharacterCommand
+                    = new CmdSetPlayersCharacter(entityId, playerId);
 
-                return null;
-            }
+            stateManager
+                    .getState(ServerSender.class)
+                    .addCommand(playersCharacterCommand);
+
+            return null;
         };
 
         new java.util.Timer().schedule(new java.util.TimerTask() {
@@ -298,45 +289,36 @@ public class DeathmatchCommon {
         if (sender.isClient()) {
 
             final ClientHud hud = stateManager.getState(ClientHud.class);
-            getApp().enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    hud.clear();
-                    hud.showStatistics();
-                    nifty.removeElement(nifty.getScreen("default_hud"), getHeroSelectionLayer());
-                    return null;
-                }
+            getApp().enqueue(() -> {
+                hud.clear();
+                hud.showStatistics();
+                nifty.removeElement(nifty.getScreen("default_hud"),
+                        getHeroSelectionLayer());
+                return null;
             });
 
-            getApp().enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    stateManager.getState(Sync.class).clear();
-                    // TODO: Find out why following line causes statistics to not appear
-                    //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
-                    stateManager.getState(ClientHud.class)
-                            .disableCCharacterHud();
-                    return null;
-                }
+            getApp().enqueue(() -> {
+                stateManager.getState(Sync.class).clear();
+                // TODO: Find out why following line causes statistics to not appear
+                //  stateManager.getState(UserCommandManager.class).nullifyCharacter();
+                stateManager.getState(ClientHud.class)
+                        .disableCCharacterHud();
+                return null;
             });
 
-            final Callable<Void> callable =
-                    new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    if (sender instanceof ClientSender) {
-                        ((ClientSender) sender).getClient().close();
-                    }
-
-                    PlayerData.destroyAllData();
-                    hud.endGame();
-                    stateManager.getState(World.class).clear();
-                    stateManager.getState(UserCommandManager.class)
-                            .nullifyCharacter();
-                    ((ClientMain) getApp()).gameEnded();
-                    getTrackers().clear();
-                    return null;
+            final Callable<Void> callable = () -> {
+                if (sender instanceof ClientSender) {
+                    ((ClientSender) sender).getClient().close();
                 }
+
+                PlayerData.destroyAllData();
+                hud.endGame();
+                stateManager.getState(World.class).clear();
+                stateManager.getState(UserCommandManager.class)
+                        .nullifyCharacter();
+                ((ClientMain) getApp()).gameEnded();
+                getTrackers().clear();
+                return null;
             };
 
             new java.util.Timer().schedule(new java.util.TimerTask() {
@@ -354,30 +336,26 @@ public class DeathmatchCommon {
     }
 
     private void handleOwnDeath() {
-        getApp().enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                UserCommandManager userCommandManager =
-                        stateManager.getState(UserCommandManager.class);
-                int characterId = userCommandManager.getCharacterId();
-
-                world.removeEntity(characterId, spawnLocationIndex); // TODO: Get rid of this
-
-                userCommandManager.nullifyCharacter();
-                ClientHud hud = stateManager.getState(ClientHud.class);
-
-                hud.clearAllButCharactersInfo();
-
-                hud.showStatistics();
-
-                stateManager.getState(Death.class).death();
-                if (!Globals.replayMode) {
-                    getHeroSelectionLayer().showWithoutEffects();
-                }
-
-
-                return null;
+        getApp().enqueue(() -> {
+            UserCommandManager userCommandManager
+                    = stateManager.getState(UserCommandManager.class);
+            int characterId = userCommandManager.getCharacterId();
+            
+            world.removeEntity(characterId, RemovalReasons.DEATH); // TODO: Get rid of this
+            
+            userCommandManager.nullifyCharacter();
+            ClientHud hud = stateManager.getState(ClientHud.class);
+            
+            hud.clearAllButCharactersInfo();
+            
+            hud.showStatistics();
+            
+            stateManager.getState(Death.class).death();
+            if (!Globals.replayMode) {
+                getHeroSelectionLayer().showWithoutEffects();
             }
+            
+            return null;
         });
     }
 
@@ -463,7 +441,7 @@ public class DeathmatchCommon {
         return heroSelectionLayer;
     }
 
-    HashMap<Integer, Boolean> getCanPickHeroMap() {
+    Map<Integer, Boolean> getCanPickHeroMap() {
         return canPickHeroMap;
     }
 
@@ -471,7 +449,7 @@ public class DeathmatchCommon {
         return app;
     }
 
-    HashMap<Integer, DeathMatchPlayerTracker> getTrackers() {
+    Map<Integer, DeathMatchPlayerTracker> getTrackers() {
         return trackers;
     }
 

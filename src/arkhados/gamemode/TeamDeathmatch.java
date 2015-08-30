@@ -46,7 +46,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 public class TeamDeathmatch extends GameMode implements CommandHandler {
 
@@ -98,25 +97,22 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
     @Override
     public void startGame() {
-        getApp().enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                world.setEnabled(true);
-                world.loadLevel();
-                world.attachLevel();
-
-                Sender sender = stateManager.getState(Sender.class);
-
-                if (sender.isClient() && !Globals.replayMode) {
-                    nifty.gotoScreen("default_hud");
-                    sender.addCommand(
-                            new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
-                } else if (sender.isServer()) {
-                    sync.setEnabled(true);
-                    sync.startListening();
-                }
-                return null;
+        getApp().enqueue(() -> {
+            world.setEnabled(true);
+            world.loadLevel();
+            world.attachLevel();
+            
+            Sender sender = stateManager.getState(Sender.class);
+            
+            if (sender.isClient() && !Globals.replayMode) {
+                nifty.gotoScreen("default_hud");
+                sender.addCommand(
+                        new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
+            } else if (sender.isServer()) {
+                sync.setEnabled(true);
+                sync.startListening();
             }
+            return null;
         });
     }
 
@@ -207,15 +203,12 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             String hero = ((CmdSelectHero) command).getHeroName();
             stateManager.getState(MusicManager.class).setMusicCategory(hero);
         } else if (command instanceof CmdTeamOptions) {
-            getApp().enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    List<String> options = ((CmdTeamOptions) command).teamOptions;
-                    Collections.sort(options);
-                    new TeamSelectionBuilder(options)
-                            .build(nifty, screen, screen.getRootElement());
-                    return null;
-                }
+            getApp().enqueue(() -> {
+                List<String> options = ((CmdTeamOptions) command).teamOptions;
+                Collections.sort(options);
+                new TeamSelectionBuilder(options)
+                        .build(nifty, screen, screen.getRootElement());
+                return null;
             });
 
         } else if (command instanceof CmdTeamAcceptance) {

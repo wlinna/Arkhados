@@ -23,7 +23,6 @@ import arkhados.net.ServerSender;
 import arkhados.ui.hud.ClientHud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import java.util.concurrent.Callable;
 
 public abstract class GameMode {
 
@@ -48,17 +47,14 @@ public abstract class GameMode {
 
     public void gameEnded() {
         if (app instanceof ClientMain) {
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    AppStateManager stateManager = app.getStateManager();
-                    stateManager.getState(Sync.class).clear();
-                    stateManager.getState(UserCommandManager.class)
-                            .nullifyCharacter();
-                    stateManager.getState(ClientHud.class)
-                            .disableCCharacterHud();
-                    return null;
-                }
+            app.enqueue(() -> {
+                AppStateManager stateManager = app.getStateManager();
+                stateManager.getState(Sync.class).clear();
+                stateManager.getState(UserCommandManager.class)
+                        .nullifyCharacter();
+                stateManager.getState(ClientHud.class)
+                        .disableCCharacterHud();
+                return null;
             });
         } else {
             getApp().getStateManager().getState(ServerSender.class)
@@ -66,13 +62,9 @@ public abstract class GameMode {
             new java.util.Timer().schedule(new java.util.TimerTask() {
                 @Override
                 public void run() {
-                    app.enqueue(new Callable<Void>() {
-
-                        @Override
-                        public Void call() throws Exception {
-                            app.stop();
-                            return null;
-                        }
+                    app.enqueue(() -> {
+                        app.stop();
+                        return null;
                     });
                 }
             }, 4000);

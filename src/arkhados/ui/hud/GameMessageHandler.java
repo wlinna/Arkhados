@@ -23,24 +23,19 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class GameMessageHandler {
 
     private Nifty nifty;
     private Screen screen;
     private Element root;
-    private List<String> messages = new ArrayList<>();
-    private List<Element> rows = new ArrayList<>(10);
+    private final List<String> messages = new ArrayList<>();
+    private final List<Element> rows = new ArrayList<>(10);
 
     public void initialize(Nifty nifty) {
         this.nifty = nifty;
         screen = nifty.getScreen("default_hud");
-        root = screen.findElementByName("messages");
+        root = screen.findElementById("messages");
     }
 
     public void createRows(int amount) {
@@ -59,30 +54,27 @@ public class GameMessageHandler {
     }
 
     public void addMessage(final String newMessage, Color color) {        
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                messages.add(newMessage);
-                int index = messages.size() - 1;
-                for (int i = rows.size() - 1; i >= 0;) {
-                    TextRenderer text = rows.get(i)
-                            .getRenderer(TextRenderer.class);
-
-                    if (index < 0) {
-                        break;
-                    }
-
-                    String message = messages.get(index--);
-                    text.setText(message);
-                    String[] split = text.getWrappedText().split("\n");
-
-                    for (int l = split.length - 1; l >= 0 && i >= 0; --l) {
-                        rows.get(i--).getRenderer(TextRenderer.class)
-                                .setText(split[l]);
-                    }
+        Globals.app.enqueue(() -> {
+            messages.add(newMessage);
+            int index = messages.size() - 1;
+            for (int i = rows.size() - 1; i >= 0;) {
+                TextRenderer text = rows.get(i)
+                        .getRenderer(TextRenderer.class);
+                
+                if (index < 0) {
+                    break;
                 }
-                return null;
+
+                String message = messages.get(index--);
+                text.setText(message);
+                String[] split = text.getWrappedText().split("\n");
+                
+                for (int l = split.length - 1; l >= 0 && i >= 0; --l) {
+                    rows.get(i--).getRenderer(TextRenderer.class)
+                            .setText(split[l]);
+                }
             }
+            return null;
         });
     }
     

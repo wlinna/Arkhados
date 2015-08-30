@@ -29,13 +29,11 @@ import com.jme3.math.FastMath;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
 
 public class MusicManager extends AbstractAppState {
 
     private final List<String> music = new ArrayList<>(2);
     private AudioNode musicPlayer = null;
-    private AssetManager assetManager;
     private int heroMusicIndex = 0;
     private float volume = 0.4f;
     private boolean playing = false;
@@ -43,9 +41,7 @@ public class MusicManager extends AbstractAppState {
     private final InputManager inputManager;
     private String currentMusicCategory = "";
 
-    public MusicManager(Application app, InputManager inputManager,
-            AssetManager assetManager) {
-        this.assetManager = assetManager;
+    public MusicManager(Application app, InputManager inputManager) {
         this.app = app;
         this.inputManager = inputManager;
 
@@ -74,14 +70,11 @@ public class MusicManager extends AbstractAppState {
             newVolume = FastMath.clamp(newVolume, 0, 1);
             volume = newVolume;
 
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    if (musicPlayer != null) {
-                        musicPlayer.setVolume(volume);
-                    }
-                    return null;
+            app.enqueue(() -> {
+                if (musicPlayer != null) {
+                    musicPlayer.setVolume(volume);
                 }
+                return null;
             });
 
         }
@@ -95,7 +88,7 @@ public class MusicManager extends AbstractAppState {
         heroMusicIndex = (++heroMusicIndex) % music.size();
         String path = music.get(heroMusicIndex);
 
-        musicPlayer = new AudioNode(assetManager, path, true);
+        musicPlayer = new AudioNode(Globals.assets, path, true);
         musicPlayer.setPositional(false);
         musicPlayer.setVolume(volume);
         musicPlayer.play();
@@ -107,12 +100,9 @@ public class MusicManager extends AbstractAppState {
         }
 
         if (musicPlayer != null) {
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    musicPlayer.stop();
-                    return null;
-                }
+            app.enqueue(() -> {
+                musicPlayer.stop();
+                return null;
             });
         }
 
@@ -184,14 +174,11 @@ public class MusicManager extends AbstractAppState {
         this.playing = playing;
 
         if (!playing) {
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    if (musicPlayer != null) {
-                        musicPlayer.stop();
-                    }
-                    return null;
+            app.enqueue(() -> {
+                if (musicPlayer != null) {
+                    musicPlayer.stop();
                 }
+                return null;
             });
         }
     }

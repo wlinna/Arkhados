@@ -51,7 +51,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.FileHandler;
@@ -61,9 +60,10 @@ import java.util.logging.SimpleFormatter;
 import java.util.prefs.BackingStoreException;
 import javax.imageio.ImageIO;
 
-public class ClientMain extends SimpleApplication {    
-    private final static Logger logger =
-            Logger.getLogger(ClientMain.class.getName());
+public class ClientMain extends SimpleApplication {
+
+    private final static Logger logger
+            = Logger.getLogger(ClientMain.class.getName());
 
     public final static String PREFERENCES_KEY = "arkhados";
 
@@ -83,7 +83,7 @@ public class ClientMain extends SimpleApplication {
             fileHandler.setLevel(Level.FINE);
             fileHandler.setFormatter(new SimpleFormatter());
 
-            Logger.getLogger("").addHandler(fileHandler);            
+            Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException | SecurityException ex) {
             logger.log(Level.WARNING, null, ex);
         }
@@ -123,7 +123,7 @@ public class ClientMain extends SimpleApplication {
     private Sender sender;
     private GameMode gameMode = null;
     private InputSettings inputSettings;
-    private List<AppState> swappableStates = new ArrayList<>();
+    private final List<AppState> swappableStates = new ArrayList<>();
     private Future connectionFuture;
     private ScheduledThreadPoolExecutor threadPoolExecutor;
 
@@ -158,8 +158,7 @@ public class ClientMain extends SimpleApplication {
         flyCam.setEnabled(false);
         startNifty();
 
-        MusicManager musicManager =
-                new MusicManager(this, getInputManager(), getAssetManager());
+        MusicManager musicManager  = new MusicManager(this, getInputManager());
         musicManager.setMusicCategory("Menu");
         musicManager.setPlaying(true);
         stateManager.attach(musicManager);
@@ -206,8 +205,8 @@ public class ClientMain extends SimpleApplication {
 
         client = Network.createClient();
 
-        ClientNetListener listenerManager =
-                stateManager.getState(ClientNetListener.class);
+        ClientNetListener listenerManager
+                = stateManager.getState(ClientNetListener.class);
         listenerManager.reset();
         client.addClientStateListener(listenerManager);
 
@@ -221,21 +220,18 @@ public class ClientMain extends SimpleApplication {
 
         listenerManager.setName(username);
 
-        connectionFuture = threadPoolExecutor.submit(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                try {
-                    client.connectToServer(address, port, port);
-                    client.start();
-                } catch (IOException ex) {
-                    ConnectionMenu menu = (ConnectionMenu) nifty
-                            .findScreenController("arkhados.ui.ConnectionMenu");
-                    menu.setStatusText(ex.getMessage());
-                    logger.log(Level.SEVERE, null, ex);
-                }
-
-                return null;
+        connectionFuture = threadPoolExecutor.submit(() -> {
+            try {
+                client.connectToServer(address, port, port);
+                client.start();
+            } catch (IOException ex) {
+                ConnectionMenu menu = (ConnectionMenu) nifty
+                        .findScreenController("arkhados.ui.ConnectionMenu");
+                menu.setStatusText(ex.getMessage());
+                logger.log(Level.SEVERE, null, ex);
             }
+
+            return null;
         });
     }
 
@@ -245,7 +241,7 @@ public class ClientMain extends SimpleApplication {
         }
 
         logger.info("Cancelling connection future");
-        
+
         boolean cancelSuccesful = connectionFuture.cancel(true);
 
         logger.info(cancelSuccesful ? "Cancelled connection future"
@@ -256,41 +252,35 @@ public class ClientMain extends SimpleApplication {
     }
 
     public void setupGameMode(final String gameModeString) {
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                switch (gameModeString) {
-                    case "DeathMatch":
-                        DeathMatch dm = new DeathMatch();
-                        gameMode = dm;
-                        gameMode.initialize(ClientMain.this);
-                        dm.setNifty(nifty);
-                        gameMode.startGame();
-                        break;
-                    case "TeamDeathmatch":
-                        TeamDeathmatch tdm = new TeamDeathmatch();
-                        gameMode = tdm;
-                        gameMode.initialize(ClientMain.this);
-                        tdm.setNifty(nifty);
-                        gameMode.startGame();
-                        break;
-                }
-                return null;
+        enqueue(() -> {
+            switch (gameModeString) {
+                case "DeathMatch":
+                    DeathMatch dm = new DeathMatch();
+                    gameMode = dm;
+                    gameMode.initialize(ClientMain.this);
+                    dm.setNifty(nifty);
+                    gameMode.startGame();
+                    break;
+                case "TeamDeathmatch":
+                    TeamDeathmatch tdm = new TeamDeathmatch();
+                    gameMode = tdm;
+                    gameMode.initialize(ClientMain.this);
+                    tdm.setNifty(nifty);
+                    gameMode.startGame();
+                    break;
             }
+            return null;
         });
     }
 
     public void startGame() {
         flyCam.setEnabled(false);
 
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                gameMode.setRunning(true);
-                Preloader.loadClient(assetManager);
-                nifty.gotoScreen("default_hud");
-                return null;
-            }
+        enqueue(() -> {
+            gameMode.setRunning(true);
+            Preloader.loadClient(assetManager);
+            nifty.gotoScreen("default_hud");
+            return null;
         });
     }
 
@@ -312,8 +302,8 @@ public class ClientMain extends SimpleApplication {
     @Override
     public void loseFocus() {
         super.loseFocus();
-        UserCommandManager state =
-                stateManager.getState(UserCommandManager.class);
+        UserCommandManager state
+                = stateManager.getState(UserCommandManager.class);
         if (state != null) {
             state.onLoseFocus();
         }
@@ -338,11 +328,11 @@ public class ClientMain extends SimpleApplication {
         sender = new FakeSender();
         ReplayReader reader = new ReplayReader();
         reader.setEnabled(false);
-        
-        ReplayInputHandler inputHandler = new ReplayInputHandler();  
+
+        ReplayInputHandler inputHandler = new ReplayInputHandler();
         inputHandler.setEnabled(false);
-        swappableStates.add(inputHandler);                
-        
+        swappableStates.add(inputHandler);
+
         prepareAppStatesAndHandlers(reader);
     }
 
@@ -362,8 +352,8 @@ public class ClientMain extends SimpleApplication {
         Sync sync = new Sync(this);
         swappableStates.add(sync);
 
-        UserCommandManager userCommandManager =
-                new UserCommandManager(inputManager);
+        UserCommandManager userCommandManager
+                = new UserCommandManager(inputManager);
 
         swappableStates.add(userCommandManager);
         swappableStates.add(sender);

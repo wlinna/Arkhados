@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 import arkhados.controls.CSync;
 import arkhados.messages.sync.statedata.StateData;
 import arkhados.net.Command;
@@ -36,21 +35,24 @@ import java.util.Set;
 
 public class Sync extends AbstractAppState implements CommandHandler {
 
-    private Application app;
-    private Map<Integer, Object> syncObjects = new HashMap<>();
+    private final Application app;
+    private final AppStateManager stateManager;
+    private Sender sender;
+    private final Map<Integer, Object> syncObjects = new HashMap<>();
     private float syncTimer = 0.0f;
     private float defaultSyncFrequency;
-    private Queue<StateData> stateDataQueue = new LinkedList<>();
+    private final Queue<StateData> stateDataQueue = new LinkedList<>();
     private boolean listening = false; // NOTE: Only server is affected
 
     public Sync(Application app) {
         this.app = app;
+        stateManager = app.getStateManager();
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        Sender sender = app.getStateManager().getState(Sender.class);
+        sender = stateManager.getState(Sender.class);
         if (sender.isServer()) {
             defaultSyncFrequency = Settings.get().General()
                     .getDefaultSyncFrequency();
@@ -59,7 +61,6 @@ public class Sync extends AbstractAppState implements CommandHandler {
 
     @Override
     public void update(float tpf) {
-        Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isClient()) {
 
             for (Iterator<StateData> it = stateDataQueue.iterator();
@@ -82,13 +83,11 @@ public class Sync extends AbstractAppState implements CommandHandler {
     }
 
     private void sendSyncData() {
-        ServerFog fog = app.getStateManager().getState(ServerFog.class);
+        ServerFog fog = stateManager.getState(ServerFog.class);
 
         Set<Entry<Integer, Object>> entrySet = syncObjects.entrySet();
 
-        for (Iterator<Entry<Integer, Object>> it = entrySet.iterator();
-                it.hasNext();) {
-            Entry<Integer, Object> entry = it.next();
+        for (Entry<Integer, Object> entry : entrySet) {
             if (!(entry.getValue() instanceof Spatial)) {
                 continue;
             }
@@ -140,7 +139,6 @@ public class Sync extends AbstractAppState implements CommandHandler {
 
     @Override
     public void readGuaranteed(Object source, Command guaranteed) {
-        Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isClient()) {
             clientHandleCommands(guaranteed);
         } else {
@@ -150,7 +148,6 @@ public class Sync extends AbstractAppState implements CommandHandler {
 
     @Override
     public void readUnreliable(Object source, Command unreliable) {
-        Sender sender = app.getStateManager().getState(Sender.class);
         if (sender.isClient()) {
             clientHandleCommands(unreliable);
         } else {
@@ -159,15 +156,11 @@ public class Sync extends AbstractAppState implements CommandHandler {
     }
 
     private void clientHandleCommands(final Command command) {
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-
-                if (command instanceof StateData) {
-                    stateDataQueue.add((StateData) command);
-                }
-                return null;
+        app.enqueue(() -> {
+            if (command instanceof StateData) {
+                stateDataQueue.add((StateData) command);
             }
+            return null;
         });
     }
 
@@ -177,19 +170,15 @@ public class Sync extends AbstractAppState implements CommandHandler {
             return;
         }
 
-        final int playerId = ServerClientData.getPlayerId(source.getId());
-        final int syncId = PlayerData.getIntData(playerId,
-                PlayerData.ENTITY_ID);
+        int player = ServerClientData.getPlayerId(source.getId());
+        final int syncId = PlayerData.getIntData(player, PlayerData.ENTITY_ID);
         if (syncId != -1) {
-            app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    doMessage(syncId, command);
-                    return null;
-                }
+            app.enqueue(() -> {
+                doMessage(syncId, command);
+                return null;
             });
         } else {
-            System.out.println("Entity id for player " + playerId
+            System.out.println("Entity id for player " + player
                     + " does not exist");
         }
     }

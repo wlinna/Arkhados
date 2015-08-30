@@ -32,7 +32,6 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ClientHud extends AbstractAppState
         implements ScreenController {
@@ -40,11 +39,11 @@ public class ClientHud extends AbstractAppState
     private Nifty nifty;
     private Screen screen;
     private Spatial playerCharacter = null;
-    private GameMessageHandler messageHandler = new GameMessageHandler();
-    private SpellBar spellBar = new SpellBar();
-    private VisualStatistics statistics = new VisualStatistics();
-    private VisualCharacterInfo characterInfo;
-    private HudMenu hudMenu = new HudMenu();
+    private final GameMessageHandler messageHandler = new GameMessageHandler();
+    private final SpellBar spellBar = new SpellBar();
+    private final VisualStatistics statistics = new VisualStatistics();
+    private final VisualCharacterInfo characterInfo;
+    private final HudMenu hudMenu = new HudMenu();
 
     public ClientHud(Camera cam, Node guiNode, BitmapFont guiFont) {
         characterInfo = new VisualCharacterInfo(cam, guiNode, guiFont);
@@ -165,12 +164,9 @@ public class ClientHud extends AbstractAppState
     }
 
     public void setLatestStatsList(final List<PlayerRoundStats> statsList) {
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                statistics.setLatestStatsList(statsList);
-                return null;
-            }
+        Globals.app.enqueue(() -> {
+            statistics.setLatestStatsList(statsList);
+            return null;
         });
     }
 
@@ -202,7 +198,7 @@ public class ClientHud extends AbstractAppState
     }
 
     public void continueGame() {
-        screen.findElementByName("layer_settings").hide();
+        screen.findElementById("layer_settings").hide();
     }
 
     public void exitProgram() {

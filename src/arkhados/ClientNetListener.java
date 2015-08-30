@@ -40,7 +40,7 @@ public class ClientNetListener extends AbstractAppState
 
     private ClientMain app;
     private String name = "";
-    private Timer udpHandshakeAckTimer = new Timer(1f);
+    private final Timer udpHandshakeAckTimer = new Timer(1f);
     private boolean handshakeComplete = false;
     private final ConnectionMenu connectionMenu;
 

@@ -27,15 +27,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 public class EffectHandler implements CommandHandler {
 
-    private Application app;
+    private final Application app;
     private World world;
-    private Map<Integer, EffectBox> actionEffects = new HashMap<>();
+    private final Map<Integer, EffectBox> actionEffects = new HashMap<>();
     private static int runningIndex = 0;
-    private static List<WorldEffect> worldEffects = new ArrayList<>();
+    private static final List<WorldEffect> worldEffects = new ArrayList<>();
 
     public static int addWorldEffect(WorldEffect effect) {
         worldEffects.add(effect);
@@ -68,14 +67,11 @@ public class EffectHandler implements CommandHandler {
             return;
         }
 
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                box.executeActionEffect(actionCommand.getActionId(),
-                        world.getWorldRoot(),
-                        entity.getLocalTranslation());
-                return null;
-            }
+        app.enqueue(() -> {
+            box.executeActionEffect(actionCommand.getActionId(),
+                    world.getWorldRoot(),
+                    entity.getLocalTranslation());
+            return null;
         });
     }
 
@@ -84,15 +80,12 @@ public class EffectHandler implements CommandHandler {
             return;
         }
 
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                WorldEffect worldEffect =
-                        worldEffects.get(command.getEffectId());
-                worldEffect.execute(world.getWorldRoot(),
-                        command.getLocation(), null);
-                return null;
-            }
+        app.enqueue(() -> {
+            WorldEffect worldEffect =
+                    worldEffects.get(command.getEffectId());
+            worldEffect.execute(world.getWorldRoot(),
+                    command.getLocation(), null);
+            return null;
         });
 
     }

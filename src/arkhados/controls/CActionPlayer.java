@@ -24,11 +24,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 public class CActionPlayer extends AbstractControl {
 
-    private Map<Integer, WorldEffect> actionEffects = new HashMap<>();
+    private final Map<Integer, WorldEffect> actionEffects = new HashMap<>();
     private EffectHandle effectHandle;
 
     public void putEffect(int id, WorldEffect effect) {
@@ -36,34 +35,28 @@ public class CActionPlayer extends AbstractControl {
     }
 
     public void playEffect(final int actionId) {
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                if (effectHandle != null) {
-                    effectHandle.end();
-                    effectHandle = null;
-                }
-
-                WorldEffect fx = actionEffects.get(actionId);
-                if (fx != null) {
-                    effectHandle = fx.execute((Node) spatial,
-                            Vector3f.ZERO, null);
-                }
-
-                return null;
+        Globals.app.enqueue(() -> {
+            if (effectHandle != null) {
+                effectHandle.end();
+                effectHandle = null;
             }
+            
+            WorldEffect fx = actionEffects.get(actionId);
+            if (fx != null) {
+                effectHandle = fx.execute((Node) spatial,
+                        Vector3f.ZERO, null);
+            }
+            
+            return null;
         });
     }
 
     public void endEffect() {
         if (effectHandle != null) {
-            Globals.app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    effectHandle.end();
-                    effectHandle = null;
-                    return null;
-                }
+            Globals.app.enqueue(() -> {
+                effectHandle.end();
+                effectHandle = null;
+                return null;
             });
         }
     }

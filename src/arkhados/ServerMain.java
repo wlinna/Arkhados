@@ -24,7 +24,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import arkhados.net.OneTrueMessage;
@@ -141,12 +140,9 @@ public class ServerMain extends SimpleApplication {
         flyCam.setEnabled(true);
         flyCam.setMoveSpeed(25f);
         inputManager.setCursorVisible(true);
-        enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                game.start();
-                return null;
-            }
+        enqueue(() -> {
+            game.start();
+            return null;
         });
     }
 

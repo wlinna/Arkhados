@@ -20,21 +20,17 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
-import java.util.concurrent.Callable;
 
 public class ConnectionMenu extends Menu {
 
     private TextRenderer statusText;
 
     public void setStatusText(final String text) {
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                if (statusText != null) {
-                    statusText.setText(text);
-                }
-                return null;
+        Globals.app.enqueue(() -> {
+            if (statusText != null) {
+                statusText.setText(text);
             }
+            return null;
         });
     }
 

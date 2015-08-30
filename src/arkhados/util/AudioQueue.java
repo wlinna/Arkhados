@@ -19,26 +19,18 @@ import com.jme3.audio.AudioNode;
 import com.jme3.audio.AudioSource;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class AudioQueue {
 
     private AudioTracker current;
-    private Queue<AudioNode> queue = new LinkedList<>();
+    private final Queue<AudioNode> queue = new LinkedList<>();
 
     public synchronized void enqueueAudio(final AudioNode audio) {
         if (current == null) {
             current = new AudioTracker(audio);
-            Globals.app.enqueue(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    audio.play();
-                    return null;
-                }
+            Globals.app.enqueue(() -> {
+                audio.play();
+                return null;
             });
         } else {
             queue.add(audio);
@@ -68,7 +60,7 @@ public class AudioQueue {
 
 class AudioTracker {
 
-    private AudioNode node;
+    private final AudioNode node;
     private boolean hasStarted;
 
     public AudioTracker(AudioNode node) {

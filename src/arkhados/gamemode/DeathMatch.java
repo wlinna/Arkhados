@@ -34,14 +34,13 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.HostedConnection;
 import de.lessvoid.nifty.Nifty;
-import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 public class DeathMatch extends GameMode implements CommandHandler {
 
     private static final Logger logger =
             Logger.getLogger(DeathMatch.class.getName());
-    private DeathmatchCommon common = new DeathmatchCommon();
+    private final DeathmatchCommon common = new DeathmatchCommon();
     private World world;
     private AppStateManager stateManager;
     private Sync sync;
@@ -63,26 +62,23 @@ public class DeathMatch extends GameMode implements CommandHandler {
 
     @Override
     public void startGame() {
-        getApp().enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                world.setEnabled(true);
-                world.loadLevel();
-                world.attachLevel();
-
-                Sender sender = stateManager.getState(Sender.class);
-
-                if (sender.isClient() && !Globals.replayMode) {
-                    nifty.gotoScreen("default_hud");
-                    common.getHeroSelectionLayer().show();
-                    sender.addCommand(
-                            new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
-                } else if (sender.isServer()) {
-                    sync.setEnabled(true);
-                    sync.startListening();
-                }
-                return null;
+        getApp().enqueue(() -> {
+            world.setEnabled(true);
+            world.loadLevel();
+            world.attachLevel();
+            
+            Sender sender = stateManager.getState(Sender.class);
+            
+            if (sender.isClient() && !Globals.replayMode) {
+                nifty.gotoScreen("default_hud");
+                common.getHeroSelectionLayer().show();
+                sender.addCommand(
+                        new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
+            } else if (sender.isServer()) {
+                sync.setEnabled(true);
+                sync.startListening();
             }
+            return null;
         });
     }
 

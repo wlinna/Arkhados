@@ -36,13 +36,12 @@ import arkhados.ui.hud.ServerClientDataStrings;
 import static arkhados.ui.hud.ServerClientDataStrings.PLAYER_ID;
 import arkhados.util.RemovalReasons;
 import com.jme3.app.state.AppStateManager;
-import java.util.concurrent.Callable;
 
 public class ServerNetListener implements ConnectionListener,
         CommandHandler, ServerClientDataStrings {
 
-    private ServerMain app;
-    private AppStateManager stateManager;
+    private final ServerMain app;
+    private final AppStateManager stateManager;
     private boolean someoneJoined = false;
 
     public ServerNetListener(ServerMain app, Server server) {
@@ -73,41 +72,38 @@ public class ServerNetListener implements ConnectionListener,
     @Override
     public void connectionRemoved(final Server server,
             final HostedConnection conn) {
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                Integer playerId = conn.getAttribute(PLAYER_ID);
-                ServerSender sender = stateManager.getState(ServerSender.class);
-                sender.removeConnection(conn);
-                ServerFog fog =  stateManager.getState(ServerFog.class);
-                fog.removeConnection(conn);
-                ServerClientData.remove(conn.getId());
-
-                if (playerId == null) {
-                    return null;
-                }
-
-                ServerClientData.removeConnection(playerId);
-
-                int entityId = PlayerData.getIntData(playerId,
-                        PlayerData.ENTITY_ID);
-                if (entityId > -1) {
-                    World world =
-                            stateManager.getState(World.class);
-                    world.removeEntity(entityId, RemovalReasons.DISCONNECT);
-                }
-
-                PlayerData.remove(playerId);
-                CharacterInteraction.removePlayer(playerId);
-
-                if (!server.hasConnections() && someoneJoined) {
-                    app.stop();
-                }
-
-                sender.addCommand(
-                        new CmdPlayerStatusChange(playerId).setLeft());
+        app.enqueue(() -> {
+            Integer playerId = conn.getAttribute(PLAYER_ID);
+            ServerSender sender = stateManager.getState(ServerSender.class);
+            sender.removeConnection(conn);
+            ServerFog fog =  stateManager.getState(ServerFog.class);
+            fog.removeConnection(conn);
+            ServerClientData.remove(conn.getId());
+            
+            if (playerId == null) {
                 return null;
             }
+            
+            ServerClientData.removeConnection(playerId);
+            
+            int entityId = PlayerData.getIntData(playerId,
+                    PlayerData.ENTITY_ID);
+            if (entityId > -1) {
+                World world =
+                        stateManager.getState(World.class);
+                world.removeEntity(entityId, RemovalReasons.DISCONNECT);
+            }
+            
+            PlayerData.remove(playerId);
+            CharacterInteraction.removePlayer(playerId);
+            
+            if (!server.hasConnections() && someoneJoined) {
+                app.stop();
+            }
+            
+            sender.addCommand(
+                    new CmdPlayerStatusChange(playerId).setLeft());
+            return null;
         });
 
     }
@@ -165,38 +161,35 @@ public class ServerNetListener implements ConnectionListener,
             return;
         }
 
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                final int playerId = PlayerData.getNew(commmand.getName());
-                PlayerData
-                        .setData(playerId, PlayerData.HERO, "EmberMage");
-                PlayerData
-                        .setData(playerId, PlayerData.TEAM_ID, playerId);
-
-                source.setAttribute(PLAYER_ID, playerId);
-
-                ServerInput.get().addInputState(playerId);
-
-                ServerClientData.setConnected(clientId, true);
-                ServerClientData.setPlayerId(clientId, playerId);
-                ServerClientData.addConnection(playerId, source);
-
-                ServerGame game = stateManager.getState(ServerGame.class);
-                game.playerJoined(playerId);
-
-                String modeKey = game.getGameMode().getClass().getSimpleName();
-                CmdServerLogin serverLoginMessage =
-                        new CmdServerLogin(commmand.getName(), playerId,
-                        true, modeKey);
-                someoneJoined = true;
-                ServerSender sender = stateManager.getState(ServerSender.class);
-                sender.addCommandForSingle(serverLoginMessage, source);
-                sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
-                sender.addCommand(
-                        new CmdPlayerStatusChange(playerId).setJoined());
-                return null;
-            }
+        app.enqueue(() -> {
+            final int playerId = PlayerData.getNew(commmand.getName());
+            PlayerData
+                    .setData(playerId, PlayerData.HERO, "EmberMage");
+            PlayerData
+                    .setData(playerId, PlayerData.TEAM_ID, playerId);
+            
+            source.setAttribute(PLAYER_ID, playerId);
+            
+            ServerInput.get().addInputState(playerId);
+            
+            ServerClientData.setConnected(clientId, true);
+            ServerClientData.setPlayerId(clientId, playerId);
+            ServerClientData.addConnection(playerId, source);
+            
+            ServerGame game = stateManager.getState(ServerGame.class);
+            game.playerJoined(playerId);
+            
+            String modeKey = game.getGameMode().getClass().getSimpleName();
+            CmdServerLogin serverLoginMessage =
+                    new CmdServerLogin(commmand.getName(), playerId,
+                            true, modeKey);
+            someoneJoined = true;
+            ServerSender sender = stateManager.getState(ServerSender.class);
+            sender.addCommandForSingle(serverLoginMessage, source);
+            sender.addCommand(CmdPlayerDataTable.makeFromPlayerDataList());
+            sender.addCommand(
+                    new CmdPlayerStatusChange(playerId).setJoined());
+            return null;
         });
     }
 

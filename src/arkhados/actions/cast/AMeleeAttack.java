@@ -31,9 +31,9 @@ import java.util.List;
 
 public class AMeleeAttack extends EntityAction {
 
-    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
-    private float damage;
-    private float range;
+    private final List<AbstractBuffBuilder> buffs = new ArrayList<>();
+    private final float damage;
+    private final float range;
 
     public AMeleeAttack(float damage, float range) {
         this.damage = damage;
@@ -46,7 +46,7 @@ public class AMeleeAttack extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final CCharacterPhysics physicsControl = spatial
+        CCharacterPhysics physicsControl = spatial
                 .getControl(CCharacterPhysics.class);
         Vector3f hitDirection = physicsControl.calculateTargetDirection()
                 .normalize().multLocal(range);
@@ -54,62 +54,54 @@ public class AMeleeAttack extends EntityAction {
         final int myTeamId = spatial.getUserData(UserData.TEAM_ID);
 
         physicsControl.setViewDirection(hitDirection);
-        
-        Predicate<SpatialDistancePair> pred =
-                new Predicate<SpatialDistancePair>() {
-            @Override
-            public boolean test(SpatialDistancePair value) {
-                if (value.spatial == spatial) {
-                    return false;
-                }
 
-                Integer nullableTeamId =
-                        value.spatial.getUserData(UserData.TEAM_ID);
-                if (nullableTeamId == null) {
-                    return false;
-                }
-
-                CInfluenceInterface influenceInterface = value.spatial
-                        .getControl(CInfluenceInterface.class);
-
-                if (influenceInterface != null
-                        && !nullableTeamId.equals(myTeamId)) {
-                    return true;
-                }
-
+        Predicate<SpatialDistancePair> pred = (SpatialDistancePair value) -> {
+            if (value.spatial == spatial) {
                 return false;
             }
+
+            Integer nullableTeamId
+                    = value.spatial.getUserData(UserData.TEAM_ID);
+            if (nullableTeamId == null) {
+                return false;
+            }
+
+            CInfluenceInterface influenceInterface = value.spatial
+                    .getControl(CInfluenceInterface.class);
+
+            return influenceInterface != null
+                    && !nullableTeamId.equals(myTeamId);
         };
-        
+
         SpatialDistancePair closest = Selector.giveClosest(
                 Selector.coneSelect(new ArrayList<SpatialDistancePair>(), pred,
-                spatial.getLocalTranslation(), hitDirection, range, 50f));
-        
+                        spatial.getLocalTranslation(), hitDirection,
+                        range, 50f));
+
         if (closest == null) {
             return false;
         }
 
-        CInfluenceInterface targetInterface =
-                closest.spatial.getControl(CInfluenceInterface.class);
+        CInfluenceInterface targetInterface
+                = closest.spatial.getControl(CInfluenceInterface.class);
         if (targetInterface != null) {
-            CActionQueue cQueue = 
-                    targetInterface.getSpatial().getControl(CActionQueue.class);
+            CActionQueue cQueue = targetInterface.getSpatial()
+                    .getControl(CActionQueue.class);
             EntityAction aCurrent = cQueue.getCurrent();
-            
+
             if (aCurrent instanceof ATrance) {
                 ((ATrance) aCurrent).activate(spatial);
                 return false;
             }
-            
-            final float damageFactor =
-                    spatial.getUserData(UserData.DAMAGE_FACTOR);
-            final float rawDamage = damage * damageFactor;
+
+            float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);
+            float rawDamage = damage * damageFactor;
             // TODO: Calculate damage for possible Damage over Time -buffs
             CharacterInteraction.harm(
                     spatial.getControl(CInfluenceInterface.class),
                     targetInterface, rawDamage, buffs, true);
         }
-        
+
         return false;
     }
 }

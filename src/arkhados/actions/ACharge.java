@@ -21,7 +21,6 @@ import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterMovement;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
-import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -34,12 +33,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-/**
- *
- * @author william
- */
 public class ACharge extends EntityAction
         implements PhysicsCollisionListener {
 
@@ -50,7 +44,7 @@ public class ACharge extends EntityAction
     private Vector3f direction;
     private GhostControl ghost;
     private Node ghostNode;
-    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
+    private final List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private boolean hasCollided = false;
     private Spatial collidedWith = null;
     private float hitDamage;
@@ -151,16 +145,13 @@ public class ACharge extends EntityAction
     public void end() {
         super.end();
 
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                ghost.getPhysicsSpace()
-                        .removeCollisionListener(ACharge.this);
-                ghost.getPhysicsSpace().remove(ghost);
-                ghostNode.removeFromParent();
-                ghostNode.removeControl(ghost);
-                return null;
-            }
+        Globals.app.enqueue(() -> {
+            ghost.getPhysicsSpace()
+                    .removeCollisionListener(ACharge.this);
+            ghost.getPhysicsSpace().remove(ghost);
+            ghostNode.removeFromParent();
+            ghostNode.removeControl(ghost);
+            return null;
         });
         CInfluenceInterface influenceInterface =
                 spatial.getControl(CInfluenceInterface.class);

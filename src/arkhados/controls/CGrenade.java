@@ -37,7 +37,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import java.util.concurrent.Callable;
 
 public class CGrenade extends AbstractControl implements PhysicsControl,
         PhysicsTickListener, PhysicsCollisionListener, CSync {
@@ -209,20 +208,17 @@ public class CGrenade extends AbstractControl implements PhysicsControl,
 
     @Override
     public void setPhysicsSpace(final PhysicsSpace space) {
-        Globals.app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                if (CGrenade.this.space == null && space != null) {
-                    space.addCollisionListener(CGrenade.this);
-                    space.addTickListener(CGrenade.this);
-                } else if (CGrenade.this.space != null && space == null) {
-                    CGrenade.this.space.removeCollisionListener(CGrenade.this);
-                    CGrenade.this.space.removeTickListener(CGrenade.this);
-                }
-
-                CGrenade.this.space = space;
-                return null;
+        Globals.app.enqueue(() -> {
+            if (CGrenade.this.space == null && space != null) {
+                space.addCollisionListener(CGrenade.this);
+                space.addTickListener(CGrenade.this);
+            } else if (CGrenade.this.space != null && space == null) {
+                CGrenade.this.space.removeCollisionListener(CGrenade.this);
+                CGrenade.this.space.removeTickListener(CGrenade.this);
             }
+            
+            CGrenade.this.space = space;
+            return null;
         });
 
     }

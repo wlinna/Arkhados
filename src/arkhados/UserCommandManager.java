@@ -44,7 +44,7 @@ import java.util.Map;
 
 public class UserCommandManager extends AbstractAppState {
 
-    private InputManager inputManager;
+    private final InputManager inputManager;
     private World world;
     private Application app;
     private Camera cam;

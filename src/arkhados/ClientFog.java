@@ -40,12 +40,11 @@ import com.jme3.texture.Texture2D;
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ClientFog extends AbstractAppState implements SceneProcessor {
 
     private Geometry rangeFogQuad = null;
-    private Vector3f playerPosition = new Vector3f(60, 0, 0);
+    private final Vector3f playerPosition = new Vector3f(60, 0, 0);
     private Spatial player;
     private AssetManager assetManager;
     private Material mat;
@@ -88,7 +87,8 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
 
         occluders = new ArrayList<>();
 
-        Material dummyMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material dummyMat = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
         dummyMat.setColor("Color", ColorRGBA.BlackNoAlpha);
 
         for (Spatial wall : walls.getChildren()) {
@@ -97,7 +97,7 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
             Geometry fogGeom = (Geometry) orig.deepClone();
             orig.removeFromParent();
             wallNode.attachChild(fogGeom);
-                        
+
             occluders.add(fogGeom);
             fogGeom.setCullHint(Spatial.CullHint.Always);
 
@@ -111,16 +111,19 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
         Mesh mesh = geometry.getMesh();
 
         // Vertices       
-        VertexBuffer oldPositionVertexBuffer = mesh.getBuffer(VertexBuffer.Type.Position);
+        VertexBuffer oldPositionVertexBuffer
+                = mesh.getBuffer(VertexBuffer.Type.Position);
 
         int oldVertexCount = oldPositionVertexBuffer.getNumElements();
 
-        VertexBuffer.Format positionFormat = oldPositionVertexBuffer.getFormat();
+        VertexBuffer.Format positionFormat
+                = oldPositionVertexBuffer.getFormat();
 
-        Buffer positionBuffer = VertexBuffer.createBuffer(VertexBuffer.Format.Float, 4,
-                oldVertexCount * 2);
+        Buffer positionBuffer = VertexBuffer
+                .createBuffer(VertexBuffer.Format.Float, 4, oldVertexCount * 2);
 
-        VertexBuffer newPositionVertexBuffer = new VertexBuffer(VertexBuffer.Type.Position);
+        VertexBuffer newPositionVertexBuffer
+                = new VertexBuffer(VertexBuffer.Type.Position);
         newPositionVertexBuffer.setupData(VertexBuffer.Usage.Static,
                 4, positionFormat, positionBuffer);
 
@@ -146,7 +149,8 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
         mesh.setBuffer(newPositionVertexBuffer);
 
         // Indices
-        VertexBuffer oldIndexVertexBuffer = mesh.getBuffer(VertexBuffer.Type.Index);
+        VertexBuffer oldIndexVertexBuffer
+                = mesh.getBuffer(VertexBuffer.Type.Index);
         VertexBuffer.Format indexFormat = oldIndexVertexBuffer.getFormat();
         int oldIndexCount = oldIndexVertexBuffer.getNumElements();
 
@@ -163,7 +167,8 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
             }
 
             short o1 = (short) oldIndexVertexBuffer.getElementComponent(i, 0);
-            short o2 = (short) oldIndexVertexBuffer.getElementComponent(i + 1, 0);
+            short o2 = (short) oldIndexVertexBuffer
+                    .getElementComponent(i + 1, 0);
             short c1 = (short) (o1 + oldVertexCount);
             short c2 = (short) (o2 + oldVertexCount);
 
@@ -183,47 +188,57 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
 
         Buffer indexBuffer = VertexBuffer.createBuffer(indexFormat,
                 oldIndexVertexBuffer.getNumComponents(),
-                oldIndexVertexBuffer.getNumElements() * 2 + connectionIndices.size());
+                oldIndexVertexBuffer.getNumElements()
+                * 2 + connectionIndices.size());
 
-        VertexBuffer newIndexVertexBuffer = new VertexBuffer(VertexBuffer.Type.Index);
+        VertexBuffer newIndexVertexBuffer
+                = new VertexBuffer(VertexBuffer.Type.Index);
         newIndexVertexBuffer.setupData(VertexBuffer.Usage.Static,
-                oldIndexVertexBuffer.getNumComponents(), indexFormat, indexBuffer);
+                oldIndexVertexBuffer.getNumComponents(),
+                indexFormat, indexBuffer);
 
         oldIndexVertexBuffer.copyElements(0, newIndexVertexBuffer, 0,
                 oldIndexVertexBuffer.getNumElements());
         oldIndexVertexBuffer.copyElements(0, newIndexVertexBuffer,
-                oldIndexVertexBuffer.getNumElements(), oldIndexVertexBuffer.getNumElements());
+                oldIndexVertexBuffer.getNumElements(),
+                oldIndexVertexBuffer.getNumElements());
 
-        for (int i = oldIndexVertexBuffer.getNumElements(); i < oldIndexVertexBuffer.getNumElements() * 2; i++) {
-            short oldValue = (short) (Short) newIndexVertexBuffer.getElementComponent(i, 0);
+        for (int i = oldIndexVertexBuffer.getNumElements();
+                i < oldIndexVertexBuffer.getNumElements() * 2; i++) {
+            short oldValue = (short) (Short) newIndexVertexBuffer
+                    .getElementComponent(i, 0);
             int newValue = oldValue + oldVertexCount;
             newIndexVertexBuffer.setElementComponent(i, 0, (short) newValue);
         }
 
         for (int i = 0; i < connectionIndices.size(); i++) {
             short index = (short) (int) connectionIndices.get(i);
-            newIndexVertexBuffer.setElementComponent(oldIndexVertexBuffer.getNumElements() * 2 + i,
-                    0, index);
+            newIndexVertexBuffer.setElementComponent(
+                    oldIndexVertexBuffer.getNumElements() * 2 + i, 0, index);
         }
 
         mesh.clearBuffer(VertexBuffer.Type.Index);
         mesh.setBuffer(newIndexVertexBuffer);
 
         // Normals
-        VertexBuffer oldNormalVertexBuffer = mesh.getBuffer(VertexBuffer.Type.Normal);
+        VertexBuffer oldNormalVertexBuffer
+                = mesh.getBuffer(VertexBuffer.Type.Normal);
         VertexBuffer.Format normalFormat = oldNormalVertexBuffer.getFormat();
 
         Buffer normalBuffer = VertexBuffer.createBuffer(normalFormat,
                 oldNormalVertexBuffer.getNumComponents(),
                 oldNormalVertexBuffer.getNumElements() * 2);
 
-        VertexBuffer newNormalVertexBuffer = new VertexBuffer(VertexBuffer.Type.Normal);
-        newNormalVertexBuffer.setupData(VertexBuffer.Usage.Static, 3, normalFormat, normalBuffer);
+        VertexBuffer newNormalVertexBuffer
+                = new VertexBuffer(VertexBuffer.Type.Normal);
+        newNormalVertexBuffer.setupData(VertexBuffer.Usage.Static,
+                3, normalFormat, normalBuffer);
 
         oldNormalVertexBuffer.copyElements(0, newNormalVertexBuffer,
                 0, oldNormalVertexBuffer.getNumElements());
         oldNormalVertexBuffer.copyElements(0, newNormalVertexBuffer,
-                oldNormalVertexBuffer.getNumElements(), oldNormalVertexBuffer.getNumElements());
+                oldNormalVertexBuffer.getNumElements(),
+                oldNormalVertexBuffer.getNumElements());
 
         mesh.clearBuffer(VertexBuffer.Type.Normal);
         mesh.setBuffer(newNormalVertexBuffer);
@@ -245,7 +260,8 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
             mat.setVector3("PlayerPosition", player.getLocalTranslation());
         }
         if (fogShapeMaterial != null && player != null) {
-            fogShapeMaterial.setVector3("PlayerPosition", player.getLocalTranslation());
+            fogShapeMaterial.setVector3("PlayerPosition",
+                    player.getLocalTranslation());
         }
     }
 
@@ -254,10 +270,13 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
         renderManager = rm;
         viewPort = vp;
 
-        fogShapeMaterial = assetManager.loadMaterial("Materials/OccluderFogShape.j3m");
-        fogProcessMaterial = assetManager.loadMaterial("Materials/OccluderFogProcess.j3m");
+        fogShapeMaterial = assetManager
+                .loadMaterial("Materials/OccluderFogShape.j3m");
+        fogProcessMaterial = assetManager
+                .loadMaterial("Materials/OccluderFogProcess.j3m");
 
-        fogShapeMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+        fogShapeMaterial.getAdditionalRenderState()
+                .setFaceCullMode(RenderState.FaceCullMode.Off);
         fogShapeMaterial.getAdditionalRenderState().setDepthWrite(false);
         fogShapeMaterial.getAdditionalRenderState().setDepthTest(false);
 
@@ -276,16 +295,14 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
 //        fogFb.setDepthTexture(new Texture2D(width, height, Image.Format.Depth));
         fogProcessMaterial.setTexture("FogShape", colorTexture);
 
-        app.enqueue(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                Quad front = new Quad(viewPort.getCamera().getWidth(), viewPort.getCamera().getHeight());
-                screenQuad = new Geometry("front-quad", front);
-                screenQuad.setMaterial(fogProcessMaterial);
-                ((SimpleApplication) app).getRootNode().attachChild(screenQuad);
-                screenQuad.setQueueBucket(RenderQueue.Bucket.Gui);
-                return null;
-            }
+        app.enqueue(() -> {
+            Quad front = new Quad(viewPort.getCamera().getWidth(),
+                    viewPort.getCamera().getHeight());
+            screenQuad = new Geometry("front-quad", front);
+            screenQuad.setMaterial(fogProcessMaterial);
+            ((SimpleApplication) app).getRootNode().attachChild(screenQuad);
+            screenQuad.setQueueBucket(RenderQueue.Bucket.Gui);
+            return null;
         });
 
         initialized = true;
