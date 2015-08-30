@@ -258,7 +258,7 @@ public class World extends AbstractAppState {
         boolean isCharacter =
                 entity.getControl(CCharacterPhysics.class) != null;
 
-        if (isCharacter && PlayerData.isHuman(playerId)) {
+        if (isCharacter) {
             logger.log(Level.INFO, "Adding entity {0} for player {1}",
                     new Object[]{id, playerId});
             entity.setUserData(UserData.FOLLOW_ME, true);

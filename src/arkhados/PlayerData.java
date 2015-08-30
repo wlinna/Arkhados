@@ -60,9 +60,8 @@ public final class PlayerData {
     public static final String COMMAND_MOVE_INTERRUPTS = "command-move-interrupts";
     public static final String NAME = "name";
     public static final String TEAM_ID = "team-id";
-    private static HashMap<Integer, PlayerData> players = new HashMap<>();
+    private static Map<Integer, PlayerData> players = new HashMap<>();
     private int id;
-    private int aiControl = -1;
     private Map<String, Float> floatData = new HashMap<>();
     private Map<String, Integer> intData = new HashMap<>();
     private Map<String, Long> longData = new HashMap<>();
@@ -71,28 +70,6 @@ public final class PlayerData {
 
     public static synchronized PlayerData getPlayerId(int id) {
         return players.get(id);
-    }
-
-    public static synchronized List<PlayerData> getHumanPlayers() {
-        LinkedList<PlayerData> list = new LinkedList<>();
-        for (Iterator<Entry<Integer, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
-            Entry<Integer, PlayerData> entry = it.next();
-            if (entry.getValue().isHuman()) {
-                list.add(entry.getValue());
-            }
-        }
-        return list;
-    }
-
-    public static synchronized List<PlayerData> getAIPlayers() {
-        LinkedList<PlayerData> list = new LinkedList<>();
-        for (Iterator<Entry<Integer, PlayerData>> it = players.entrySet().iterator(); it.hasNext();) {
-            Entry<Integer, PlayerData> entry = it.next();
-            if (!entry.getValue().isHuman()) {
-                list.add(entry.getValue());
-            }
-        }
-        return list;
     }
 
     public static synchronized List<PlayerData> getPlayers() {
@@ -123,18 +100,6 @@ public final class PlayerData {
         players.remove(id);
     }
 
-    public static synchronized int getAiControl(int id) {
-        return players.get(id).getAiControl();
-    }
-
-    public static synchronized void setAiControl(int id, int aiControl) {
-        players.get(id).setAiControl(aiControl);
-    }
-
-    public static synchronized boolean isHuman(int id) {
-        return players.get(id).isHuman();
-    }
-
     public static synchronized float getFloatData(int id, String key) {
         if (!players.containsKey(id)) {
             return -1;
@@ -154,7 +119,7 @@ public final class PlayerData {
             return -1;
         }
         Integer data = players.get(id).getIntData(key);
-        return data != null ? data.intValue() : -1;
+        return data != null ? data : -1;
     }
 
     public static synchronized void setData(int id, String key, int data) {
@@ -166,7 +131,7 @@ public final class PlayerData {
 
     public static synchronized Long getLongData(int id, String key) {
         if (!players.containsKey(id)) {
-            return new Long(-1);
+            return (long) -1;
         }
         return players.get(id).getLongData(key);
     }
@@ -219,35 +184,14 @@ public final class PlayerData {
     public PlayerData() {
     }
 
-    public PlayerData(int id) {
-        this.id = id;
-    }
-
     public PlayerData(int id, String name) {
-        this(id, name, -1);
-    }
-
-    public PlayerData(int id, String name, int aiControl) {
         this.id = id;
-        this.aiControl = aiControl;
         setData("name", name);
         setData("entity-id", -1);
     }
 
     public int getId() {
         return id;
-    }
-
-    public int getAiControl() {
-        return aiControl;
-    }
-
-    public void setAiControl(int aiControl) {
-        this.aiControl = aiControl;
-    }
-
-    public boolean isHuman() {
-        return this.aiControl == -1;
     }
 
     public Float getFloatData(String key) {
