@@ -60,6 +60,7 @@ See CREDITS.md for attributions.
 - MineralArmor.png
 - Slow.png
 - Blind.png
+- Shadow.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav

@@ -108,6 +108,7 @@ J. W. Bjerk (eleazzaar) for following spell and buff icons:
 - Rocket Launcher
 - Sealing Boulder
 - Mineral Armor
+- Shadow
 
 Icons are licensed under multiple licenses, inluding CC-BY 3.0 which we use for
 this project. Original icons can be found from following sites:

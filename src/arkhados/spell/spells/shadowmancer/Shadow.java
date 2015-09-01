@@ -29,7 +29,7 @@ import com.jme3.scene.Spatial;
 public class Shadow extends Spell {
 
     {
-        iconName = "MineralArmor.png";
+        iconName = "Shadow.png";
     }
 
     static final float DURATION = 3f;
