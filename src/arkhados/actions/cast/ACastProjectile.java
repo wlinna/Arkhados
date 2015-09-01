@@ -68,9 +68,11 @@ public class ACastProjectile extends EntityAction {
                 .addLocal(0f, 10.0f, 0.0f);
 
         int playerId = spatial.getUserData(UserData.PLAYER_ID);
-
+        
+        Quaternion rotation = spatial.getLocalRotation();
+        
         int projectileId = world.addNewEntity(spell.getId(),
-                spawnLocation, Quaternion.IDENTITY, playerId);
+                spawnLocation, rotation, playerId);
         Spatial projectile = world.getEntity(projectileId);
 
         float damage = projectile.getUserData(UserData.DAMAGE);
