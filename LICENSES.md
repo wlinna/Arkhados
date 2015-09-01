@@ -17,6 +17,7 @@ See CREDITS.md for attributions.
 - FireballExplosion.wav
 - Shotgun.wav
 - Firewalk.wav
+- DarkEnergy.wav
 - MagmaBash.wav
 - EmberCircle.wav
 - Petrify.wav

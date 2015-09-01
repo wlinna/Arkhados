@@ -185,7 +185,7 @@ class AEnergyRemoval implements ARemovalEvent {
 
     public AEnergyRemoval() {
         sound = new AudioNode(Globals.assets,
-                "Effects/Sound/FireballExplosion.wav");
+                "Effects/Sound/DarkEnergy.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
@@ -199,7 +199,7 @@ class AEnergyRemoval implements ARemovalEvent {
     public void exec(World world, int reason) {
         Vector3f worldTranslation = dark.getParent().getLocalTranslation();
 
-        Node node = new Node("rocket-explosion");
+        Node node = new Node("dark-energy-explosion");
         world.getWorldRoot().attachChild(node);
         node.setLocalTranslation(worldTranslation);
 
