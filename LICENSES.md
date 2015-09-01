@@ -61,6 +61,8 @@ See CREDITS.md for attributions.
 - Slow.png
 - Blind.png
 - Shadow.png
+- DarkSpear.png
+- DarkEnergy.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav

@@ -32,7 +32,7 @@ import com.jme3.scene.control.AbstractControl;
 
 public class DarkSpear extends Spell {
     {
-        iconName = "damaging_dagger.png";
+        iconName = "DarkSpear.png";
     }
 
     public DarkSpear(String name, float cooldown, float range, float castTime) {

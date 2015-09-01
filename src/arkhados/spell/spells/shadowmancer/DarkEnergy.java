@@ -54,7 +54,7 @@ public class DarkEnergy extends Spell {
     public static final float SPLASH_RADIUS = 25f;
 
     {
-        iconName = "rocket_launcher.png";
+        iconName = "DarkEnergy.png";
         setMoveTowardsTarget(false);
     }
 

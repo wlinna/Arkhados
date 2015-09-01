@@ -94,7 +94,12 @@ from [OGA](http://opengameart.org/node/10483)
 
 [StrumpyStrust](http://opengameart.org/users/stumpystrust) for [Fantasy UI box](http://opengameart.org/content/fantasy-ui-box). Fantasy UI box has been modified and is used as Spell bar. Fantasy UI box is licensed under CC-BY 3.0.
 
-Horrorpen for skull-icon (skull.png). skull.png is CC-BY 3.0 -licensed and can
+Horrorpen for following spell and buff icons:
+- Fear
+- Dark Energy
+- Dark Spear
+
+Icons are CC-BY 3.0 -licensed and can
 be found from [OGA](http://opengameart.org/content/random-rpg-icons-part-1)
 
 J. W. Bjerk (eleazzaar) for following spell and buff icons:
