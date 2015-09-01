@@ -28,8 +28,11 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -86,21 +89,26 @@ class SpearBuilder extends AbstractNodeBuilder {
         node.getChild(0).scale(3f);
         node.setLocalTranslation(params.location);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 170f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 140f);
         node.setUserData(UserData.MASS, 30f);
         node.setUserData(UserData.DAMAGE, 200f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
-
-        SphereCollisionShape collisionShape = new SphereCollisionShape(4);
+        
+        CollisionShape collisionShape = 
+                CollisionShapeFactory.createBoxShape(node);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
 
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
 
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
-                | CollisionGroups.WALLS);
+        physicsBody.addCollideWithGroup(CollisionGroups.WALLS);
 
+        GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        node.addControl(characterCollision);
+        
         node.addControl(physicsBody);
 
         node.addControl(new CProjectile());
