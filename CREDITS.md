@@ -88,6 +88,8 @@ Rock is used for SpiritStone and it's licensed under CC0.
 
 pOss for the [Grave models] (http://opengameart.org/content/savinos-cemetery-redux) which are licensed under CC-BY 3.0. These models are based on the [models created by Savino] (http://opengameart.org/content/cemetery) which are licensed under CC0.
 
+Leinnan for the [Spear model](http://opengameart.org/content/spear). The model has been modified a little bit and is used for the Dark Spear -spell. The work is licensed under CC-BY 3.0.
+
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)
