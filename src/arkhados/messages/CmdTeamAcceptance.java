@@ -20,17 +20,23 @@ import com.jme3.network.serializing.Serializable;
 @Serializable
 public class CmdTeamAcceptance implements Command {
 
+    private int playerId;
     private int teamId;
 
     public CmdTeamAcceptance() {
     }
 
-    public CmdTeamAcceptance(int teamId) {
+    public CmdTeamAcceptance(int playerId, int teamId) {
+        this.playerId = playerId;        
         this.teamId = teamId;
     }
 
     public int getTeamId() {
         return teamId;
+    }    
+    
+    public int getPlayerId() {
+        return playerId;
     }
         @Override
     public boolean isGuaranteed() {

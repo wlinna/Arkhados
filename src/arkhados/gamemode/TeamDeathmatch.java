@@ -102,9 +102,9 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             world.setEnabled(true);
             world.loadLevel();
             world.attachLevel();
-            
+
             Sender sender = stateManager.getState(Sender.class);
-            
+
             if (sender.isClient() && !Globals.replayMode) {
                 nifty.gotoScreen("default_hud");
                 sender.addCommand(new CmdTopicOnly(Topic.CLIENT_WORLD_CREATED));
@@ -162,8 +162,8 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         ServerSender sender = stateManager.getState(ServerSender.class);
 
         if (command instanceof CmdSelectHero) {
-            int playerId =
-                    source.getAttribute(ServerClientDataStrings.PLAYER_ID);
+            int playerId
+                    = source.getAttribute(ServerClientDataStrings.PLAYER_ID);
             common.playerChoseHero(playerId,
                     ((CmdSelectHero) command).getHeroName());
             sender.addCommandForSingle(command, source);
@@ -172,19 +172,20 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             CmdSelectTeam cmd = (CmdSelectTeam) command;
             Integer teamId = teamNameId.get(cmd.team);
 
+            int playerId = ServerClientData.getPlayerId(
+                    ((HostedConnection) source).getId());
+
             if (teamId == null) {
-                sender.addCommandForSingle(new CmdTeamAcceptance(-2),
+                sender.addCommandForSingle(new CmdTeamAcceptance(playerId, -2),
                         source);
                 return;
             }
 
-            int playerId = ServerClientData.getPlayerId(
-                    ((HostedConnection) source).getId());
             PlayerData.setData(playerId, PlayerData.TEAM_ID, teamId);
 
             common.preparePlayer(playerId);
 
-            sender.addCommandForSingle(new CmdTeamAcceptance(teamId), source);
+            sender.addCommand(new CmdTeamAcceptance(playerId, teamId));
 
         } else if (command instanceof CmdTopicOnly) {
             serverHandleTopicOnly(source, (CmdTopicOnly) command);
@@ -212,14 +213,16 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             });
 
         } else if (command instanceof CmdTeamAcceptance) {
-            CmdTeamAcceptance cmd = (CmdTeamAcceptance)  command;
+            CmdTeamAcceptance cmd = (CmdTeamAcceptance) command;
             if (cmd.getTeamId() != -1) {
-                int playerId = stateManager.getState(UserCommandManager.class)
+                int myPlayerId = stateManager.getState(UserCommandManager.class)
                         .getPlayerId();
-                
-                PlayerData.setData(playerId, PlayerData.TEAM_ID,
+
+                PlayerData.setData(cmd.getPlayerId(), PlayerData.TEAM_ID,
                         cmd.getTeamId());
-                common.getHeroSelectionLayer().show();
+                if (cmd.getPlayerId() == myPlayerId) {
+                    common.getHeroSelectionLayer().show();
+                }
             } else {
                 // FIXME: Show error message instead
                 throw new RuntimeException("Not accepted to team");
