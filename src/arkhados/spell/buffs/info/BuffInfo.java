@@ -21,7 +21,7 @@ import java.util.Map;
 
 public abstract class BuffInfo {
 
-    private static Map<Integer, BuffInfo> Buffs = new HashMap<>();
+    private static final Map<Integer, BuffInfo> Buffs = new HashMap<>();
 
     public static void initBuffs() {
         addBuff(BuffTypeIds.SLOW, new SlowInfo());
@@ -39,6 +39,7 @@ public abstract class BuffInfo {
         addBuff(BuffTypeIds.BLIND, new BlindInfo());
         addBuff(BuffTypeIds.BLOOD_FRENZY, new BloodFrenzyInfo());
         addBuff(BuffTypeIds.SHADOW, new ShadowInfo());
+        addBuff(BuffTypeIds.DARK_SPEAR, new DarkSpearInfo());
     }
 
     public static BuffInfo getBuffInfo(int typeId) {

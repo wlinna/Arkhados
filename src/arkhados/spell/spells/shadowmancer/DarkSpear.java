@@ -165,7 +165,7 @@ class SpeedBleedBuff extends SlowCC {
 
         public MyBuilder(float duration) {
             super(duration);
-            setTypeId(BuffTypeIds.DEEP_WOUNDS);
+            setTypeId(BuffTypeIds.DARK_SPEAR);
         }
 
         @Override
