@@ -1,4 +1,4 @@
-Material LavaTerrain : Common/MatDefs/Terrain/TerrainLighting.j3md {
+Material GroundTerrain : Common/MatDefs/Terrain/TerrainLighting.j3md {
      MaterialParameters {
         Shininess : 1.0
         useTriPlanarMapping : false
