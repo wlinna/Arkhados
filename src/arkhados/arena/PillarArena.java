@@ -89,12 +89,18 @@ public class PillarArena extends AbstractArena {
         List<Spatial> children = ((Node) getTerrainNode().getChild("Walls"))
                 .getChildren();
         for (Spatial wallNode : children) {
-            Spatial wall = ((Node) wallNode).getChild("Grave");
-
+            Spatial wall = ((Node) wallNode).getChild("Grave");                                    
+            
+            Vector3f originalScale = wall.getLocalScale().clone();
+            
+            wall.setLocalScale(wallNode.getWorldScale().clone());
+            
             space.removeAll(wallNode);
-
+            
             CollisionShape meshShape = CollisionShapeFactory
                     .createMeshShape(wall);
+            
+            wall.setLocalScale(originalScale);
 
             RigidBodyControl wallPhysics = new RigidBodyControl(meshShape, 0);
             wallPhysics.setCollideWithGroups(CollisionGroups.NONE);

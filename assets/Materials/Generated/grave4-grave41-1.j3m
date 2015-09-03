@@ -1,0 +1,22 @@
+Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        Diffuse : 1.0 1.0 1.0 1.0
+        UseMaterialColors : true
+        ParallaxHeight : 0.05
+        Ambient : 1.0 1.0 1.0 1.0
+        DiffuseMap : Flip Repeat Textures/cemetary/grave4-tex.png
+        Specular : 0.5 0.5 0.5 1.0
+        Shininess : 50.0
+    }
+    AdditionalRenderState {
+      PointSprite Off
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Off
+      Wireframe Off
+    }
+}
