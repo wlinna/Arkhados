@@ -90,6 +90,8 @@ pOss for the [Grave models] (http://opengameart.org/content/savinos-cemetery-red
 
 Leinnan for the [Spear model](http://opengameart.org/content/spear). The model has been modified a little bit and is used for the Dark Spear -spell. The work is licensed under CC-BY 3.0.
 
+CryHam for the [ground texture for Pillar Arena] (http://opengameart.org/content/terrain-textures-pack-from-stunt-rally-23) which is licensed under CC0. CryHam’s texture pack has been taken from his own game called as Stunt Rally (https://github.com/stuntrally/stuntrally) and its terrain textures are licensed under CC0.
+
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)

@@ -37,10 +37,10 @@ import java.util.List;
 public class PillarArena extends AbstractArena {
 
     private final static Vector3f[] SPAWN_POINTS = new Vector3f[]{
-        new Vector3f(-100, 0, -100),
-        new Vector3f(-100, 0, 100),
-        new Vector3f(100, 0, -100),
-        new Vector3f(100, 0, 100)};
+        new Vector3f(0, 0, 100),
+        new Vector3f(-100, 0, 0),
+        new Vector3f(0, 0, -100),
+        new Vector3f(100, 0, 0)};
 
     private int spawnLocationIndex;
     private float radius;
