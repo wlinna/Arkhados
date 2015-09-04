@@ -31,6 +31,7 @@ See CREDITS.md for attributions.
 - VenatorPain.wav
 - RockGolemPain.wav
 - All Rend-sounds
+- Ground texture for Pillar Arena
 
 ## CC-BY 3.0 ##
 - Background.png (Rendered from Rock Golem model and Elite Soldier)
