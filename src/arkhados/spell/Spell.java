@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell;
 
+import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
@@ -58,7 +59,6 @@ import arkhados.spell.spells.venator.NumbingDagger;
 import arkhados.spell.spells.venator.SurvivalInstinct;
 import arkhados.util.EntityFactory;
 import arkhados.util.AbstractNodeBuilder;
-import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.HashMap;
@@ -70,29 +70,23 @@ import java.util.Map;
  */
 public abstract class Spell {
 
-    protected static AssetManager assetManager = null;
     protected static World world = null;
     /**
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
      */
-    private static Map<Integer, Spell> Spells = new HashMap<>();
-    private static Map<String, Integer> SpellNameCreationIdMap =
+    private static final Map<Integer, Spell> Spells = new HashMap<>();
+    private static final Map<String, Integer> SpellNameCreationIdMap =
             new HashMap<>();
 
     /**
      * Creates each spell and saves them to Spells-map. Should be called only
      * once
-     *
-     * @param assetManager will be saved to static variable assetManager
-     * @param world will be save to static variable world
      */
-    public static void initSpells(EntityFactory entityFactory,
-            AssetManager assetManager, World world) {
-        Spell.assetManager = assetManager;
+    public static void initSpells(EntityFactory entityFactory, World world) {
         Spell.world = world;
 
-        AbstractNodeBuilder.setAssetManager(assetManager);
+        AbstractNodeBuilder.setAssetManager(Globals.assets);
         AbstractNodeBuilder.setWorld(world);
 
         CProjectile.setWorld(world);

@@ -139,7 +139,7 @@ public class World extends AbstractAppState {
 //            app.getStateManager().attach(new BulletDebugAppState(space));
         }
 
-        Spell.initSpells(entityFactory, assetManager, this);
+        Spell.initSpells(entityFactory, this);
         BuffInfo.initBuffs();
         BuffEffect.setAssetManager(assetManager);
     }

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.embermage;
 
+import arkhados.Globals;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
@@ -66,11 +67,10 @@ public class EtherealFlame extends Spell {
         private ParticleEmitter createFire(float radius) {
             ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                     ParticleMesh.Type.Triangle, 20 * (int) radius);
-            Material material
-                    = new Material(assetManager,
-                            "Common/MatDefs/Misc/Particle.j3md");
+            Material material = new Material(Globals.assets,
+                    "Common/MatDefs/Misc/Particle.j3md");
             material.setTexture("Texture",
-                    assetManager.loadTexture("Effects/flame.png"));
+                    Globals.assets.loadTexture("Effects/flame.png"));
             fire.setMaterial(material);
             fire.setImagesX(2);
             fire.setImagesY(2);
@@ -101,7 +101,7 @@ public class EtherealFlame extends Spell {
             final ParticleEmitter fire = createFire(5f);
             root.attachChild(fire);
 
-            final AudioNode sound = new AudioNode(assetManager,
+            final AudioNode sound = new AudioNode(Globals.assets,
                     "Effects/Sound/Firewalk.wav");
             root.attachChild(sound);
             sound.setPositional(true);
@@ -113,7 +113,7 @@ public class EtherealFlame extends Spell {
                 sound.stop();
                 sound.removeFromParent();
                 fire.setParticlesPerSec(0f);
-                
+
                 CTimedExistence timedExistence = new CTimedExistence(1f);
                 fire.addControl(timedExistence);
             };
@@ -191,7 +191,7 @@ class AFireTrance extends EntityAction implements ATrance {
         spatial.removeFromParent();
         fakeRoot.attachChild(spatial);
 
-        path.addListener((MotionEvent motionControl1, int wayPointIndex) -> {
+        path.addListener((MotionEvent m, int wayPointIndex) -> {
             if (path.getNbWayPoints() == wayPointIndex + 1) {
                 spatial.removeFromParent();
                 worldRoot.attachChild(spatial);
