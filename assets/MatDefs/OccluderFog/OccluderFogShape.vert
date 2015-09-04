@@ -33,7 +33,7 @@ void main() {
 
    float dotRes = dot(worldNormal3, fromCharacterToVertex);
 
-   if (dotRes > 0.0) {
+   if ((dotRes > 0.0) && (vertexWorldPos.y < 20.0)) {
       vec4 movedPos = vec4(vertexWorldPos.xyz + fromCharacterToVertex * 400.0, 1.0);
       varyingPos = movedPos;
       gl_Position = g_ViewProjectionMatrix * movedPos;
