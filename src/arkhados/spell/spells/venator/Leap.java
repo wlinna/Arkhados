@@ -79,7 +79,7 @@ class ACastLeap extends EntityAction {
         physics.switchToMotionCollisionMode();
 
         // We set y to 1 to prevent ground collision on start
-        Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1f);
+        Vector3f startLocation = spatial.getLocalTranslation().add(0, 1f, 0);
         Vector3f finalLocation = spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 

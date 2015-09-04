@@ -81,9 +81,8 @@ class ACastRocketJump extends EntityAction {
 
         // We set y to 1 to prevent ground collision on start
         final Vector3f startLocation = 
-                spatial.getLocalTranslation().clone().setY(1f);
-        final Vector3f finalLocation = 
-                spatial.getControl(CSpellCast.class)
+                spatial.getLocalTranslation().add(0, 1f, 0);
+        final Vector3f finalLocation =  spatial.getControl(CSpellCast.class)
                 .getClosestPointToTarget(spell);
 
         path.addWayPoint(startLocation);
@@ -99,13 +98,9 @@ class ACastRocketJump extends EntityAction {
 
         physics.setViewDirection(finalLocation.subtract(startLocation));
 
-        path.addListener(new MotionPathListener() {
-            @Override
-            public void onWayPointReach(MotionEvent motionControl,
-                    int wayPointIndex) {
-                if (wayPointIndex == path.getNbWayPoints() - 1) {
-                    physics.switchToNormalPhysicsMode();
-                }
+        path.addListener((MotionEvent m, int wayPointIndex) -> {
+            if (wayPointIndex == path.getNbWayPoints() - 1) {
+                physics.switchToNormalPhysicsMode();
             }
         });
         

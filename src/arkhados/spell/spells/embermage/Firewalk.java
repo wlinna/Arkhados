@@ -110,7 +110,7 @@ public class Firewalk extends Spell {
 
         private void motion() {
             Vector3f startLocation
-                    = spatial.getLocalTranslation().clone().setY(1f);
+                    = spatial.getLocalTranslation().add(0, 1f, 0);
             int playerId = spatial.getUserData(UserData.PLAYER_ID);
             final int firewalkId = world.addNewEntity(spell.getId(),
                     startLocation, Quaternion.IDENTITY, playerId);
@@ -130,7 +130,7 @@ public class Firewalk extends Spell {
 
             CSpellCast castControl = spatial.getControl(CSpellCast.class);
             final Vector3f finalLocation
-                    = castControl.getClosestPointToTarget(spell).setY(1f);
+                    = castControl.getClosestPointToTarget(spell).add(0, 1f, 0);
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
 

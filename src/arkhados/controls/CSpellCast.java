@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.Globals;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -31,11 +32,18 @@ import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
 import arkhados.spell.buffs.CastSpeedBuff;
 import arkhados.util.UserData;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.math.Ray;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSpellCast extends AbstractControl {
+    private static final Vector3f DOWN = Vector3f.UNIT_Y.negate();
+    
+    private final Vector3f _tempVec = new Vector3f();    
 
     private static Map<Integer, Float> clientCooldowns;
     private Map<Integer, Spell> spells = new HashMap<>();
@@ -283,6 +291,21 @@ public class CSpellCast extends AbstractControl {
 
         Vector3f target = spatial.getLocalTranslation().clone()
                 .interpolateLocal(targetLocation, interpolationFactor);
+        
+        _tempVec.set(target).setY(1000f);
+        
+        Spatial walls = spatial.getParent().getChild("Walls");
+        
+        Ray ray = new Ray(_tempVec, DOWN);
+        CollisionResults collisionResults = new CollisionResults();
+        int collisionAmount = walls.collideWith(ray, collisionResults);
+        
+        if (collisionAmount > 0) {
+            CollisionResult closest = collisionResults.getClosestCollision();
+            return closest.getContactPoint();
+        }
+        
+        
         return target;
     }
 

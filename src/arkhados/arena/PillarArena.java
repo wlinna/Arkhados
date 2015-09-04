@@ -105,7 +105,7 @@ public class PillarArena extends AbstractArena {
             RigidBodyControl wallPhysics = new RigidBodyControl(meshShape, 0);
             wallPhysics.setCollideWithGroups(CollisionGroups.NONE);
 
-            wallPhysics.setFriction(0.5f);
+            wallPhysics.setFriction(0f);
             wall.addControl(wallPhysics);
             wall.getControl(RigidBodyControl.class)
                     .setCollisionGroup(CollisionGroups.WALLS);
