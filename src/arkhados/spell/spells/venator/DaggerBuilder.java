@@ -37,7 +37,7 @@ public class DaggerBuilder extends AbstractNodeBuilder {
     @Override
     public Node build(BuildParameters params) {
         Node node =
-                (Node) assetManager.loadModel("Models/DamagingDagger.j3o");
+                (Node) assets.loadModel("Models/DamagingDagger.j3o");
         node.setLocalTranslation(params.location);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 170f);

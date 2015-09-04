@@ -90,9 +90,9 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 10 * (int) radius);
         Material material =
-                new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         fire.setMaterial(material);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -120,10 +120,10 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createSmoke(float radius) {
         ParticleEmitter smoke = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, (int) radius * 10);
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame_alpha.png"));
+                assets.loadTexture("Effects/flame_alpha.png"));
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         smoke.setMaterial(material);
@@ -149,18 +149,18 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(final BuildParameters params) {
-        final Node node = (Node) assetManager.loadModel("Models/Circle.j3o");
+        final Node node = (Node) assets.loadModel("Models/Circle.j3o");
         node.setLocalTranslation(params.location);
         final float radius = 15f;
         node.scale(radius, 1f, radius);
 
         Material material =
-                assetManager.loadMaterial("Materials/EmberCircleGround.j3m");
+                assets.loadMaterial("Materials/EmberCircleGround.j3m");
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         node.setQueueBucket(RenderQueue.Bucket.Transparent);
         material.setTexture("AlphaMap",
-                assetManager.loadTexture("Textures/EmberCircleAlphaMap.png"));
+                assets.loadTexture("Textures/EmberCircleAlphaMap.png"));
         node.setMaterial(material);
 
         node.setUserData(UserData.DAMAGE_PER_SECOND, 100f);
@@ -242,7 +242,7 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 //                        }
 //                    });
 
-                    AudioNode sound = new AudioNode(assetManager,
+                    AudioNode sound = new AudioNode(assets,
                             "Effects/Sound/EmberCircle.wav");
                     ((Node) spatial).attachChild(sound);
                     sound.setPositional(true);

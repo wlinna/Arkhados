@@ -85,7 +85,7 @@ class SpearBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Node node = (Node) assetManager.loadModel("Models/Spear.j3o");
+        Node node = (Node) assets.loadModel("Models/Spear.j3o");
         node.getChild(0).scale(3f);
         node.setLocalTranslation(params.location);
 

@@ -123,10 +123,10 @@ public class IntoTheShadows extends Spell {
         private ParticleEmitter createCloudEmitter() {
             ParticleEmitter cloud = new ParticleEmitter("fire-emitter",
                     ParticleMesh.Type.Triangle, 100);
-            Material mat = new Material(assetManager,
+            Material mat = new Material(assets,
                     "Common/MatDefs/Misc/Particle.j3md");
             mat.setTexture("Texture",
-                    assetManager.loadTexture("Effects/flame_alpha.png"));
+                    assets.loadTexture("Effects/flame_alpha.png"));
             mat.getAdditionalRenderState()
                     .setBlendMode(RenderState.BlendMode.Alpha);
             cloud.setMaterial(mat);
@@ -155,7 +155,7 @@ public class IntoTheShadows extends Spell {
 
             node.addControl(new CSyncInterpolation());
             // TODO: Give at least bit better material
-            Material material = new Material(assetManager,
+            Material material = new Material(assets,
                     "Common/MatDefs/Misc/Unshaded.j3md");
             material.setColor("Color", ColorRGBA.Black);
             node.setMaterial(material);

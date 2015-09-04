@@ -76,9 +76,9 @@ class RailgunBuilder extends AbstractNodeBuilder {
         final ParticleEmitter trail = new ParticleEmitter("trail-emitter",
                 ParticleMesh.Type.Triangle, 600);
         Material materialGray =
-                new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
         materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         trail.setMaterial(materialGray);
         trail.setImagesX(2);
         trail.setImagesY(2);
@@ -110,7 +110,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Cyan);
         node.setMaterial(material);
@@ -130,7 +130,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
              * removed. In this case we want explosion effect.
              */
             final ARailgunRemoval removalAction =
-                    new ARailgunRemoval(assetManager);
+                    new ARailgunRemoval(assets);
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 

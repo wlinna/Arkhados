@@ -91,11 +91,10 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createSmokeEmitter() {
         ParticleEmitter smoke = new ParticleEmitter("smoke-emitter",
                 ParticleMesh.Type.Triangle, 300);
-        Material materialGray = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
-        smoke.setMaterial(materialGray);
+        material.setTexture("Texture", assets.loadTexture("Effects/flame.png"));
+        smoke.setMaterial(material);
         smoke.setImagesX(2);
         smoke.setImagesY(2);
         smoke.setSelectRandomImage(true);
@@ -116,10 +115,10 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 300);
-        Material materialRed = new Material(assetManager,
+        Material materialRed = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);
@@ -150,10 +149,9 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material =
-                new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Yellow);
-        node.setMaterial(material);
+        Material m = new Material(assets, "Common/MatDefs/Misc/Unshaded.j3md");
+        m.setColor("Color", ColorRGBA.Yellow);
+        node.setMaterial(m);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 180f);
         node.setUserData(UserData.MASS, 10f);

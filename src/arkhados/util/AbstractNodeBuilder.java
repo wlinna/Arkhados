@@ -22,7 +22,7 @@ import com.jme3.scene.Node;
 public abstract class AbstractNodeBuilder implements NodeBuilder {
 
     protected static World world;
-    protected static AssetManager assetManager;
+    protected static AssetManager assets;
     private EffectBox effectBox = null;
 
     @Override
@@ -33,7 +33,7 @@ public abstract class AbstractNodeBuilder implements NodeBuilder {
     }
 
     public static void setAssetManager(AssetManager assetManager) {
-        AbstractNodeBuilder.assetManager = assetManager;
+        AbstractNodeBuilder.assets = assetManager;
     }
 
     @Override

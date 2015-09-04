@@ -88,10 +88,10 @@ class PlasmaBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createPlasmaEmitter() {
         ParticleEmitter plasma = new ParticleEmitter("plasma-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(assetManager,
+        Material materialRed = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture",
-                assetManager.loadTexture("Effects/plasma-particle.png"));
+                assets.loadTexture("Effects/plasma-particle.png"));
         plasma.setMaterial(materialRed);
         plasma.setImagesX(2);
         plasma.setImagesY(2);
@@ -121,7 +121,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
@@ -141,7 +141,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
              * removed. In this case we want explosion effect.
              */
             APlasmaRemoval removalAction =
-                    new APlasmaRemoval(assetManager);
+                    new APlasmaRemoval(assets);
             removalAction.setPlasmaEmitter(plasma);
 
             node.getControl(CEntityEvent.class)

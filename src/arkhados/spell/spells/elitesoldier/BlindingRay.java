@@ -79,9 +79,9 @@ class RayBuilder extends AbstractNodeBuilder {
         ParticleEmitter trail = new ParticleEmitter("trail-emitter",
                 ParticleMesh.Type.Triangle, 200);
         Material materialGray =
-                new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+                new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
         materialGray.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         trail.setMaterial(materialGray);
         trail.setImagesX(2);
         trail.setImagesY(2);
@@ -112,10 +112,9 @@ class RayBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Cyan);
-        node.setMaterial(material);
+        Material m = new Material(assets, "Common/MatDefs/Misc/Unshaded.j3md");
+        m.setColor("Color", ColorRGBA.Cyan);
+        node.setMaterial(m);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 200f);
         node.setUserData(UserData.MASS, 0.30f);
@@ -131,8 +130,7 @@ class RayBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            ARailgunRemoval removalAction =
-                    new ARailgunRemoval(assetManager);
+            ARailgunRemoval removalAction = new ARailgunRemoval(assets);
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 

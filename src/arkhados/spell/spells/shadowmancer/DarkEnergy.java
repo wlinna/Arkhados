@@ -88,10 +88,10 @@ class EnergyBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createEnergyEmitter() {
         ParticleEmitter energy = new ParticleEmitter("energy-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame_alpha.png"));
+                assets.loadTexture("Effects/flame_alpha.png"));
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         energy.setMaterial(material);
@@ -122,7 +122,7 @@ class EnergyBuilder extends AbstractNodeBuilder {
         Node node = new Node("projectile");
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);

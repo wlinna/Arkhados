@@ -62,7 +62,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Node node = (Node) assetManager.loadModel("Models/SealingBoulder.j3o");
+        Node node = (Node) assets.loadModel("Models/SealingBoulder.j3o");
         node.setLocalTranslation(params.location);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 145f);
@@ -72,7 +72,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.INCAPACITATE_LENGTH, 7.4f);
 
         if (world.isClient()) {
-            AudioNode sound = new AudioNode(assetManager,
+            AudioNode sound = new AudioNode(assets,
                     "Effects/Sound/MagmaBash.wav");
             node.attachChild(sound);
             sound.setPositional(true);

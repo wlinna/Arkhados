@@ -80,10 +80,10 @@ class OrbBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createPurpleEmitter() {
         ParticleEmitter purple = new ParticleEmitter("purple-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material materialPurple = new Material(assetManager,
+        Material materialPurple = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialPurple.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         purple.setMaterial(materialPurple);
         purple.setImagesX(2);
         purple.setImagesY(2);
@@ -113,7 +113,7 @@ class OrbBuilder extends AbstractNodeBuilder {
         node.attachChild(projectileGeom);
 
         Material material =
-                new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                new Material(assets, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 

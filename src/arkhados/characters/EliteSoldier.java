@@ -82,14 +82,14 @@ public class EliteSoldier extends AbstractNodeBuilder {
     public Node build(BuildParameters params) {
         Node entity = new Node("elite-soldier");
         entity.setLocalTranslation(params.location);
-        Node real = (Node) assetManager.loadModel("Models/EliteSoldier.j3o");
+        Node real = (Node) assets.loadModel("Models/EliteSoldier.j3o");
         entity.attachChild(real);
         real.scale(11f);
 
         Node attachmentsNode = real.getControl(SkeletonControl.class)
                 .getAttachmentsNode("Central_Bone.001_R.004");
 
-        Node weapon = (Node) assetManager.loadModel("Models/Weapon.j3o");
+        Node weapon = (Node) assets.loadModel("Models/Weapon.j3o");
 
         attachmentsNode.attachChild(weapon);
         weapon.setLocalTranslation(0, 0, 0);

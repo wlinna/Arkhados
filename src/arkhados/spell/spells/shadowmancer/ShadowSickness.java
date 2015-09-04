@@ -69,7 +69,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Spatial node = assetManager.loadModel("Models/DamagingDagger.j3o");
+        Spatial node = assets.loadModel("Models/DamagingDagger.j3o");
         node.setLocalTranslation(params.location);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 170f);

@@ -103,7 +103,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Node node = (Node) assetManager.loadModel("Models/SpiritStone.j3o");
+        Node node = (Node) assets.loadModel("Models/SpiritStone.j3o");
         node.setLocalTranslation(params.location);
 
         for (Spatial childToScale : node.getChildren()) {

@@ -64,7 +64,7 @@ public class RockGolem extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Node entity = (Node) assetManager.loadModel("Models/RockGolem.j3o");
+        Node entity = (Node) assets.loadModel("Models/RockGolem.j3o");
         float movementSpeed = 34.7f;
         entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);

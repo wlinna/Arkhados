@@ -56,7 +56,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
         Node node = new Node("projectile");
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
@@ -71,7 +71,7 @@ public class PelletBuilder extends AbstractNodeBuilder {
              * removed. In this case we want explosion effect.
              */
             APelletRemoval removalAction =
-                    new APelletRemoval(assetManager);
+                    new APelletRemoval(assets);
             removalAction.setPellet(node);
             node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
