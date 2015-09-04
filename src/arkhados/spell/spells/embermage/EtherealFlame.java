@@ -49,8 +49,8 @@ public class EtherealFlame extends Spell {
     }
 
     public static Spell create() {
-        final float range = 70f;
-        final float castTime = 0.1f;
+        final float range = 100f;
+        final float castTime = 0.05f;
 
         final EtherealFlame spell = new EtherealFlame("Ethereal Flame",
                 PurifyingFlame.COOLDOWN, range, castTime);
