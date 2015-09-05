@@ -20,10 +20,6 @@ import arkhados.ui.hud.ServerClientDataStrings;
 import com.jme3.network.HostedConnection;
 import java.util.Collection;
 
-/**
- *
- * @author william
- */
 public class ConnectionHelper {
 
     public static HostedConnection getSource(int playerId) {
@@ -31,6 +27,7 @@ public class ConnectionHelper {
                 .getState(ServerSender.class).getServer().getConnections();
 
         for (HostedConnection hostedConnection : connections) {
+            // FIXME: NullPointerException may happen here when player joins!
             if (hostedConnection.getAttribute(ServerClientDataStrings.PLAYER_ID)
                     .equals(playerId)) {
                 return hostedConnection;
