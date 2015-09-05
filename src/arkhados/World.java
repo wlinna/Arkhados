@@ -158,14 +158,14 @@ public class World extends AbstractAppState {
 
         worldRoot.getChild("Ground").addControl(physics);
 
-        Spatial groundGeom = worldRoot.getChild("GroundGeom");
-        LodControl lod = groundGeom.getControl(LodControl.class);
-
-        if (lod == null) {
-            lod = new LodControl();
-            groundGeom.addControl(lod);
-            lod.setTrisPerPixel(0);
-        }
+//        Spatial groundGeom = worldRoot.getChild("GroundGeom");
+//        LodControl lod = groundGeom.getControl(LodControl.class);
+//
+//        if (lod == null) {
+//            lod = new LodControl();
+//            groundGeom.addControl(lod);
+//            lod.setTrisPerPixel(0);
+//        }
 
         worldRoot.setName("world-root");
 
