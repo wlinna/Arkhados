@@ -2,7 +2,7 @@ Material GroundTerrain : Common/MatDefs/Terrain/TerrainLighting.j3md {
      MaterialParameters {
         Shininess : 1.0
         useTriPlanarMapping : false
-        DiffuseMap : Repeat Textures/PillarArena/desert_crackso_d.jpg
+        DiffuseMap : Repeat Textures/PillarArena/AncientFlooring.jpg
      }
     AdditionalRenderState {
     }
