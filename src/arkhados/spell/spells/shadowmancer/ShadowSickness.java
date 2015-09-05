@@ -73,6 +73,7 @@ public class ShadowSickness extends Spell {
 }
 
 class SicknessBuilder extends AbstractNodeBuilder {
+    private static final float RADIUS = 4;
 
     private ParticleEmitter createGreenEmitter() {
         ParticleEmitter green = new ParticleEmitter("fire-emitter",
@@ -87,7 +88,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
         green.setStartColor(new ColorRGBA(0.15f, 0.950f, 0.0f, 1.0f));
         green.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
         green.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-        green.setStartSize(2.5f);
+        green.setStartSize(RADIUS);
         green.setEndSize(1.0f);
         green.setGravity(Vector3f.ZERO);
         green.setLowLife(0.1f);
@@ -99,8 +100,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(BuildParameters params) {
-
+    public Node build(BuildParameters params) {        
         Sphere sphere = new Sphere(32, 32, 1.0f);
 
         Geometry projectileGeom = new Geometry("projectile-geom", sphere);
@@ -110,12 +110,12 @@ class SicknessBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 170f);
+        node.setUserData(UserData.SPEED_MOVEMENT, 100f);
         node.setUserData(UserData.MASS, 30f);
         node.setUserData(UserData.DAMAGE, 0f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
-        SphereCollisionShape collisionShape = new SphereCollisionShape(4);
+        SphereCollisionShape collisionShape = new SphereCollisionShape(RADIUS);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
 
