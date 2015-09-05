@@ -53,7 +53,7 @@ public class PillarArena extends AbstractArena {
 
         Vector3f extent = ((BoundingBox) getTerrainNode().getWorldBound())
                 .getExtent(new Vector3f());
-        radius = extent.x - 15;
+        radius = extent.x;
 
         if (worldManager.isClient()) {
             createLavaQuad();
