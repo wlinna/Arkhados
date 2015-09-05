@@ -31,12 +31,19 @@ import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
 
 public class ShadowSickness extends Spell {
+
     static final float DURATION = 5f;
 
     {
@@ -56,8 +63,8 @@ public class ShadowSickness extends Spell {
         final ShadowSickness spell = new ShadowSickness("Shadow Sickness",
                 cooldown, range, castTime);
 
-        spell.castSpellActionBuilder = (Node caster, Vector3f vec) ->
-                new ACastProjectile(spell, world);
+        spell.castSpellActionBuilder = (Node caster, Vector3f vec)
+                -> new ACastProjectile(spell, world);
 
         spell.nodeBuilder = new SicknessBuilder();
 
@@ -67,10 +74,41 @@ public class ShadowSickness extends Spell {
 
 class SicknessBuilder extends AbstractNodeBuilder {
 
+    private ParticleEmitter createGreenEmitter() {
+        ParticleEmitter green = new ParticleEmitter("fire-emitter",
+                ParticleMesh.Type.Triangle, 200);
+        Material mat = new Material(assets,
+                "Common/MatDefs/Misc/Particle.j3md");
+        mat.setTexture("Texture", assets.loadTexture("Effects/flame.png"));
+        green.setMaterial(mat);
+        green.setImagesX(2);
+        green.setImagesY(2);
+        green.setSelectRandomImage(true);
+        green.setStartColor(new ColorRGBA(0.15f, 0.950f, 0.0f, 1.0f));
+        green.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+        green.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        green.setStartSize(2.5f);
+        green.setEndSize(1.0f);
+        green.setGravity(Vector3f.ZERO);
+        green.setLowLife(0.1f);
+        green.setHighLife(0.1f);
+        green.setParticlesPerSec(100);
+
+        green.setRandomAngle(true);
+        return green;
+    }
+
     @Override
     public Node build(BuildParameters params) {
-        Spatial node = assets.loadModel("Models/DamagingDagger.j3o");
+
+        Sphere sphere = new Sphere(32, 32, 1.0f);
+
+        Geometry projectileGeom = new Geometry("projectile-geom", sphere);
+        projectileGeom.setCullHint(Spatial.CullHint.Always);
+
+        Node node = new Node("projectile");
         node.setLocalTranslation(params.location);
+        node.attachChild(projectileGeom);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 170f);
         node.setUserData(UserData.MASS, 30f);
@@ -90,11 +128,16 @@ class SicknessBuilder extends AbstractNodeBuilder {
         node.addControl(physicsBody);
 
         node.addControl(new CProjectile());
-        CSpellBuff buffControl = new CSpellBuff();        
+        CSpellBuff buffControl = new CSpellBuff();
         buffControl.addBuff(new Sickness.MyBuilder(ShadowSickness.DURATION));
         buffControl.addBuff(new SilenceCC.MyBuilder(1.5f));
 
         node.addControl(buffControl);
+        
+        if (world.isClient()) {
+            ParticleEmitter particles = createGreenEmitter();
+            node.attachChild(particles);
+        }
 
         return (Node) node;
     }
