@@ -36,6 +36,7 @@ import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.MagmaRelease;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
+import arkhados.spell.spells.madblow.Maim;
 import arkhados.spell.spells.rockgolem.AngrySpiritStone;
 import arkhados.spell.spells.rockgolem.Bedrock;
 import arkhados.spell.spells.rockgolem.EarthQuake;
@@ -136,6 +137,8 @@ public abstract class Spell {
         addSpell(entityFactory, DarkSpear.create());
         addSpell(entityFactory, Shadow.create());      
         addSpell(entityFactory, IntoTheShadows.create());
+        
+        addSpell(entityFactory, Maim.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

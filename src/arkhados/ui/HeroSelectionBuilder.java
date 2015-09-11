@@ -36,7 +36,7 @@ public class HeroSelectionBuilder extends PanelBuilder {
                 inherit(true);
             }
         });
-        
+
         onEndScreenEffect(new EffectBuilder("move") {
             {
                 effectParameter("mode", "out");
@@ -46,7 +46,7 @@ public class HeroSelectionBuilder extends PanelBuilder {
                 inherit(true);
             }
         });
-                
+
         text(new NiftyLabelBuilder("Select your hero"));
         text(new NiftyLabelBuilder(""));
 
@@ -57,10 +57,11 @@ public class HeroSelectionBuilder extends PanelBuilder {
                         new HeroButtonBuilder("EmberMage", "Ember Mage"),
                         new HeroButtonBuilder("EliteSoldier", "Elite Soldier")));
                 panel(new HeroCategoryBuilder("Melee",
-                        new HeroButtonBuilder("Venator", "Venator")));
+                        new HeroButtonBuilder("Venator", "Venator"),
+                        new HeroButtonBuilder("Madblow", "Madblow")));
                 panel(new HeroCategoryBuilder("Tank",
                         new HeroButtonBuilder("RockGolem", "Rock Golem")));
-                panel(new HeroCategoryBuilder("Support", 
+                panel(new HeroCategoryBuilder("Support",
                         new HeroButtonBuilder("Shadowmancer", "Shadowmancer")));
             }
         });

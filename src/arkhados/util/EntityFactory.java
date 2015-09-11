@@ -18,6 +18,7 @@ import arkhados.EffectHandler;
 import arkhados.characters.Shadowmancer;
 import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
+import arkhados.characters.Madblow;
 import arkhados.characters.RockGolem;
 import arkhados.characters.Venator;
 import arkhados.effects.EffectBox;
@@ -26,13 +27,11 @@ import java.util.ArrayList;
 
 /**
  * Creates all game entities
- *
- * @author william
  */
 public class EntityFactory {
 
     private int runningId = -1;
-    private ArrayList<NodeBuilder> nodeBuilders = new ArrayList<>(40);
+    private final ArrayList<NodeBuilder> nodeBuilders = new ArrayList<>(40);
     private EffectHandler effectHandler;
 
     /**
@@ -66,6 +65,7 @@ public class EntityFactory {
         int soldierId = addNodeBuilder(new EliteSoldier());
         int golemId = addNodeBuilder(new RockGolem());
         int shadowmancerId = addNodeBuilder(new Shadowmancer());
+        int madblowId = addNodeBuilder(new Madblow());
 
         NodeBuilderIdHeroNameMatcher mappings =
                 NodeBuilderIdHeroNameMatcher.get();
@@ -74,6 +74,7 @@ public class EntityFactory {
         mappings.addMapping("EliteSoldier", soldierId);
         mappings.addMapping("RockGolem", golemId);
         mappings.addMapping("Shadowmancer", shadowmancerId);
+        mappings.addMapping("Madblow", madblowId);
     }
 
     private int newNodeBuilderId() {
