@@ -39,10 +39,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class CInfluenceInterface extends AbstractControl {
 
     private final List<AbstractBuff> buffs = new ArrayList<>();
@@ -125,8 +121,8 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     public boolean canControlMovement() {
-        CCharacterPhysics physics =
-                spatial.getControl(CCharacterPhysics.class);
+        CCharacterPhysics physics
+                = spatial.getControl(CCharacterPhysics.class);
         if (!physics.getDictatedDirection().equals(Vector3f.ZERO)) {
             return false;
         }
@@ -139,6 +135,10 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     public boolean canCast() {
+        if (spatial.getControl(CMovementForcer.class) != null) {
+            return false;
+        }
+
         for (AbstractBuff buff : buffs) {
             if (buff instanceof CrowdControlBuff) {
                 if (((CrowdControlBuff) buff).preventsCasting()) {
@@ -171,13 +171,13 @@ public class CInfluenceInterface extends AbstractControl {
          * movement speed.
          */
         spatial.setUserData(UserData.DAMAGE_FACTOR, 1f);
-        float lifeStealBase =
-                spatial.getUserData(UserData.LIFE_STEAL_BASE);
+        float lifeStealBase
+                = spatial.getUserData(UserData.LIFE_STEAL_BASE);
         spatial.setUserData(UserData.LIFE_STEAL, lifeStealBase);
         immuneToProjectiles = false;
 
-        CCharacterMovement cMovement =
-                spatial.getControl(CCharacterMovement.class);
+        CCharacterMovement cMovement
+                = spatial.getControl(CCharacterMovement.class);
         /**
          * Some buff or action might require entity's speed to remain constant
          * until the end (for example, Venator's ChargeAction).
@@ -195,7 +195,7 @@ public class CInfluenceInterface extends AbstractControl {
             cMovement.updateMovement(tpf);
         }
     }
-    
+
     private void applyDamageBuffs() {
         float damageFactor = 1f;
         for (AbstractBuff buff : buffs) {
@@ -203,10 +203,10 @@ public class CInfluenceInterface extends AbstractControl {
                 damageFactor *= ((DamageBuff) buff).getFactor();
             }
         }
-        
+
         spatial.setUserData(UserData.DAMAGE_FACTOR, damageFactor);
     }
-    
+
     private void applyLifeStealBuffs() {
         float lifeSteal = spatial.getUserData(UserData.LIFE_STEAL_BASE);
         for (AbstractBuff buff : buffs) {
@@ -215,7 +215,7 @@ public class CInfluenceInterface extends AbstractControl {
                 lifeSteal += lifeStealBuff.getAmount();
             }
         }
-        
+
         spatial.setUserData(UserData.LIFE_STEAL, lifeSteal);
     }
 
@@ -247,8 +247,8 @@ public class CInfluenceInterface extends AbstractControl {
 
             speedInfluences.clear();
 
-            float msCurrent =
-                    spatial.getUserData(UserData.SPEED_MOVEMENT);
+            float msCurrent
+                    = spatial.getUserData(UserData.SPEED_MOVEMENT);
 
             spatial.setUserData(UserData.SPEED_MOVEMENT,
                     msCurrent * speedFactor + constantSpeedAddition);

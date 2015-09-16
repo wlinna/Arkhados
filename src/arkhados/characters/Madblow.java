@@ -104,7 +104,7 @@ public class Madblow extends AbstractNodeBuilder {
         Spell numb = Spell.getSpell("Numbing Dagger");
         Spell leap = Spell.getSpell("Leap");
         Spell scream = Spell.getSpell("Feral Scream");
-        Spell deepWounds = Spell.getSpell("Deep Wounds");
+        Spell crush = Spell.getSpell("Crushing Blow");
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
         Spell bloodFrenzy = Spell.getSpell("Blood Frenzy");
 
@@ -119,8 +119,7 @@ public class Madblow extends AbstractNodeBuilder {
                 InputMapping.getId(InputMapping.SPACE));
         spellCastControl.putSpell(scream,
                 InputMapping.getId(InputMapping.Q));
-        spellCastControl.putSpell(deepWounds,
-                InputMapping.getId(InputMapping.E));
+        spellCastControl.putSpell(crush, InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(survivalInstinct, RId);
         spellCastControl.putSpell(bloodFrenzy, -RId);
         
@@ -154,7 +153,7 @@ public class Madblow extends AbstractNodeBuilder {
                 scream.getCastTime());
         float chargeSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Charge", 2f / 5f,
-                deepWounds.getCastTime());
+                crush.getCastTime());
 
         AnimationData swipeLeftAnim =
                 new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
