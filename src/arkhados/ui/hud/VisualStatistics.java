@@ -76,7 +76,7 @@ public class VisualStatistics implements ActionListener {
         List<PlayerData> playerDataList = PlayerData.getPlayers();
         for (PlayerData playerData : playerDataList) {
             statisticsPanels.add(new PlayerStatisticsPanelBuilder(
-                    playerData.getId()).build(nifty, screen, statisticsPanel));
+                    playerData).build(nifty, screen, statisticsPanel));
         }
     }
 
