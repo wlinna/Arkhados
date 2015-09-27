@@ -30,9 +30,10 @@ import java.util.List;
 
 public class ClientBlind extends AbstractAppState {
 
-    private List<BlindEffect> blinds = new ArrayList<>();
+    private final List<BlindEffect> blinds = new ArrayList<>();
     private AppStateManager stateManager;
-    private FilterPostProcessor fpp = new FilterPostProcessor(Globals.assets);
+    private final FilterPostProcessor fpp
+            = new FilterPostProcessor(Globals.assets);
     private ColorScaleFilter filter;
     private Application app;
 
@@ -41,7 +42,7 @@ public class ClientBlind extends AbstractAppState {
         super.initialize(stateManager, app);
         this.app = app;
         this.stateManager = stateManager;
-        fpp.setNumSamples(4);
+        fpp.setNumSamples(1);
     }
 
     void addBlindIfSelf(BlindEffect blind, BuffInfoParameters params) {
