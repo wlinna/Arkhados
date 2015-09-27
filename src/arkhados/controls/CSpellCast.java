@@ -15,6 +15,7 @@
 package arkhados.controls;
 
 import arkhados.Globals;
+import arkhados.World;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -293,8 +294,9 @@ public class CSpellCast extends AbstractControl {
                 .interpolateLocal(targetLocation, interpolationFactor);
         
         _tempVec.set(target).setY(1000f);
-        
-        Spatial walls = spatial.getParent().getChild("Walls");
+
+        World world = Globals.app.getStateManager().getState(World.class);
+        Spatial walls = world.getWorldRoot().getChild("Walls");
         
         Ray ray = new Ray(_tempVec, DOWN);
         CollisionResults collisionResults = new CollisionResults();
