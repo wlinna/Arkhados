@@ -57,8 +57,7 @@ public class HeroSelectionBuilder extends PanelBuilder {
                         new HeroButtonBuilder("EmberMage", "Ember Mage"),
                         new HeroButtonBuilder("EliteSoldier", "Elite Soldier")));
                 panel(new HeroCategoryBuilder("Melee",
-                        new HeroButtonBuilder("Venator", "Venator"),
-                        new HeroButtonBuilder("Madblow", "Madblow")));
+                        new HeroButtonBuilder("Venator", "Venator")));
                 panel(new HeroCategoryBuilder("Tank",
                         new HeroButtonBuilder("RockGolem", "Rock Golem")));
                 panel(new HeroCategoryBuilder("Support",
