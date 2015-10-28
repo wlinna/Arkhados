@@ -60,10 +60,10 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
     private final Map<String, Integer> teamNameId = new HashMap<>();
 
     {
-        teamNameId.put("0", 0);
-        teamNameId.put("1", 1);
-        teamNameId.put("2", 2);
-        teamNameId.put("3", 3);
+        teamNameId.put("Blue", 0);
+        teamNameId.put("Red", 1);
+        teamNameId.put("Green", 2);
+        teamNameId.put("Black", 3);
     }
     private final Map<Integer, Integer> teamKills = new HashMap<>();
 
