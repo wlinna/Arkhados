@@ -73,6 +73,7 @@ See CREDITS.md for attributions.
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg
 - TheDarkAmulet.ogg
+- SantaF_ckedUp.ogg
 - All DamagingDagger related files
 - All Rock Golem 3D model related files
 - All EliteSoldier 3D model related files (includes textures and Weapon)

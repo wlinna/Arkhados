@@ -258,6 +258,7 @@ are licensed under CC-BY-SA 3.0.
 
 [Marcelo Fernandez](http://www.marcelofernandezmusic.com) for [Small Epic Intro](http://opengameart.org/content/small-epic-intro). It is licensed under CC-BY 3.0.
 
+[Gundatsch](https://soundcloud.com/gundatsch) for [Santa has f*cked up](https://soundcloud.com/gundatsch/santa-has-fucked-up). It is used as one of Elite Soldier's soundtracks. It is licensed under CC-BY 3.0.
 
 [Michael Baradari](apollo-music.de) for following sound effects:
 - [Projectile launches](http://opengameart.org/content/4-projectile-launches) (Railgun and Plasmagun)

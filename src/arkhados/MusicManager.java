@@ -122,6 +122,7 @@ public class MusicManager extends AbstractAppState {
                 music.add(generateHeroMusicPath(category, "Carmack"));
                 music.add(generateHeroMusicPath(category, "ElectricQuake"));
                 music.add(generateHeroMusicPath(category, "AntiGravity"));
+                music.add(generateHeroMusicPath(category, "SantaF_ckedUp"));
                 break;
             case "Venator":
                 music.add(generateHeroMusicPath(category, "DarkHall"));
