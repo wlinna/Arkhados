@@ -24,7 +24,13 @@ public class TeamSelectionBuilder extends LayerBuilder {
     public TeamSelectionBuilder(Collection<String> options) {
         super("layer-team-selection");
         childLayoutCenter();
-        panel(new TeamSelectionPanelBuilder(options));
+        panel(new PanelBuilder() {
+            {
+                childLayoutVertical();
+                text(new NiftyLabelBuilder("Select team"));
+                panel(new TeamSelectionPanelBuilder(options));
+            }
+        });
         controller(new TeamSelectionController());
     }
 }

@@ -16,13 +16,8 @@ package arkhados.ui;
 
 import de.lessvoid.nifty.builder.EffectBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
-import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 
-/**
- *
- * @author william
- */
 public class HeroSelectionBuilder extends PanelBuilder {
 
     {
@@ -64,14 +59,6 @@ public class HeroSelectionBuilder extends PanelBuilder {
                         new HeroButtonBuilder("Shadowmancer", "Shadowmancer")));
             }
         });
-    }
-}
-
-class NiftyLabelBuilder extends TextBuilder {
-
-    public NiftyLabelBuilder(String value) {
-        style("nifty-label");
-        text(value);
     }
 }
 
