@@ -103,6 +103,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         int RId = InputMapping.getId(InputMapping.R);
         Spell orb = Spell.getSpell("Shadow Orb");
         Spell energy = Spell.getSpell("Dark Energy");
+        Spell energySelf = Spell.getSpell("Dark Energy Self");
         Spell sickness = Spell.getSpell("Shadow Sickness");
         Spell spear = Spell.getSpell("Dark Spear");
         Spell shadow = Spell.getSpell("Shadow");
@@ -110,12 +111,14 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         spellCastControl.putSpell(orb, InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(energy, M2Id);
+        spellCastControl.putSpell(energySelf, -M2Id);
         spellCastControl.putSpell(sickness, InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(spear, InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(shadow, RId);
         spellCastControl.putSpell(intoShadows,
                 InputMapping.getId(InputMapping.SPACE));
 
+        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
         spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         /**
@@ -160,6 +163,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation("Shadow Orb", orbAnim);
         characterAnimControl.addSpellAnimation("Dark Energy", energyAnim);
+        characterAnimControl.addSpellAnimation("Dark Energy Self", energyAnim);
         characterAnimControl.addSpellAnimation("Shadow Sickness", sicknessAnim);
         characterAnimControl.addSpellAnimation("Dark Spear", spearAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
