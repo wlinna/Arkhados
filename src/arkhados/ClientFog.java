@@ -58,11 +58,28 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
     private SimpleApplication app;
     private Geometry screenQuad = null;
 
+    private int fogPreventers = 0;
+
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
         assetManager = this.app.getAssetManager();
+    }
+
+    public void addPreventer() {
+        ++fogPreventers;
+        
+        if (rangeFogQuad != null) {
+            rangeFogQuad.setCullHint(Spatial.CullHint.Always);
+        }
+    }
+
+    public void removePreventer() {
+        --fogPreventers;
+        if (fogPreventers == 0) {
+            rangeFogQuad.setCullHint(Spatial.CullHint.Inherit);
+        }
     }
 
     public void createFog(Node worldRoot) {
@@ -336,13 +353,16 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
         renderer.setFrameBuffer(fogFb);
         renderer.clearBuffers(true, true, true);
 
-        renderManager.setForcedMaterial(fogShapeMaterial);
+        if (fogPreventers == 0) {
 
-        for (Geometry geometry : occluders) {
-            renderManager.renderGeometry(geometry);
+            renderManager.setForcedMaterial(fogShapeMaterial);
+            for (Geometry geometry : occluders) {
+                renderManager.renderGeometry(geometry);
+            }
+
+            renderManager.setForcedMaterial(null);
         }
 
-        renderManager.setForcedMaterial(null);
         renderer.setFrameBuffer(viewPort.getOutputFrameBuffer());
     }
 

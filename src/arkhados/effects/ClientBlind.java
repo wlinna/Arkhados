@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.effects;
 
+import arkhados.ClientFog;
 import arkhados.Globals;
 import arkhados.UserCommandManager;
 import arkhados.spell.buffs.info.BuffInfoParameters;
@@ -62,6 +63,8 @@ public class ClientBlind extends AbstractAppState {
             return;
         }
 
+        stateManager.getState(ClientFog.class).addPreventer();
+        
         // TODO: Add more impressive blind effect
         filter = new ColorScaleFilter(ColorRGBA.White.clone(), 0.4f);
         fpp.addFilter(filter);
@@ -70,6 +73,8 @@ public class ClientBlind extends AbstractAppState {
 
     public void removeBuffIfSelf(BlindEffect blind) {
         blinds.remove(blind);
+        
+        stateManager.getState(ClientFog.class).removePreventer();
 
         if (blinds.isEmpty()) {
             clean();
