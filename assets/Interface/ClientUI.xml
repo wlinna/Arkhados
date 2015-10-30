@@ -79,7 +79,7 @@
         <layer childLayout="center">
             <panel childLayout="vertical" style="nifty-panel" width="400px" height="70%">
                 <text style="nifty-label" text="Select replay"/>
-                <control id="replay_list" name="listBox" vertical="optional" horizontal="off" displayItems="15" forceSelection="true" />                    
+                <control id="replay_list" name="listBox" vertical="on" horizontal="off" displayItems="15" forceSelection="true" />                    
 
                 <text style="nifty-label" text=""/>
                 <control id="select_replay" name="button" label="Play" align="center" width="200px">
