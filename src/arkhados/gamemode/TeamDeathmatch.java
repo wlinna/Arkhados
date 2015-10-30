@@ -220,7 +220,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
                 PlayerData.setData(cmd.getPlayerId(), PlayerData.TEAM_ID,
                         cmd.getTeamId());
-                if (cmd.getPlayerId() == myPlayerId) {
+                if (cmd.getPlayerId() == myPlayerId && !Globals.replayMode) {
                     common.getHeroSelectionLayer().show();
                 }
             } else {
