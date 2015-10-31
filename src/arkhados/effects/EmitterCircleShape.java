@@ -70,14 +70,13 @@ public class EmitterCircleShape implements EmitterShape {
         }
     }
 
+    @Override
     public void getRandomPoint(Vector3f store) {
-        do {
-            store.x = ((FastMath.nextRandomFloat() * 2f) - 1f) * radius;
-            store.y = 0f;
-            store.z = ((FastMath.nextRandomFloat() * 2f) - 1f) * radius;
-        }
-        while (store.distance(center) > radius);
-//        while (store.length() > radius);
+        float angle = FastMath.nextRandomFloat() * FastMath.TWO_PI;
+        float distance = FastMath.nextRandomFloat() * radius;
+        store.x = FastMath.cos(angle) * distance;
+        store.y = 0f;
+        store.z = FastMath.sin(angle) * distance;
     }
 
     public Vector3f getCenter() {
@@ -96,20 +95,22 @@ public class EmitterCircleShape implements EmitterShape {
         this.radius = radius;
     }
 
+    @Override
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(center, "center", null);
         oc.write(radius, "radius", 0);
     }
 
+    @Override
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         center = (Vector3f) ic.readSavable("center", null);
         radius = ic.readFloat("radius", 0);
     }
 
+    @Override
     public void getRandomPointAndNormal(Vector3f store, Vector3f normal) {
         this.getRandomPoint(store);
     }
-
 }
