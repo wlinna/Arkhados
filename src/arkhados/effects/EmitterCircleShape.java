@@ -73,7 +73,7 @@ public class EmitterCircleShape implements EmitterShape {
     @Override
     public void getRandomPoint(Vector3f store) {
         float angle = FastMath.nextRandomFloat() * FastMath.TWO_PI;
-        float distance = FastMath.nextRandomFloat() * radius;
+        float distance = FastMath.sqrt(FastMath.nextRandomFloat()) * radius;
         store.x = FastMath.cos(angle) * distance;
         store.y = 0f;
         store.z = FastMath.sin(angle) * distance;
