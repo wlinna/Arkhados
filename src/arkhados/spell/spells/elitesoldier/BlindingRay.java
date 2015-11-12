@@ -22,6 +22,8 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.ParticleInfluencerWithAngleSetting;
+import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.BlindCC;
@@ -32,7 +34,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -57,12 +58,12 @@ public class BlindingRay extends Spell {
         final float range = 130f;
         final float castTime = 0.45f;
 
-        final BlindingRay spell =
-                new BlindingRay("Blinding Ray", cooldown, range, castTime);
+        final BlindingRay spell
+                = new BlindingRay("Blinding Ray", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
-            ACastProjectile action =
-                    new ACastProjectile(spell, world);
+            ACastProjectile action
+                    = new ACastProjectile(spell, world);
             action.setTypeId(EliteSoldier.ACTION_RAILGUN);
             return action;
         };
@@ -77,25 +78,25 @@ class RayBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createTrailEmitter() {
         ParticleEmitter trail = new ParticleEmitter("trail-emitter",
-                ParticleMesh.Type.Triangle, 200);
-        Material materialGray =
-                new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture",
-                assets.loadTexture("Effects/flame.png"));
-        trail.setMaterial(materialGray);
-        trail.setImagesX(2);
-        trail.setImagesY(2);
+                ParticleMesh.Type.Triangle, 650);
+        Material mat
+                = new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
+        mat.setTexture("Texture", assets.loadTexture("Effects/smoketrail.png"));
+        trail.setMaterial(mat);
+        trail.setImagesX(1);
+        trail.setImagesY(3);
         trail.setSelectRandomImage(true);
         trail.setStartColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 0.7f));
+        trail.setParticleInfluencer(new ParticleInfluencerWithAngleSetting());
         trail.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
-        trail.setStartSize(1f);
-        trail.setEndSize(1f);
+        trail.getParticleInfluencer().setVelocityVariation(0f);
+        trail.setStartSize(1.7f);
+        trail.setEndSize(1.7f);
         trail.setGravity(Vector3f.ZERO);
-        trail.setLowLife(0.5f);
-        trail.setHighLife(0.5f);
-        trail.setParticlesPerSec(200);
+        trail.setLowLife(0.3f);
+        trail.setHighLife(0.3f);
+        trail.setParticlesPerSec(2000);
+        trail.setFaceNormal(Vector3f.UNIT_Y);
 
         trail.setRandomAngle(true);
         return trail;
@@ -134,8 +135,8 @@ class RayBuilder extends AbstractNodeBuilder {
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
-            node.getControl(CEntityEvent.class)
-                    .setOnRemoval(removalAction);
+            node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
+            node.addControl(new RailgunBuilder.CParticleDirector(smoke));
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);

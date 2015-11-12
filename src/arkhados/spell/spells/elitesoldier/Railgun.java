@@ -22,6 +22,8 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.ParticleInfluencerWithAngleSetting;
+import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
@@ -31,13 +33,16 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
 
 public class Railgun extends Spell {
@@ -72,30 +77,62 @@ public class Railgun extends Spell {
 
 class RailgunBuilder extends AbstractNodeBuilder {
 
+    public static class CParticleDirector extends AbstractControl {
+
+        private final ParticleEmitter trail;
+        private final Vector3f temp = new Vector3f();
+        private final float angles[] = new float[3];
+
+        private final Vector3f previous = new Vector3f();
+
+        public CParticleDirector(ParticleEmitter trail) {
+            this.trail = trail;
+        }
+
+        @Override
+        protected void controlUpdate(float tpf) {
+            Vector3f newPos = spatial.getLocalTranslation();
+            Vector3f velocity = newPos.subtract(previous, temp);
+            trail.lookAt(newPos.add(velocity, temp), Vector3f.UNIT_Y);
+            ParticleInfluencerWithAngleSetting influencer
+                    = (ParticleInfluencerWithAngleSetting) trail
+                    .getParticleInfluencer();
+
+            float angle = spatial.getWorldRotation().toAngles(angles)[1] 
+                    + FastMath.HALF_PI;
+
+            influencer.setAngle(angle);
+
+            previous.set(newPos);
+        }
+
+        @Override
+        protected void controlRender(RenderManager rm, ViewPort vp) {
+        }
+
+    }
+
     private ParticleEmitter createTrailEmitter() {
-        final ParticleEmitter trail = new ParticleEmitter("trail-emitter",
-                ParticleMesh.Type.Triangle, 600);
-        Material materialGray =
-                new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
-        materialGray.setTexture("Texture",
-                assets.loadTexture("Effects/flame.png"));
-        trail.setMaterial(materialGray);
-        trail.setImagesX(2);
-        trail.setImagesY(2);
+        ParticleEmitter trail = new ParticleEmitter("trail-emitter",
+                ParticleMesh.Type.Triangle, 650);
+        Material mat
+                = new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
+        mat.setTexture("Texture", assets.loadTexture("Effects/smoketrail.png"));
+        trail.setMaterial(mat);
+        trail.setImagesX(1);
+        trail.setImagesY(3);
         trail.setSelectRandomImage(true);
         trail.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.9f, 1f));
-        trail.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.9f, 1f));
+        trail.setParticleInfluencer(new ParticleInfluencerWithAngleSetting());
         trail.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
-        trail.setStartSize(1.0f);
-        trail.setEndSize(1.0f);
+        trail.getParticleInfluencer().setVelocityVariation(0f);
+        trail.setStartSize(2f);
+        trail.setEndSize(2f);
         trail.setGravity(Vector3f.ZERO);
-        trail.setLowLife(1f);
-        trail.setHighLife(1.3f);
-        trail.setParticlesPerSec(200);
-
-        trail.setRandomAngle(true);
+        trail.setLowLife(0.3f);
+        trail.setHighLife(0.3f);
+        trail.setParticlesPerSec(2000);
+        trail.setFaceNormal(Vector3f.UNIT_Y);
         return trail;
     }
 
@@ -129,15 +166,14 @@ class RailgunBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            final ARailgunRemoval removalAction =
-                    new ARailgunRemoval(assets);
+            ARailgunRemoval removalAction  = new ARailgunRemoval(assets);
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
-            node.getControl(CEntityEvent.class)
-                    .setOnRemoval(removalAction);
+            node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
+            node.addControl(new CParticleDirector(smoke));
         }
-
+        
         SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
