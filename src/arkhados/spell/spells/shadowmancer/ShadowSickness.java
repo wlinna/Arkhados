@@ -77,32 +77,32 @@ public class ShadowSickness extends Spell {
 class SicknessBuilder extends AbstractNodeBuilder {
     private static final float RADIUS = 2f;
 
-    private ParticleEmitter createGreenEmitter() {
-        ParticleEmitter green = new ParticleEmitter("poison-emitter",
+    private ParticleEmitter createPurpleEmitter() {
+        ParticleEmitter purple = new ParticleEmitter("poison-emitter",
                 ParticleMesh.Type.Triangle, 400);
         Material mat = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         mat.setTexture("Texture", assets.loadTexture("Effects/flame.png"));
-        green.setMaterial(mat);
-        green.setImagesX(2);
-        green.setImagesY(2);
-        green.setSelectRandomImage(true);
-        green.setStartColor(new ColorRGBA(0.09f, 0.45f, 0f, 0.6f));
-        green.setEndColor(new ColorRGBA(0.09f, 0.45f, 0f, 0.6f));
-        green.setStartSize(1f);
-        green.setEndSize(2f);
-        green.setLowLife(0.2f);
-        green.setHighLife(0.2f);
-        green.setParticlesPerSec(300);
-        green.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-        green.getParticleInfluencer().setVelocityVariation(0);
-        green.setInWorldSpace(false);
+        purple.setMaterial(mat);
+        purple.setImagesX(2);
+        purple.setImagesY(2);
+        purple.setSelectRandomImage(true);
+        purple.setStartColor(new ColorRGBA(0.8f, 0.015f, 0.8f, 0.6f));
+        purple.setEndColor(new ColorRGBA(0.8f, 0.015f, 0.8f, 0.6f));
+        purple.setStartSize(1f);
+        purple.setEndSize(2f);
+        purple.setLowLife(0.2f);
+        purple.setHighLife(0.2f);
+        purple.setParticlesPerSec(300);
+        purple.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        purple.getParticleInfluencer().setVelocityVariation(0);
+        purple.setInWorldSpace(false);
         EmitterShape shape = 
                 new EmitterArcShape(Vector3f.ZERO, 0.3f, 0.8f, 1.5f * RADIUS);
-        green.setShape(shape);
+        purple.setShape(shape);
 
-        green.setRandomAngle(true);
-        return green;
+        purple.setRandomAngle(true);
+        return purple;
     }
 
     @Override
@@ -141,7 +141,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
         node.addControl(buffControl);
         
         if (world.isClient()) {
-            ParticleEmitter particles = createGreenEmitter();
+            ParticleEmitter particles = createPurpleEmitter();
             node.attachChild(particles);
         }
 
