@@ -87,7 +87,7 @@ public class SpellBar {
                 }
 
                 Element cooldownText = overlay
-                        .findElementById(entry.getKey() + "-counter");
+                        .findElementById(entry.getKey() + "-spell-counter");
                 
                 TextRenderer txt = cooldownText.getRenderer(TextRenderer.class);
 

@@ -21,16 +21,19 @@ import java.util.Collection;
 
 public class TeamSelectionBuilder extends LayerBuilder {
 
+    static class PanelBuilder1 extends PanelBuilder {
+
+        PanelBuilder1(Collection<String> options) {
+            childLayoutVertical();
+            text(new NiftyLabelBuilder("Select team"));
+            panel(new TeamSelectionPanelBuilder(options));
+        }
+    }
+
     public TeamSelectionBuilder(Collection<String> options) {
         super("layer-team-selection");
         childLayoutCenter();
-        panel(new PanelBuilder() {
-            {
-                childLayoutVertical();
-                text(new NiftyLabelBuilder("Select team"));
-                panel(new TeamSelectionPanelBuilder(options));
-            }
-        });
+        panel(new PanelBuilder1(options));
         controller(new TeamSelectionController());
     }
 }

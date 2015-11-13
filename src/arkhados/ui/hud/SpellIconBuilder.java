@@ -12,7 +12,6 @@
 
  You should have received a copy of the GNU General Public License
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
-
 package arkhados.ui.hud;
 
 import de.lessvoid.nifty.builder.ImageBuilder;
@@ -22,32 +21,38 @@ import de.lessvoid.nifty.tools.Color;
 
 class SpellIconBuilder extends ImageBuilder {
 
-    private static Color overlayColor = new Color(0f, 0f, 0f, 0.8f);
+    static final Color overlayColor = new Color(0f, 0f, 0f, 0.8f);
 
     public SpellIconBuilder(final String id, final String path) {
         super(id);
-        super.valignCenter();
-        super.alignCenter();
-        super.height("64px");
-        super.width("64px");
-        super.marginLeft("12px");
-        super.filename(path);
-        super.childLayoutOverlay();
-        super.panel(new PanelBuilder() {
-            {
-                super.id(id + "-overlay");
-                super.height("64px");
-                super.width("64px");
-                super.backgroundColor(overlayColor);
-                super.childLayoutOverlay();
-                super.text(new TextBuilder() {
-                    {
-                        super.id(id + "-counter");
-                        super.text("");
-                        super.style("nifty-label");
-                    }
-                });
-            }
-        });
+        valignCenter();
+        alignCenter();
+        height("64px");
+        width("64px");
+        marginLeft("12px");
+        filename(path);
+        childLayoutOverlay();
+        panel(new OverlayBuilder(id));
+    }
+}
+
+class SpellCounterBuilder extends TextBuilder {
+
+    public SpellCounterBuilder(String id) {
+        id(id + "-spell-counter");
+        text("");
+        style("nifty-label");
+    }
+}
+
+class OverlayBuilder extends PanelBuilder {
+
+    public OverlayBuilder(String id) {
+        id(id + "-overlay");
+        height("64px");
+        width("64px");
+        backgroundColor(SpellIconBuilder.overlayColor);
+        childLayoutOverlay();
+        text(new SpellCounterBuilder(id));
     }
 }

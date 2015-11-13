@@ -20,45 +20,30 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 
 public class HeroSelectionBuilder extends PanelBuilder {
 
+    static class EffectBuilder1 extends EffectBuilder {
+
+        public EffectBuilder1(String mode) {
+            this("move", mode);
+        }
+
+        public EffectBuilder1(String name, String mode) {
+            super(name);
+            effectParameter("mode", mode);
+            effectParameter("direction", "in".equals(mode) ? "top" : "out");
+            effectParameter("length", "200");
+            effectParameter("startDelay", "0");
+            inherit(true);
+        }
+    }
+
     {
         childLayoutCenter();
-        onStartScreenEffect(new EffectBuilder("move") {
-            {
-                effectParameter("mode", "in");
-                effectParameter("direction", "top");
-                effectParameter("length", "200");
-                effectParameter("startDelay", "0");
-                inherit(true);
-            }
-        });
-
-        onEndScreenEffect(new EffectBuilder("move") {
-            {
-                effectParameter("mode", "out");
-                effectParameter("direction", "bottom");
-                effectParameter("length", "200");
-                effectParameter("startDelay", "0");
-                inherit(true);
-            }
-        });
+        onStartScreenEffect(new EffectBuilder1("in"));
+        onEndScreenEffect(new EffectBuilder1("out"));
 
         text(new NiftyLabelBuilder("Select your hero"));
         text(new NiftyLabelBuilder(""));
-
-        panel(new PanelBuilder() {
-            {
-                childLayoutHorizontal();
-                panel(new HeroCategoryBuilder("Ranged",
-                        new HeroButtonBuilder("EmberMage", "Ember Mage"),
-                        new HeroButtonBuilder("EliteSoldier", "Elite Soldier")));
-                panel(new HeroCategoryBuilder("Melee",
-                        new HeroButtonBuilder("Venator", "Venator")));
-                panel(new HeroCategoryBuilder("Tank",
-                        new HeroButtonBuilder("RockGolem", "Rock Golem")));
-                panel(new HeroCategoryBuilder("Support",
-                        new HeroButtonBuilder("Shadowmancer", "Shadowmancer")));
-            }
-        });
+        panel(new CategoryPanelBuilder());
     }
 }
 
@@ -79,5 +64,21 @@ class HeroButtonBuilder extends ButtonBuilder {
     public HeroButtonBuilder(String id, String buttonLabel) {
         super(id, buttonLabel);
         interactOnClick(String.format("selectHero(%s)", id));
+    }
+}
+
+class CategoryPanelBuilder extends PanelBuilder {
+
+    {
+        childLayoutHorizontal();
+        panel(new HeroCategoryBuilder("Ranged",
+                new HeroButtonBuilder("EmberMage", "Ember Mage"),
+                new HeroButtonBuilder("EliteSoldier", "Elite Soldier")));
+        panel(new HeroCategoryBuilder("Melee",
+                new HeroButtonBuilder("Venator", "Venator")));
+        panel(new HeroCategoryBuilder("Tank",
+                new HeroButtonBuilder("RockGolem", "Rock Golem")));
+        panel(new HeroCategoryBuilder("Support",
+                new HeroButtonBuilder("Shadowmancer", "Shadowmancer")));
     }
 }

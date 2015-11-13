@@ -17,13 +17,9 @@ package arkhados.ui.hud;
 import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.builder.TextBuilder;
 
-/**
- *
- * @author william
- */
 public class BuffIconBuilder extends ImageBuilder {
 
-    public BuffIconBuilder(final String id, String path) {
+    public BuffIconBuilder(String id, String path) {
         super(id);
         valignCenter();
         alignCenter();
@@ -32,13 +28,16 @@ public class BuffIconBuilder extends ImageBuilder {
         marginLeft("12px");
         filename(path);
         childLayoutOverlay();
-        text(new TextBuilder() {
-            {
-                super.id(id + "-counter");
-                text("");
-                font("Interface/Fonts/Default.fnt");
-                color("#fff");
-            }
-        });
+        text(new BuffCounterBuilder(id));
+    }
+}
+
+class BuffCounterBuilder extends TextBuilder {
+
+    BuffCounterBuilder(String id) {
+        super.id(id + "buff-counter");
+        text("");
+        font("Interface/Fonts/Default.fnt");
+        color("#fff");
     }
 }

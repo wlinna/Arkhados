@@ -19,8 +19,7 @@ import de.lessvoid.nifty.builder.TextBuilder;
 
 public class AmmoIndicatorBuilder extends ImageBuilder {
 
-    public AmmoIndicatorBuilder(final String id, String path,
-            final String color) {
+    public AmmoIndicatorBuilder(String id, String path, String color) {
         super(id);
         valignCenter();
         alignCenter();
@@ -29,13 +28,16 @@ public class AmmoIndicatorBuilder extends ImageBuilder {
         marginLeft("12px");
         filename(path);
         childLayoutOverlay();
-        text(new TextBuilder() {
-            {
-                super.id(id + "-counter");
-                text("");
-                font("Interface/Fonts/DroidSansMonoNumbers-32.fnt");
-                color(color);
-            }
-        });
+        text(new AmmoCounterBuilder(id, color));
+    }
+}
+
+class AmmoCounterBuilder extends TextBuilder {
+
+    public AmmoCounterBuilder(String id, String color) {
+        super.id(id + "-counter");
+        text("");
+        font("Interface/Fonts/DroidSansMonoNumbers-32.fnt");
+        color(color);
     }
 }
