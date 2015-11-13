@@ -20,6 +20,7 @@ import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
+import arkhados.effects.EmitterArcShape;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -33,6 +34,8 @@ import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterShape;
+import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -73,11 +76,11 @@ public class ShadowSickness extends Spell {
 }
 
 class SicknessBuilder extends AbstractNodeBuilder {
-    private static final float RADIUS = 4;
+    private static final float RADIUS = 2f;
 
     private ParticleEmitter createGreenEmitter() {
-        ParticleEmitter green = new ParticleEmitter("fire-emitter",
-                ParticleMesh.Type.Triangle, 200);
+        ParticleEmitter green = new ParticleEmitter("poison-emitter",
+                ParticleMesh.Type.Triangle, 400);
         Material mat = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         mat.setTexture("Texture", assets.loadTexture("Effects/flame.png"));
@@ -85,15 +88,19 @@ class SicknessBuilder extends AbstractNodeBuilder {
         green.setImagesX(2);
         green.setImagesY(2);
         green.setSelectRandomImage(true);
-        green.setStartColor(new ColorRGBA(0.15f, 0.950f, 0.0f, 1.0f));
-        green.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
+        green.setStartColor(new ColorRGBA(0.09f, 0.45f, 0f, 0.6f));
+        green.setEndColor(new ColorRGBA(0.09f, 0.45f, 0f, 0.6f));
+        green.setStartSize(1f);
+        green.setEndSize(2f);
+        green.setLowLife(0.2f);
+        green.setHighLife(0.2f);
+        green.setParticlesPerSec(300);
         green.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-        green.setStartSize(RADIUS);
-        green.setEndSize(1.0f);
-        green.setGravity(Vector3f.ZERO);
-        green.setLowLife(0.1f);
-        green.setHighLife(0.1f);
-        green.setParticlesPerSec(100);
+        green.getParticleInfluencer().setVelocityVariation(0);
+        green.setInWorldSpace(false);
+        EmitterShape shape = 
+                new EmitterArcShape(Vector3f.ZERO, 0.3f, 0.8f, 1.5f * RADIUS);
+        green.setShape(shape);
 
         green.setRandomAngle(true);
         return green;
