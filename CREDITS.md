@@ -118,6 +118,8 @@ J. W. Bjerk (eleazzaar) for following spell and buff icons:
 - Sealing Boulder
 - Mineral Armor
 - Shadow
+- Into the Shadows
+- Shadow Sickness
 
 Icons are licensed under multiple licenses, inluding CC-BY 3.0 which we use for
 this project. Original icons can be found from following sites:

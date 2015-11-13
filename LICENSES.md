@@ -63,6 +63,8 @@ See CREDITS.md for attributions.
 - Shadow.png
 - DarkSpear.png
 - DarkEnergy.png
+- ShadowSickness.png
+- IntoTheShadows.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav
@@ -92,7 +94,7 @@ See CREDITS.md for attributions.
 ## CC-BY-SA 3.0 ##
 - All LavaArena related files (except Wall and lava)
 - rocket_jump.jpeg
-- AntiGravity.orgg
+- AntiGravity.ogg
 - Olympus.ogg
 - GodsWar.ogg
 - TimeOfBlood.ogg

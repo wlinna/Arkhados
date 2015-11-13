@@ -35,7 +35,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterShape;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -50,7 +49,7 @@ public class ShadowSickness extends Spell {
     static final float DURATION = 5f;
 
     {
-        iconName = "damaging_dagger.png";
+        iconName = "ShadowSickness.png";
     }
 
     public ShadowSickness(String name, float cooldown, float range,

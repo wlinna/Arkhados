@@ -51,7 +51,7 @@ import com.jme3.scene.shape.Sphere;
 public class IntoTheShadows extends Spell {
 
     {
-        iconName = "flame_walk.png";
+        iconName = "IntoTheShadows.png";
     }
     static final float RADIUS = 27.5f;
 
