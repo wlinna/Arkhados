@@ -131,7 +131,7 @@ class RayBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            ARailgunRemoval removalAction = new ARailgunRemoval(assets);
+            ARailgunRemoval removalAction = new ARailgunRemoval();
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
@@ -167,37 +167,5 @@ class RayBuilder extends AbstractNodeBuilder {
         buffControl.addBuff(new BlindCC.MyBuilder(3f));
 
         return node;
-    }
-}
-
-class ARayRemoval implements ARemovalEvent {
-
-    private Node bullet;
-    private ParticleEmitter smokeTrail;
-    private AssetManager assetManager;
-
-    public ARayRemoval(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
-
-    public void setBullet(Node bullet) {
-        this.bullet = bullet;
-    }
-
-    private void leaveSmokeTrail(Node worldRoot, Vector3f worldTranslation) {
-        smokeTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(smokeTrail);
-        smokeTrail.setLocalTranslation(worldTranslation);
-        smokeTrail.addControl(new CTimedExistence(5f));
-    }
-
-    @Override
-    public void exec(World world, int reason) {
-        Vector3f worldTranslation = bullet.getLocalTranslation();
-        leaveSmokeTrail(world.getWorldRoot(), worldTranslation);
-    }
-
-    public void setSmokeTrail(ParticleEmitter smoke) {
-        smokeTrail = smoke;
     }
 }

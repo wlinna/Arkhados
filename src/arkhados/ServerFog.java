@@ -265,17 +265,6 @@ public class ServerFog extends AbstractAppState {
         this.walls = walls;
     }
 
-    private PlayerEntityAwareness searchForAwareness(Spatial spatial) {
-        for (PlayerEntityAwareness playerEntityAwareness
-                : awarenessConnectionMap.keySet()) {
-            if (playerEntityAwareness.getOwnSpatial() == spatial) {
-                return playerEntityAwareness;
-            }
-        }
-
-        return null;
-    }
-
     public void clearAwarenesses() {
         for (PlayerEntityAwareness playerEntityAwareness
                 : awarenessConnectionMap.keySet()) {

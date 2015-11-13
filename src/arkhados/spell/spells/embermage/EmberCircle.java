@@ -70,8 +70,8 @@ public class EmberCircle extends Spell {
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastOnGround castOnGround = new ACastOnGround(world, spell);
-            AbstractBuffBuilder ignite =
-                    Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            AbstractBuffBuilder ignite
+                    = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
             if (ignite != null) {
                 castOnGround.addEnterBuff(ignite);
             }
@@ -86,11 +86,35 @@ public class EmberCircle extends Spell {
 
 class EmberCircleBuilder extends AbstractNodeBuilder {
 
+    private static final class AFinish extends EntityAction {
+        private final CAreaEffect cAreaEffect;
+        private final Node node;
+
+        public AFinish(CAreaEffect cAreaEffect, Node node) {
+            this.cAreaEffect = cAreaEffect;
+            this.node = node;
+        }
+
+        @Override
+        public boolean update(float tpf) {
+            float dps = spatial
+                    .getUserData(UserData.DAMAGE_PER_SECOND);
+            cAreaEffect.addInfluence(new DamageOverTimeInfluence(dps));
+            SlowInfluence slowInfluence = new SlowInfluence();
+            slowInfluence.setSlowFactor(0.67f);
+            cAreaEffect.addInfluence(slowInfluence);
+
+            node.addControl(new CTimedExistence(5f, true));
+
+            return false;
+        }
+    }
+
     private ParticleEmitter createFire(float radius) {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 10 * (int) radius);
-        Material material =
-                new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
+        Material material
+                = new Material(assets, "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
                 assets.loadTexture("Effects/flame.png"));
         fire.setMaterial(material);
@@ -110,8 +134,8 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         fire.getParticleInfluencer().setVelocityVariation(0.2f);
         fire.setRandomAngle(true);
 
-        EmitterCircleShape emitterShape =
-                new EmitterCircleShape(Vector3f.ZERO, radius);
+        EmitterCircleShape emitterShape
+                = new EmitterCircleShape(Vector3f.ZERO, radius);
         fire.setShape(emitterShape);
 
         return fire;
@@ -154,8 +178,8 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
         final float radius = 15f;
         node.scale(radius, 1f, radius);
 
-        Material material =
-                assets.loadMaterial("Materials/EmberCircleGround.j3m");
+        Material material
+                = assets.loadMaterial("Materials/EmberCircleGround.j3m");
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         node.setQueueBucket(RenderQueue.Bucket.Transparent);
@@ -178,25 +202,10 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
             node.addControl(ghost);
 
-            final CAreaEffect areaEffectControl = new CAreaEffect(ghost);
-            node.addControl(areaEffectControl);
+            CAreaEffect cAreaEffect = new CAreaEffect(ghost);
+            node.addControl(cAreaEffect);
 
-            actionQueue.enqueueAction(new EntityAction() {
-                @Override
-                public boolean update(float tpf) {
-                    float dps = spatial
-                            .getUserData(UserData.DAMAGE_PER_SECOND);
-                    areaEffectControl
-                            .addInfluence(new DamageOverTimeInfluence(dps));
-                    SlowInfluence slowInfluence = new SlowInfluence();
-                    slowInfluence.setSlowFactor(0.67f);
-                    areaEffectControl.addInfluence(slowInfluence);
-
-                    node.addControl(new CTimedExistence(5f, true));
-
-                    return false;
-                }
-            });
+            actionQueue.enqueueAction(new AFinish(cAreaEffect, node));
         } else if (world.isClient()) {
             actionQueue.enqueueAction(new EntityAction() {
                 @Override
@@ -216,7 +225,6 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 //                    smoke.setLocalTranslation(worldTranslation);
 //                    smoke.move(0f, 1f, 0f);
 //                    smoke.addControl(new CTimedExistence(10f));
-
                     float removalDelay = Math.max(0, 5f - params.age);
 
                     CActionQueue fireActions = new CActionQueue();
@@ -241,7 +249,6 @@ class EmberCircleBuilder extends AbstractNodeBuilder {
 //                            return false;
 //                        }
 //                    });
-
                     AudioNode sound = new AudioNode(assets,
                             "Effects/Sound/EmberCircle.wav");
                     ((Node) spatial).attachChild(sound);
@@ -283,7 +290,7 @@ class CEmberCircleVisibility extends AbstractControl implements CVisibility {
                 <= radiusSquared) {
             return lookerLocation;
         }
-        
+
         Vector3f vec = new Vector3f(lookerLocation);
         vec.subtractLocal(spatial.getLocalTranslation());
         vec.normalizeLocal().multLocal(radius);

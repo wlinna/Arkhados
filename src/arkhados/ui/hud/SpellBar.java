@@ -45,10 +45,9 @@ public class SpellBar {
     }
 
     void addIcon(int key) {
-        Element bottomPanel = screen.findElementByName("panel_spells");
-        CSpellCast castControl =
-                playerCharacter.getControl(CSpellCast.class);
-        Spell spell = castControl.getKeySpellNameMapping(key);
+        Element bottomPanel = screen.findElementById("panel_spells");
+        CSpellCast cCast = playerCharacter.getControl(CSpellCast.class);
+        Spell spell = cCast.getKeySpellNameMapping(key);
 
         if (spell == null) {
             return;

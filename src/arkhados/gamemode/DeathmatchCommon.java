@@ -149,7 +149,6 @@ public class DeathmatchCommon {
             case Topic.FIRST_BLOOD_HAPPENED:
                 firstBloodHappened = true;
                 break;
-
         }
     }
 

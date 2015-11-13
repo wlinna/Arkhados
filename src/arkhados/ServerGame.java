@@ -41,7 +41,8 @@ public class ServerGame extends AbstractAppState {
             case "TeamDeathmatch":
                 gameMode = new TeamDeathmatch();
                 break;
-                
+            default:
+                throw new RuntimeException("Unrecognized game mode");
         }
 
         CharacterInteraction.gameMode = gameMode;
@@ -62,7 +63,7 @@ public class ServerGame extends AbstractAppState {
         serverApp.startGame();
     }
 
-    public synchronized boolean start() {
+    public boolean start() {
         if (running) {
             return false;
         }

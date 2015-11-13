@@ -17,17 +17,13 @@ package arkhados.util;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 
-/**
- *
- * @author william
- */
 public class AnimationData {
     private static int runningId = 0;
     
-    private String name;
-    private int id = runningId++;
+    private final String name;
+    private final int id = runningId++;
     private float speed;
-    private LoopMode loopMode;
+    private final LoopMode loopMode;
 
     public AnimationData(String name, float speed, LoopMode loopMode) {
         this.name = name;       

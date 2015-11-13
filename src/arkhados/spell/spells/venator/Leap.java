@@ -63,7 +63,7 @@ public class Leap extends Spell {
 
 class ACastLeap extends EntityAction {
 
-    private final float forwardSpeed = 130f;
+    private static final float forwardSpeed = 130f;
     private final Spell spell;
     private boolean motionSet = false;
     private Vector3f direction;

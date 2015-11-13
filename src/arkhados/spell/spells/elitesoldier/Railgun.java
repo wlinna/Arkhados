@@ -166,7 +166,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            ARailgunRemoval removalAction  = new ARailgunRemoval(assets);
+            ARailgunRemoval removalAction  = new ARailgunRemoval();
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
@@ -207,22 +207,17 @@ class RailgunBuilder extends AbstractNodeBuilder {
 class ARailgunRemoval implements ARemovalEvent {
 
     private Node bullet;
-    private ParticleEmitter smokeTrail;
-    private AssetManager assetManager;
-
-    public ARailgunRemoval(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
+    private ParticleEmitter trail;
 
     public void setBullet(Node bullet) {
         this.bullet = bullet;
     }
 
     private void leaveSmokeTrail(final Node worldRoot, Vector3f worldTranslation) {
-        smokeTrail.setParticlesPerSec(0);
-        worldRoot.attachChild(smokeTrail);
-        smokeTrail.setLocalTranslation(worldTranslation);
-        smokeTrail.addControl(new CTimedExistence(5f));
+        trail.setParticlesPerSec(0);
+        worldRoot.attachChild(trail);
+        trail.setLocalTranslation(worldTranslation);
+        trail.addControl(new CTimedExistence(5f));
     }
 
     @Override
@@ -232,6 +227,6 @@ class ARailgunRemoval implements ARemovalEvent {
     }
 
     public void setSmokeTrail(ParticleEmitter smoke) {
-        smokeTrail = smoke;
+        trail = smoke;
     }
 }

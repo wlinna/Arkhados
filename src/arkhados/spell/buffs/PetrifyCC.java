@@ -16,15 +16,11 @@ package arkhados.spell.buffs;
 
 import arkhados.util.BuffTypeIds;
 
-/**
- *
- * @author william
- */
 public class PetrifyCC extends CrowdControlBuff {
         
-    private final float damageCap = 100;
+    private static final float damageCap = 100;
     private float totalDamageTaken = 0f;
-    private final float damageReduction = 0.85f;
+    private static final float damageReduction = 0.85f;
 
     private PetrifyCC(float duration) {
         super(duration);

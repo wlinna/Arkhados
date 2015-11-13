@@ -29,10 +29,6 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 
-/**
- *
- * @author william
- */
 public class CDebug extends AbstractControl {
 
     private AssetManager assetManager;
@@ -52,13 +48,11 @@ public class CDebug extends AbstractControl {
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);
-        InputCapsule in = im.getCapsule(this);
     }
 
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public void drawArrow(Vector3f from, Vector3f to) {

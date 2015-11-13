@@ -16,10 +16,6 @@ package arkhados.spell.buffs;
 
 import arkhados.util.BuffTypeIds;
 
-/**
- *
- * @author william
- */
 public class AbsorbingShieldBuff extends AbstractBuff {
 
     private float cap = 220f;

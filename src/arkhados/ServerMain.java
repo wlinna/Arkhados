@@ -114,7 +114,6 @@ public class ServerMain extends SimpleApplication {
         sync = new Sync(this);
 
         ServerInput input = ServerInput.get();
-        input.setApp(this);
 
         receiver.registerCommandHandler(listenerManager);
         receiver.registerCommandHandler(input);
@@ -132,8 +131,6 @@ public class ServerMain extends SimpleApplication {
         // exploding. This is because of FogOfWar
         physics.getPhysicsSpace().setAccuracy(1f
                 / Settings.get().General().getPhysicsTicksPerSecond());
-
-        Globals.space = physics.getPhysicsSpace();
     }
 
     public void startGame() {

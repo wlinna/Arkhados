@@ -31,9 +31,9 @@ import java.util.Map;
 
 public class CharacterInteraction {
 
-    private static ArrayList<RoundStats> roundStatList = new ArrayList<>();
+    private static final List<RoundStats> roundStatList = new ArrayList<>();
     // TODO: Consider if we really want to put gameMode here or not
-    public static GameMode gameMode = null;
+    static GameMode gameMode = null;
     private static final Map<Integer, Integer> latestDamager = new HashMap<>();
 
     public static void harm(CInfluenceInterface attacker,

@@ -88,7 +88,7 @@ class ACastToss extends EntityAction {
 class AToss extends EntityAction {
 
     private final Spell spell;
-    private final float forwardSpeed = 105f;
+    private static final float forwardSpeed = 105f;
 
     public AToss(Spell spell) {
         this.spell = spell;

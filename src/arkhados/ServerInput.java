@@ -31,18 +31,15 @@ import java.util.Map;
  */
 public class ServerInput implements CommandHandler {
 
-    private static ServerInput instance = null;
+    private static final ServerInput instance = new ServerInput();
     private final Map<Integer, ServerInputState> inputStates = new HashMap<>();
-    private Application app;
+    private final Application app;
 
     private ServerInput() {
+        app = Globals.app;
     }
 
     public static ServerInput get() {
-        if (instance == null) {
-            instance = new ServerInput();
-        }
-
         return instance;
     }
 
@@ -99,10 +96,5 @@ public class ServerInput implements CommandHandler {
             CmdUcMouseTarget uc = (CmdUcMouseTarget) command;
             inputState.mouseTarget = uc.getLocation();
         }
-
-    }
-
-    public void setApp(Application app) {
-        this.app = app;
     }
 }

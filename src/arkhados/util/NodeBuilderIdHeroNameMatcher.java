@@ -19,17 +19,14 @@ import java.util.Map;
 
 public class NodeBuilderIdHeroNameMatcher {
 
-    private static NodeBuilderIdHeroNameMatcher instance = null;
+    private static final NodeBuilderIdHeroNameMatcher instance = 
+            new NodeBuilderIdHeroNameMatcher();
     private final Map<String, Integer> nameIdMap = new HashMap<>(3);
 
     private NodeBuilderIdHeroNameMatcher() {
     }
 
     public static NodeBuilderIdHeroNameMatcher get() {
-        if (instance == null) {
-            instance = new NodeBuilderIdHeroNameMatcher();
-        }
-
         return instance;
     }
 

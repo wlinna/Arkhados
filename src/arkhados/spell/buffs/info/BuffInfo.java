@@ -50,14 +50,9 @@ public abstract class BuffInfo {
         Buffs.put(id, buffInfo);
     }
     
-    private float duration;
     private String iconPath = null;
 
     public abstract BuffEffect createBuffEffect(BuffInfoParameters params);
-
-    public float getDuration() {
-        return duration;
-    }
 
     public String getIconPath() {
         return iconPath;

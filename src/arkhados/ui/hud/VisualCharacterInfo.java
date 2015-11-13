@@ -37,7 +37,7 @@ public class VisualCharacterInfo {
     private final List<BitmapText> hpBars = new ArrayList<>();
     private final List<BitmapText> playerNames = new ArrayList<>();
     
-    public static final ColorRGBA[] TEAM_COLORS = new ColorRGBA[] {
+    static final ColorRGBA[] TEAM_COLORS = new ColorRGBA[] {
         ColorRGBA.Blue, ColorRGBA.Red, ColorRGBA.Green, ColorRGBA.Black,
         ColorRGBA.Magenta, ColorRGBA.Yellow, ColorRGBA.Orange,
         ColorRGBA.Pink, ColorRGBA.White, ColorRGBA.Brown, ColorRGBA.Gray

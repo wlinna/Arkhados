@@ -28,8 +28,9 @@ public class Rend extends Spell {
 
     {
         iconName = "rend.png";
-        multipart = true;        
+        multipart = true;
     }
+
     public Rend(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
     }
@@ -43,8 +44,8 @@ public class Rend extends Spell {
         spell.setCanMoveWhileCasting(true);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
-            ADoubleMeleeAttack action =
-                    new ADoubleMeleeAttack(spell);
+            ADoubleMeleeAttack action
+                    = new ADoubleMeleeAttack(spell);
             action.setTypeId(Venator.ANIM_SWIPE_LEFT);
             return action;
         };
@@ -55,6 +56,19 @@ public class Rend extends Spell {
 }
 
 class ADoubleMeleeAttack extends EntityAction {
+
+    private static final class AEnd extends EntityAction {
+
+        @Override
+        public boolean update(float tpf) {
+            // HACK: This should happen automatically
+            spatial.getControl(CSpellCast.class).setCasting(false);
+                // TODO: MAKE SURE it's okay to disable this
+            // spatial.getControl(UserInputControl.class).restoreWalking();
+            return false;
+        }
+    }
+
     private final Spell spell;
 
     public ADoubleMeleeAttack(Spell spell) {
@@ -69,23 +83,14 @@ class ADoubleMeleeAttack extends EntityAction {
         final AMeleeAttack action1 = new AMeleeAttack(75f, range);
         ACastingSpell action2Anim = new ACastingSpell(spell, true);
         AMeleeAttack action2 = new AMeleeAttack(85f, range);
-        
+
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);
         queue.enqueueAction(action1);
         queue.enqueueAction(action2Anim);
         queue.enqueueAction(action2);
-        
-        queue.enqueueAction(new EntityAction() {
-            @Override
-            public boolean update(float tpf) {
-                // HACK: This should happen automatically
-                spatial.getControl(CSpellCast.class).setCasting(false);
-                // TODO: MAKE SURE it's okay to disable this
-                // spatial.getControl(UserInputControl.class).restoreWalking();
-                return false;
-            }
-        });
+
+        queue.enqueueAction(new AEnd());
 
         return false;
     }

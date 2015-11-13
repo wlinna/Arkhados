@@ -30,7 +30,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-
 public class MagmaReleaseInfo extends BuffInfo {
 
     @Override
@@ -44,15 +43,40 @@ public class MagmaReleaseInfo extends BuffInfo {
             }
         }
 
-        MagmaReleaseEffect effect =
-                new MagmaReleaseEffect(params.duration, count);
+        MagmaReleaseEffect effect
+                = new MagmaReleaseEffect(params.duration, count);
         effect.addToCharacter(params);
         return effect;
     }
 }
+
 class MagmaReleaseEffect extends BuffEffect {
 
-    private int explosionCount;
+    static final class ReleaseFinale extends EntityAction {
+        private final ParticleEmitter fire;
+        private final Node node;
+
+        public ReleaseFinale(ParticleEmitter fire, Node node) {
+            this.fire = fire;
+            this.node = node;
+        }                
+
+        @Override
+        public boolean update(float tpf) {
+            fire.emitAllParticles();
+            AudioNode sound = new AudioNode(assetManager,
+                    "Effects/Sound/FireballExplosion.wav");
+            sound.setVolume(0.8f);
+            sound.setPositional(true);
+            sound.setReverbEnabled(false);
+            sound.setVolume(1f);
+            node.attachChild(sound);
+            sound.play();
+            return false;
+        }
+    }
+
+    private final int explosionCount;
     private Node character;
 
     public MagmaReleaseEffect(float timeLeft, int explosionCount) {
@@ -64,31 +88,17 @@ class MagmaReleaseEffect extends BuffEffect {
         character = (Node) params.buffControl.getSpatial();
 
         for (int i = 0; i < explosionCount; i++) {
-            final Node node = new Node();
+            Node node = new Node();
             character.attachChild(node);
-            
-            final ParticleEmitter fire = createFireEmitter();
+
+            ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
 
             CActionQueue actionQueue = new CActionQueue();
             node.addControl(actionQueue);
             float delay = MagmaReleaseBuff.TICK_LENGTH * i;
             actionQueue.enqueueAction(new ADelay(delay));
-            actionQueue.enqueueAction(new EntityAction() {
-                @Override
-                public boolean update(float tpf) {
-                    fire.emitAllParticles();
-                    AudioNode sound = new AudioNode(assetManager,
-                            "Effects/Sound/FireballExplosion.wav");
-                    sound.setVolume(0.8f);
-                    sound.setPositional(true);
-                    sound.setReverbEnabled(false);
-                    sound.setVolume(1f);
-                    node.attachChild(sound);
-                    sound.play();
-                    return false;
-                }
-            });
+            actionQueue.enqueueAction(new ReleaseFinale(fire, node));
             node.addControl(new CTimedExistence(15f));
             character.attachChild(node);
         }
@@ -106,7 +116,6 @@ class MagmaReleaseEffect extends BuffEffect {
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
         fire.setRandomAngle(true);
-
 
         fire.setGravity(Vector3f.ZERO);
 

@@ -27,10 +27,10 @@ import java.util.logging.Logger;
  */
 public class Settings {
 
-    private static Settings instance = null;
-    private SettingsGeneral general;
-    private Deathmatch dm;
-    private TeamDeathmatch tdm;
+    private static final Settings instance = new Settings();
+    private final SettingsGeneral general;
+    private final Deathmatch dm;
+    private final TeamDeathmatch tdm;
 
     private Settings() {
         if (!(new File("settings.toml").exists())) {
@@ -57,10 +57,6 @@ public class Settings {
     }
 
     public static Settings get() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
         return instance;
     }
 

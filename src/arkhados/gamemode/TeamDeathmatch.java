@@ -54,7 +54,6 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
     private AppStateManager stateManager;
     private World world;
     private Sync sync;
-    private Element teamSelectionLayer;
     private Nifty nifty;
     private Screen screen;
     private final Map<String, Integer> teamNameId = new HashMap<>();

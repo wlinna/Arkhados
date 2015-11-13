@@ -66,7 +66,34 @@ public class EarthQuake extends Spell {
 
 class ACastEarthQuake extends EntityAction {
 
-    private final float chargeRange = 90f;
+    private static final class AKnockupAround extends EntityAction {
+
+        private final float splashRadius;
+        private final int teamId;
+
+        public AKnockupAround(float splashRadius, int teamId) {
+            this.splashRadius = splashRadius;
+            this.teamId = teamId;
+        }
+
+        @Override
+        public boolean update(float tpf) {
+            ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
+                    .getSpatialsWithinDistance(
+                            new ArrayList<>(),
+                            spatial.getLocalTranslation(), splashRadius,
+                            new Selector.IsCharacterOfOtherTeam(teamId));
+
+            for (SpatialDistancePair pair : spatialsWithinDistance) {
+                pair.spatial.getControl(CActionQueue.class)
+                        .enqueueAction(new AKnockup());
+            }
+
+            return false;
+        }
+    }
+
+    private static final float chargeRange = 90f;
 
     public ACastEarthQuake() {
     }
@@ -98,23 +125,7 @@ class ACastEarthQuake extends EntityAction {
         queue.enqueueAction(splash);
         splash.setTypeId(RockGolem.ACTION_EARTHQUAKE);
 
-        queue.enqueueAction(new EntityAction() {
-            @Override
-            public boolean update(float tpf) {
-                ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
-                        .getSpatialsWithinDistance(
-                                new ArrayList<SpatialDistancePair>(),
-                                spatial.getLocalTranslation(), splashRadius,
-                                new Selector.IsCharacterOfOtherTeam(teamId));
-
-                for (SpatialDistancePair pair : spatialsWithinDistance) {
-                    pair.spatial.getControl(CActionQueue.class)
-                            .enqueueAction(new AKnockup());
-                }
-
-                return false;
-            }
-        });
+        queue.enqueueAction(new AKnockupAround(splashRadius, teamId));
 
         return false;
     }

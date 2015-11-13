@@ -38,12 +38,8 @@ public abstract class AbstractBuff {
     protected CInfluenceInterface targetInterface = null;
     private CInfluenceInterface ownerInterface = null;
     protected boolean friendly = false;
-    private int buffId = ++currentBuffId;
+    private final int buffId = ++currentBuffId;
 
-    /**
-     * @param buffGroupId identifies group of buffs so that they can be removed
-     * with single dispel. Not used currently
-     */
     protected AbstractBuff(float duration) {
         this.duration = duration;
     }

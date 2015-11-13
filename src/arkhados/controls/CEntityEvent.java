@@ -50,13 +50,11 @@ public class CEntityEvent extends AbstractControl {
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);
-        InputCapsule in = im.getCapsule(this);
     }
 
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
-        OutputCapsule out = ex.getCapsule(this);
     }
 
     public ARemovalEvent getOnRemoval() {

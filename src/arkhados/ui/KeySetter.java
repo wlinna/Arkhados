@@ -37,6 +37,7 @@ import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -164,11 +165,14 @@ public class KeySetter implements RawInputListener, ScreenController {
     public void bind(Nifty nifty, final Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
-
+        
         app.enqueue(() -> {
             Map<String, String> buttonIdInputMappingMap =
                     inputSettings.getButtonIdInputMappingMap();
-            for (String buttonName : buttonIdInputMappingMap.keySet()) {
+            for (Entry<String, String> entry :
+                    buttonIdInputMappingMap.entrySet()) {
+                String buttonName = entry.getKey();
+                
                 String inputMapping =
                         buttonIdInputMappingMap.get(buttonName);
                 Button button =

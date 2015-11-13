@@ -43,7 +43,6 @@ public class ServerClientData {
     
     private static final HashMap<Integer, HostedConnection> connections = new HashMap<>();
     private static final HashMap<Integer, ServerClientData> players = new HashMap<>();
-    private int id;
     private long latencySampleCount = 0;
     private float latestLatency;
     private float averageLatency;
@@ -55,7 +54,7 @@ public class ServerClientData {
     }
     
     public static synchronized void add(int id) {
-        ServerClientData.players.put(id, new ServerClientData(id));                
+        ServerClientData.players.put(id, new ServerClientData());                
     }
 
     public static synchronized void remove(int id) {
@@ -105,14 +104,7 @@ public class ServerClientData {
     
     public static synchronized HostedConnection getConnection(int playerId) {
         return connections.get(playerId);
-    }
-    
-    /**
-     * Object implementation of ClientData
-     */
-    public ServerClientData(int id) {
-        this.id = id;
-    }
+    }    
 
     public int getPlayerId() {
         return playerId;

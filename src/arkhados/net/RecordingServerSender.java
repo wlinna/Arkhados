@@ -34,8 +34,8 @@ import java.util.logging.Logger;
 public class RecordingServerSender extends ServerSender {
 
     private World world;
-    private ReplayData replayData = new ReplayData();
-    private static SimpleDateFormat dateFormat =
+    private final ReplayData replayData = new ReplayData();
+    private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
     public RecordingServerSender(Server server) {

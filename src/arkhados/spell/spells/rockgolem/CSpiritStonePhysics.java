@@ -51,7 +51,7 @@ public class CSpiritStonePhysics extends RigidBodyControl implements CSync {
             collisionListener = new SpiritStoneCollisionListener((Node) spatial,
                     world);
             space.addCollisionListener(collisionListener);
-        } else if (space == null && this.space != null) {
+        } else if (this.space != null) {
             this.space.removeCollisionListener(collisionListener);
         }
     }

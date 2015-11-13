@@ -196,8 +196,7 @@ class RocketBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            ARocketRemoval removalAction =
-                    new ARocketRemoval(assets);
+            ARocketRemoval removalAction = new ARocketRemoval(assets);
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smokeTrail);
 
@@ -242,13 +241,12 @@ class ARocketRemoval implements ARemovalEvent {
 
     private ParticleEmitter fire;
     private ParticleEmitter smokeTrail;
-    private AssetManager assetManager;
-    private AudioNode sound;
+    private final AssetManager assets;
+    private final AudioNode sound;
 
-    public ARocketRemoval(AssetManager assetManager) {
-        this.assetManager = assetManager;
-        sound = new AudioNode(assetManager,
-                "Effects/Sound/FireballExplosion.wav");
+    public ARocketRemoval(AssetManager assets) {
+        this.assets = assets;
+        sound = new AudioNode(assets, "Effects/Sound/FireballExplosion.wav");
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setVolume(1f);
@@ -293,10 +291,10 @@ class ARocketRemoval implements ARemovalEvent {
     private void createSmokePuff(Node node) {
         ParticleEmitter smokePuff = new ParticleEmitter("smoke-puff",
                 ParticleMesh.Type.Triangle, 20);
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         material.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame_alpha.png"));
+                assets.loadTexture("Effects/flame_alpha.png"));
         material.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Alpha);
         smokePuff.setMaterial(material);
