@@ -22,12 +22,11 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import java.util.HashMap;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
 public class CActionPlayer extends AbstractControl {
 
-    private final Map<Integer, WorldEffect> actionEffects = new HashMap<>();
+    private final IntMap<WorldEffect> actionEffects = new IntMap<>();
     private EffectHandle effectHandle;
 
     public void putEffect(int id, WorldEffect effect) {

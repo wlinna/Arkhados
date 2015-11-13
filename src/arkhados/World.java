@@ -58,8 +58,7 @@ import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.light.Light;
 import com.jme3.math.Plane;
 import com.jme3.scene.control.LightControl;
-import com.jme3.scene.control.LodControl;
-import java.util.Map;
+import com.jme3.util.IntMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,7 +75,7 @@ public class World extends AbstractAppState {
     private Node worldRoot;
     private Node fakeWorldRoot;
     private AbstractArena arena = new PillarArena();
-    private final Map<Integer, Spatial> entities = new HashMap<>();
+    private final IntMap<Spatial> entities = new IntMap<>();
     private Sync sync;
     private short idCounter = 0;
     private boolean isClient = false;

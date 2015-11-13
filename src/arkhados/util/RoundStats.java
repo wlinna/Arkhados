@@ -15,17 +15,13 @@
 package arkhados.util;
 
 import arkhados.PlayerData;
+import com.jme3.util.IntMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class RoundStats {
 
-    private HashMap<Integer, PlayerRoundStats> playerStats = new HashMap<>();
+    private final IntMap<PlayerRoundStats> playerStats = new IntMap<>();
 
     public void initialize() {
         List<PlayerData> playerDataList = PlayerData.getPlayers();
@@ -93,8 +89,8 @@ public class RoundStats {
 
     public ArrayList<PlayerRoundStats> cloneCurrentPlayerRoundStatsList() {
         ArrayList<PlayerRoundStats> list = new ArrayList<>(playerStats.size());
-        for (PlayerRoundStats stats : playerStats.values()) {
-            list.add(new PlayerRoundStats(stats));
+        for (IntMap.Entry<PlayerRoundStats> entry : playerStats) {                    
+            list.add(new PlayerRoundStats(entry.getValue()));
         }
 
         return list;

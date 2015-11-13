@@ -19,10 +19,8 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.HostedConnection;
 import com.jme3.scene.Spatial;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.Queue;
 import arkhados.controls.CSync;
 import arkhados.messages.sync.statedata.StateData;
@@ -30,15 +28,14 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.settings.server.Settings;
-import java.util.Map;
-import java.util.Set;
+import com.jme3.util.IntMap;
 
 public class Sync extends AbstractAppState implements CommandHandler {
 
     private final Application app;
     private final AppStateManager stateManager;
     private Sender sender;
-    private final Map<Integer, Object> syncObjects = new HashMap<>();
+    private final IntMap<Object> syncObjects = new IntMap<>();
     private float syncTimer = 0.0f;
     private float defaultSyncFrequency;
     private final Queue<StateData> stateDataQueue = new LinkedList<>();
@@ -85,9 +82,7 @@ public class Sync extends AbstractAppState implements CommandHandler {
     private void sendSyncData() {
         ServerFog fog = stateManager.getState(ServerFog.class);
 
-        Set<Entry<Integer, Object>> entrySet = syncObjects.entrySet();
-
-        for (Entry<Integer, Object> entry : entrySet) {
+        for (IntMap.Entry<Object> entry : syncObjects) {
             if (!(entry.getValue() instanceof Spatial)) {
                 continue;
             }

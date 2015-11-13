@@ -25,16 +25,15 @@ import arkhados.util.RoundStats;
 import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
 public class CharacterInteraction {
 
     private static final List<RoundStats> roundStatList = new ArrayList<>();
     // TODO: Consider if we really want to put gameMode here or not
     static GameMode gameMode = null;
-    private static final Map<Integer, Integer> latestDamager = new HashMap<>();
+    private static final IntMap<Integer> latestDamager = new IntMap<>();
 
     public static void harm(CInfluenceInterface attacker,
             CInfluenceInterface target, final float rawDamage,

@@ -32,12 +32,11 @@
 package arkhados;
 
 import com.jme3.network.serializing.Serializable;
+import com.jme3.util.IntMap;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Basic class to store data about players (Human and AI), could be replaced by
@@ -60,7 +59,7 @@ public final class PlayerData {
     public static final String COMMAND_MOVE_INTERRUPTS = "command-move-interrupts";
     public static final String NAME = "name";
     public static final String TEAM_ID = "team-id";
-    private static Map<Integer, PlayerData> players = new HashMap<>();
+    private static IntMap<PlayerData> players = new IntMap<>();
     private int id;
     private Map<String, Float> floatData = new HashMap<>();
     private Map<String, Integer> intData = new HashMap<>();
@@ -73,7 +72,10 @@ public final class PlayerData {
     }
 
     public static synchronized List<PlayerData> getPlayers() {
-        LinkedList<PlayerData> list = new LinkedList<>(players.values());
+        List<PlayerData> list = new ArrayList<>();
+        for (IntMap.Entry<PlayerData> player : players) {
+            list.add(player.getValue());
+        }
         return list;
     }
 

@@ -16,12 +16,11 @@ package arkhados.spell.buffs.info;
 
 import arkhados.effects.BuffEffect;
 import arkhados.util.BuffTypeIds;
-import java.util.HashMap;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
 public abstract class BuffInfo {
 
-    private static final Map<Integer, BuffInfo> Buffs = new HashMap<>();
+    private static final IntMap<BuffInfo> Buffs = new IntMap<>();
 
     public static void initBuffs() {
         addBuff(BuffTypeIds.SLOW, new SlowInfo());

@@ -18,6 +18,7 @@ import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.replay.ReplayInputHandler;
 import arkhados.replay.ReplayReader;
+import com.jme3.util.IntMap;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.elements.Element;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,9 +64,14 @@ public class ReplayMenu implements ScreenController {
             ReplayReader replayReader = Globals.app.getStateManager()
                     .getState(ReplayReader.class);
             replayReader.loadReplay(path.toString());
-            Map<Integer, String> playerMap
+            IntMap<String> playerMap
                     = replayReader.getData().getHeader().getPlayers();
-            List<Integer> playersList = new ArrayList<>(playerMap.keySet());
+            
+            List<Integer> playersList = new ArrayList<>();            
+            for (IntMap.Entry<String> entry : playerMap) {
+                playersList.add(entry.getKey());
+            }
+            
             Collections.sort(playersList);
             ListBox playerBox
                     = popup.findNiftyControl("player_list", ListBox.class);

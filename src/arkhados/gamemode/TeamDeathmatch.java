@@ -39,8 +39,8 @@ import arkhados.ui.hud.ServerClientDataStrings;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.network.HostedConnection;
+import com.jme3.util.IntMap;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         teamNameId.put("Green", 2);
         teamNameId.put("Black", 3);
     }
-    private final Map<Integer, Integer> teamKills = new HashMap<>();
+    private final IntMap<Integer> teamKills = new IntMap<>();
 
     {
         teamKills.put(0, 0);

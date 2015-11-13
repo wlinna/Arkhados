@@ -32,8 +32,7 @@
 package arkhados;
 
 import com.jme3.network.HostedConnection;
-import java.util.Collection;
-import java.util.HashMap;
+import com.jme3.util.IntMap;
 
 /**
  * Stores info about active clients on the server
@@ -41,17 +40,13 @@ import java.util.HashMap;
  */
 public class ServerClientData {
     
-    private static final HashMap<Integer, HostedConnection> connections = new HashMap<>();
-    private static final HashMap<Integer, ServerClientData> players = new HashMap<>();
+    private static final IntMap<HostedConnection> connections = new IntMap<>();
+    private static final IntMap<ServerClientData> players = new IntMap<>();
     private long latencySampleCount = 0;
     private float latestLatency;
     private float averageLatency;
     private int playerId;    
     private boolean connected;
-    
-    public static synchronized Collection<Integer> getClients() {
-        return players.keySet();
-    }
     
     public static synchronized void add(int id) {
         ServerClientData.players.put(id, new ServerClientData());                

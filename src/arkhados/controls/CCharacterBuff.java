@@ -24,11 +24,10 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.jme3.util.IntMap;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,9 +35,9 @@ public class CCharacterBuff extends AbstractControl {
 
     private static final Logger logger =
             Logger.getLogger(CCharacterBuff.class.getName());
-    private Map<Integer, BuffEffect> effects = new HashMap<>();
-    private Map<Integer, Element> buffIcons = new HashMap<>();
-    private Map<Integer, FakeBuff> buffs = new HashMap<>();
+    private final IntMap<BuffEffect> effects = new IntMap<>();
+    private final IntMap<Element> buffIcons = new IntMap<>();
+    private final IntMap<FakeBuff> buffs = new IntMap<>();
     private ClientHud hud = null;
     private Element buffPanel = null;
 
@@ -47,8 +46,8 @@ public class CCharacterBuff extends AbstractControl {
         super.setSpatial(spatial);
 
         if (spatial == null) {
-            for (BuffEffect buffEffect : effects.values()) {
-                buffEffect.destroy();
+            for (IntMap.Entry<BuffEffect> effect : effects) {                
+                effect.getValue().destroy();
             }
         }
     }
@@ -132,7 +131,7 @@ public class CCharacterBuff extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        for (Map.Entry<Integer, BuffEffect> entry : effects.entrySet()) {
+        for (IntMap.Entry<BuffEffect> entry : effects) {                    
             BuffEffect buffEffect = entry.getValue();
             buffEffect.update(tpf);
 
@@ -174,8 +173,8 @@ public class CCharacterBuff extends AbstractControl {
     }    
 
     public boolean hasBuff(int typeId) {
-        for (FakeBuff fakeBuff : buffs.values()) {
-            if (fakeBuff.typeId == typeId) {
+        for (IntMap.Entry<FakeBuff> fakeBuff : buffs) {                    
+            if (fakeBuff.getValue().typeId == typeId) {
                 return true;
             }
         }
@@ -183,7 +182,7 @@ public class CCharacterBuff extends AbstractControl {
         return false;
     }
     
-    public Map<Integer, FakeBuff> getBuffs() {
+    public IntMap<FakeBuff> getBuffs() {
         return buffs;
     }
 }

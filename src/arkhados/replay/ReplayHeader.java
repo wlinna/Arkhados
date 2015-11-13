@@ -16,19 +16,18 @@
 package arkhados.replay;
 
 import com.jme3.network.serializing.Serializable;
+import com.jme3.util.IntMap;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Serializable
 public class ReplayHeader {
     private Date date = new Date();
-    private Map<Integer, String> players = new HashMap<>();
+    private final IntMap<String> players = new IntMap<>();
 
     public ReplayHeader() {
     }        
         
-    public Map<Integer, String> getPlayers() {
+    public IntMap<String> getPlayers() {
         return players;
     }
 

@@ -23,16 +23,15 @@ import arkhados.net.CommandHandler;
 import arkhados.util.UserData;
 import com.jme3.app.Application;
 import com.jme3.scene.Spatial;
+import com.jme3.util.IntMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EffectHandler implements CommandHandler {
 
     private final Application app;
     private World world;
-    private final Map<Integer, EffectBox> actionEffects = new HashMap<>();
+    private final IntMap<EffectBox> actionEffects = new IntMap<>();
     private static int runningIndex = 0;
     private static final List<WorldEffect> worldEffects = new ArrayList<>();
 

@@ -21,8 +21,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import java.util.HashMap;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
 /**
  *
@@ -34,7 +33,7 @@ public class CCharacterSound extends AbstractControl {
     private String sufferPath;
     private String deathPath;
     
-    private Map<Integer, WorldEffect> castSounds = new HashMap<>();
+    private final IntMap<WorldEffect> castSounds = new IntMap<>();
 
     @Override
     protected void controlUpdate(float tpf) {

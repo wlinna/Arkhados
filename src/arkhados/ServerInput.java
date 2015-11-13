@@ -21,8 +21,7 @@ import arkhados.net.Command;
 import arkhados.net.CommandHandler;
 import com.jme3.app.Application;
 import com.jme3.network.HostedConnection;
-import java.util.HashMap;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
 /**
  * Stores player input states.
@@ -32,7 +31,7 @@ import java.util.Map;
 public class ServerInput implements CommandHandler {
 
     private static final ServerInput instance = new ServerInput();
-    private final Map<Integer, ServerInputState> inputStates = new HashMap<>();
+    private final IntMap<ServerInputState> inputStates = new IntMap<>();
     private final Application app;
 
     private ServerInput() {

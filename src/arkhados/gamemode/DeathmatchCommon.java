@@ -44,19 +44,16 @@ import com.jme3.audio.AudioNode;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
+import com.jme3.util.IntMap;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class DeathmatchCommon {
 
-    private static final Map<Integer, String> spreeAnnouncements
-            = new HashMap<>();
-    private static final Map<Integer, String> comboAnnouncements
-            = new HashMap<>();
+    private static final IntMap<String> spreeAnnouncements = new IntMap<>();
+    private static final IntMap<String> comboAnnouncements = new IntMap<>();
     private static final String FIRST_BLOOD_PATH
             = "Interface/Sound/Announcer/FirstBlood.wav";
 
@@ -81,10 +78,9 @@ public class DeathmatchCommon {
     private final AudioQueue audioQueue = new AudioQueue();
     private boolean firstBloodHappened;
     private float respawnTime;
-    private final Map<Integer, DeathMatchPlayerTracker> trackers
-            = new HashMap<>();
+    private final IntMap<DeathMatchPlayerTracker> trackers = new IntMap<>();
     private int killLimit;
-    private final HashMap<Integer, Boolean> canPickHeroMap = new HashMap<>();
+    private final IntMap<Boolean> canPickHeroMap = new IntMap<>();
     private Element heroSelectionLayer;
     private Nifty nifty;
 
@@ -136,8 +132,8 @@ public class DeathmatchCommon {
     void update(float tpf) {
         audioQueue.update();
 
-        for (DeathMatchPlayerTracker tracker : trackers.values()) {
-            tracker.update(tpf);
+        for (IntMap.Entry<DeathMatchPlayerTracker> entry : trackers) {                    
+            entry.getValue().update(tpf);
         }
     }
 
@@ -409,8 +405,8 @@ public class DeathmatchCommon {
     private void preloadAnnouncer() {
         Globals.assets.loadAudio(FIRST_BLOOD_PATH);
 
-        for (String path : spreeAnnouncements.values()) {
-            Globals.assets.loadAudio(path);
+        for (IntMap.Entry<String> entry : spreeAnnouncements) {                    
+            Globals.assets.loadAudio(entry.getValue());
         }
     }
 
@@ -430,7 +426,7 @@ public class DeathmatchCommon {
         return heroSelectionLayer;
     }
 
-    Map<Integer, Boolean> getCanPickHeroMap() {
+    IntMap<Boolean> getCanPickHeroMap() {
         return canPickHeroMap;
     }
 
@@ -438,7 +434,7 @@ public class DeathmatchCommon {
         return app;
     }
 
-    Map<Integer, DeathMatchPlayerTracker> getTrackers() {
+    IntMap<DeathMatchPlayerTracker> getTrackers() {
         return trackers;
     }
 

@@ -16,23 +16,19 @@ package arkhados.effects;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import java.util.HashMap;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
-/**
- *
- * @author william
- */
 public class EffectBox {
 
-    private Map<Integer, WorldEffect> actionEffects = new HashMap<>();
+    private final IntMap<WorldEffect> actionEffects = new IntMap<>();
 
     public void addActionEffect(int id, WorldEffect effect) {
-        
+
         this.actionEffects.put(id, effect);
     }
 
-    public void executeActionEffect(int actionTypeId, Node root, Vector3f location) {
+    public void executeActionEffect(int actionTypeId, Node root,
+            Vector3f location) {
         WorldEffect effect = this.actionEffects.get(actionTypeId);
         if (effect != null) {
             effect.execute(root, location, null);

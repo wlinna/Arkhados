@@ -38,19 +38,21 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.util.IntMap;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSpellCast extends AbstractControl {
-    private static final Vector3f DOWN = Vector3f.UNIT_Y.negate();
-    
-    private final Vector3f _tempVec = new Vector3f();    
 
-    private static Map<Integer, Float> clientCooldowns;
-    private Map<Integer, Spell> spells = new HashMap<>();
-    private Map<Integer, Float> cooldowns = new HashMap<>();
-    private Map<Integer, Spell> keySpellMappings = new HashMap<>();
-    private Map<String, Integer> secondaryInputMapping = new HashMap<>(2);
+    private static final Vector3f DOWN = Vector3f.UNIT_Y.negate();
+
+    private final Vector3f _tempVec = new Vector3f();
+
+    private static IntMap<Float> clientCooldowns;
+    private final IntMap<Spell> spells = new IntMap<>();
+    private IntMap<Float> cooldowns = new IntMap<>();
+    private final IntMap<Spell> keySpellMappings = new IntMap<>();
+    private final Map<String, Integer> secondaryInputMapping = new HashMap<>(2);
     private static final float GLOBAL_COOLDOWN = 0.2f;
     private boolean casting = false;
     private final List<SpellCastValidator> castValidators = new ArrayList<>();
@@ -100,13 +102,13 @@ public class CSpellCast extends AbstractControl {
      */
     // FIXME: safeInterrupt isn't safe anymore
     public void safeInterrupt() {
-        EntityAction action =
-                spatial.getControl(CActionQueue.class).getCurrent();
-        
+        EntityAction action
+                = spatial.getControl(CActionQueue.class).getCurrent();
+
         if (action == null) {
             return;
         }
-        
+
         if (action instanceof ACastingSpell) {
             casting = false;
             Spell spell = ((ACastingSpell) action).getSpell();
@@ -132,8 +134,8 @@ public class CSpellCast extends AbstractControl {
             return;
         }
 
-        EntityAction action =
-                spatial.getControl(CActionQueue.class).getCurrent();
+        EntityAction action
+                = spatial.getControl(CActionQueue.class).getCurrent();
         if (action != null && ((action instanceof ACastingSpell)
                 || (action instanceof AChannelingSpell))) {
 
@@ -207,25 +209,25 @@ public class CSpellCast extends AbstractControl {
                 .getControl(CEntityVariable.class).getAwareness();
         if (awareness != null) {
 
-            CCharacterPhysics physics =
-                    spatial.getControl(CCharacterPhysics.class);
+            CCharacterPhysics physics
+                    = spatial.getControl(CCharacterPhysics.class);
             physics.setViewDirection(physics.calculateTargetDirection());
             spatial.getControl(CCharacterAnimation.class)
                     .castSpell(spell, castSpeedFactor);
             spatial.getControl(CActionQueue.class)
                     .enqueueAction(new ACastingSpell(spell,
-                    spell.isMultipart()));
+                                    spell.isMultipart()));
 
-            EntityAction castingAction =
-                    spell.buildCastAction((Node) spatial, targetLocation);
+            EntityAction castingAction
+                    = spell.buildCastAction((Node) spatial, targetLocation);
             spatial.getControl(CActionQueue.class)
                     .enqueueAction(castingAction);
             Vector3f direction = targetLocation
                     .subtract(spatial.getLocalTranslation());
             awareness.getFog().addCommand(spatial,
                     new CmdStartCastingSpell(
-                    (int) spatial.getUserData(UserData.ENTITY_ID),
-                    spell.getId(), direction, castSpeedFactor));
+                            (int) spatial.getUserData(UserData.ENTITY_ID),
+                            spell.getId(), direction, castSpeedFactor));
             getSpatial().getControl(CResting.class).stopRegen();
         }
 
@@ -271,7 +273,7 @@ public class CSpellCast extends AbstractControl {
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
             awareness.getFog().addCommand(spatial,
                     new CmdSetCooldown(entityId, spell.getId(),
-                    spell.getCooldown(), true));
+                            spell.getCooldown(), true));
         }
     }
 
@@ -292,29 +294,28 @@ public class CSpellCast extends AbstractControl {
 
         Vector3f target = spatial.getLocalTranslation().clone()
                 .interpolateLocal(targetLocation, interpolationFactor);
-        
+
         _tempVec.set(target).setY(1000f);
 
         World world = Globals.app.getStateManager().getState(World.class);
         Spatial walls = world.getWorldRoot().getChild("Walls");
-        
+
         Ray ray = new Ray(_tempVec, DOWN);
         CollisionResults collisionResults = new CollisionResults();
         int collisionAmount = walls.collideWith(ray, collisionResults);
-        
+
         if (collisionAmount > 0) {
             CollisionResult closest = collisionResults.getClosestCollision();
             return closest.getContactPoint();
         }
-        
-        
+
         return target;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        for (Map.Entry<Integer, Float> entry : cooldowns.entrySet()) {
-            entry.setValue(entry.getValue() - tpf);
+        for (IntMap.Entry<Float> entry : cooldowns) {
+            cooldowns.put(entry.getKey(), entry.getValue() - tpf);
         }
 
         castSpeedFactor = calculateCastSpeedFactor();
@@ -325,7 +326,9 @@ public class CSpellCast extends AbstractControl {
     }
 
     public void globalCooldown() {
-        for (Integer spell : cooldowns.keySet()) {
+        for (IntMap.Entry<Float> entry : cooldowns) {
+            int spell = entry.getKey();
+
             if (cooldowns.get(spell) < GLOBAL_COOLDOWN) {
                 cooldowns.put(spell, GLOBAL_COOLDOWN);
             }
@@ -335,11 +338,11 @@ public class CSpellCast extends AbstractControl {
     public Integer getInput(String key) {
         return secondaryInputMapping.get(key);
     }
-    
+
     public void putSecondaryMapping(String key, int spellInputId) {
         secondaryInputMapping.put(key, spellInputId);
     }
-    
+
     public Spell getKeySpellNameMapping(int key) {
         return keySpellMappings.get(key);
     }
@@ -353,8 +356,8 @@ public class CSpellCast extends AbstractControl {
     }
 
     public boolean isChanneling() {
-        EntityAction action =
-                spatial.getControl(CActionQueue.class).getCurrent();
+        EntityAction action
+                = spatial.getControl(CActionQueue.class).getCurrent();
         return action instanceof AChannelingSpell;
     }
 
@@ -362,11 +365,11 @@ public class CSpellCast extends AbstractControl {
         this.casting = casting;
     }
 
-    public Map<Integer, Float> getCooldowns() {
+    public IntMap<Float> getCooldowns() {
         return cooldowns;
     }
 
-    public void setCooldowns(HashMap<Integer, Float> cooldowns) {
+    public void setCooldowns(IntMap<Float> cooldowns) {
         this.cooldowns = cooldowns;
     }
 

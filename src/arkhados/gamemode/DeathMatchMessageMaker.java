@@ -14,19 +14,13 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.gamemode;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.jme3.util.IntMap;
 
-/**
- *
- * @author william
- */
 public class DeathMatchMessageMaker {
 
-    private static final Map<Integer, String> spreeMessages = new HashMap<>();
-    private static final Map<Integer, String> spreeEndMessages =
-            new HashMap<>();
-    private static final Map<Integer, String> comboMessages = new HashMap<>();
+    private static final IntMap<String> spreeMessages = new IntMap<>();
+    private static final IntMap<String> spreeEndMessages = new IntMap<>();
+    private static final IntMap<String> comboMessages = new IntMap<>();
 
     static {
         spreeMessages.put(3, "%s is on killing spree!");

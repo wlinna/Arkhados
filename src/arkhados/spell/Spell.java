@@ -64,6 +64,7 @@ import arkhados.util.EntityFactory;
 import arkhados.util.AbstractNodeBuilder;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.util.IntMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,7 +79,7 @@ public abstract class Spell {
      * Spells has all spells mapped by their name so that spell data can be
      * retrieved from anywhere
      */
-    private static final Map<Integer, Spell> Spells = new HashMap<>();
+    private static final IntMap<Spell> Spells = new IntMap<>();
     private static final Map<String, Integer> SpellNameCreationIdMap =
             new HashMap<>();
 
