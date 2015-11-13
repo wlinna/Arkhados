@@ -25,6 +25,7 @@ import com.jme3.scene.Spatial;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 public class Selector {
 

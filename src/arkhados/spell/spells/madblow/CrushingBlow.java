@@ -24,7 +24,6 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CMovementForcer;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
@@ -32,6 +31,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class CrushingBlow extends Spell {
 

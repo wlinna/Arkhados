@@ -21,7 +21,6 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.DistanceScaling;
-import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -29,6 +28,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ASplash extends EntityAction {
 

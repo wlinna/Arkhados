@@ -22,12 +22,12 @@ import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.util.Predicate;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class AMeleeAttack extends EntityAction {
 
