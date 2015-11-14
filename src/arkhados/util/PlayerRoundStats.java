@@ -17,11 +17,6 @@ package arkhados.util;
 
 import com.jme3.network.serializing.Serializable;
 
-/**
- *
- * @author william
- */
-
 @Serializable
 public class PlayerRoundStats {
     public byte playerId;

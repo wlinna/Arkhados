@@ -20,10 +20,6 @@ import arkhados.util.PlayerRoundStats;
 import com.jme3.network.serializing.Serializable;
 import java.util.ArrayList;
 
-/**
- *
- * @author william
- */
 @Serializable
 public class BattleStatisticsResponse implements Command {
 
@@ -39,7 +35,7 @@ public class BattleStatisticsResponse implements Command {
     public static BattleStatisticsResponse buildBattleStatisticsResponse() {
         BattleStatisticsResponse message = new BattleStatisticsResponse();
         message.playerRoundStatsList = CharacterInteraction
-                .getCurrentRoundStats().cloneCurrentPlayerRoundStatsList();
+                .getCurrentPlayerRoundStats().cloneCurrentPlayerRoundStatsList();
         return message;
     }
 
