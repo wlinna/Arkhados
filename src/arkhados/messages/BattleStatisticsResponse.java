@@ -23,6 +23,7 @@ import java.util.ArrayList;
 @Serializable
 public class BattleStatisticsResponse implements Command {
 
+    private boolean teamStats;
     private ArrayList<PlayerRoundStats> playerRoundStatsList;
 
     public BattleStatisticsResponse() {
@@ -32,15 +33,28 @@ public class BattleStatisticsResponse implements Command {
         return this.playerRoundStatsList;
     }
 
-    public static BattleStatisticsResponse buildBattleStatisticsResponse() {
+    public static BattleStatisticsResponse buildPlayerStatisticsResponse() {
         BattleStatisticsResponse message = new BattleStatisticsResponse();
         message.playerRoundStatsList = CharacterInteraction
-                .getCurrentPlayerRoundStats().cloneCurrentPlayerRoundStatsList();
+                .getCurrentPlayerRoundStats().cloneCurrentStatsList();
+        message.teamStats = false;
+        return message;
+    }
+
+    public static BattleStatisticsResponse buildTeamStatisticsResponse() {
+        BattleStatisticsResponse message = new BattleStatisticsResponse();
+        message.playerRoundStatsList = CharacterInteraction
+                .getCurrentTeamRoundStats().cloneCurrentStatsList();
+        message.teamStats = true;
         return message;
     }
 
     @Override
     public boolean isGuaranteed() {
         return true;
+    }
+
+    public boolean isTeamStats() {
+        return teamStats;
     }
 }

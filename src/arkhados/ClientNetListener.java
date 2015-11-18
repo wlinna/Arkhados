@@ -103,7 +103,8 @@ public class ClientNetListener extends AbstractAppState
             BattleStatisticsResponse response =
                     (BattleStatisticsResponse) command;
             app.getStateManager().getState(ClientHud.class)
-                    .setLatestStatsList(response.getPlayerRoundStatsList());
+                    .setLatestStatsList(response.getPlayerRoundStatsList(),
+                            response.isTeamStats());
         } else if (command instanceof CmdSetPlayersCharacter) {
             handleSetPlayersCharacter((CmdSetPlayersCharacter) command);
         } else if (command instanceof CmdPlayerStatusChange) {

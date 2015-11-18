@@ -17,11 +17,12 @@ package arkhados;
 public class Topic {
 
     public static final int START_GAME = 0;
-    public static final int BATTLE_STATISTICS_REQUEST = 1;
+    public static final int PLAYER_STATISTICS_REQUEST = 1;
     public static final int UDP_HANDSHAKE_ACK = 2;    
     public static final int CONNECTION_ESTABLISHED = 3;
     public static final int UDP_HANDSHAKE_REQUEST = 4;
     public static final int GAME_ENDED = 5;
     public static final int CLIENT_WORLD_CREATED = 6;
     public static final int FIRST_BLOOD_HAPPENED = 7;
+    public static final int TEAM_STATISTICS_REQUEST = 8;
 }

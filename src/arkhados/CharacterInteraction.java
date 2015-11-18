@@ -18,6 +18,7 @@ import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.gamemode.GameMode;
+import arkhados.gamemode.TeamDeathmatch;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Builder;
@@ -30,7 +31,8 @@ import com.jme3.util.IntMap;
 
 public class CharacterInteraction {
 
-    private static final List<RoundStats> roundStatList = new ArrayList<>();
+    private static final List<RoundStats> playerRoundsStats = new ArrayList<>();
+    private static final List<RoundStats> teamRoundsStats = new ArrayList<>();
     // TODO: Consider if we really want to put gameMode here or not
     static GameMode gameMode = null;
     private static final IntMap<Integer> latestDamager = new IntMap<>();
@@ -59,15 +61,24 @@ public class CharacterInteraction {
 
             attackerSpatial.getControl(CCharacterHeal.class).heal(lifeStolen);
 
-            attackerPlayerId =
-                    attackerSpatial.getUserData(UserData.PLAYER_ID);
-            getCurrentRoundStats()
+            attackerPlayerId
+                    = attackerSpatial.getUserData(UserData.PLAYER_ID);
+            getCurrentPlayerRoundStats()
                     .addDamageForPlayer(attackerPlayerId, damageDone);
-            getCurrentRoundStats()
+            getCurrentPlayerRoundStats()
                     .addHealthRestorationForPlayer(attackerPlayerId,
-                    lifeStolen);
+                            lifeStolen);
 
             latestDamager.put(targetPlayerId, attackerPlayerId);
+
+            if (gameMode instanceof TeamDeathmatch) {
+                int attackerTeamId
+                        = attackerSpatial.getUserData(UserData.TEAM_ID);
+                getCurrentTeamRoundStats().addDamageForPlayer(attackerTeamId,
+                        damageDone);
+                getCurrentTeamRoundStats().addHealthRestorationForPlayer(
+                        attackerTeamId, lifeStolen);
+            }
         } else {
             attackerPlayerId = -1;
         }
@@ -76,7 +87,7 @@ public class CharacterInteraction {
             Integer latestDamagerId = latestDamager.get(targetPlayerId);
             if (latestDamagerId != null) {
                 latestDamager.remove(latestDamagerId);
-                getCurrentRoundStats().addKill(latestDamagerId);
+                getCurrentPlayerRoundStats().addKill(latestDamagerId);
             } else {
                 latestDamagerId = -1;
             }
@@ -117,8 +128,14 @@ public class CharacterInteraction {
         if (healer != null) {
             int healerPlayerId = healer.getSpatial()
                     .getUserData(UserData.PLAYER_ID);
-            getCurrentRoundStats().addHealthRestorationForPlayer(
+            getCurrentPlayerRoundStats().addHealthRestorationForPlayer(
                     healerPlayerId, healingDone);
+            if (gameMode instanceof TeamDeathmatch) {
+                int healerTeamId = healer.getSpatial()
+                        .getUserData(UserData.TEAM_ID);
+                getCurrentTeamRoundStats().addHealthRestorationForPlayer(
+                        healerTeamId, healingDone);
+            }
         }
 
         if (buffBuilders != null) {
@@ -147,26 +164,42 @@ public class CharacterInteraction {
     }
 
     public static void startNewRound() {
-        RoundStats roundStats = new RoundStats();
-        roundStats.initialize();
-        roundStatList.add(roundStats);
+        RoundStats playerRoundStats = new RoundStats();
+        playerRoundStats.initialize();
+        playerRoundsStats.add(playerRoundStats);
+        
+        if (gameMode instanceof TeamDeathmatch) {
+            RoundStats teamRoundStats = new RoundStats();
+            teamRoundStats.initialize();
+            teamRoundsStats.add(teamRoundStats);
+        }
     }
 
     public static void addPlayer(int playerId) {
-        RoundStats round = roundStatList.get(roundStatList.size() - 1);
+        RoundStats round = playerRoundsStats.get(playerRoundsStats.size() - 1);
         round.addPlayer(playerId);
     }
 
+    public static void addTeam(int teamId) {
+        RoundStats round = teamRoundsStats.get(teamRoundsStats.size() - 1);
+        round.addPlayer(teamId);
+    }
+
     public static void removePlayer(int playerId) {
-        RoundStats round = roundStatList.get(roundStatList.size() - 1);
+        RoundStats round = playerRoundsStats.get(playerRoundsStats.size() - 1);
         round.removePlayer(playerId);
     }
 
-    public static RoundStats getCurrentRoundStats() {
-        return roundStatList.get(roundStatList.size() - 1);
+    public static RoundStats getCurrentPlayerRoundStats() {
+        return playerRoundsStats.get(playerRoundsStats.size() - 1);
+    }
+
+    public static RoundStats getCurrentTeamRoundStats() {
+        return teamRoundsStats.get(teamRoundsStats.size() - 1);
     }
 
     public static void cleanup() {
-        roundStatList.clear();
+        playerRoundsStats.clear();
+        teamRoundsStats.clear();
     }
 }

@@ -269,6 +269,8 @@ public class ClientMain extends SimpleApplication {
                     gameMode.startGame();
                     break;
             }
+            
+            hud.setGameMode(gameMode);
             return null;
         });
     }

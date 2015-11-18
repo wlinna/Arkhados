@@ -87,7 +87,7 @@ public class RoundStats {
         return player.kills;
     }
 
-    public ArrayList<PlayerRoundStats> cloneCurrentPlayerRoundStatsList() {
+    public ArrayList<PlayerRoundStats> cloneCurrentStatsList() {
         ArrayList<PlayerRoundStats> list = new ArrayList<>(playerStats.size());
         for (IntMap.Entry<PlayerRoundStats> entry : playerStats) {                    
             list.add(new PlayerRoundStats(entry.getValue()));

@@ -17,6 +17,8 @@ package arkhados.ui.hud;
 import arkhados.Globals;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterHud;
+import arkhados.gamemode.GameMode;
+import arkhados.gamemode.TeamDeathmatch;
 import arkhados.util.InputMapping;
 import arkhados.util.NiftyUtils;
 import arkhados.util.PlayerRoundStats;
@@ -163,9 +165,10 @@ public class ClientHud extends AbstractAppState
         return screen;
     }
 
-    public void setLatestStatsList(final List<PlayerRoundStats> statsList) {
+    public void setLatestStatsList(final List<PlayerRoundStats> statsList,
+            final boolean teamStats) {
         Globals.app.enqueue(() -> {
-            statistics.setLatestStatsList(statsList);
+            statistics.setLatestStatsList(statsList, teamStats);
             return null;
         });
     }
@@ -203,5 +206,9 @@ public class ClientHud extends AbstractAppState
 
     public void exitProgram() {
         Globals.app.stop();
+    }
+    
+    public void setGameMode(GameMode gameMode) {
+        statistics.setTeamGame(gameMode instanceof TeamDeathmatch);
     }
 }

@@ -42,6 +42,12 @@ public class VisualCharacterInfo {
         ColorRGBA.Magenta, ColorRGBA.Yellow, ColorRGBA.Orange,
         ColorRGBA.Pink, ColorRGBA.White, ColorRGBA.Brown, ColorRGBA.Gray
     };
+    
+    static final String[] TEAM_NAMES = new String[] {
+        "Blue", "Red", "Green", "Black",
+        "Magenta", "Yellow", "Orange",
+        "Pink", "White", "Brown", "Gray"
+    };
 
     VisualCharacterInfo(Camera cam, Node guiNode, BitmapFont guiFont) {
         this.cam = cam;

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.gamemode;
 
+import arkhados.CharacterInteraction;
 import arkhados.Globals;
 import arkhados.MusicManager;
 import arkhados.PlayerData;
@@ -22,6 +23,7 @@ import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
 import arkhados.World;
+import arkhados.messages.BattleStatisticsResponse;
 import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSelectHero;
 import arkhados.messages.CmdSelectTeam;
@@ -86,7 +88,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
         Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();
         common.setKillLimit(settings.getKillLimit());
-        common.setRespawnTime(settings.getRespawnTime());
+        common.setRespawnTime(settings.getRespawnTime());                
     }
 
     public void setNifty(Nifty nifty) {
@@ -110,6 +112,11 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             } else if (sender.isServer()) {
                 sync.setEnabled(true);
                 sync.startListening();
+                for (Map.Entry<String, Integer> entrySet :
+                        teamNameId.entrySet()) {
+                    CharacterInteraction.addTeam(entrySet.getValue());
+                }
+                
             }
             return null;
         });
@@ -238,6 +245,11 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
                 List<String> teamOpts = new ArrayList<>(teamNameId.keySet());
                 sender.addCommandForSingle(
                         new CmdTeamOptions(teamOpts), source);
+                break;
+            case Topic.TEAM_STATISTICS_REQUEST:
+                sender.addCommand(BattleStatisticsResponse
+                        .buildTeamStatisticsResponse());
+                break;
         }
     }
 

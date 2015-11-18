@@ -14,7 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
-import arkhados.PlayerData;
 import com.jme3.math.ColorRGBA;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.TextBuilder;
@@ -24,9 +23,8 @@ import java.util.List;
 
 public class PlayerStatisticsPanelBuilder extends PanelBuilder {
 
-    public PlayerStatisticsPanelBuilder(PlayerData player) {
-        super(String.valueOf(player.getId()) + "-statistics");
-        int playerId = player.getId();
+    public PlayerStatisticsPanelBuilder(int playerId) {
+        super(String.valueOf(playerId) + "-statistics");
         alignLeft();
         valignTop();
         childLayoutHorizontal();
@@ -38,20 +36,12 @@ public class PlayerStatisticsPanelBuilder extends PanelBuilder {
         
         StatisticsTextBuilder nameBuilder =
                 new StatisticsTextBuilder(playerId + "-name");
-        nameBuilder.text(PlayerData.getStringData(playerId,
-                PlayerData.NAME));
         textBuilders.add(nameBuilder);
         textBuilders.add(new StatisticsTextBuilder(playerId + "-damage"));
         textBuilders.add(new StatisticsTextBuilder(playerId + "-restoration"));
         textBuilders.add(new StatisticsTextBuilder(playerId + "-kills"));
         
-        int teamId = player.getIntData(PlayerData.TEAM_ID);
-        ColorRGBA rgba = VisualCharacterInfo.TEAM_COLORS[teamId];
-        
-        Color teamColor = new Color(rgba.r, rgba.g, rgba.b, rgba.a);
-        
         for (TextBuilder b : textBuilders) {
-            b.color(teamColor);
             text(b);
         }
     }
@@ -67,6 +57,6 @@ class StatisticsTextBuilder extends TextBuilder {
         width("70px");
         marginLeft("80px");
         textHAlignLeft();
-        color("#f00f");
+        color("#f00f");        
     }
 }

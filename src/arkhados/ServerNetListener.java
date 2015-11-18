@@ -135,9 +135,9 @@ public class ServerNetListener implements ConnectionListener,
         ServerSender sender = stateManager.getState(ServerSender.class);
 
         switch (topicCommand.getTopicId()) {
-            case Topic.BATTLE_STATISTICS_REQUEST:
+            case Topic.PLAYER_STATISTICS_REQUEST:
                 BattleStatisticsResponse response = BattleStatisticsResponse
-                        .buildBattleStatisticsResponse();
+                        .buildPlayerStatisticsResponse();
                 sender.addCommand(response);
                 break;
             case Topic.UDP_HANDSHAKE_REQUEST:

@@ -96,7 +96,7 @@ public class DeathMatch extends GameMode implements CommandHandler {
     public void playerDied(int playerId, int killersPlayerId) {
         common.playerDied(playerId, killersPlayerId);
 
-        int kills = CharacterInteraction.getCurrentRoundStats()
+        int kills = CharacterInteraction.getCurrentPlayerRoundStats()
                 .getKills(killersPlayerId);
 
         if (kills >= common.getKillLimit()) {
