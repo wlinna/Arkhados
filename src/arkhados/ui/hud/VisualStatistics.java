@@ -28,7 +28,6 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.ColorRGBA;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
@@ -103,18 +102,17 @@ public class VisualStatistics implements ActionListener {
         
         int i;
         for (i = 0; i < latestStatsList.size(); ++i) {
-            PlayerRoundStats stats = latestStatsList.get(i);
-
             if (i < statisticsPanels.size()) {
                 statisticsPanels.get(i).show();
             } else {
-                statisticsPanels.add(new PlayerStatisticsPanelBuilder(
-                        stats.playerId).build(nifty, screen, statisticsPanel));
+                statisticsPanels.add(new PlayerStatisticsPanelBuilder(i)
+                        .build(nifty, screen, statisticsPanel));
             }
         }
 
         for (; i < statisticsPanels.size(); i++) {
-            statisticsPanels.get(i).hide();
+            statisticsPanels.get(i).hideWithoutEffect();
+
         }
     }
 
@@ -126,12 +124,13 @@ public class VisualStatistics implements ActionListener {
         initializeStatisticsPanels();
 
         Element root = screen.findElementById("panel_statistics");
-        for (PlayerRoundStats stats : latestStatsList) {
-            insertStats(root, stats, teamStats);
+        for (int i = 0; i < latestStatsList.size(); i++) {
+            PlayerRoundStats stats = latestStatsList.get(i);                          
+            insertStats(root, i, stats, teamStats);
         }
     }
 
-    private void insertStats(Element root, PlayerRoundStats stats,
+    private void insertStats(Element root, int index, PlayerRoundStats stats,
             boolean team) {
 
         String name;
@@ -149,11 +148,10 @@ public class VisualStatistics implements ActionListener {
 
         Color teamColor = new Color(rgba.r, rgba.g, rgba.b, rgba.a);
 
-        Element eName = root.findElementById(playerId + "-name");
-        Element eDamage = root.findElementById(playerId + "-damage");
-        Element eRestoration = root.findElementById(
-                stats.playerId + "-restoration");
-        Element eKills = root.findElementById(playerId + "-kills");
+        Element eName = root.findElementById(index + "-name");
+        Element eDamage = root.findElementById(index + "-damage");
+        Element eRestoration = root.findElementById(index + "-restoration");
+        Element eKills = root.findElementById(index + "-kills");
 
         // FIXME: NullPointerError happens here
         // Possibly related problem is that after this nifty complains

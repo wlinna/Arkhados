@@ -23,8 +23,8 @@ import java.util.List;
 
 public class PlayerStatisticsPanelBuilder extends PanelBuilder {
 
-    public PlayerStatisticsPanelBuilder(int playerId) {
-        super(String.valueOf(playerId) + "-statistics");
+    public PlayerStatisticsPanelBuilder(int num) {
+        super(String.valueOf(num) + "-statistics");
         alignLeft();
         valignTop();
         childLayoutHorizontal();
@@ -35,11 +35,11 @@ public class PlayerStatisticsPanelBuilder extends PanelBuilder {
         List<TextBuilder> textBuilders = new ArrayList<>();
         
         StatisticsTextBuilder nameBuilder =
-                new StatisticsTextBuilder(playerId + "-name");
+                new StatisticsTextBuilder(num + "-name");
         textBuilders.add(nameBuilder);
-        textBuilders.add(new StatisticsTextBuilder(playerId + "-damage"));
-        textBuilders.add(new StatisticsTextBuilder(playerId + "-restoration"));
-        textBuilders.add(new StatisticsTextBuilder(playerId + "-kills"));
+        textBuilders.add(new StatisticsTextBuilder(num + "-damage"));
+        textBuilders.add(new StatisticsTextBuilder(num + "-restoration"));
+        textBuilders.add(new StatisticsTextBuilder(num + "-kills"));
         
         for (TextBuilder b : textBuilders) {
             text(b);
