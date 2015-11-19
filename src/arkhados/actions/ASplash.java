@@ -191,12 +191,12 @@ public class ASplash extends EntityAction {
 
         if (colliderPhysics != null && !colliderPhysics.isKinematic()) {
             impulse = pair.spatial.getLocalTranslation()
-                    .subtract(colliderPhysics.getPhysicsLocation().setY(0))
+                    .subtract(colliderPhysics.getPhysicsLocation()).setY(0)
                     .normalizeLocal().multLocal(impulseFactor);
         } else {
-            Vector3f from = new Vector3f(spatial.getLocalTranslation()).setY(0);
-            impulse = pair.spatial.getLocalTranslation()
-                    .subtract(from).normalizeLocal().multLocal(impulseFactor)
+            Vector3f from = new Vector3f(spatial.getLocalTranslation());
+            impulse = pair.spatial.getLocalTranslation().subtract(from)
+                    .setY(0).normalizeLocal().multLocal(impulseFactor)
                     .multLocal(distanceFactor);
         }
 
