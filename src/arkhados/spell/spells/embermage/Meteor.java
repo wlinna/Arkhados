@@ -273,6 +273,7 @@ class AMeteorRemoval implements ARemovalEvent {
         wave.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         wave.getParticleInfluencer().setVelocityVariation(0f);
         wave.setParticlesPerSec(0f);
+        wave.setFaceNormal(Vector3f.UNIT_Y);
 
         return wave;
     }
