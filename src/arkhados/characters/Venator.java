@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.controls.CActionPlayer;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
@@ -33,6 +34,7 @@ import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
+import arkhados.spell.spells.venator.FeralScream;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
@@ -50,13 +52,11 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_RIGHT = 2;
     public static final int ANIM_SWIPE_LEFT = 3;
     public static final int ACTION_FERALSCREAM = 4;
-    private WorldEffect rendEffect;
+    private final WorldEffect rendEffect;
+    private final WorldEffect feralScreamEffect = new FeralScream.Effect();
 
     public Venator() {
         setEffectBox(new EffectBox());
-        getEffectBox().addActionEffect(ACTION_FERALSCREAM,
-                new SimpleSoundEffect("Effects/Sound/FeralScream.wav"));
-
         RandomChoiceEffect randomChoiceEffect = new RandomChoiceEffect();
         randomChoiceEffect.add(
                 new SimpleSoundEffect("Effects/Sound/Rend1.wav"));
@@ -210,6 +210,10 @@ public class Venator extends AbstractNodeBuilder {
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class)
                     .setIsServer(false);
+            
+            CActionPlayer actionPlayer = new CActionPlayer();
+            actionPlayer.putEffect(ACTION_FERALSCREAM, feralScreamEffect);
+            entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
             entity.addControl(restingControl);
