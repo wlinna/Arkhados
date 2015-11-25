@@ -1000,7 +1000,7 @@ public class ParticleEmitter extends Geometry {
             Particle p = emitParticle(min, max);
             if (p != null) {
                 p.life -= tpf;
-                if (lastPos != null) {
+                if (lastPos != null && isInWorldSpace()) {
                     p.position.interpolateLocal(lastPos, 1 - tpf / originalTpf);
                 }
 
@@ -1015,6 +1015,7 @@ public class ParticleEmitter extends Geometry {
         if (lastPos == null) {
             lastPos = new Vector3f();
         }
+        
         lastPos.set(getWorldTranslation());
 
         BoundingBox bbox = (BoundingBox) this.getMesh().getBound();
