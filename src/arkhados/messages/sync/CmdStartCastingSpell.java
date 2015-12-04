@@ -15,6 +15,7 @@
 
 package arkhados.messages.sync;
 
+import arkhados.controls.CActionPlayer;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -45,10 +46,13 @@ public class CmdStartCastingSpell extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        Spell spell =
-                character.getControl(CSpellCast.class).getSpell(spellId);
+        Spell spell = character.getControl(CSpellCast.class).getSpell(spellId);
         character.getControl(CCharacterAnimation.class)
                 .castSpell(spell, castSpeedFactor);
+        CActionPlayer cAction = character.getControl(CActionPlayer.class);
+        if (cAction != null) {
+            cAction.playCastEffect(spell.getId());
+        }
         character.getControl(CCharacterPhysics.class)
                 .setViewDirection(direction);
         

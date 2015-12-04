@@ -15,6 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
@@ -22,14 +23,15 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.EffectHandle;
 import arkhados.effects.ParticleInfluencerWithAngleSetting;
+import arkhados.effects.WorldEffect;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -47,6 +49,10 @@ import com.jme3.scene.shape.Sphere;
 
 public class Railgun extends Spell {
 
+    static final float CAST_TIME = 0.7f;
+    public WorldEffect castEffect = new RailgunCastEffect(
+            new ColorRGBA(0.3f, 0.3f, 0.9f, 1f), CAST_TIME);
+
     {
         iconName = "railgun.png";
         setMoveTowardsTarget(false);
@@ -59,9 +65,8 @@ public class Railgun extends Spell {
     public static Spell create() {
         final float cooldown = 9f;
         final float range = 130f;
-        final float castTime = 0.7f;
 
-        final Railgun spell = new Railgun("Railgun", cooldown, range, castTime);
+        Railgun spell = new Railgun("Railgun", cooldown, range, CAST_TIME);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastProjectile action = new ACastProjectile(spell, world);
@@ -72,7 +77,7 @@ public class Railgun extends Spell {
         spell.nodeBuilder = new RailgunBuilder();
 
         return spell;
-    }
+    }        
 }
 
 class RailgunBuilder extends AbstractNodeBuilder {
@@ -98,7 +103,7 @@ class RailgunBuilder extends AbstractNodeBuilder {
                     = (ParticleInfluencerWithAngleSetting) trail
                     .getParticleInfluencer();
 
-            float angle = spatial.getWorldRotation().toAngles(angles)[1] 
+            float angle = spatial.getWorldRotation().toAngles(angles)[1]
                     + FastMath.HALF_PI;
 
             influencer.setAngle(angle);
@@ -166,14 +171,14 @@ class RailgunBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            ARailgunRemoval removalAction  = new ARailgunRemoval();
+            ARailgunRemoval removalAction = new ARailgunRemoval();
             removalAction.setBullet(node);
             removalAction.setSmokeTrail(smoke);
 
             node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
             node.addControl(new CParticleDirector(smoke));
         }
-        
+
         SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
@@ -228,5 +233,52 @@ class ARailgunRemoval implements ARemovalEvent {
 
     public void setSmokeTrail(ParticleEmitter smoke) {
         trail = smoke;
+    }
+}
+
+class RailgunCastEffect implements WorldEffect {
+    private final ColorRGBA color;
+    private final float time;
+
+    public RailgunCastEffect(ColorRGBA color, float time) {
+        this.color = color;
+        this.time = time;
+    }
+
+    private ParticleEmitter createEmitter() {
+        ParticleEmitter ball = new ParticleEmitter("ball",
+                ParticleMesh.Type.Triangle, 5);
+        Material mat = new Material(Globals.assets,
+                "Common/MatDefs/Misc/Particle.j3md");
+        mat.setTexture("Texture",
+                Globals.assets.loadTexture("Effects/flame.png"));
+        ball.setMaterial(mat);
+        ball.setImagesX(2);
+        ball.setImagesY(2);
+        ball.setSelectRandomImage(true);
+        ball.setStartColor(color);
+        ball.setEndColor(color);
+        ball.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        ball.setStartSize(0.05f);
+        ball.setEndSize(.15f);
+        ball.setGravity(Vector3f.ZERO);
+        ball.setLowLife(time);
+        ball.setHighLife(time);
+        ball.setParticlesPerSec(0);
+        ball.setRandomAngle(true);
+        ball.setInWorldSpace(false);
+        return ball;
+    }
+
+    @Override
+    public EffectHandle execute(Node root, Vector3f loc, String p) {
+        Node weapon = (Node) root.getChild("weapon");
+        float antiScale = 1f / weapon.getWorldScale().x;
+        ParticleEmitter e = createEmitter();
+        weapon.attachChild(e);
+        e.setLocalTranslation(0f, 0.7f * antiScale, 4f * antiScale);
+        e.emitAllParticles();
+        e.addControl(new CTimedExistence(time));
+        return null;
     }
 }

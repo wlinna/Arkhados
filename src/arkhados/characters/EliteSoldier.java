@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.characters;
 
+import arkhados.controls.CActionPlayer;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
@@ -33,6 +34,8 @@ import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.sync.statedata.StateData;
 import arkhados.spell.Spell;
+import arkhados.spell.spells.elitesoldier.BlindingRay;
+import arkhados.spell.spells.elitesoldier.Railgun;
 import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMapping;
@@ -83,6 +86,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
         Node entity = new Node("elite-soldier");
         entity.setLocalTranslation(params.location);
         Node real = (Node) assets.loadModel("Models/EliteSoldier.j3o");
+//        real.getChild("player_main_mat").scale(11f);
         entity.attachChild(real);
         real.scale(11f);
 
@@ -90,6 +94,8 @@ public class EliteSoldier extends AbstractNodeBuilder {
                 .getAttachmentsNode("Central_Bone.001_R.004");
 
         Node weapon = (Node) assets.loadModel("Models/Weapon.j3o");
+//        weapon.getChild(0).scale(11f);
+        weapon.setName("weapon");
 
         attachmentsNode.attachChild(weapon);
         weapon.setLocalTranslation(0, 0, 0);
@@ -142,11 +148,14 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
         int M2id = InputMapping.getId(InputMapping.M2);
         int Qid = InputMapping.getId(InputMapping.Q);
+        
+        Railgun railgun = (Railgun) Spell.getSpell("Railgun");
+        BlindingRay blind = (BlindingRay) Spell.getSpell("Blinding Ray");
 
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
                 InputMapping.getId(InputMapping.M1));
-        spellCastControl.putSpell(Spell.getSpell("Railgun"), M2id);
-        spellCastControl.putSpell(Spell.getSpell("Blinding Ray"), -M2id);
+        spellCastControl.putSpell(railgun, M2id);
+        spellCastControl.putSpell(blind, -M2id);
         spellCastControl.putSpell(Spell.getSpell("Plasmagun"), Qid);
         spellCastControl.putSpell(Spell.getSpell("Plasma Grenades"), -Qid);
         spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"),
@@ -206,6 +215,10 @@ public class EliteSoldier extends AbstractNodeBuilder {
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class)
                     .setIsServer(false);
+            CActionPlayer actionPlayer = new CActionPlayer();
+            actionPlayer.putCastEffect(railgun.getId(), railgun.castEffect);
+            actionPlayer.putCastEffect(blind.getId(), blind.castEffect);
+            entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
             entity.addControl(restingControl);

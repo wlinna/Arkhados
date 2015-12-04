@@ -15,22 +15,19 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
-import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.characters.EliteSoldier;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.controls.CTimedExistence;
 import arkhados.effects.ParticleInfluencerWithAngleSetting;
+import arkhados.effects.WorldEffect;
 import arkhados.effects.particle.ParticleEmitter;
-import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.BlindCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -44,6 +41,10 @@ import com.jme3.scene.shape.Sphere;
 
 public class BlindingRay extends Spell {
 
+    static final float CAST_TIME = 0.45f;
+    public WorldEffect castEffect = new RailgunCastEffect(
+            new ColorRGBA(0.7f, 0.7f, 0.7f, 0.7f), CAST_TIME);
+
     {
         iconName = "railgun.png";
         setMoveTowardsTarget(false);
@@ -56,11 +57,9 @@ public class BlindingRay extends Spell {
     public static Spell create() {
         final float cooldown = 9f;
         final float range = 130f;
-        final float castTime = 0.45f;
 
         final BlindingRay spell
-                = new BlindingRay("Blinding Ray", cooldown, range, castTime);
-
+                = new BlindingRay("Blinding Ray", cooldown, range, CAST_TIME);
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastProjectile action
                     = new ACastProjectile(spell, world);

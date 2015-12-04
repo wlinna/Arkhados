@@ -27,20 +27,33 @@ import com.jme3.util.IntMap;
 public class CActionPlayer extends AbstractControl {
 
     private final IntMap<WorldEffect> actionEffects = new IntMap<>();
+    private final IntMap<WorldEffect> castEffects = new IntMap<>();
     private EffectHandle effectHandle;
 
     public void putEffect(int id, WorldEffect effect) {
         actionEffects.put(id, effect);
     }
+    
+    public void putCastEffect(int id, WorldEffect effect) {
+        castEffects.put(id, effect);
+    }
 
-    public void playEffect(final int actionId) {
+    public void playEffect(int actionId) {
+        playEffect(actionId, actionEffects);
+    }
+    
+    public void playCastEffect(int id) {
+        playEffect(id, castEffects);
+    }
+    
+    private void playEffect(final int id, final IntMap<WorldEffect> map) {
         Globals.app.enqueue(() -> {
             if (effectHandle != null) {
                 effectHandle.end();
                 effectHandle = null;
             }
             
-            WorldEffect fx = actionEffects.get(actionId);
+            WorldEffect fx = map.get(id);
             if (fx != null) {
                 effectHandle = fx.execute((Node) spatial,
                         Vector3f.ZERO, null);
