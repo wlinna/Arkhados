@@ -14,6 +14,7 @@ See CREDITS.md for attributions.
 - rend.png
 - Toss.png
 - Incapacitate.png
+- noise3.png
 - FireballExplosion.wav
 - Shotgun.wav
 - Firewalk.wav

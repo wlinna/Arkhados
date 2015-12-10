@@ -360,7 +360,8 @@
             <panel id="credits1" visible="true" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Programming" />
                 <text style="nifty-label" text="William Linna (main programmer)" />
-                <text style="nifty-label" text="Teemu Salminen (contributions)" />
+                <text style="nifty-label" text="Teemu Salminen (contributions)" />                
+                <text style="nifty-label" text="Ilkka Wirkkala (lava shader)" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Design" />
                 <text style="nifty-label" text="William Linna (main designer)" />

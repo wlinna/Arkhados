@@ -1,0 +1,15 @@
+MaterialDef Lava {
+    MaterialParameters {
+        Texture2D Color
+        Texture2D Noise
+    }
+    Technique {
+        VertexShader GLSL130: MatDefs/Lava/Lava.vert
+        FragmentShader GLSL130: MatDefs/Lava/Lava.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+        }    
+    }
+}

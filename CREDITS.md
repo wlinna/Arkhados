@@ -28,6 +28,8 @@ are all awesome!
   - resting-feature
   - some music (with edits)
   - Credits screen
+- Ilkka Wirkkala
+  - Lava shader
 
 ## Documentation ##
 - William Linna

@@ -65,8 +65,8 @@ public class PillarArena extends AbstractArena {
     private void createLavaQuad() {
         Quad quad = new Quad(512, 512, true);
         Geometry geom = new Geometry("lava-terrain", quad);
-        Material lavaMaterial = getAssetManager()
-                .loadMaterial("Materials/LavaTerrain.j3m");
+        Material lavaMaterial = 
+                getAssetManager().loadMaterial("Materials/NewLava.j3m");
         geom.setMaterial(lavaMaterial);
         ((Node) getWorld().getWorldRoot()
                 .getChild("terrain")).attachChild(geom);

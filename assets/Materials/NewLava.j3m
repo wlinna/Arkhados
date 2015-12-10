@@ -1,0 +1,8 @@
+Material My Material : MatDefs/Lava/Lava.j3md {
+     MaterialParameters {
+        Color : Repeat Textures/LavaArena/lava.jpg
+        Noise : Repeat Textures/noise3.png
+     }
+    AdditionalRenderState {
+    }
+}
