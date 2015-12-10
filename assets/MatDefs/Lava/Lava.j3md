@@ -4,8 +4,8 @@ MaterialDef Lava {
         Texture2D Noise
     }
     Technique {
-        VertexShader GLSL130: MatDefs/Lava/Lava.vert
-        FragmentShader GLSL130: MatDefs/Lava/Lava.frag
+        VertexShader GLSL100: MatDefs/Lava/Lava.vert
+        FragmentShader GLSL100: MatDefs/Lava/Lava.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
