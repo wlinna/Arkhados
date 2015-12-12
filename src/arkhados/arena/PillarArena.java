@@ -16,12 +16,12 @@ package arkhados.arena;
 
 import arkhados.CollisionGroups;
 import arkhados.World;
+import arkhados.mesh.Grid;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.Environment;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.AmbientLight;
@@ -29,9 +29,12 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Quad;
+import com.jme3.terrain.heightmap.AbstractHeightMap;
+import com.jme3.terrain.heightmap.ImageBasedHeightMap;
+import com.jme3.texture.Texture;
 import java.util.List;
 
 public class PillarArena extends AbstractArena {
@@ -56,23 +59,31 @@ public class PillarArena extends AbstractArena {
         radius = extent.x - 20;
 
         if (worldManager.isClient()) {
-            createLavaQuad();
+            createLava();
             worldManager.getClientMain().getAudioRenderer()
                     .setEnvironment(new Environment(Environment.Cavern));
         }
     }
 
-    private void createLavaQuad() {
-        Quad quad = new Quad(512, 512, true);
-        Geometry geom = new Geometry("lava-terrain", quad);
+    private void createLava() {     
+        Texture heightMapTex = getAssetManager()
+                .loadTexture("Textures/noise3.png");
+        AbstractHeightMap hm = new ImageBasedHeightMap(heightMapTex.getImage());
+        
+        hm.setHeightScale(0.1f);
+        hm.load();
+        
+        Mesh mesh = new Grid(hm, 1.5f);        
+        Geometry geom = new Geometry("lava-terrain", mesh);
+        
         Material lavaMaterial = 
                 getAssetManager().loadMaterial("Materials/NewLava.j3m");
         geom.setMaterial(lavaMaterial);
         ((Node) getWorld().getWorldRoot()
                 .getChild("terrain")).attachChild(geom);
-
-        geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
-        geom.setLocalTranslation(-256, -2, -256);
+        
+        geom.center();
+        geom.move(0, -4, 0);
 
         AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(ColorRGBA.White.mult(0.3f));
