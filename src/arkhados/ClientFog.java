@@ -83,7 +83,7 @@ public class ClientFog extends AbstractAppState implements SceneProcessor {
     }
 
     public void createFog(Node worldRoot) {
-        Quad quad = new Quad(512, 512, true);
+        Quad quad = new Quad(1024, 1024, true);
 
         rangeFogQuad = new Geometry("range-fog-quad", quad);
 

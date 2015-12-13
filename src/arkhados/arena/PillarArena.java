@@ -16,7 +16,6 @@ package arkhados.arena;
 
 import arkhados.CollisionGroups;
 import arkhados.World;
-import arkhados.mesh.Grid;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.Environment;
 import com.jme3.bounding.BoundingBox;
@@ -32,9 +31,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.texture.Texture;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.shape.Quad;
+import java.nio.FloatBuffer;
 import java.util.List;
 
 public class PillarArena extends AbstractArena {
@@ -65,16 +64,19 @@ public class PillarArena extends AbstractArena {
         }
     }
 
-    private void createLava() {     
-        Texture heightMapTex = getAssetManager()
-                .loadTexture("Textures/noise3.png");
-        AbstractHeightMap hm = new ImageBasedHeightMap(heightMapTex.getImage());
+    private Quad modifyTextureCoordinates(Quad quad) {
+        FloatBuffer buf = quad.getFloatBuffer(VertexBuffer.Type.TexCoord);
+        for (int i = 0; i < 8; i++) {
+            float original = buf.get(i);
+            buf.put(i, original * 2f);
+        }                
         
-        hm.setHeightScale(0.1f);
-        hm.load();
-        
-        Mesh mesh = new Grid(hm, 1.5f);        
-        Geometry geom = new Geometry("lava-terrain", mesh);
+        return quad;
+    }
+    
+    private void createLava() {
+        Mesh mesh = modifyTextureCoordinates(new Quad(1024, 1024));        
+        Geometry geom = new Geometry("lava-terrain", mesh);               
         
         Material lavaMaterial = 
                 getAssetManager().loadMaterial("Materials/NewLava.j3m");
@@ -82,6 +84,7 @@ public class PillarArena extends AbstractArena {
         ((Node) getWorld().getWorldRoot()
                 .getChild("terrain")).attachChild(geom);
         
+        geom.lookAt(Vector3f.UNIT_Y, Vector3f.UNIT_X);
         geom.center();
         geom.move(0, -4, 0);
 

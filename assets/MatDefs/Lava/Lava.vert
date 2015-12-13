@@ -9,6 +9,6 @@ varying vec2 texCoord;
 void main() {
     texCoord = inTexCoord;
     vec3 inPos = inPosition;
-    inPos.y += 0.2 * sin(g_Time+inPosition.y) * inPosition.y; 
+    //inPos.y += 0.2 * sin(g_Time+inPosition.y) * inPosition.y; 
     gl_Position = g_WorldViewProjectionMatrix * vec4(inPos, 1.0); 
 }
