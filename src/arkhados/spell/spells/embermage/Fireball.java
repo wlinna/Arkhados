@@ -22,6 +22,7 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -34,7 +35,6 @@ import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
@@ -114,11 +114,10 @@ class FireballBuilder extends AbstractNodeBuilder {
     private ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(assets,
+        Material mat = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        materialRed.setTexture("Texture",
-                assets.loadTexture("Effects/flame.png"));
-        fire.setMaterial(materialRed);
+        mat.setTexture("Texture", assets.loadTexture("Effects/flame.png"));
+        fire.setMaterial(mat);
         fire.setImagesX(2);
         fire.setImagesY(2);
         fire.setSelectRandomImage(true);
@@ -130,7 +129,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         fire.setGravity(Vector3f.ZERO);
         fire.setLowLife(0.1f);
         fire.setHighLife(0.1f);
-        fire.setParticlesPerSec(100);
+        fire.setParticlesPerSec(200);
 
         fire.setRandomAngle(true);
         return fire;

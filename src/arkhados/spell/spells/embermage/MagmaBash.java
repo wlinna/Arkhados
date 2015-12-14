@@ -15,12 +15,11 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
-import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.spell.CastSpellActionBuilder;
+import arkhados.effects.particle.ParticleEmitter;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -32,7 +31,6 @@ import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -114,9 +112,9 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
             fire.setStartSize(1.5f);
             fire.setEndSize(0.5f);
             fire.setGravity(Vector3f.ZERO);
-            fire.setLowLife(0.2f);
-            fire.setHighLife(0.3f);
-            fire.setParticlesPerSec(60);
+            fire.setLowLife(0.1f);
+            fire.setHighLife(0.1f);
+            fire.setParticlesPerSec(250);
             fire.getParticleInfluencer().setVelocityVariation(0.2f);
             fire.setRandomAngle(true);
             node.attachChild(fire);

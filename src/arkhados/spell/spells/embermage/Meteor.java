@@ -25,6 +25,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -38,10 +39,10 @@ import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.collision.CollisionResults;
-import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
@@ -74,8 +75,8 @@ public class Meteor extends Spell {
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastMeteor action = new ACastMeteor(world, spell);
-            AbstractBuffBuilder ignite =
-                    Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
+            AbstractBuffBuilder ignite
+                    = Ignite.ifNotCooldownCreateDamageOverTimeBuff(caster);
             if (ignite != null) {
                 action.addAdditionalBuff(ignite);
             }
@@ -106,11 +107,11 @@ class ACastMeteor extends EntityAction {
 
     @Override
     public boolean update(float tpf) {
-        final Vector3f startingPoint =
-                spatial.getLocalTranslation().add(0f, 60f, 0f);
+        final Vector3f startingPoint
+                = spatial.getLocalTranslation().add(0f, 60f, 0f);
 
-        final Vector3f target =
-                spatial.getControl(CSpellCast.class).getClosestPointToTarget(spell);
+        final Vector3f target
+                = spatial.getControl(CSpellCast.class).getClosestPointToTarget(spell);
         raySelectPoint(startingPoint, target);
 
         final MotionPath path = new MotionPath();
@@ -125,8 +126,8 @@ class ACastMeteor extends EntityAction {
         motionControl.setInitialDuration(0.6f);
         motionControl.setSpeed(1f);
 
-        final CInfluenceInterface casterInterface =
-                spatial.getControl(CInfluenceInterface.class);
+        final CInfluenceInterface casterInterface
+                = spatial.getControl(CInfluenceInterface.class);
         meteor.getControl(CSpellBuff.class).setOwnerInterface(casterInterface);
 
         path.addListener(new MotionPathListener() {
@@ -134,14 +135,14 @@ class ACastMeteor extends EntityAction {
             public void onWayPointReach(MotionEvent motionControl,
                     int wayPointIndex) {
                 if (wayPointIndex + 1 == path.getNbWayPoints()) {
-                    final float baseDamage =
-                            meteor.getUserData(UserData.DAMAGE);
+                    final float baseDamage
+                            = meteor.getUserData(UserData.DAMAGE);
 
                     CSpellBuff buffControl = meteor.getControl(CSpellBuff.class);
                     buffControl.getBuffs().addAll(additionalBuffs);
-                    ASplash splash =
-                            new ASplash(Meteor.SPLASH_RADIUS,
-                            baseDamage, DistanceScaling.LINEAR, null);
+                    ASplash splash
+                            = new ASplash(Meteor.SPLASH_RADIUS,
+                                    baseDamage, DistanceScaling.LINEAR, null);
                     splash.setCasterInterface(casterInterface);
                     int teamId = meteor.getUserData(UserData.TEAM_ID);
                     splash.setExcludedTeam(teamId);
@@ -177,6 +178,33 @@ class ACastMeteor extends EntityAction {
 
 class MeteorNodeBuilder extends AbstractNodeBuilder {
 
+    private ParticleEmitter createSmokeEmitter() {
+        ParticleEmitter smoke = new ParticleEmitter("smoke-emitter",
+                ParticleMesh.Type.Triangle, 300);
+        Material material = new Material(assets,
+                "Common/MatDefs/Misc/Particle.j3md");
+        material.setTexture("Texture",
+                assets.loadTexture("Effects/flame_alpha.png"));
+        material.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Alpha);
+        smoke.setMaterial(material);
+        smoke.setImagesX(2);
+        smoke.setImagesY(2);
+        smoke.setSelectRandomImage(true);
+        smoke.setStartColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 1.0f));
+        smoke.setStartColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 0.2f));
+        smoke.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
+        smoke.setStartSize(5.0f);
+        smoke.setEndSize(12.0f);
+        smoke.setGravity(Vector3f.ZERO);
+        smoke.setLowLife(1f);
+        smoke.setHighLife(1.3f);
+        smoke.setParticlesPerSec(200);
+
+        smoke.setRandomAngle(true);
+        return smoke;
+    }
+
     private ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 100);
@@ -192,11 +220,11 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
         fire.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
         fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         fire.setStartSize(6.5f);
-        fire.setEndSize(0.5f);
+        fire.setEndSize(1.5f);
         fire.setGravity(Vector3f.ZERO);
         fire.setLowLife(0.2f);
-        fire.setHighLife(0.3f);
-        fire.setParticlesPerSec(40);
+        fire.setHighLife(0.2f);
+        fire.setParticlesPerSec(200);
         fire.getParticleInfluencer().setVelocityVariation(0.5f);
         fire.setRandomAngle(true);
         return fire;
@@ -228,9 +256,13 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
             node.addControl(new CEntityEvent());
             ParticleEmitter fire = createFireEmitter();
             node.attachChild(fire);
+            
+            ParticleEmitter smoke = createSmokeEmitter();
+            node.attachChild(smoke);
 
             AMeteorRemoval removalAction = new AMeteorRemoval();
-            removalAction.setEmitter(fire);
+            removalAction.setFireEmitter(fire);
+            removalAction.setSmokeEmitter(smoke);
 
             node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
         }
@@ -241,7 +273,8 @@ class MeteorNodeBuilder extends AbstractNodeBuilder {
 
 class AMeteorRemoval implements ARemovalEvent {
 
-    private ParticleEmitter emitter;
+    private ParticleEmitter fireEmitter;
+    private ParticleEmitter smokeEmitter;
     private final AudioNode sound;
 
     AMeteorRemoval() {
@@ -256,7 +289,7 @@ class AMeteorRemoval implements ARemovalEvent {
                 ParticleMesh.Type.Triangle, 3);
         Material mat = new Material(Globals.assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("Texture", 
+        mat.setTexture("Texture",
                 Globals.assets.loadTexture("Effects/shockwave.png"));
         wave.setMaterial(mat);
         wave.setImagesX(1);
@@ -283,37 +316,48 @@ class AMeteorRemoval implements ARemovalEvent {
         if (reason != RemovalReasons.COLLISION) {
             return;
         }
-        Vector3f worldTranslation = emitter.getParent().getLocalTranslation();
+        Vector3f worldTranslation = fireEmitter.getParent().getLocalTranslation();
         world.getWorldRoot().attachChild(sound);
         sound.setLocalTranslation(worldTranslation);
         sound.play();
 
-        emitter.removeFromParent();
-        world.getWorldRoot().attachChild(emitter);
+        fireEmitter.removeFromParent();
+        world.getWorldRoot().attachChild(fireEmitter);
 
-        emitter.setLocalTranslation(worldTranslation);
-        emitter.addControl(new CTimedExistence(4f));
-        emitter.getParticleInfluencer()
+        fireEmitter.setLocalTranslation(worldTranslation);
+        fireEmitter.addControl(new CTimedExistence(4f));
+        fireEmitter.getParticleInfluencer()
                 .setInitialVelocity(new Vector3f(1f, 0.01f, 1f).mult(16.0f));
-        emitter.getParticleInfluencer().setVelocityVariation(1f);
-        emitter.setStartSize(6f);
-        emitter.setEndSize(40f);
-        emitter.setLowLife(2f);
-        emitter.setHighLife(2f);
-        emitter.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.01f));
-        emitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 6.0f));
+        fireEmitter.getParticleInfluencer().setVelocityVariation(1f);
+        fireEmitter.setStartSize(6f);
+        fireEmitter.setEndSize(40f);
+        fireEmitter.setLowLife(2f);
+        fireEmitter.setHighLife(2f);
+        fireEmitter.setEndColor(new ColorRGBA(1f, 1f, 0f, 0.01f));
+        fireEmitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 6.0f));
 
-        emitter.setNumParticles(20);
-        emitter.emitAllParticles();
-        emitter.setParticlesPerSec(0f);
+        fireEmitter.setNumParticles(20);
+        fireEmitter.emitAllParticles();
+        fireEmitter.setParticlesPerSec(0f);
+        fireEmitter.addControl(new CTimedExistence(4f));
+        
         ParticleEmitter wave = createShockwave();
         world.getWorldRoot().attachChild(wave);
+        
         wave.setLocalTranslation(worldTranslation);
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));
+        
+        smokeEmitter.addControl(new CTimedExistence(4f));
+        smokeEmitter.removeFromParent();
+        world.getWorldRoot().attachChild(smokeEmitter);
     }
 
-    void setEmitter(ParticleEmitter emitter) {
-        this.emitter = emitter;
+    void setFireEmitter(ParticleEmitter emitter) {
+        fireEmitter = emitter;
+    }
+    
+    void setSmokeEmitter(ParticleEmitter emitter) {
+        smokeEmitter = emitter;
     }
 }
