@@ -22,7 +22,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
+import java.nio.FloatBuffer;
 
 public class PurifyingFlameInfo extends BuffInfo {
 
@@ -37,6 +41,7 @@ public class PurifyingFlameInfo extends BuffInfo {
         return flameShield;
     }
 }
+
 class FlameShield extends BuffEffect {
 
     public FlameShield(float timeLeft) {
@@ -49,19 +54,22 @@ class FlameShield extends BuffEffect {
         float radius = 12f;
         Sphere sphere = new Sphere(32, 32, radius);
         Geometry geometry = new Geometry("shield-geom", sphere);
+        
+        Material mat = new Material(assetManager, "MatDefs/Lava/Lava.j3md");
+        mat.setFloat("Speed", 30f);
 
-        // Material material = BuffEffect.assetManager.loadMaterial("Materials/PurifyingMaterial.j3m");
-        Material material = new Material(BuffEffect.assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        ColorRGBA color = ColorRGBA.Orange.clone();
-        color.a = 0.2f;
-        material.setColor("Color", color);
+        Texture tex = assetManager.loadTexture("Textures/Fire6.png");
+        Texture noise = assetManager.loadTexture("Textures/noise3.png");
+        tex.setWrap(Texture.WrapMode.MirroredRepeat);
+        noise.setWrap(Texture.WrapMode.MirroredRepeat);
+        mat.setTexture("Color", tex);
+        mat.setTexture("Noise", noise);
 
-        material.getAdditionalRenderState()
-                .setBlendMode(RenderState.BlendMode.Alpha);
+        mat.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Additive);
 
-        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);;
-        geometry.setMaterial(material);
+        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
+        geometry.setMaterial(mat);
 
         return geometry;
     }

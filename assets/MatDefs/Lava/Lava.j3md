@@ -2,6 +2,8 @@ MaterialDef Lava {
     MaterialParameters {
         Texture2D Color
         Texture2D Noise
+        Float Alpha
+        Float Speed : 1
     }
     Technique {
         VertexShader GLSL100: MatDefs/Lava/Lava.vert
@@ -10,6 +12,9 @@ MaterialDef Lava {
         WorldParameters {
             WorldViewProjectionMatrix
             Time
-        }    
+        }
+        Defines {
+            ALPHA : Alpha            
+        }
     }
 }
