@@ -14,19 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.info;
 
+import arkhados.Globals;
+import arkhados.controls.CTrackLocation;
 import arkhados.effects.BuffEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
-import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
-import java.nio.FloatBuffer;
 
 public class PurifyingFlameInfo extends BuffInfo {
 
@@ -43,6 +42,7 @@ public class PurifyingFlameInfo extends BuffInfo {
 }
 
 class FlameShield extends BuffEffect {
+    private static final Vector3f RELATIVE_POS = new Vector3f(0, 10f, 0);
 
     public FlameShield(float timeLeft) {
         super(timeLeft);
@@ -54,7 +54,7 @@ class FlameShield extends BuffEffect {
         float radius = 12f;
         Sphere sphere = new Sphere(32, 32, radius);
         Geometry geometry = new Geometry("shield-geom", sphere);
-        
+
         Material mat = new Material(assetManager, "MatDefs/Lava/Lava.j3md");
         mat.setFloat("Speed", 30f);
 
@@ -82,8 +82,8 @@ class FlameShield extends BuffEffect {
         node = new Node("shield-node");
         node.attachChild(geometry);
 
-        characterNode.attachChild(node);
-        node.move(0f, 10f, 0f);
+        characterNode.getParent().attachChild(node);
+        node.addControl(new CTrackLocation(characterNode, RELATIVE_POS));
 
         sound = new AudioNode(BuffEffect.assetManager,
                 "Effects/Sound/PurifyingFlame.wav");
