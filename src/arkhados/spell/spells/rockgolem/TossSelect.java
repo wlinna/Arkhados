@@ -18,6 +18,7 @@ import arkhados.SpatialDistancePair;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class TossSelect {
 
         List<SpatialDistancePair> targets = Selector.coneSelect(
                 new ArrayList<SpatialDistancePair>(), predicate,
-                my.getLocalTranslation(), hitDirection, range, 90f);
+                my.getLocalTranslation(), hitDirection, range, FastMath.HALF_PI);
 
         Spatial closest = null;
         float smallestDistance = 9999f;

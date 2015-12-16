@@ -19,7 +19,6 @@ import arkhados.World;
 import arkhados.controls.CInfluenceInterface;
 import com.jme3.math.FastMath;
 import com.jme3.math.Plane;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -39,22 +38,9 @@ public class Selector {
             Vector3f forward,
             float range,
             float coneAngle) {
-        if (coneAngle > 90f) {
-            throw new InvalidParameterException("coneAngle higher than 90 degrees");
+        if (coneAngle > FastMath.HALF_PI) {
+            throw new InvalidParameterException("coneAngle higher than half pi");
         }
-
-        coneAngle = (float) Math.toRadians(coneAngle);
-
-        Quaternion yaw = new Quaternion();
-        yaw.fromAngleAxis(coneAngle, Vector3f.UNIT_Y);
-        final Vector3f leftNormal = yaw.mult(forward);
-        leftNormal.set(-leftNormal.z, 0, leftNormal.x);
-        Plane leftPlane = new Plane(leftNormal, location.dot(leftNormal));
-
-        yaw.fromAngleAxis(-coneAngle, Vector3f.UNIT_Y);
-        final Vector3f rightNormal = yaw.mult(forward);
-        rightNormal.set(rightNormal.z, 0, -rightNormal.x);
-        Plane rightPlane = new Plane(rightNormal, location.dot(rightNormal));
 
         T spatialDistances = getSpatialsWithinDistance(collection,
                 location, range, null);
@@ -63,12 +49,12 @@ public class Selector {
                 it.hasNext();) {
             SpatialDistancePair spatialDistancePair = it.next();
 
-            if (!Selector.isInCone(leftPlane, rightPlane,
+            if (!Selector.isInCone(location, forward, coneAngle, 
                     spatialDistancePair.spatial)) {
                 it.remove();
                 continue;
             }
-
+            
             if (!predicate.test(spatialDistancePair)) {
                 it.remove();
                 continue;
@@ -76,17 +62,6 @@ public class Selector {
         }
 
         return collection;
-    }
-
-    public static boolean isInCone(Plane left, Plane right, Spatial spatial) {
-        final Vector3f location = spatial.getLocalTranslation();
-        if (left.whichSide(location) == Plane.Side.Negative) {
-            return false;
-        }
-        if (right.whichSide(location) == Plane.Side.Negative) {
-            return false;
-        }
-        return true;
     }
     
     public static boolean isInCone(Vector3f origin, Vector3f forward,

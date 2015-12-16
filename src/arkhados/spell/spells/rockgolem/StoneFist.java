@@ -26,6 +26,7 @@ import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -115,7 +116,7 @@ class AStoneFist extends EntityAction {
         };
         SpatialDistancePair closest = Selector.giveClosest(Selector.coneSelect(
                 new ArrayList<>(), pred, spatial.getLocalTranslation(),
-                hitDirection, range, 50f));
+                hitDirection, range, (float) Math.toRadians(50f)));
 
         if (closest == null) {
             return false;

@@ -76,7 +76,7 @@ public class AMeleeAttack extends EntityAction {
         SpatialDistancePair closest = Selector.giveClosest(
                 Selector.coneSelect(new ArrayList<SpatialDistancePair>(), pred,
                         spatial.getLocalTranslation(), hitDirection,
-                        range, 50f));
+                        range, (float) Math.toRadians(50f)));
 
         if (closest == null) {
             return false;
