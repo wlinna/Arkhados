@@ -15,7 +15,9 @@
 package arkhados.spell.spells.rockgolem;
 
 import arkhados.CharacterInteraction;
+import arkhados.Globals;
 import arkhados.ServerFog;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.actions.ATrance;
@@ -28,6 +30,7 @@ import arkhados.controls.CSpellCast;
 import arkhados.messages.CmdWorldEffect;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
+import arkhados.util.PathCheck;
 import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
@@ -57,12 +60,11 @@ public class Toss extends Spell {
 
         final Toss toss = new Toss("Toss", cooldown, range, castTime);
 
-        toss.castSpellActionBuilder = (Node caster, Vector3f vec) 
+        toss.castSpellActionBuilder = (Node caster, Vector3f vec)
                 -> new ACastToss(toss);
 
         toss.nodeBuilder = null;
         return toss;
-
 
     }
 }
@@ -115,8 +117,11 @@ class AToss extends EntityAction {
 
     private void toss(final Spatial target) {
         Vector3f startLocation = spatial.getLocalTranslation().clone().setY(1);
-        Vector3f finalLocation = spatial.getControl(CSpellCast.class)
-                .getClosestPointToTarget(spell);
+        Spatial walls = Globals.app.getStateManager().getState(World.class)
+                .getWorldRoot().getChild("Walls");
+        Vector3f finalLocation = PathCheck.closestNonColliding(walls,
+                startLocation, spatial.getControl(CSpellCast.class)
+                .getClosestPointToTarget(spell), 0);
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startLocation);
@@ -133,8 +138,8 @@ class AToss extends EntityAction {
                 .distance(startLocation) / forwardSpeed);
         motionControl.setSpeed(1.6f);
 
-        final CSpiritStonePhysics stonePhysics =
-                target.getControl(CSpiritStonePhysics.class);
+        final CSpiritStonePhysics stonePhysics
+                = target.getControl(CSpiritStonePhysics.class);
 
         MotionPathListener motionPathListener = new MotionPathListener() {
             @Override
@@ -153,9 +158,9 @@ class AToss extends EntityAction {
             private void landingEffect() {
                 int myTeam = spatial.getUserData(UserData.TEAM_ID);
 
-                ASplash splashAction =
-                        new ASplash(Toss.SPLASH_RADIUS, 350, 0,
-                        DistanceScaling.CONSTANT, null);
+                ASplash splashAction
+                        = new ASplash(Toss.SPLASH_RADIUS, 350, 0,
+                                DistanceScaling.CONSTANT, null);
                 splashAction.setSpatial(target);
                 splashAction.excludeSpatial(spatial);
                 splashAction.excludeSpatial(target);
@@ -167,10 +172,10 @@ class AToss extends EntityAction {
                 int targetTeam = target.getUserData(UserData.TEAM_ID);
 
                 if (stonePhysics == null && myTeam != targetTeam) {
-                    CInfluenceInterface targetInterface =
-                            target.getControl(CInfluenceInterface.class);
-                    CInfluenceInterface myInterface =
-                            spatial.getControl(CInfluenceInterface.class);
+                    CInfluenceInterface targetInterface
+                            = target.getControl(CInfluenceInterface.class);
+                    CInfluenceInterface myInterface
+                            = spatial.getControl(CInfluenceInterface.class);
 
                     CharacterInteraction.harm(myInterface, targetInterface,
                             200f, null, true);
@@ -182,7 +187,7 @@ class AToss extends EntityAction {
                         .getAwareness().getFog();
                 fog.addCommand(target,
                         new CmdWorldEffect(RockGolem.WORLDEFFECT_TOSS_HIT,
-                        target.getLocalTranslation()));
+                                target.getLocalTranslation()));
             }
         };
 

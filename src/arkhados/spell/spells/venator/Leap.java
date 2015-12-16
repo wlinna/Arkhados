@@ -15,7 +15,9 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
+import arkhados.Globals;
 import arkhados.SpatialDistancePair;
+import arkhados.World;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
@@ -26,6 +28,7 @@ import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.IncapacitateCC;
+import arkhados.util.PathCheck;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
@@ -33,6 +36,7 @@ import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,11 +81,15 @@ class ACastLeap extends EntityAction {
         final CCharacterPhysics physics
                 = spatial.getControl(CCharacterPhysics.class);
         physics.switchToMotionCollisionMode();
+        Spatial walls = Globals.app.getStateManager().getState(World.class)
+                .getWorldRoot().getChild("Walls");
 
         // We set y to 1 to prevent ground collision on start
         Vector3f startLocation = spatial.getLocalTranslation().add(0, 1f, 0);
-        Vector3f finalLocation = spatial.getControl(CSpellCast.class)
-                .getClosestPointToTarget(spell);
+        Vector3f finalLocation = PathCheck.closestNonColliding(walls,
+                startLocation, spatial.getControl(CSpellCast.class)
+                .getClosestPointToTarget(spell),
+                physics.getCapsuleShape().getRadius());
 
         final MotionPath path = new MotionPath();
         path.addWayPoint(startLocation);
@@ -142,7 +150,7 @@ class ACastLeap extends EntityAction {
                 return;
             }
 
-            float damageFactor  = spatial.getUserData(UserData.DAMAGE_FACTOR);
+            float damageFactor = spatial.getUserData(UserData.DAMAGE_FACTOR);
             float damage = 200f * damageFactor;
 
             List<AbstractBuffBuilder> buffs = new ArrayList<>(1);

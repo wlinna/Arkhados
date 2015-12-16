@@ -27,6 +27,7 @@ import arkhados.spell.influences.SlowInfluence;
 import arkhados.spell.influences.SpeedInfluence;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
+import arkhados.util.PathCheck;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -81,7 +82,11 @@ class ASpiritStoneCast extends EntityAction {
     @Override
     public boolean update(float tpf) {
         CSpellCast castControl = spatial.getControl(CSpellCast.class);
-        Vector3f target = castControl.getClosestPointToTarget(spell).setY(10f);
+        Vector3f target = PathCheck.closestNonColliding(
+                world.getWorldRoot().getChild("Walls"),
+                spatial.getLocalTranslation(),
+                castControl.getClosestPointToTarget(spell).setY(10f),
+                SpiritStoneBuilder.RADIUS + 2f);
         int playerId = spatial.getUserData(UserData.PLAYER_ID);
         world.addNewEntity(spell.getId(), target,
                 Quaternion.IDENTITY, playerId);
@@ -94,6 +99,8 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
     private final boolean primary;
     private final float duration;
     private final float influenceRadius;
+    
+    static final float RADIUS = 5f;
 
     public SpiritStoneBuilder(boolean primary) {
         this.primary = primary;
@@ -125,7 +132,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
 //            sound.setVolume(1f);
 //            sound.play();
 //        }
-        SphereCollisionShape collisionShape = new SphereCollisionShape(5f);
+        SphereCollisionShape collisionShape = new SphereCollisionShape(RADIUS);
         CSpiritStonePhysics physicsBody
                 = new CSpiritStonePhysics(collisionShape,
                         (float) node.getUserData(UserData.MASS), world);

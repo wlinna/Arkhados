@@ -14,6 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
+import arkhados.Globals;
+import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.actions.ASplash;
 import arkhados.characters.EliteSoldier;
@@ -22,12 +24,14 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
+import arkhados.util.PathCheck;
 import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -82,8 +86,12 @@ class ACastRocketJump extends EntityAction {
         // We set y to 1 to prevent ground collision on start
         final Vector3f startLocation = 
                 spatial.getLocalTranslation().add(0, 1f, 0);
-        final Vector3f finalLocation =  spatial.getControl(CSpellCast.class)
-                .getClosestPointToTarget(spell);
+        World world = Globals.app.getStateManager().getState(World.class);
+        Spatial walls = world.getWorldRoot().getChild("Walls");
+        final Vector3f finalLocation =  PathCheck.closestNonColliding(walls,
+                startLocation, spatial.getControl(CSpellCast.class)
+                .getClosestPointToTarget(spell),
+                physics.getCapsuleShape().getRadius()) ;
 
         path.addWayPoint(startLocation);
         path.addWayPoint(spatial.getLocalTranslation().add(finalLocation)
