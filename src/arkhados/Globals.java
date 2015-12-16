@@ -17,7 +17,7 @@ package arkhados;
 
 import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
+import com.jme3.math.Vector3f;
 
 /**
  * This has static references to few instances that are used globally.
@@ -30,4 +30,6 @@ public class Globals {
     
     // FIXME: Make own class for variables that describe world state
     public static boolean worldRunning = false;
+    
+    public static final Vector3f DOWN = new Vector3f(0f, -1f, 0f);
 }

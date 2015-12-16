@@ -21,6 +21,7 @@ import arkhados.actions.ADelay;
 import arkhados.actions.ASplash;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CGenericSync;
 import arkhados.controls.CSpellBuff;
@@ -32,6 +33,7 @@ import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.DistanceScaling;
+import arkhados.util.PathCheck;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -97,10 +99,15 @@ public class IntoTheShadows extends Spell {
             CSpellCast cSpell = spatial.getControl(CSpellCast.class);
             Vector3f target = cSpell.getClosestPointToTarget(spell)
                     .add(0f, 5f, 0f);
+            float room = spatial.getControl(CCharacterPhysics.class)
+                    .getCapsuleShape().getRadius();
+            Vector3f endLocation = PathCheck.closestNonColliding(
+                    world.getWorldRoot().getChild("Walls"),
+                    spatial.getLocalTranslation(), target, room);
 
             int playerId = spatial.getUserData(UserData.PLAYER_ID);
             int playerEntityId = spatial.getUserData(UserData.ENTITY_ID);
-            int cloudId = world.addNewEntity(spell.getId(), target,
+            int cloudId = world.addNewEntity(spell.getId(), endLocation,
                     Quaternion.IDENTITY, playerId);
             Spatial cloud = world.getEntity(cloudId);
             CActionQueue cloudActions = cloud.getControl(CActionQueue.class);
@@ -111,7 +118,7 @@ public class IntoTheShadows extends Spell {
             cloudActions.enqueueAction(new ADelay(0.4f));
             cloudActions.enqueueAction(splash);
             cloudActions.enqueueAction(
-                    new ARestoreEntity(world, playerEntityId, target));
+                    new ARestoreEntity(world, playerEntityId, endLocation));
             cloudActions.enqueueAction(new ARemoveCloud(world, cloudId));
 
             world.temporarilyRemoveEntity(playerEntityId);            

@@ -295,20 +295,6 @@ public class CSpellCast extends AbstractControl {
         Vector3f target = spatial.getLocalTranslation().clone()
                 .interpolateLocal(targetLocation, interpolationFactor);
 
-        _tempVec.set(target).setY(1000f);
-
-        World world = Globals.app.getStateManager().getState(World.class);
-        Spatial walls = world.getWorldRoot().getChild("Walls");
-
-        Ray ray = new Ray(_tempVec, DOWN);
-        CollisionResults collisionResults = new CollisionResults();
-        int collisionAmount = walls.collideWith(ray, collisionResults);
-
-        if (collisionAmount > 0) {
-            CollisionResult closest = collisionResults.getClosestCollision();
-            return closest.getContactPoint();
-        }
-
         return target;
     }
 

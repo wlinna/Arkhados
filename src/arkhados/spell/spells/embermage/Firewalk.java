@@ -19,6 +19,7 @@ import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
+import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEntityVariable;
 import arkhados.controls.CGenericSync;
 import arkhados.controls.CInfluenceInterface;
@@ -32,6 +33,7 @@ import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
+import arkhados.util.PathCheck;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -106,7 +108,7 @@ public class Firewalk extends Spell {
                         + "for buff collection");
             }
             additionalBuffs.add(buff);
-        }
+        }       
 
         private void motion() {
             Vector3f startLocation
@@ -128,9 +130,16 @@ public class Firewalk extends Spell {
             final MotionPath path = new MotionPath();
             path.setPathSplineType(Spline.SplineType.Linear);
 
+            float room = spatial.getControl(CCharacterPhysics.class)
+                    .getCapsuleShape().getRadius();
+            
             CSpellCast castControl = spatial.getControl(CSpellCast.class);
-            final Vector3f finalLocation
-                    = castControl.getClosestPointToTarget(spell).add(0, 1f, 0);
+            Spatial walls = world.getWorldRoot().getChild("Walls");
+            final Vector3f finalLocation = PathCheck.closestNonColliding(walls,
+                    startLocation, 
+                    castControl.getClosestPointToTarget(spell).add(0, 1f, 0),
+                    room);
+
             path.addWayPoint(startLocation);
             path.addWayPoint(finalLocation);
 
