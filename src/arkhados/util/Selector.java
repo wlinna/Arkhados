@@ -17,6 +17,7 @@ package arkhados.util;
 import arkhados.SpatialDistancePair;
 import arkhados.World;
 import arkhados.controls.CInfluenceInterface;
+import com.jme3.math.FastMath;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -86,6 +87,13 @@ public class Selector {
             return false;
         }
         return true;
+    }
+    
+    public static boolean isInCone(Vector3f origin, Vector3f forward,
+            float angle, Spatial spatial) {
+        Vector3f dir = spatial.getLocalTranslation().subtract(origin)
+                .normalizeLocal();
+        return FastMath.abs(dir.angleBetween(forward)) <= FastMath.abs(angle);
     }
 
     public static <T extends Collection<SpatialDistancePair>> T getSpatialsWithinDistance(

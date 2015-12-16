@@ -26,18 +26,15 @@ import arkhados.controls.CTimedExistence;
 import arkhados.effects.EffectHandle;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
+import arkhados.effects.particle.ParticleEmitter;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.FearCC;
-import arkhados.spell.spells.embermage.Meteor;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
-import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Plane;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.security.InvalidParameterException;
@@ -47,7 +44,7 @@ import java.util.List;
 public class FeralScream extends Spell {
 
     private static final float RANGE = 45f;
-    private static final float HALF_ANGLE = (float)Math.toRadians(45f);
+    private static final float HALF_ANGLE = (float) Math.toRadians(45f);
 
     {
         iconName = "feral_scream.png";
@@ -148,19 +145,17 @@ class AFeralScream extends EntityAction {
 
     public AFeralScream(float range, float maxRotationalDifference) {
         this.range = range;
-        if (maxRotationalDifference > 90f) {
-            throw new InvalidParameterException("Does not support "
-                    + "higher rotational differences than 90 degrees");
+        if (maxRotationalDifference > FastMath.HALF_PI) {
+            throw new InvalidParameterException("Does not support higher"
+                    + " rotational differences half pi radians");
         }
 
-        this.maxRotationalDifference
-                = (float) Math.toRadians(maxRotationalDifference);
+        this.maxRotationalDifference = maxRotationalDifference;
         setTypeId(Venator.ACTION_FERALSCREAM);
     }
 
     @Override
     public boolean update(float tpf) {
-        // TODO: Replace with Selector.coneSelect
         CCharacterPhysics physicsControl
                 = spatial.getControl(CCharacterPhysics.class);
 
@@ -169,20 +164,6 @@ class AFeralScream extends EntityAction {
                 .subtract(spatial.getLocalTranslation()).normalizeLocal();
         spatial.getControl(CCharacterPhysics.class)
                 .setViewDirection(viewDirection);
-        final Vector3f forward = viewDirection.mult(range);
-
-        Quaternion yaw = new Quaternion();
-        yaw.fromAngleAxis(maxRotationalDifference, Vector3f.UNIT_Y);
-        final Vector3f leftNormal = yaw.mult(forward);
-        leftNormal.set(-leftNormal.z, 0, leftNormal.x);
-        Plane leftPlane = new Plane(leftNormal,
-                spatial.getLocalTranslation().dot(leftNormal));
-
-        yaw.fromAngleAxis(-maxRotationalDifference, Vector3f.UNIT_Y);
-        final Vector3f rightNormal = yaw.mult(forward);
-        rightNormal.set(rightNormal.z, 0, -rightNormal.x);
-        Plane rightPlane = new Plane(rightNormal,
-                spatial.getLocalTranslation().dot(rightNormal));
 
         int myTeam = spatial.getUserData(UserData.TEAM_ID);
 
@@ -195,12 +176,10 @@ class AFeralScream extends EntityAction {
                 spatial.getControl(CInfluenceInterface.class));
 
         for (SpatialDistancePair spatialDistancePair : spatialDistances) {
-            CInfluenceInterface influenceInterface
-                    = spatialDistancePair.spatial
+            CInfluenceInterface influenceInterface = spatialDistancePair.spatial
                     .getControl(CInfluenceInterface.class);
-
-            if (!Selector.isInCone(leftPlane, rightPlane,
-                    spatialDistancePair.spatial)) {
+            if (!Selector.isInCone(spatial.getLocalTranslation(), viewDirection,
+                    maxRotationalDifference, spatialDistancePair.spatial)) {
                 continue;
             }
 
