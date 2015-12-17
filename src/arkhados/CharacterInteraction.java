@@ -88,9 +88,15 @@ public class CharacterInteraction {
             if (latestDamagerId != null) {
                 latestDamager.remove(latestDamagerId);
                 getCurrentPlayerRoundStats().addKill(latestDamagerId);
+                if (gameMode instanceof TeamDeathmatch) {
+                    int damagerTeam = PlayerData.getIntData(latestDamagerId,
+                            PlayerData.TEAM_ID);
+                    getCurrentTeamRoundStats().addKill(damagerTeam);
+                }
             } else {
                 latestDamagerId = -1;
             }
+
             gameMode.playerDied(targetPlayerId, latestDamagerId);
         }
 
@@ -167,7 +173,7 @@ public class CharacterInteraction {
         RoundStats playerRoundStats = new RoundStats();
         playerRoundStats.initialize();
         playerRoundsStats.add(playerRoundStats);
-        
+
         if (gameMode instanceof TeamDeathmatch) {
             RoundStats teamRoundStats = new RoundStats();
             teamRoundStats.initialize();
