@@ -104,7 +104,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         Spell orb = Spell.getSpell("Shadow Orb");
         Spell energy = Spell.getSpell("Dark Energy");
         Spell energySelf = Spell.getSpell("Dark Energy Self");
-        Spell sickness = Spell.getSpell("Shadow Sickness");
+        Spell drain = Spell.getSpell("Drain");
         Spell spear = Spell.getSpell("Dark Spear");
         Spell shadow = Spell.getSpell("Shadow");
         Spell intoShadows = Spell.getSpell("Into the Shadows");
@@ -112,7 +112,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         spellCastControl.putSpell(orb, InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(energy, M2Id);
         spellCastControl.putSpell(energySelf, -M2Id);
-        spellCastControl.putSpell(sickness, InputMapping.getId(InputMapping.Q));
+        spellCastControl.putSpell(drain, InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(spear, InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(shadow, RId);
         spellCastControl.putSpell(intoShadows,
@@ -138,13 +138,12 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-
         float orbSpeed = AnimationData.calculateSpeed(animControl,
                 "Attack1", 1f, orb.getCastTime());
         float energySpeed = AnimationData.calculateSpeed(
                 animControl, "Attack2", 1f, energy.getCastTime());
-        float sicknessSpeed = AnimationData.calculateSpeed(
-                animControl, "Attack2", 1f, sickness.getCastTime());
+        float drainSpeed = AnimationData.calculateSpeed(
+                animControl, "Attack2", 1f, drain.getCastTime());
         float spearSpeed = AnimationData.calculateSpeed(animControl,
                 "Attack1", 1f, spear.getCastTime());
         float intoShadowsSpeed = AnimationData.calculateSpeed(
@@ -154,8 +153,8 @@ public class Shadowmancer extends AbstractNodeBuilder {
                 new AnimationData("Attack1", orbSpeed, LoopMode.DontLoop);
         AnimationData energyAnim =
                 new AnimationData("Attack2", energySpeed, LoopMode.DontLoop);
-        AnimationData sicknessAnim =
-                new AnimationData("Attack2", sicknessSpeed, LoopMode.DontLoop);
+        AnimationData drainAnim =
+                new AnimationData("Attack2", drainSpeed, LoopMode.DontLoop);
         AnimationData spearAnim =
                 new AnimationData("Attack1", spearSpeed, LoopMode.DontLoop);        
         AnimationData intoShadowsAnim =
@@ -164,7 +163,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Shadow Orb", orbAnim);
         characterAnimControl.addSpellAnimation("Dark Energy", energyAnim);
         characterAnimControl.addSpellAnimation("Dark Energy Self", energyAnim);
-        characterAnimControl.addSpellAnimation("Shadow Sickness", sicknessAnim);
+        characterAnimControl.addSpellAnimation("Shadow Sickness", drainAnim);
         characterAnimControl.addSpellAnimation("Dark Spear", spearAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
         characterAnimControl.addSpellAnimation("Into the Shadows", 

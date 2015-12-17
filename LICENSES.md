@@ -64,7 +64,7 @@ See CREDITS.md for attributions.
 - Shadow.png
 - DarkSpear.png
 - DarkEnergy.png
-- ShadowSickness.png
+- Drain.png
 - IntoTheShadows.png
 - MeteorBoom.wav
 - PurifyingFlame.wav

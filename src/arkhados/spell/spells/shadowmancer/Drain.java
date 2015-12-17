@@ -44,15 +44,15 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
-public class ShadowSickness extends Spell {
+public class Drain extends Spell {
 
     static final float DURATION = 5f;
 
     {
-        iconName = "ShadowSickness.png";
+        iconName = "Drain.png";
     }
 
-    public ShadowSickness(String name, float cooldown, float range,
+    public Drain(String name, float cooldown, float range,
             float castTime) {
         super(name, cooldown, range, castTime);
     }
@@ -62,7 +62,7 @@ public class ShadowSickness extends Spell {
         final float range = 100f;
         final float castTime = 0.37f;
 
-        final ShadowSickness spell = new ShadowSickness("Shadow Sickness",
+        final Drain spell = new Drain("Drain",
                 cooldown, range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec)
@@ -135,7 +135,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
 
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
-        buffControl.addBuff(new Sickness.MyBuilder(ShadowSickness.DURATION));
+        buffControl.addBuff(new DrainBuff.MyBuilder(Drain.DURATION));
         buffControl.addBuff(new SilenceCC.MyBuilder(1.5f));
 
         node.addControl(buffControl);
@@ -149,7 +149,7 @@ class SicknessBuilder extends AbstractNodeBuilder {
     }
 }
 
-class Sickness extends AbstractBuff {
+class DrainBuff extends AbstractBuff {
 
     private Spatial owner;
     private Spatial target;
@@ -158,7 +158,7 @@ class Sickness extends AbstractBuff {
     private SlowCC slowCc;
     private float dps = 50f;
 
-    public Sickness(float duration) {
+    public DrainBuff(float duration) {
         super(duration);
     }
 
@@ -205,8 +205,8 @@ class Sickness extends AbstractBuff {
 
         @Override
         public AbstractBuff build() {
-            Sickness sickness = new Sickness(duration);
-            return set(sickness);
+            DrainBuff buff = new DrainBuff(duration);
+            return set(buff);
         }
     }
 }
