@@ -38,7 +38,7 @@ public abstract class BuffInfo {
         addBuff(BuffTypeIds.BLIND, new BlindInfo());
         addBuff(BuffTypeIds.BLOOD_FRENZY, new BloodFrenzyInfo());
         addBuff(BuffTypeIds.SHADOW, new ShadowInfo());
-        addBuff(BuffTypeIds.VOID_SPEAR, new DarkSpearInfo());
+        addBuff(BuffTypeIds.VOID_SPEAR, new VoidSpearInfo());
     }
 
     public static BuffInfo getBuffInfo(int typeId) {

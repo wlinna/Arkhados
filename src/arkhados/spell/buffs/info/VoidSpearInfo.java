@@ -21,33 +21,32 @@ import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-public class DarkSpearInfo extends BuffInfo {
+public class VoidSpearInfo extends BuffInfo {
 
     {
-        setIconPath("Interface/Images/SpellIcons/deep_wounds.png");
+        setIconPath("Interface/Images/SpellIcons/VoidSpear.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        DarkSpearEffect effect = new DarkSpearEffect(params.duration);
+        VoidSpearEffect effect = new VoidSpearEffect(params.duration);
         effect.addToCharacter(params);
         return effect;
     }
 }
 
-class DarkSpearEffect extends BuffEffect {
+class VoidSpearEffect extends BuffEffect {
 
     private ParticleEmitter emitter = null;
     private CCharacterPhysics physics = null;
     private float updateTimer = 0f;
 
-    public DarkSpearEffect(float timeLeft) {
+    public VoidSpearEffect(float timeLeft) {
         super(timeLeft);
     }
 
