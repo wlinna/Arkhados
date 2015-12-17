@@ -148,7 +148,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         float spearSpeed = AnimationData.calculateSpeed(animControl,
                 "Attack1", 1f, spear.getCastTime());
         float intoShadowsSpeed = AnimationData.calculateSpeed(
-                animControl, "Dance", 1f, intoShadows.getCastTime());
+                animControl, "Dance", 0.19f, intoShadows.getCastTime());
 
         AnimationData orbAnim =
                 new AnimationData("Attack1", orbSpeed, LoopMode.DontLoop);
