@@ -30,9 +30,7 @@ import arkhados.controls.CResting;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
-import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
-import arkhados.spell.spells.embermage.EtherealFlame;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
@@ -48,13 +46,8 @@ import com.jme3.scene.Spatial;
  */
 public class Shadowmancer extends AbstractNodeBuilder {
 
-    public static final int ACTION_FIREWALK = 0;
-    public static final int ACTION_ETHEREAL_FLAME = 1;
-
     public Shadowmancer() {
         setEffectBox(new EffectBox());
-        getEffectBox().addActionEffect(ACTION_FIREWALK,
-                new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
     }
 
     @Override
@@ -187,8 +180,6 @@ public class Shadowmancer extends AbstractNodeBuilder {
             entity.getControl(CInfluenceInterface.class).setIsServer(false);
 
             CActionPlayer actionPlayer = new CActionPlayer();
-            actionPlayer.putEffect(ACTION_ETHEREAL_FLAME,
-                    new EtherealFlame.Effect());
             entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
