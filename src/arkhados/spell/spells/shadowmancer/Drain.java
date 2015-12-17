@@ -28,6 +28,7 @@ import arkhados.spell.buffs.SilenceCC;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -169,6 +170,7 @@ class DrainBuff extends AbstractBuff {
 
         speedBuff = (SpeedBuff) new SpeedBuff.MyBuilder(0, 0, duration).build();
         slowCc = (SlowCC) new SlowCC.MyBuilder(duration, 0f).build();
+        slowCc.setTypeId(BuffTypeIds.DRAIN);
 
         speedBuff.attachToCharacter(getOwnerInterface());
         slowCc.attachToCharacter(targetInterface);

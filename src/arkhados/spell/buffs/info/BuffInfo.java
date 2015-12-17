@@ -39,6 +39,7 @@ public abstract class BuffInfo {
         addBuff(BuffTypeIds.BLOOD_FRENZY, new BloodFrenzyInfo());
         addBuff(BuffTypeIds.SHADOW, new ShadowInfo());
         addBuff(BuffTypeIds.VOID_SPEAR, new VoidSpearInfo());
+        addBuff(BuffTypeIds.DRAIN, new DrainInfo());
     }
 
     public static BuffInfo getBuffInfo(int typeId) {

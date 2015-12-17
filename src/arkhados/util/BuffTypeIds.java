@@ -33,4 +33,5 @@ public class BuffTypeIds {
     public static final int SILENCE = 15;
     public static final int SHADOW = 16;
     public static final int VOID_SPEAR = 17;
+    public static final int DRAIN = 18;
 }

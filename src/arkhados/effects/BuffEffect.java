@@ -18,10 +18,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 
-/**
- *
- * @author william
- */
 public class BuffEffect {
 
     protected static AssetManager assetManager = null;
