@@ -59,12 +59,12 @@ public class ClientBlind extends AbstractAppState {
     }
 
     private void addEffect() {
+        stateManager.getState(ClientFog.class).addPreventer();
+
         if (!blinds.isEmpty()) {
             return;
         }
 
-        stateManager.getState(ClientFog.class).addPreventer();
-        
         // TODO: Add more impressive blind effect
         filter = new ColorScaleFilter(ColorRGBA.White.clone(), 0.4f);
         fpp.addFilter(filter);
@@ -73,11 +73,16 @@ public class ClientBlind extends AbstractAppState {
 
     public void removeBuffIfSelf(BlindEffect blind) {
         blinds.remove(blind);
-        
-        stateManager.getState(ClientFog.class).removePreventer();
 
-        if (blinds.isEmpty()) {
-            clean();
+        int myCharacterId = stateManager.getState(UserCommandManager.class)
+                .getCharacterId();
+
+        if (blind.entityId == myCharacterId) {
+            stateManager.getState(ClientFog.class).removePreventer();
+
+            if (blinds.isEmpty()) {
+                clean();
+            }
         }
     }
 

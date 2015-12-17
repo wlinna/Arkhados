@@ -16,10 +16,12 @@ package arkhados.effects;
 
 import arkhados.Globals;
 import arkhados.spell.buffs.info.BuffInfoParameters;
+import arkhados.util.UserData;
 
 
 public class BlindEffect extends BuffEffect {
-
+    public int entityId = -1;
+    
     public BlindEffect(float timeLeft) {
         super(timeLeft);
     }
@@ -27,7 +29,9 @@ public class BlindEffect extends BuffEffect {
     public void addToCharacter(BuffInfoParameters params) {
         ClientBlind blind =
                 Globals.app.getStateManager().getState(ClientBlind.class);
-        blind.addBlindIfSelf(this, params);        
+        blind.addBlindIfSelf(this, params);
+        entityId = params.buffControl.getSpatial()
+                .getUserData(UserData.ENTITY_ID);
     }
 
     @Override
