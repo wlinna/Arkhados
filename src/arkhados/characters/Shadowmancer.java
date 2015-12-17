@@ -105,7 +105,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         Spell energy = Spell.getSpell("Dark Energy");
         Spell energySelf = Spell.getSpell("Dark Energy Self");
         Spell drain = Spell.getSpell("Drain");
-        Spell spear = Spell.getSpell("Dark Spear");
+        Spell spear = Spell.getSpell("Void Spear");
         Spell shadow = Spell.getSpell("Shadow");
         Spell intoShadows = Spell.getSpell("Into the Shadows");
 
@@ -163,8 +163,8 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Shadow Orb", orbAnim);
         characterAnimControl.addSpellAnimation("Dark Energy", energyAnim);
         characterAnimControl.addSpellAnimation("Dark Energy Self", energyAnim);
-        characterAnimControl.addSpellAnimation("Shadow Sickness", drainAnim);
-        characterAnimControl.addSpellAnimation("Dark Spear", spearAnim);
+        characterAnimControl.addSpellAnimation("Drain", drainAnim);
+        characterAnimControl.addSpellAnimation("Void Spear", spearAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
         characterAnimControl.addSpellAnimation("Into the Shadows", 
                 intoShadowsAnim);

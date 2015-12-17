@@ -41,13 +41,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
-public class DarkSpear extends Spell {
+public class VoidSpear extends Spell {
 
     {
-        iconName = "DarkSpear.png";
+        iconName = "VoidSpear.png";
     }
 
-    public DarkSpear(String name, float cooldown, float range, float castTime) {
+    public VoidSpear(String name, float cooldown, float range, float castTime) {
         super(name, cooldown, range, castTime);
     }
 
@@ -56,7 +56,7 @@ public class DarkSpear extends Spell {
         final float range = 110f;
         final float castTime = 0.35f;
 
-        final DarkSpear spell = new DarkSpear("Dark Spear", cooldown,
+        final VoidSpear spell = new VoidSpear("Void Spear", cooldown,
                 range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec)
@@ -165,7 +165,7 @@ class SpeedBleedBuff extends SlowCC {
 
         public MyBuilder(float duration) {
             super(duration);
-            setTypeId(BuffTypeIds.DARK_SPEAR);
+            setTypeId(BuffTypeIds.VOID_SPEAR);
         }
 
         @Override

@@ -62,19 +62,18 @@ public class Drain extends Spell {
         final float range = 100f;
         final float castTime = 0.37f;
 
-        final Drain spell = new Drain("Drain",
-                cooldown, range, castTime);
+        final Drain spell = new Drain("Drain", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec)
                 -> new ACastProjectile(spell, world);
 
-        spell.nodeBuilder = new SicknessBuilder();
+        spell.nodeBuilder = new DrainBuilder();
 
         return spell;
     }
 }
 
-class SicknessBuilder extends AbstractNodeBuilder {
+class DrainBuilder extends AbstractNodeBuilder {
     private static final float RADIUS = 2f;
 
     private ParticleEmitter createPurpleEmitter() {
@@ -156,7 +155,7 @@ class DrainBuff extends AbstractBuff {
     private static final float RANGE_SQUARED = FastMath.sqr(70f);
     private SpeedBuff speedBuff;
     private SlowCC slowCc;
-    private float dps = 50f;
+    private final float dps = 50f;
 
     public DrainBuff(float duration) {
         super(duration);

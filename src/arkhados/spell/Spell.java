@@ -48,7 +48,7 @@ import arkhados.spell.spells.rockgolem.StoneFist;
 import arkhados.spell.spells.rockgolem.Toss;
 import arkhados.spell.spells.shadowmancer.DarkEnergy;
 import arkhados.spell.spells.shadowmancer.DarkEnergySelf;
-import arkhados.spell.spells.shadowmancer.DarkSpear;
+import arkhados.spell.spells.shadowmancer.VoidSpear;
 import arkhados.spell.spells.shadowmancer.IntoTheShadows;
 import arkhados.spell.spells.shadowmancer.Shadow;
 import arkhados.spell.spells.shadowmancer.Drain;
@@ -138,7 +138,7 @@ public abstract class Spell {
         addSpell(entityFactory, DarkEnergy.create());
         addSpell(entityFactory, DarkEnergySelf.create());
         addSpell(entityFactory, Drain.create());
-        addSpell(entityFactory, DarkSpear.create());
+        addSpell(entityFactory, VoidSpear.create());
         addSpell(entityFactory, Shadow.create());      
         addSpell(entityFactory, IntoTheShadows.create());
         

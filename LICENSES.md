@@ -62,7 +62,7 @@ See CREDITS.md for attributions.
 - Slow.png
 - Blind.png
 - Shadow.png
-- DarkSpear.png
+- VoidSpear.png
 - DarkEnergy.png
 - Drain.png
 - IntoTheShadows.png

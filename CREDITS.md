@@ -90,7 +90,7 @@ Rock is used for SpiritStone and it's licensed under CC0.
 
 pOss for the [Grave models] (http://opengameart.org/content/savinos-cemetery-redux) which are licensed under CC-BY 3.0. These models are based on the [models created by Savino] (http://opengameart.org/content/cemetery) which are licensed under CC0.
 
-Leinnan for the [Spear model](http://opengameart.org/content/spear). The model has been modified a little bit and is used for the Dark Spear -spell. The work is licensed under CC-BY 3.0.
+Leinnan for the [Spear model](http://opengameart.org/content/spear). The model has been modified a little bit and is used for the Void Spear -spell. The work is licensed under CC-BY 3.0.
 
 Dim for the [ground texture for Pillar Arena] (http://opengameart.org/node/8136) which is licensed under CC-BY 3.0.
 
@@ -103,7 +103,7 @@ from [OGA](http://opengameart.org/node/10483)
 Horrorpen for following spell and buff icons:
 - Fear
 - Dark Energy
-- Dark Spear
+- Void Spear
 
 Icons are CC-BY 3.0 -licensed and can
 be found from [OGA](http://opengameart.org/content/random-rpg-icons-part-1)
