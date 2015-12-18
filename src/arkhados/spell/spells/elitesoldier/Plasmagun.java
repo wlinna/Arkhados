@@ -15,6 +15,7 @@
 package arkhados.spell.spells.elitesoldier;
 
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.AChannelingSpell;
 import arkhados.actions.ASplash;
@@ -24,6 +25,8 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.EffectHandle;
+import arkhados.effects.WorldEffect;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SlowCC;
@@ -55,6 +58,8 @@ public class Plasmagun extends Spell {
     public static final float RANGE = 80f;
     public static final float CAST_TIME = 0.4f;
 
+    public final WorldEffect castEffect = new PlasmaCastEffect(); 
+    
     {
         iconName = "plasma.png";
         setMoveTowardsTarget(false);
@@ -85,7 +90,7 @@ public class Plasmagun extends Spell {
 
 class PlasmaBuilder extends AbstractNodeBuilder {
 
-    private ParticleEmitter createPlasmaEmitter() {
+    static ParticleEmitter createPlasmaEmitter() {
         ParticleEmitter plasma = new ParticleEmitter("plasma-emitter",
                 ParticleMesh.Type.Triangle, 200);
         Material materialRed = new Material(assets,
@@ -177,6 +182,22 @@ class PlasmaBuilder extends AbstractNodeBuilder {
 
         buffControl.addBuff(new SlowCC.MyBuilder(1f, 0.3f));
         return node;
+    }
+}
+
+class PlasmaCastEffect implements WorldEffect {   
+    @Override
+    public EffectHandle execute(Node root, Vector3f loc, String p) {
+        Node weapon = (Node) root.getChild("weapon");
+        float antiScale = 1f / weapon.getWorldScale().x;
+        ParticleEmitter e = PlasmaBuilder.createPlasmaEmitter();
+        e.setStartSize(e.getStartSize() * 0.33f);
+        e.setEndSize(e.getEndSize() * 0.33f);
+        weapon.attachChild(e);
+        e.setLocalTranslation(0f, 0.7f * antiScale, 4f * antiScale);
+        e.emitAllParticles();
+        e.addControl(new CTimedExistence(Plasmagun.CAST_TIME));
+        return null;
     }
 }
 

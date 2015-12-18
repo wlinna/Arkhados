@@ -35,6 +35,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.sync.statedata.StateData;
 import arkhados.spell.Spell;
 import arkhados.spell.spells.elitesoldier.BlindingRay;
+import arkhados.spell.spells.elitesoldier.Plasmagun;
 import arkhados.spell.spells.elitesoldier.Railgun;
 import arkhados.ui.hud.elitesoldier.CEliteSoldierHud;
 import arkhados.util.AnimationData;
@@ -151,12 +152,13 @@ public class EliteSoldier extends AbstractNodeBuilder {
         
         Railgun railgun = (Railgun) Spell.getSpell("Railgun");
         BlindingRay blind = (BlindingRay) Spell.getSpell("Blinding Ray");
-
+        Plasmagun plasmagun = (Plasmagun) Spell.getSpell("Plasmagun");
+        
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
                 InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(railgun, M2id);
         spellCastControl.putSpell(blind, -M2id);
-        spellCastControl.putSpell(Spell.getSpell("Plasmagun"), Qid);
+        spellCastControl.putSpell(plasmagun, Qid);
         spellCastControl.putSpell(Spell.getSpell("Plasma Grenades"), -Qid);
         spellCastControl.putSpell(Spell.getSpell("Rocket Launcher"),
                 InputMapping.getId(InputMapping.E));
@@ -218,6 +220,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putCastEffect(railgun.getId(), railgun.castEffect);
             actionPlayer.putCastEffect(blind.getId(), blind.castEffect);
+            actionPlayer.putCastEffect(plasmagun.getId(), plasmagun.castEffect);
             entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
