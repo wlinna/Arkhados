@@ -24,6 +24,8 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.EffectHandle;
+import arkhados.effects.WorldEffect;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.util.DistanceScaling;
@@ -53,7 +55,7 @@ import com.jme3.scene.shape.Sphere;
 public class RocketLauncher extends Spell {
 
     public static final float SPLASH_RADIUS = 25f;
-
+    public final WorldEffect castEffect = new RocketCastEffect();
     {
         iconName = "rocket_launcher.png";
         setMoveTowardsTarget(false);
@@ -103,8 +105,6 @@ class RocketBuilder extends AbstractNodeBuilder {
         smoke.setStartColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 1.0f));
         smoke.setStartColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 0.1f));
         smoke.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
         smoke.setStartSize(2.0f);
         smoke.setEndSize(6.0f);
         smoke.setGravity(Vector3f.ZERO);
@@ -129,7 +129,7 @@ class RocketBuilder extends AbstractNodeBuilder {
         return smokePuff;
     }
 
-    private ParticleEmitter createFireEmitter() {
+    static ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 200);
         Material materialRed = new Material(assets,
@@ -143,8 +143,6 @@ class RocketBuilder extends AbstractNodeBuilder {
         fire.setStartColor(new ColorRGBA(0.95f, 0.150f, 0.0f, 1.0f));
         fire.setEndColor(new ColorRGBA(1.0f, 1.0f, 0.0f, 0.5f));
         fire.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
-//        fire.getParticleInfluencer().setInitialVelocity(Vector3f.UNIT_Z.mult(10));
-//        fire.getParticleInfluencer().setVelocityVariation(0.5f);
         fire.setStartSize(7.5f);
         fire.setEndSize(1.5f);
         fire.setGravity(Vector3f.ZERO);
@@ -234,6 +232,21 @@ class RocketBuilder extends AbstractNodeBuilder {
         final CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
         return node;
+    }
+}
+
+class RocketCastEffect implements WorldEffect {   
+    @Override
+    public EffectHandle execute(Node root, Vector3f loc, String p) {
+        Node weapon = (Node) root.getChild("weapon");
+        float antiScale = 1f / weapon.getWorldScale().x;
+        ParticleEmitter e = RocketBuilder.createFireEmitter();
+        e.setStartSize(e.getStartSize() * 0.33f);
+        e.setEndSize(e.getEndSize() * 0.33f);
+        weapon.attachChild(e);
+        e.setLocalTranslation(0f, 0.7f * antiScale, 4f * antiScale);
+        e.addControl(new CTimedExistence(Plasmagun.CAST_TIME));
+        return null;
     }
 }
 
@@ -350,7 +363,6 @@ class ARocketRemoval implements ARemovalEvent {
                 .setInitialVelocity(Vector3f.UNIT_X.mult(45.0f));
         fire.getParticleInfluencer().setVelocityVariation(1f);
 
-//        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, 2.0f));
         fire.emitAllParticles();
         fire.setParticlesPerSec(0.0f);
 
@@ -360,7 +372,6 @@ class ARocketRemoval implements ARemovalEvent {
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));
 
-//        sound.setLocalTranslation(worldTranslation);        
         sound.setVolume(5f);
         sound.play();
     }
