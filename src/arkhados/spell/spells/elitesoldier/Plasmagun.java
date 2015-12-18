@@ -195,7 +195,6 @@ class PlasmaCastEffect implements WorldEffect {
         e.setEndSize(e.getEndSize() * 0.33f);
         weapon.attachChild(e);
         e.setLocalTranslation(0f, 0.7f * antiScale, 4f * antiScale);
-        e.emitAllParticles();
         e.addControl(new CTimedExistence(Plasmagun.CAST_TIME));
         return null;
     }
