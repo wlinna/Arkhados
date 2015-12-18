@@ -14,15 +14,22 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
+import arkhados.SpatialDistancePair;
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.actions.cast.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
+import arkhados.util.Selector;
+import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class Rend extends Spell {
 
@@ -63,7 +70,7 @@ class ADoubleMeleeAttack extends EntityAction {
         public boolean update(float tpf) {
             // HACK: This should happen automatically
             spatial.getControl(CSpellCast.class).setCasting(false);
-                // TODO: MAKE SURE it's okay to disable this
+            // TODO: MAKE SURE it's okay to disable this
             // spatial.getControl(UserInputControl.class).restoreWalking();
             return false;
         }
@@ -91,6 +98,40 @@ class ADoubleMeleeAttack extends EntityAction {
         queue.enqueueAction(action2);
 
         queue.enqueueAction(new AEnd());
+
+        final int myTeamId = spatial.getUserData(UserData.TEAM_ID);
+
+        Predicate<SpatialDistancePair> pred = (SpatialDistancePair value) -> {
+            if (value.spatial == spatial) {
+                return false;
+            }
+
+            Integer nullableTeamId
+                    = value.spatial.getUserData(UserData.TEAM_ID);
+            if (nullableTeamId == null) {
+                return false;
+            }
+
+            CInfluenceInterface influenceInterface = value.spatial
+                    .getControl(CInfluenceInterface.class);
+
+            return influenceInterface != null
+                    && !nullableTeamId.equals(myTeamId);
+        };
+
+        CCharacterPhysics physicsControl = spatial
+                .getControl(CCharacterPhysics.class);
+        Vector3f hitDirection = physicsControl.calculateTargetDirection()
+                .normalize().multLocal(range);
+
+        ArrayList<SpatialDistancePair> allTargetsWithinRange = Selector.
+                coneSelect(new ArrayList<SpatialDistancePair>(), pred,
+                        spatial.getLocalTranslation(), hitDirection,
+                        range, (float) Math.toRadians(50f));
+
+        for (int i = 0; i < allTargetsWithinRange.size(); i++) {
+            setTypeId(Venator.ACTION_REND_HIT);
+        }
 
         return false;
     }
