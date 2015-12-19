@@ -16,7 +16,6 @@ package arkhados.spell.spells.venator;
 
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
-import arkhados.actions.cast.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CSpellCast;
@@ -63,7 +62,7 @@ class ADoubleMeleeAttack extends EntityAction {
         public boolean update(float tpf) {
             // HACK: This should happen automatically
             spatial.getControl(CSpellCast.class).setCasting(false);
-                // TODO: MAKE SURE it's okay to disable this
+            // TODO: MAKE SURE it's okay to disable this
             // spatial.getControl(UserInputControl.class).restoreWalking();
             return false;
         }
@@ -80,9 +79,9 @@ class ADoubleMeleeAttack extends EntityAction {
         // TODO: Make an attack start with different animation than previous one
         float range = spell.getRange();
         CActionQueue queue = spatial.getControl(CActionQueue.class);
-        final AMeleeAttack action1 = new AMeleeAttack(75f, range);
+        final VenatorMeleeAttack action1 = new VenatorMeleeAttack(75f, range);
         ACastingSpell action2Anim = new ACastingSpell(spell, true);
-        AMeleeAttack action2 = new AMeleeAttack(85f, range);
+        VenatorMeleeAttack action2 = new VenatorMeleeAttack(85f, range);
 
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);
