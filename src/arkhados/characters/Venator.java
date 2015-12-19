@@ -68,14 +68,18 @@ public class Venator extends AbstractNodeBuilder {
         rendEffect = randomChoiceEffect;
 
         RandomChoiceEffect randomChoiceEffect2 = new RandomChoiceEffect();
-        randomChoiceEffect2.add(
-                new SimpleSoundEffect("Effects/Sound/RendHit1.wav"));
-        randomChoiceEffect2.add(
-                new SimpleSoundEffect("Effects/Sound/RendHit2.wav"));
-        randomChoiceEffect2.add(
-                new SimpleSoundEffect("Effects/Sound/RendHit3.wav"));
-        randomChoiceEffect2.add(
-                new SimpleSoundEffect("Effects/Sound/RendHit3.wav"));
+        SimpleSoundEffect rendHit1 = new SimpleSoundEffect("Effects/Sound/RendHit1.wav");
+        SimpleSoundEffect rendHit2 = new SimpleSoundEffect("Effects/Sound/RendHit2.wav");
+        SimpleSoundEffect rendHit3 = new SimpleSoundEffect("Effects/Sound/RendHit3.wav");
+        SimpleSoundEffect rendHit4 = new SimpleSoundEffect("Effects/Sound/RendHit4.wav");
+        rendHit1.setVolume(0.3f);
+        rendHit2.setVolume(0.3f);
+        rendHit3.setVolume(0.3f);
+        rendHit4.setVolume(0.3f);
+        randomChoiceEffect2.add(rendHit1);
+        randomChoiceEffect2.add(rendHit2);
+        randomChoiceEffect2.add(rendHit3);
+        randomChoiceEffect2.add(rendHit4);
         getEffectBox().addActionEffect(ACTION_REND_HIT,
                 randomChoiceEffect2);
     }
