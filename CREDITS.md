@@ -264,6 +264,9 @@ are licensed under CC-BY-SA 3.0.
 
 [Gundatsch](https://soundcloud.com/gundatsch) for [Santa has f*cked up](https://soundcloud.com/gundatsch/santa-has-fucked-up). It is used as one of Elite Soldier's soundtracks. It is licensed under CC-BY 3.0.
 
+[Darren Curtis – Darren-Curtis](https://soundcloud.com/desperate-measurez) for music
+[My Dark Passenger](https://soundcloud.com/desperate-measurez/my-dark-passenger-royalty-free-dark-music). Music is licensed under CC-BY 3.0.
+
 [Michael Baradari](apollo-music.de) for following sound effects:
 - [Projectile launches](http://opengameart.org/content/4-projectile-launches) (Railgun and Plasmagun)
 - [Pain and death sounds](http://opengameart.org/content/11-male-human-paindeath-sounds) (Used for EliteSoldier)

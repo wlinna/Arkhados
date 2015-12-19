@@ -92,6 +92,7 @@ See CREDITS.md for attributions.
 - Grave models used in Pillar Arena
 - Ground texture for Pillar Arena
 - Rend hit sound effects
+- MyDarkPassenger.ogg
 
 ## CC-BY-SA 3.0 ##
 - All LavaArena related files (except Wall and lava)
