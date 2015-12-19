@@ -52,6 +52,7 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_RIGHT = 2;
     public static final int ANIM_SWIPE_LEFT = 3;
     public static final int ACTION_FERALSCREAM = 4;
+    public static final int ACTION_REND_HIT = 5;
     private final WorldEffect rendEffect;
     private final WorldEffect feralScreamEffect = new FeralScream.Effect();
 
@@ -65,6 +66,18 @@ public class Venator extends AbstractNodeBuilder {
         randomChoiceEffect.add(
                 new SimpleSoundEffect("Effects/Sound/Rend3.wav"));
         rendEffect = randomChoiceEffect;
+
+        RandomChoiceEffect randomChoiceEffect2 = new RandomChoiceEffect();
+        randomChoiceEffect2.add(
+                new SimpleSoundEffect("Effects/Sound/RendHit1.wav"));
+        randomChoiceEffect2.add(
+                new SimpleSoundEffect("Effects/Sound/RendHit2.wav"));
+        randomChoiceEffect2.add(
+                new SimpleSoundEffect("Effects/Sound/RendHit3.wav"));
+        randomChoiceEffect2.add(
+                new SimpleSoundEffect("Effects/Sound/RendHit3.wav"));
+        getEffectBox().addActionEffect(ACTION_REND_HIT,
+                randomChoiceEffect2);
     }
 
     @Override
@@ -123,18 +136,18 @@ public class Venator extends AbstractNodeBuilder {
                 InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(survivalInstinct, RId);
         spellCastControl.putSpell(bloodFrenzy, -RId);
-        
+
         spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
         spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
-        CCharacterAnimation characterAnimControl =
-                new CCharacterAnimation(animControl);
+        CCharacterAnimation characterAnimControl
+                = new CCharacterAnimation(animControl);
 
-        AnimationData deathAnim =
-                new AnimationData("Die-1", 1f, LoopMode.DontLoop);
-        AnimationData walkAnim =
-                new AnimationData("Run", 0.8f, LoopMode.DontLoop);
+        AnimationData deathAnim
+                = new AnimationData("Die-1", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim
+                = new AnimationData("Run", 0.8f, LoopMode.DontLoop);
         characterAnimControl.setDeathAnimation(deathAnim);
         characterAnimControl.setWalkAnimation(walkAnim);
 
@@ -156,16 +169,16 @@ public class Venator extends AbstractNodeBuilder {
                 characterAnimControl.getAnimControl(), "Charge", 2f / 5f,
                 deepWounds.getCastTime());
 
-        AnimationData swipeLeftAnim =
-                new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
-        AnimationData throwAnim =
-                new AnimationData("Throw", throwSpeed, LoopMode.DontLoop);
-        AnimationData jumpAnim =
-                new AnimationData("Jump", jumpSpeed, LoopMode.DontLoop);
-        AnimationData roarAnim =
-                new AnimationData("Roar", roarSpeed, LoopMode.DontLoop);
-        AnimationData chargeAnim =
-                new AnimationData("Charge", chargeSpeed, LoopMode.DontLoop);
+        AnimationData swipeLeftAnim
+                = new AnimationData("Swipe-Left", swipeSpeed, LoopMode.DontLoop);
+        AnimationData throwAnim
+                = new AnimationData("Throw", throwSpeed, LoopMode.DontLoop);
+        AnimationData jumpAnim
+                = new AnimationData("Jump", jumpSpeed, LoopMode.DontLoop);
+        AnimationData roarAnim
+                = new AnimationData("Roar", roarSpeed, LoopMode.DontLoop);
+        AnimationData chargeAnim
+                = new AnimationData("Charge", chargeSpeed, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation("Rend", swipeLeftAnim);
         characterAnimControl.addSpellAnimation("Damaging Dagger", throwAnim);
@@ -176,15 +189,15 @@ public class Venator extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Survival Instinct", null);
         characterAnimControl.addSpellAnimation("Blood Frenzy", null);
 
-        AnimationData landAnim =
-                new AnimationData("Land", 1f, LoopMode.DontLoop);
+        AnimationData landAnim
+                = new AnimationData("Land", 1f, LoopMode.DontLoop);
         characterAnimControl.addActionAnimation(landAnim);
 
         float swipeUpSpeed = AnimationData.calculateSpeed(
                 characterAnimControl.getAnimControl(), "Swipe-Up", 3f / 5f,
                 0.2f);
-        AnimationData swipeUpAnim =
-                new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
+        AnimationData swipeUpAnim
+                = new AnimationData("Swipe-Up", swipeUpSpeed, LoopMode.DontLoop);
         characterAnimControl.addActionAnimation(swipeUpAnim);
 
         AnimationData swipeRightAnim = new AnimationData("Swipe-Right",
@@ -210,7 +223,7 @@ public class Venator extends AbstractNodeBuilder {
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class)
                     .setIsServer(false);
-            
+
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putEffect(ACTION_FERALSCREAM, feralScreamEffect);
             entity.addControl(actionPlayer);
