@@ -33,6 +33,7 @@ import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.spells.embermage.EtherealFlame;
+import arkhados.spell.spells.embermage.Fireball;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
@@ -49,7 +50,7 @@ public class EmberMage extends AbstractNodeBuilder {
 
     public static final int ACTION_FIREWALK = 0;
     public static final int ACTION_ETHEREAL_FLAME = 1;
-
+    
     public EmberMage() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FIREWALK,
@@ -97,7 +98,8 @@ public class EmberMage extends AbstractNodeBuilder {
 
         int RId = InputMapping.getId(InputMapping.R);
 
-        spellCastControl.putSpell(Spell.getSpell("Fireball"),
+        Fireball fireball = (Fireball) Spell.getSpell("Fireball");
+        spellCastControl.putSpell(fireball,
                 InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(Spell.getSpell("Magma Bash"), M2Id);
         spellCastControl.putSpell(Spell.getSpell("Magma Release"), -M2Id);
@@ -138,7 +140,7 @@ public class EmberMage extends AbstractNodeBuilder {
         AnimationData attackAnim =
                 new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
-        characterAnimControl.addSpellAnimation("Fireball", attackAnim);
+        characterAnimControl.addSpellAnimation(fireball.getName(), attackAnim);
         characterAnimControl.addSpellAnimation("Magma Bash", attackAnim);
         characterAnimControl.addSpellAnimation("Magma Release", attackAnim);
         characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
@@ -167,6 +169,7 @@ public class EmberMage extends AbstractNodeBuilder {
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putEffect(ACTION_ETHEREAL_FLAME,
                     new EtherealFlame.Effect());
+            actionPlayer.putCastEffect(fireball.getId(), fireball.castEffect);
             entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();

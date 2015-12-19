@@ -22,6 +22,8 @@ import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.EffectHandle;
+import arkhados.effects.WorldEffect;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
@@ -50,7 +52,9 @@ import com.jme3.scene.shape.Sphere;
  * moderate damage. Has small knockback effect on hit.
  */
 public class Fireball extends Spell {
-
+    static final float CAST_TIME = 0.37f;
+    
+    public final WorldEffect castEffect = new FireballEffect();
     {
         iconName = "fireball.png";
     }
@@ -62,10 +66,9 @@ public class Fireball extends Spell {
     public static Spell create() {
         final float cooldown = 0.9f;
         final float range = 85f;
-        final float castTime = 0.37f;
 
         final Fireball spell
-                = new Fireball("Fireball", cooldown, range, castTime);
+                = new Fireball("Fireball", cooldown, range, CAST_TIME);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
             ACastProjectile castProjectile
@@ -111,7 +114,7 @@ class FireballBuilder extends AbstractNodeBuilder {
         return smoke;
     }
 
-    private ParticleEmitter createFireEmitter() {
+    static ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 200);
         Material mat = new Material(assets,
@@ -204,6 +207,20 @@ class FireballBuilder extends AbstractNodeBuilder {
         buffControl.addBuff(new BrimstoneBuff.MyBuilder(8f));
 
         return node;
+    }
+}
+class FireballEffect implements WorldEffect {   
+    @Override
+    public EffectHandle execute(Node root, Vector3f loc, String p) {
+        float characterRadius = root.getUserData(UserData.RADIUS);
+        ParticleEmitter e = FireballBuilder.createFireEmitter();
+        e.setStartSize(e.getStartSize() * 0.5f);
+        e.setEndSize(e.getEndSize() * 0.5f);
+        e.setParticlesPerSec(e.getParticlesPerSec() * 0.5f);
+        e.setLocalTranslation(0f, 10f, characterRadius / 1.2f);
+        root.attachChild(e);        
+        e.addControl(new CTimedExistence(Fireball.CAST_TIME));
+        return null;
     }
 }
 
