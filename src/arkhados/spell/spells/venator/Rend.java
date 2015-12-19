@@ -14,22 +14,14 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
-import arkhados.SpatialDistancePair;
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
-import arkhados.actions.cast.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
-import arkhados.controls.CCharacterPhysics;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
-import arkhados.util.Selector;
-import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public class Rend extends Spell {
 
@@ -87,9 +79,9 @@ class ADoubleMeleeAttack extends EntityAction {
         // TODO: Make an attack start with different animation than previous one
         float range = spell.getRange();
         CActionQueue queue = spatial.getControl(CActionQueue.class);
-        final AMeleeAttack action1 = new AMeleeAttack(75f, range);
+        final VenatorMeleeAttack action1 = new VenatorMeleeAttack(75f, range);
         ACastingSpell action2Anim = new ACastingSpell(spell, true);
-        AMeleeAttack action2 = new AMeleeAttack(85f, range);
+        VenatorMeleeAttack action2 = new VenatorMeleeAttack(85f, range);
 
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);
@@ -98,40 +90,6 @@ class ADoubleMeleeAttack extends EntityAction {
         queue.enqueueAction(action2);
 
         queue.enqueueAction(new AEnd());
-
-        final int myTeamId = spatial.getUserData(UserData.TEAM_ID);
-
-        Predicate<SpatialDistancePair> pred = (SpatialDistancePair value) -> {
-            if (value.spatial == spatial) {
-                return false;
-            }
-
-            Integer nullableTeamId
-                    = value.spatial.getUserData(UserData.TEAM_ID);
-            if (nullableTeamId == null) {
-                return false;
-            }
-
-            CInfluenceInterface influenceInterface = value.spatial
-                    .getControl(CInfluenceInterface.class);
-
-            return influenceInterface != null
-                    && !nullableTeamId.equals(myTeamId);
-        };
-
-        CCharacterPhysics physicsControl = spatial
-                .getControl(CCharacterPhysics.class);
-        Vector3f hitDirection = physicsControl.calculateTargetDirection()
-                .normalize().multLocal(range);
-
-        ArrayList<SpatialDistancePair> allTargetsWithinRange = Selector.
-                coneSelect(new ArrayList<SpatialDistancePair>(), pred,
-                        spatial.getLocalTranslation(), hitDirection,
-                        range, (float) Math.toRadians(50f));
-
-        for (int i = 0; i < allTargetsWithinRange.size(); i++) {
-            setTypeId(Venator.ACTION_REND_HIT);
-        }
 
         return false;
     }

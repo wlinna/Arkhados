@@ -44,6 +44,10 @@ public class AMeleeAttack extends EntityAction {
         buffs.add(buff);
     }
 
+    public void playHitSound() {
+        // override this in inherited classes
+    }
+
     @Override
     public boolean update(float tpf) {
         CCharacterPhysics physicsControl = spatial
@@ -100,6 +104,7 @@ public class AMeleeAttack extends EntityAction {
             CharacterInteraction.harm(
                     spatial.getControl(CInfluenceInterface.class),
                     targetInterface, rawDamage, buffs, true);
+            playHitSound();
         }
 
         return false;

@@ -289,3 +289,5 @@ Independent.nu for DeepWounds sound effect. DeepWounds.wav is based on
 Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). Sound is licensed under CC0
 
 [skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
+
+[WillHiccups](http://freesound.org/people/WillHiccups/) for [Rend hit sound effects](http://freesound.org/people/WillHiccups/sounds/104045/). Licensed under CC BY 3.0.
