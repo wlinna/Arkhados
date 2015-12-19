@@ -481,7 +481,6 @@
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
                 <text style="nifty-label" text=""/>
                 <control id="previous_button" name="button" label="&lt;---" align="center" width="200px">
