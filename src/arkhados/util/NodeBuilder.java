@@ -17,10 +17,6 @@ package arkhados.util;
 import arkhados.effects.EffectBox;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public interface NodeBuilder {
     public Node build(BuildParameters params);
     public EffectBox getEffectBox();
