@@ -16,6 +16,7 @@ package arkhados.spell.spells.venator;
 
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
+import arkhados.actions.cast.AMeleeAttack;
 import arkhados.characters.Venator;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CSpellCast;
@@ -93,4 +94,18 @@ class ADoubleMeleeAttack extends EntityAction {
 
         return false;
     }
+
+    private class VenatorMeleeAttack extends AMeleeAttack {
+
+        public VenatorMeleeAttack(float damage, float range) {
+            super(damage, range);
+        }
+
+        @Override
+        public void setTypeIdOnHit() {
+            setTypeId(Venator.ACTION_REND_HIT);
+        }
+
+    }
+
 }

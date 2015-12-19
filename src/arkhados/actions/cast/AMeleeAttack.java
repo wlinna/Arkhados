@@ -44,7 +44,7 @@ public class AMeleeAttack extends EntityAction {
         buffs.add(buff);
     }
 
-    public void playHitSound() {
+    public void setTypeIdOnHit() {
         // override this in inherited classes
     }
 
@@ -104,7 +104,7 @@ public class AMeleeAttack extends EntityAction {
             CharacterInteraction.harm(
                     spatial.getControl(CInfluenceInterface.class),
                     targetInterface, rawDamage, buffs, true);
-            playHitSound();
+            setTypeIdOnHit();
         }
 
         return false;
