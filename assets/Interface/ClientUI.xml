@@ -477,7 +477,7 @@
                 <control name="credits_panel" who="Savino and pOss" for="Grave models for Pillar Arena" />
                 <control name="credits_panel" who="Dim" for="Ground texture for Pillar Arena" />
                 <control name="credits_panel" who="WillHiccups" for="Rend hit sounds for Venator" />
-                <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
