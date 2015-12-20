@@ -26,6 +26,7 @@ import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.BrimstoneBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
+import arkhados.util.BuffTypeIds;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
@@ -176,11 +177,12 @@ class BrimstoneIncapacitate extends IncapacitateCC {
 
         public MyBuilder(float duration) {
             super(duration);
+            setTypeId(BuffTypeIds.INCAPACITATE);
         }
 
         @Override
         public BrimstoneIncapacitate build() {
-            return new BrimstoneIncapacitate(duration);
+            return set(new BrimstoneIncapacitate(duration));
         }
     }
 }
