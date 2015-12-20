@@ -48,7 +48,7 @@ public class Settings {
     public final void generateDefaultConfigFile() {
         try (BufferedWriter bw =
                 new BufferedWriter(new FileWriter("settings.toml"));) {
-            bw.write(Settings.DEFAULT);
+            bw.write(DEFAULT);
         } catch (Exception ex) {
             Logger.getLogger(Settings.class.getName())
                     .log(Level.SEVERE, null, ex);
@@ -99,7 +99,7 @@ public class Settings {
             return respawnTime;
         }
     }
-    private static final String DEFAULT = String.format(
+    private final String DEFAULT = String.format(
             "[General]%n"
             + "port = 12345%n"
             + "physicsTicksPerSecond = 60.0%n"
