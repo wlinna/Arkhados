@@ -35,6 +35,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.spells.venator.FeralScream;
+import arkhados.spell.spells.venator.Rend;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMapping;
 import arkhados.util.AbstractNodeBuilder;
@@ -67,21 +68,19 @@ public class Venator extends AbstractNodeBuilder {
                 new SimpleSoundEffect("Effects/Sound/Rend3.wav"));
         rendEffect = randomChoiceEffect;
 
-        RandomChoiceEffect randomChoiceEffect2 = new RandomChoiceEffect();
-        SimpleSoundEffect rendHit1 = new SimpleSoundEffect("Effects/Sound/RendHit1.wav");
-        SimpleSoundEffect rendHit2 = new SimpleSoundEffect("Effects/Sound/RendHit2.wav");
-        SimpleSoundEffect rendHit3 = new SimpleSoundEffect("Effects/Sound/RendHit3.wav");
-        SimpleSoundEffect rendHit4 = new SimpleSoundEffect("Effects/Sound/RendHit4.wav");
-        rendHit1.setVolume(0.3f);
-        rendHit2.setVolume(0.3f);
-        rendHit3.setVolume(0.3f);
-        rendHit4.setVolume(0.3f);
-        randomChoiceEffect2.add(rendHit1);
-        randomChoiceEffect2.add(rendHit2);
-        randomChoiceEffect2.add(rendHit3);
-        randomChoiceEffect2.add(rendHit4);
-        getEffectBox().addActionEffect(ACTION_REND_HIT,
-                randomChoiceEffect2);
+//        RandomChoiceEffect randomChoiceEffect2 = new RandomChoiceEffect();
+//        SimpleSoundEffect rendHit1 = new SimpleSoundEffect("Effects/Sound/RendHit1.wav");
+//        SimpleSoundEffect rendHit2 = new SimpleSoundEffect("Effects/Sound/RendHit2.wav");
+//        SimpleSoundEffect rendHit3 = new SimpleSoundEffect("Effects/Sound/RendHit3.wav");
+//        SimpleSoundEffect rendHit4 = new SimpleSoundEffect("Effects/Sound/RendHit4.wav");
+//        rendHit1.setVolume(0.3f);
+//        rendHit2.setVolume(0.3f);
+//        rendHit3.setVolume(0.3f);
+//        rendHit4.setVolume(0.3f);
+//        randomChoiceEffect2.add(rendHit1);
+//        randomChoiceEffect2.add(rendHit2);
+//        randomChoiceEffect2.add(rendHit3);
+//        randomChoiceEffect2.add(rendHit4);
     }
 
     @Override
@@ -116,7 +115,7 @@ public class Venator extends AbstractNodeBuilder {
 
         CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
-        Spell rend = Spell.getSpell("Rend");
+        Rend rend = (Rend) Spell.getSpell("Rend");
         Spell dagger = Spell.getSpell("Damaging Dagger");
         Spell numb = Spell.getSpell("Numbing Dagger");
         Spell leap = Spell.getSpell("Leap");
@@ -230,6 +229,7 @@ public class Venator extends AbstractNodeBuilder {
 
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putEffect(ACTION_FERALSCREAM, feralScreamEffect);
+            actionPlayer.putEffect(ACTION_REND_HIT, rend.castEffect);
             entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
