@@ -17,6 +17,7 @@ package arkhados.gamemode;
 import arkhados.CharacterInteraction;
 import arkhados.Globals;
 import arkhados.MusicManager;
+import arkhados.ServerMain;
 import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.World;
@@ -54,10 +55,12 @@ public class DeathMatch extends GameMode implements CommandHandler {
         sync = stateManager.getState(Sync.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
         common.initialize(app);
-        
-        Settings.Deathmatch settings = Settings.get().Deathmatch();
-        common.setKillLimit(settings.getKillLimit());
-        common.setRespawnTime(settings.getRespawnTime());
+
+        if (app instanceof ServerMain) {
+            Settings.Deathmatch settings = Settings.get().Deathmatch();
+            common.setKillLimit(settings.getKillLimit());
+            common.setRespawnTime(settings.getRespawnTime());
+        }
     }
 
     @Override

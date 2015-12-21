@@ -19,6 +19,7 @@ import arkhados.Globals;
 import arkhados.MusicManager;
 import arkhados.PlayerData;
 import arkhados.ServerClientData;
+import arkhados.ServerMain;
 import arkhados.Sync;
 import arkhados.Topic;
 import arkhados.UserCommandManager;
@@ -85,10 +86,12 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         sync = stateManager.getState(Sync.class);
         world = stateManager.getState(World.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
-
-        Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();
-        common.setKillLimit(settings.getKillLimit());
-        common.setRespawnTime(settings.getRespawnTime());                
+        
+        if (app instanceof ServerMain) {
+            Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();
+            common.setKillLimit(settings.getKillLimit());
+            common.setRespawnTime(settings.getRespawnTime());                
+        }
     }
 
     public void setNifty(Nifty nifty) {
