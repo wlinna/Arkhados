@@ -16,7 +16,6 @@ package arkhados.spell.spells.venator;
 
 import arkhados.Globals;
 import arkhados.SpatialDistancePair;
-import arkhados.World;
 import arkhados.actions.ACastingSpell;
 import arkhados.actions.EntityAction;
 import arkhados.actions.cast.AMeleeAttack;
@@ -33,7 +32,6 @@ import arkhados.effects.particle.ParticleEmitter;
 import arkhados.spell.Spell;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
