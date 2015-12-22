@@ -19,6 +19,7 @@ import arkhados.CollisionGroups;
 import arkhados.SpatialDistancePair;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
+import arkhados.characters.RockGolem;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
@@ -142,6 +143,8 @@ class AStoneFist extends EntityAction {
         } else {
             pushSpiritStone(closest.spatial, hitDirection);
         }
+        
+        setTypeId(RockGolem.ACTION_FIST_HIT);
 
         return false;
     }

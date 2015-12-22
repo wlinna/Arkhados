@@ -32,6 +32,7 @@ See CREDITS.md for attributions.
 - VenatorPain.wav
 - RockGolemPain.wav
 - All Rend cast sounds
+- All Stone Fist hit sounds
 
 ## CC-BY 3.0 ##
 - Background.png (Rendered from Rock Golem model and Elite Soldier)

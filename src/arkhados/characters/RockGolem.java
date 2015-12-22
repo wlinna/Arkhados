@@ -15,6 +15,7 @@
 package arkhados.characters;
 
 import arkhados.EffectHandler;
+import arkhados.controls.CActionPlayer;
 import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterDamage;
 import arkhados.controls.CCharacterHeal;
@@ -31,6 +32,8 @@ import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EarthQuakeEffect;
 import arkhados.effects.EffectBox;
+import arkhados.effects.RandomChoiceEffect;
+import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.TossHitEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
@@ -50,16 +53,31 @@ public class RockGolem extends AbstractNodeBuilder {
 
     public static final int ACTION_EARTHQUAKE = 0;
     public static int WORLDEFFECT_TOSS_HIT;
+    public static final int ACTION_FIST_HIT = 1;
 
+    private final RandomChoiceEffect randomFist = new RandomChoiceEffect();
+    
     public RockGolem() {
         setEffectBox(new EffectBox());
-        WorldEffect earthQuake =
-                new EarthQuakeEffect();
+        WorldEffect earthQuake = new EarthQuakeEffect();
 
         getEffectBox().addActionEffect(ACTION_EARTHQUAKE, earthQuake);
 
         TossHitEffect tossHitEffect = new TossHitEffect();
         WORLDEFFECT_TOSS_HIT = EffectHandler.addWorldEffect(tossHitEffect);
+
+        SimpleSoundEffect fistHit1
+                = new SimpleSoundEffect("Effects/Sound/StoneFistHit1.wav");
+        SimpleSoundEffect fistHit2
+                = new SimpleSoundEffect("Effects/Sound/StoneFistHit2.wav");
+        SimpleSoundEffect fistHit3
+                = new SimpleSoundEffect("Effects/Sound/StoneFistHit3.wav");
+        fistHit1.setVolume(1.5f);
+        fistHit2.setVolume(1.5f);
+        fistHit3.setVolume(1.5f);
+        randomFist.add(fistHit1);
+        randomFist.add(fistHit2);
+        randomFist.add(fistHit3);
     }
 
     @Override
@@ -102,7 +120,7 @@ public class RockGolem extends AbstractNodeBuilder {
 
         int RId = InputMapping.getId(InputMapping.R);
         int QId = InputMapping.getId(InputMapping.Q);
-        
+
         spellCastControl.putSpell(stoneFist,
                 InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(seal,
@@ -115,10 +133,10 @@ public class RockGolem extends AbstractNodeBuilder {
         spellCastControl.putSpell(bedrock, -RId);
         spellCastControl.putSpell(quake,
                 InputMapping.getId(InputMapping.SPACE));
-        
+
         spellCastControl.putSecondaryMapping(InputMapping.SEC1, -QId);
         spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
-        
+
         TossValidator tossValidator = new TossValidator(toss);
         spellCastControl.addCastValidator(tossValidator);
 
@@ -168,6 +186,10 @@ public class RockGolem extends AbstractNodeBuilder {
 
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class).setIsServer(false);
+            
+            CActionPlayer actionPlayer = new CActionPlayer();
+            actionPlayer.putEffect(ACTION_FIST_HIT, randomFist);
+            entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();
             entity.addControl(restingControl);

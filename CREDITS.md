@@ -288,8 +288,8 @@ under CC-BY 3.0 and original version can be found from
 [Small Rock and Stone Hits](http://freesound.org/people/lolamadeus/sounds/179365/). Part
 of that sound is used (with small modifications) for Petrify.wav. Sound is licensed under CC0.
 
-Independent.nu for DeepWounds sound effect. DeepWounds.wav is based on
-Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). Sound is licensed under CC0
+Independent.nu for DeepWounds and Stone Fist Hit sound effects. DeepWounds.wav is based on
+Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). It is licensed under CC0. Stone Fist Hit sound effects are based on [hit sounds](http://opengameart.org/content/37-hitspunches) and they are CC0-licensed.
 
 [skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
 
