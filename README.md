@@ -42,7 +42,7 @@ are limited.
 
 If you want to contribute or suggest art, remember that only
 free/libre art is accepted, like Creative Commons Attributions (CC-BY)
-and Creative Commons ShareAlike (CC-BY-SA). This means that assets
+and Creative Commons Public Domain (CC0). This means that assets
 that prohibit commercial use or derivation will not accepted in Arkhados.
 
 **Replace one of the character models with better model** Currently
@@ -53,13 +53,11 @@ I animated Venator myself because there was no other choice but the
 quality of my animations is pretty bad. It would be nice if they were
 replaced, perhaps one by one.
 
-**Make nicer lava material**
-
 **Find or create good music** In Arkhados every hero uses different
   set of music. Currently Embermage has only 2 soundtracks.
 
-You can find good music with good licenses from opengameart.org and
-jamendo.com . And remember to use ogg-format because mp3 is patent
+You can find good music with good licenses from opengameart.org.
+And remember to use ogg-format because mp3 is patent
 encumbered and not supported
 
 **Create nice portraits for heroes** It would be nice to select hero
@@ -81,7 +79,7 @@ trails when Venator swipes. I will add Pudge-like hook spell later so
 trail system could be useful for that too. Maybe.
 
 **In-game menu**
-Very basic feature. Allow players to access menu during game so that
+Allow players to access menu during game so that
 player can configure keys, graphic settings etc. and immediately see
 how it affects.
 
