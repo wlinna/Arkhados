@@ -13,15 +13,15 @@ Arkhados currently supports only deathmatch but teamplay will be added
 later and I believe that it will be the most enjoyable game mode for
 Arkhados.
 
-It's programmed in Java using jMonkeyEngine 3.
+It's programmed in Java 8 using jMonkeyEngine 3.
 
 <iframe src="https://player.vimeo.com/video/131966456" width="500" height="313" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="https://vimeo.com/131966456">Arkhados 0.5 trailer</a> from <a href="https://vimeo.com/user41505101">William Linna</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
 ## Dependencies ##
 
-In order to compile, you need stable release of jMonkeyEngine 3 and
+In order to compile, you need jMonkeyEngine 3.1 and
 shaderblowlib. You also need to meet all dependencies of jMonkeyEngine
-3.
+3.1.
 
 ## ToDos and contribution ideas ##
 
