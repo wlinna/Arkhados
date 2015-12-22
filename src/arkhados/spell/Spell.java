@@ -52,6 +52,7 @@ import arkhados.spell.spells.shadowmancer.VoidSpear;
 import arkhados.spell.spells.shadowmancer.IntoTheShadows;
 import arkhados.spell.spells.shadowmancer.Shadow;
 import arkhados.spell.spells.shadowmancer.Drain;
+import arkhados.spell.spells.shadowmancer.FastDrain;
 import arkhados.spell.spells.venator.BloodFrenzy;
 import arkhados.spell.spells.venator.Dagger;
 import arkhados.spell.spells.venator.DeepWounds;
@@ -138,6 +139,7 @@ public abstract class Spell {
         addSpell(entityFactory, DarkEnergy.create());
         addSpell(entityFactory, DarkEnergySelf.create());
         addSpell(entityFactory, Drain.create());
+        addSpell(entityFactory, FastDrain.create());
         addSpell(entityFactory, VoidSpear.create());
         addSpell(entityFactory, Shadow.create());      
         addSpell(entityFactory, IntoTheShadows.create());

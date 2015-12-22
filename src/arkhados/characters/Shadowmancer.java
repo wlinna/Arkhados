@@ -92,12 +92,13 @@ public class Shadowmancer extends AbstractNodeBuilder {
         CSpellCast spellCastControl = new CSpellCast();
         entity.addControl(spellCastControl);
         int M2Id = InputMapping.getId(InputMapping.M2);
+        int QId = InputMapping.getId(InputMapping.Q);
 
-        int RId = InputMapping.getId(InputMapping.R);
         Spell orb = Spell.getSpell("Shadow Orb");
         Spell energy = Spell.getSpell("Dark Energy");
         Spell energySelf = Spell.getSpell("Dark Energy Self");
         Spell drain = Spell.getSpell("Drain");
+        Spell fastDrain = Spell.getSpell("Fast Drain");
         Spell spear = Spell.getSpell("Void Spear");
         Spell shadow = Spell.getSpell("Shadow");
         Spell intoShadows = Spell.getSpell("Into the Shadows");
@@ -105,14 +106,15 @@ public class Shadowmancer extends AbstractNodeBuilder {
         spellCastControl.putSpell(orb, InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(energy, M2Id);
         spellCastControl.putSpell(energySelf, -M2Id);
-        spellCastControl.putSpell(drain, InputMapping.getId(InputMapping.Q));
+        spellCastControl.putSpell(drain, QId);
+        spellCastControl.putSpell(fastDrain, -QId);
         spellCastControl.putSpell(spear, InputMapping.getId(InputMapping.E));
-        spellCastControl.putSpell(shadow, RId);
+        spellCastControl.putSpell(shadow, InputMapping.getId(InputMapping.R));
         spellCastControl.putSpell(intoShadows,
                 InputMapping.getId(InputMapping.SPACE));
 
         spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
-        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
+        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -QId);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -137,6 +139,8 @@ public class Shadowmancer extends AbstractNodeBuilder {
                 animControl, "Attack2", 1f, energy.getCastTime());
         float drainSpeed = AnimationData.calculateSpeed(
                 animControl, "Attack2", 1f, drain.getCastTime());
+        float fastDrainSpeed = AnimationData.calculateSpeed(animControl,
+                "Attack2", 1f, fastDrain.getCastTime());
         float spearSpeed = AnimationData.calculateSpeed(animControl,
                 "Attack1", 1f, spear.getCastTime());
         float intoShadowsSpeed = AnimationData.calculateSpeed(
@@ -148,6 +152,8 @@ public class Shadowmancer extends AbstractNodeBuilder {
                 new AnimationData("Attack2", energySpeed, LoopMode.DontLoop);
         AnimationData drainAnim =
                 new AnimationData("Attack2", drainSpeed, LoopMode.DontLoop);
+        AnimationData fastDrainAnim =
+                new AnimationData("Attack2", fastDrainSpeed, LoopMode.DontLoop);
         AnimationData spearAnim =
                 new AnimationData("Attack1", spearSpeed, LoopMode.DontLoop);        
         AnimationData intoShadowsAnim =
@@ -157,6 +163,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Dark Energy", energyAnim);
         characterAnimControl.addSpellAnimation("Dark Energy Self", energyAnim);
         characterAnimControl.addSpellAnimation("Drain", drainAnim);
+        characterAnimControl.addSpellAnimation("Fast Drain", fastDrainAnim);
         characterAnimControl.addSpellAnimation("Void Spear", spearAnim);
         characterAnimControl.addSpellAnimation("Shadow", null);
         characterAnimControl.addSpellAnimation("Into the Shadows", 
@@ -165,7 +172,6 @@ public class Shadowmancer extends AbstractNodeBuilder {
         entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
         entity.addControl(new CCharacterHeal());
-
         entity.addControl(new CCharacterSync());
 
         if (world.isClient()) {

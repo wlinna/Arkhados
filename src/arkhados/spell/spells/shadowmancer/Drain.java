@@ -68,7 +68,7 @@ public class Drain extends Spell {
         spell.castSpellActionBuilder = (Node caster, Vector3f vec)
                 -> new ACastProjectile(spell, world);
 
-        spell.nodeBuilder = new DrainBuilder();
+        spell.nodeBuilder = new DrainBuilder(true);
 
         return spell;
     }
@@ -76,6 +76,12 @@ public class Drain extends Spell {
 
 class DrainBuilder extends AbstractNodeBuilder {
     private static final float RADIUS = 2f;
+    
+    private final boolean primary;
+
+    public DrainBuilder(boolean primary) {
+        this.primary = primary;
+    }
 
     private ParticleEmitter createPurpleEmitter() {
         ParticleEmitter purple = new ParticleEmitter("poison-emitter",
@@ -116,7 +122,7 @@ class DrainBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 100f);
+        node.setUserData(UserData.SPEED_MOVEMENT, primary ? 100f : 150f);
         node.setUserData(UserData.MASS, 30f);
         node.setUserData(UserData.DAMAGE, 0f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
@@ -135,8 +141,9 @@ class DrainBuilder extends AbstractNodeBuilder {
 
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
-        buffControl.addBuff(new DrainBuff.MyBuilder(Drain.DURATION));
-        buffControl.addBuff(new SilenceCC.MyBuilder(1.5f));
+        float factor = primary ? 1f : 0.6666f;
+        buffControl.addBuff(new DrainBuff.MyBuilder(Drain.DURATION * factor));
+        buffControl.addBuff(new SilenceCC.MyBuilder(1.5f * factor));
 
         node.addControl(buffControl);
         
