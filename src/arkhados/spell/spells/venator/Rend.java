@@ -233,7 +233,7 @@ class RendBloodEffect implements WorldEffect {
                 .subtract(root.getLocalTranslation()).normalizeLocal();
         
         Ray ray = new Ray(root.getLocalTranslation().add(0f,
-                cPhysics.getCapsuleShape().getHeight() * 0.66f, 0f), dir);
+                cPhysics.getCapsuleShape().getHeight() * 0.9f, 0f), dir);
         CollisionResults collisions = new CollisionResults();
         hit.spatial.collideWith(ray, collisions);
         Vector3f hitLoc = collisions.getClosestCollision().getContactPoint();
