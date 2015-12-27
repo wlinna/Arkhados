@@ -117,6 +117,7 @@ public class MusicManager extends AbstractAppState {
             case "EmberMage":
                 music.add(generateHeroMusicPath(category, "TheDarkAmulet"));
                 music.add(generateHeroMusicPath(category, "SteepsOfDestiny"));
+                music.add(generateHeroMusicPath(category, "Moleman"));
                 break;
             case "EliteSoldier":
                 music.add(generateHeroMusicPath(category, "Carmack"));

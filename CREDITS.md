@@ -284,6 +284,8 @@ modifications by Teemu Salminen) as soundtrack. Dwarves Gathering  is licensed
 under CC-BY 3.0 and original version can be found from
 [Jamendo](https://www.jamendo.com/en/track/1059744/dwarves-gathering).
 
+Telaron for Moleman. Embermage uses Moleman as a soundtrack. Moleman can be found from [here](http://files.wesnoth.org/addons/1.12/UMC_Music_Book_8.tar.bz2). Moleman is GPLv2 or later licensed.
+
 [lolamadeus](http://freesound.org/people/lolamadeus/) for
 [Small Rock and Stone Hits](http://freesound.org/people/lolamadeus/sounds/179365/). Part
 of that sound is used (with small modifications) for Petrify.wav. Sound is licensed under CC0.

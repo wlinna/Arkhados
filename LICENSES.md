@@ -108,6 +108,7 @@ See CREDITS.md for attributions.
 ## GPL 2.0 ##
 - EmberMagePain.wav
 - EmberMageDeath.wav
+- Moleman.ogg
 
 ## Bitstream Vera Copyright ##
 - DejaVu-Serif-21.fnt

@@ -455,7 +455,6 @@
             <panel id="credits3" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
-                <text style="nifty-label" text="Due to a nifty related issue the third credits panel has been temporarily disabled " />
                 <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
                 <control name="credits_panel" who="spookymodem" for="sound effects" />
                 <control name="credits_panel" who="midimagician" for="Ember Circle sound" />
@@ -478,6 +477,7 @@
                 <control name="credits_panel" who="Dim" for="Ground texture for Pillar Arena" />
                 <control name="credits_panel" who="WillHiccups" for="Rend hit sounds for Venator" />
                 <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
+                <control name="credits_panel" who="Telaron" for="Moleman (music)" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
