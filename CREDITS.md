@@ -286,6 +286,8 @@ under CC-BY 3.0 and original version can be found from
 
 Telaron for Moleman. Embermage uses Moleman as a soundtrack. Moleman can be found from [here](http://files.wesnoth.org/addons/1.12/UMC_Music_Book_8.tar.bz2). Moleman is GPLv2 or later licensed.
 
+[Andrea Giordano](https://www.jamendo.com/artist/458019/andrea-giordano) for [Welcome to Grimwoods](https://www.jamendo.com/track/1177008/welcome-to-grimwoods). Shadowmancer uses it as a soundtrack. Welcome to Grimwoods is CC-BY-SA 3.0 licensed.
+
 [lolamadeus](http://freesound.org/people/lolamadeus/) for
 [Small Rock and Stone Hits](http://freesound.org/people/lolamadeus/sounds/179365/). Part
 of that sound is used (with small modifications) for Petrify.wav. Sound is licensed under CC0.

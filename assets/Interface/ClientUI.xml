@@ -478,6 +478,8 @@
                 <control name="credits_panel" who="WillHiccups" for="Rend hit sounds for Venator" />
                 <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
                 <control name="credits_panel" who="Telaron" for="Moleman (music)" />
+                <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
+                
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>

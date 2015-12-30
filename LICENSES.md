@@ -104,6 +104,7 @@ See CREDITS.md for attributions.
 - TimeOfBlood.ogg
 - PredatorAttack.ogg
 - Transylvania.ogg
+- WelcomeToGrimwoods.ogg
 
 ## GPL 2.0 ##
 - EmberMagePain.wav

@@ -139,6 +139,8 @@ public class MusicManager extends AbstractAppState {
             case "Shadowmancer":
                 music.add(generateHeroMusicPath(category, "Transylvania"));
                 music.add(generateHeroMusicPath(category, "MyDarkPassenger"));
+                music.add(generateHeroMusicPath(category,
+                        "WelcomeToGrimwoods"));
                 break;
             default:
                 break;
