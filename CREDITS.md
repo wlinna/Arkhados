@@ -295,6 +295,8 @@ of that sound is used (with small modifications) for Petrify.wav. Sound is licen
 Independent.nu for DeepWounds and Stone Fist Hit sound effects. DeepWounds.wav is based on
 Independent.nu's [squish and and splatter sequences](http://opengameart.org/content/2-wooden-squish-splatter-sequences). It is licensed under CC0. Stone Fist Hit sound effects are based on [hit sounds](http://opengameart.org/content/37-hitspunches) and they are CC0-licensed.
 
+[artisticdude](http://opengameart.org/users/artisticdude) for [Goblins Sound Pack](http://opengameart.org/content/goblins-sound-pack). Shadowmancer uses Goblins Sound Pack. Goblins Sound Pack is CC0-licensed.
+
 [skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
 
 [WillHiccups](http://freesound.org/people/WillHiccups/) for [Rend hit sound effects](http://freesound.org/people/WillHiccups/sounds/104045/). Licensed under CC BY 3.0.

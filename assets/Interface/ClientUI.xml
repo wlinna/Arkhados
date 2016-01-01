@@ -479,7 +479,7 @@
                 <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
                 <control name="credits_panel" who="Telaron" for="Moleman (music)" />
                 <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
-                
+                <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />                                
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
