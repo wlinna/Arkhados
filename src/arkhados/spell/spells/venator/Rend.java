@@ -140,13 +140,13 @@ class RendBloodEffect implements WorldEffect {
 
     static {
         SimpleSoundEffect e1
-                = new SimpleSoundEffect("Effects/Sound/RendHit1.wav");
+                = new SimpleSoundEffect("Effects/Sound/RendHit1.wav", true);
         SimpleSoundEffect e2
-                = new SimpleSoundEffect("Effects/Sound/RendHit2.wav");
+                = new SimpleSoundEffect("Effects/Sound/RendHit2.wav", true);
         SimpleSoundEffect e3
-                = new SimpleSoundEffect("Effects/Sound/RendHit3.wav");
+                = new SimpleSoundEffect("Effects/Sound/RendHit3.wav", true);
         SimpleSoundEffect e4
-                = new SimpleSoundEffect("Effects/Sound/RendHit4.wav");
+                = new SimpleSoundEffect("Effects/Sound/RendHit4.wav", true);
         e1.setVolume(0.3f);
         e2.setVolume(0.3f);
         e3.setVolume(0.3f);
