@@ -66,15 +66,15 @@ public class RockGolem extends AbstractNodeBuilder {
         TossHitEffect tossHitEffect = new TossHitEffect();
         WORLDEFFECT_TOSS_HIT = EffectHandler.addWorldEffect(tossHitEffect);
 
-        SimpleSoundEffect fistHit1
-                = new SimpleSoundEffect("Effects/Sound/StoneFistHit1.wav");
-        SimpleSoundEffect fistHit2
-                = new SimpleSoundEffect("Effects/Sound/StoneFistHit2.wav");
-        SimpleSoundEffect fistHit3
-                = new SimpleSoundEffect("Effects/Sound/StoneFistHit3.wav");
-        fistHit1.setVolume(1.5f);
-        fistHit2.setVolume(1.5f);
-        fistHit3.setVolume(1.5f);
+        SimpleSoundEffect fistHit1 = new SimpleSoundEffect(
+                "Effects/Sound/StoneFistHit1.wav", true);
+        SimpleSoundEffect fistHit2 = new SimpleSoundEffect(
+                "Effects/Sound/StoneFistHit2.wav", true);
+        SimpleSoundEffect fistHit3 = new SimpleSoundEffect(
+                "Effects/Sound/StoneFistHit3.wav", true);
+        fistHit1.setVolume(3f);
+        fistHit2.setVolume(3f);
+        fistHit3.setVolume(3f);
         randomFist.add(fistHit1);
         randomFist.add(fistHit2);
         randomFist.add(fistHit3);
