@@ -14,8 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
-import arkhados.Globals;
-import arkhados.World;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -33,11 +31,7 @@ import arkhados.spell.SpellCastListener;
 import arkhados.spell.SpellCastValidator;
 import arkhados.spell.buffs.CastSpeedBuff;
 import arkhados.util.UserData;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.math.Ray;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.util.IntMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +39,6 @@ import java.util.List;
 public class CSpellCast extends AbstractControl {
 
     private static final Vector3f DOWN = Vector3f.UNIT_Y.negate();
-
-    private final Vector3f _tempVec = new Vector3f();
 
     private static IntMap<Float> clientCooldowns;
     private final IntMap<Spell> spells = new IntMap<>();
