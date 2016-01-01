@@ -43,7 +43,7 @@ import com.jme3.scene.Spatial;
 
 public class EtherealFlame extends Spell {
 
-    public static final float DURATION = 11.6f;
+    public static final float DURATION = 1.6f;
     static final float SPEED = 300f;
 
     public EtherealFlame(String name, float cooldown, float range,
