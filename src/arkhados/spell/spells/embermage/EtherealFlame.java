@@ -15,6 +15,7 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.Globals;
+import arkhados.World;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.EmberMage;
@@ -27,6 +28,7 @@ import arkhados.effects.EffectHandle;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
+import arkhados.util.PathCheck;
 import com.jme3.audio.AudioNode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.MotionEvent;
@@ -41,7 +43,7 @@ import com.jme3.scene.Spatial;
 
 public class EtherealFlame extends Spell {
 
-    public static final float DURATION = 1.6f;
+    public static final float DURATION = 11.6f;
     static final float SPEED = 300f;
 
     public EtherealFlame(String name, float cooldown, float range,
@@ -159,7 +161,13 @@ class AFireTrance extends EntityAction implements ATrance {
     @Override
     public void activate(Spatial activator) {
         CSpellCast spellCast = spatial.getControl(CSpellCast.class);
-        Vector3f target = spellCast.getClosestPointToTarget(spell);
+        Spatial walls = Globals.app.getStateManager().getState(World.class)
+                .getWorldRoot().getChild("Walls");
+        float room = spatial.getControl(CCharacterPhysics.class)
+                .getCapsuleShape().getRadius();
+        Vector3f target = PathCheck.closestNonColliding(walls,
+                spatial.getLocalTranslation(),
+                spellCast.getClosestPointToTarget(spell), room);
         // We set this to 10 to prevent effect from disappearing while moving
         timeLeft = 10f;
 
