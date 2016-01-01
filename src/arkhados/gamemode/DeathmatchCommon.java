@@ -177,6 +177,7 @@ public class DeathmatchCommon {
         int killingSpree = 0;
         int combo = 0;
         if (!deathByEnvironment) {
+            firstBloodHappened = true;
             DeathMatchPlayerTracker killer = trackers.get(killersPlayerId);
             killer.addKill();
 
