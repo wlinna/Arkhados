@@ -15,6 +15,8 @@
 package arkhados.controls;
 
 import arkhados.Globals;
+import arkhados.effects.RandomChoiceEffect;
+import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import com.jme3.audio.AudioNode;
 import com.jme3.renderer.RenderManager;
@@ -30,10 +32,10 @@ import com.jme3.util.IntMap;
 public class CCharacterSound extends AbstractControl {
 
     private float suffering = 0;
-    private String sufferPath;
     private String deathPath;
     
     private final IntMap<WorldEffect> castSounds = new IntMap<>();
+    private final RandomChoiceEffect sufferSfx = new RandomChoiceEffect();
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -41,17 +43,11 @@ public class CCharacterSound extends AbstractControl {
     }
 
     public void suffer(float damage) {
-        if (suffering <= 2 || sufferPath == null) {
+        if (suffering <= 2) {
             return;
-        }
+        }       
 
-        AudioNode sound = new AudioNode(Globals.assets, sufferPath);
-        sound.setPositional(true);
-        sound.setReverbEnabled(false);
-        sound.setVolume(1f);
-        Node playerNode = (Node) getSpatial();
-        playerNode.attachChild(sound);
-        sound.play();
+        sufferSfx.execute((Node) spatial, spatial.getLocalTranslation(), "");
         suffering = 0;
     }
 
@@ -84,8 +80,8 @@ public class CCharacterSound extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public void setSufferSound(String path) {
-        this.sufferPath = path;
+    public void addSufferSound(String path) {
+        sufferSfx.add(new SimpleSoundEffect(path));
     }
 
     public void setDeathSound(String path) {

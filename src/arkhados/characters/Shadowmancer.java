@@ -176,7 +176,7 @@ public class Shadowmancer extends AbstractNodeBuilder {
 
         if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
-            soundControl.setSufferSound("Effects/Sound/EmberMagePain.wav");
+            soundControl.addSufferSound("Effects/Sound/EmberMagePain.wav");
             soundControl.setDeathSound("Effects/Sound/EmberMageDeath.wav");
             entity.addControl(soundControl);
             entity.addControl(new CCharacterBuff());

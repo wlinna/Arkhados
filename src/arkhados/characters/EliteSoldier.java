@@ -213,7 +213,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
         if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
             entity.addControl(soundControl);
-            soundControl.setSufferSound("Effects/Sound/EliteSoldierPain.wav");
+            soundControl.addSufferSound("Effects/Sound/EliteSoldierPain.wav");
             soundControl.setDeathSound("Effects/Sound/EliteSoldierDeath.wav");
             entity.addControl(new CCharacterBuff());
             entity.addControl(new CEliteSoldierHud());

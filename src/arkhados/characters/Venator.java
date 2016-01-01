@@ -202,7 +202,7 @@ public class Venator extends AbstractNodeBuilder {
 
         if (world.isClient()) {
             CCharacterSound soundControl = new CCharacterSound();
-            soundControl.setSufferSound("Effects/Sound/VenatorPain.wav");
+            soundControl.addSufferSound("Effects/Sound/VenatorPain.wav");
             soundControl.setDeathSound("Effects/Sound/VenatorDeath.wav");
             soundControl.addCastSound(rend.getId(), rendEffect);
             entity.addControl(soundControl);
