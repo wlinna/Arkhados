@@ -15,6 +15,7 @@ See CREDITS.md for attributions.
 - Toss.png
 - Incapacitate.png
 - noise3.png
+- lava.jpg
 - FireballExplosion.wav
 - Shotgun.wav
 - Firewalk.wav
@@ -97,7 +98,7 @@ See CREDITS.md for attributions.
 - MyDarkPassenger.ogg
 
 ## CC-BY-SA 3.0 ##
-- All LavaArena related files (except Wall and lava)
+- All LavaArena related files (except Wall and lava.jpg)
 - rocket_jump.jpeg
 - AntiGravity.ogg
 - Olympus.ogg

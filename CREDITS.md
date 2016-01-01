@@ -176,6 +176,8 @@ for LavaArena. Original work can be found from [OGA](http://opengameart.org/cont
 djonvincent for LavaArena's wall. Wall-model is licensed under
 CC0. Original model can be found from [OGA](http://opengameart.org/content/wall).
 
+Crack.com for [Fire and Lava texture](http://opengameart.org/node/7763). Fire and Lava -texture is used for Lava. Fire and Lava -texture is licensed under CC0. 
+
 [Ancient Beast](http://AncientBeast.com) -project and Gergő Soós
 (random223) for Rocket Jump's icon. Icon is licensed under CC-BY-SA
 3.0. Original work can be found from random223's

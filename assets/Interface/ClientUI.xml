@@ -427,6 +427,7 @@
                     </text>
                 </panel>
                 <control name="credits_panel" who="Lorc" for='"Crossed Axes" icon' />
+                <control name="credits_panel" who="Crack.com" for="Fire and Lava texture" />
                 <control name="credits_panel" who="Skorpio" for="LavaArena tileset" />
                 <control name="credits_panel" who="djonvincent" for="wall model" />
                 <control name="credits_panel" who="Ancient Beast -project and Gergő Soós" for="Rocket Jump icon" />
@@ -479,7 +480,7 @@
                 <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
                 <control name="credits_panel" who="Telaron" for="Moleman (music)" />
                 <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
-                <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />                                
+                <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />                                       
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
