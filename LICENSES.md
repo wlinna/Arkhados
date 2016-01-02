@@ -29,6 +29,7 @@ See CREDITS.md for attributions.
 - RocketLauncher.wav
 - Shadow.wav
 - IntoTheShadows.wav
+- DrainHit.wav
 - All Wall related files
 - SpiritStone 3D-model
 - VenatorDeath.wav

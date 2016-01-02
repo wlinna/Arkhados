@@ -14,15 +14,53 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.info;
 
+import arkhados.Globals;
 import arkhados.effects.BuffEffect;
+import com.jme3.audio.AudioNode;
+
+import com.jme3.scene.Node;
 
 public class DrainInfo extends BuffInfo {
+
     {
         setIconPath("Interface/Images/SpellIcons/Drain.png");
     }
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        return new BuffEffect(params.duration);
-    }    
+        DrainHitEffect hitEffect = new DrainHitEffect(params.duration);
+        hitEffect.addToCharacter(params);
+        return hitEffect;
+    }
+}
+
+class DrainHitEffect extends BuffEffect {
+
+    private Node characterNode;
+    private AudioNode sound;
+
+    public DrainHitEffect(float timeLeft) {
+        super(timeLeft);
+    }
+
+    public void addToCharacter(BuffInfoParameters params) {
+        characterNode = (Node) params.buffControl.getSpatial();
+
+        if (params.justCreated) {
+            sound = new AudioNode(Globals.assets, "Effects/Sound/DrainHit.wav");
+            sound.setPositional(true);
+            sound.setReverbEnabled(false);
+            sound.setVolume(1f);
+            characterNode.attachChild(sound);
+            sound.play();
+        }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (sound != null) {
+            sound.removeFromParent();
+        }
+    }
 }
