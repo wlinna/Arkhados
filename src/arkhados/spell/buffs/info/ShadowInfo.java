@@ -75,7 +75,7 @@ class ShadowEffect extends BuffEffect {
 
         if (params.justCreated) {
             AudioNode sound = new AudioNode(Globals.assets,
-                    "Effects/Sound/Petrify.wav");
+                    "Effects/Sound/Shadow.wav");
             sound.setPositional(true);
             sound.setReverbEnabled(false);
             sound.setVolume(1f);

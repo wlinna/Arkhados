@@ -200,6 +200,7 @@ Ogrebane for multiple sound effects. Currently all Ogrebane's sound effects
 used in Arkhados are CC0-licensed. Here are the Ogrebane's sounds used:
 - [Firewalk](http://opengameart.org/content/teleport-spell) (modified)
 - [Venator sounds](http://opengameart.org/content/monster-sound-effects-pack)
+- [Dark sounds](http://opengameart.org/content/dark-ambiences)
 
 thebardofblashphemy for [male pain sounds](http://opengameart.org/content/grunts-male-death-and-pain). Those pain sounds are licensed under GPL 2.0.
 

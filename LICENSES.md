@@ -27,6 +27,7 @@ See CREDITS.md for attributions.
 - EarthQuake.wav
 - SurvivalInstinct.wav
 - RocketLauncher.wav
+- Shadow.wav
 - All Wall related files
 - SpiritStone 3D-model
 - VenatorDeath.wav
