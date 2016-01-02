@@ -36,6 +36,7 @@ import arkhados.util.DistanceScaling;
 import arkhados.util.PathCheck;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.effect.ParticleEmitter;
@@ -70,8 +71,8 @@ public class IntoTheShadows extends Spell {
                 cooldown, range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
-            ACastIntoTheShadows castAction =
-                    new ACastIntoTheShadows(spell, world);
+            ACastIntoTheShadows castAction
+                    = new ACastIntoTheShadows(spell, world);
             return castAction;
         };
 
@@ -121,7 +122,7 @@ public class IntoTheShadows extends Spell {
                     new ARestoreEntity(world, playerEntityId, endLocation));
             cloudActions.enqueueAction(new ARemoveCloud(world, cloudId));
 
-            world.temporarilyRemoveEntity(playerEntityId);            
+            world.temporarilyRemoveEntity(playerEntityId);
         }
     }
 
@@ -181,8 +182,8 @@ public class IntoTheShadows extends Spell {
             node.addControl(actionQueue);
 
             if (world.isServer()) {
-                SphereCollisionShape collisionShape =
-                        new SphereCollisionShape(8f);
+                SphereCollisionShape collisionShape
+                        = new SphereCollisionShape(8f);
 
                 GhostControl ghost = new GhostControl(collisionShape);
                 ghost.setCollisionGroup(CollisionGroups.NONE);
@@ -246,6 +247,15 @@ class CloudRemoval implements ARemovalEvent {
         wave.setLocalTranslation(worldTranslation);
         wave.emitAllParticles();
         wave.addControl(new CTimedExistence(4f));
+
+        AudioNode sound = new AudioNode(Globals.assets,
+                "Effects/Sound/IntoTheShadows.wav");
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(1f);
+        sound.setLocalTranslation(worldTranslation);
+        sound.play();
+        sound.addControl(new CTimedExistence(4f));
     }
 
     public CloudRemoval setCloud(Spatial cloud) {

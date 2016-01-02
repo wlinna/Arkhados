@@ -28,6 +28,7 @@ See CREDITS.md for attributions.
 - SurvivalInstinct.wav
 - RocketLauncher.wav
 - Shadow.wav
+- IntoTheShadows.wav
 - All Wall related files
 - SpiritStone 3D-model
 - VenatorDeath.wav
