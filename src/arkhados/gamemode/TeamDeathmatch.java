@@ -50,8 +50,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TeamDeathmatch extends GameMode implements CommandHandler {
+
+    private final static Logger logger
+            = Logger.getLogger(TeamDeathmatch.class.getName());
 
     private final DeathmatchCommon common = new DeathmatchCommon();
     private AppStateManager stateManager;
@@ -86,11 +91,11 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
         sync = stateManager.getState(Sync.class);
         world = stateManager.getState(World.class);
         stateManager.getState(Receiver.class).registerCommandHandler(this);
-        
+
         if (app instanceof ServerMain) {
             Settings.TeamDeathmatch settings = Settings.get().TeamDeathmatch();
             common.setKillLimit(settings.getKillLimit());
-            common.setRespawnTime(settings.getRespawnTime());                
+            common.setRespawnTime(settings.getRespawnTime());
         }
     }
 
@@ -119,7 +124,7 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
                         teamNameId.entrySet()) {
                     CharacterInteraction.addTeam(entrySet.getValue());
                 }
-                
+
             }
             return null;
         });
@@ -140,8 +145,16 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
         int killersTeam = PlayerData.getIntData(killersPlayerId,
                 PlayerData.TEAM_ID);
+        int kills;
+        try { // TODO: Fix NPE that happens here.
+            kills = teamKills.get(killersTeam) + 1;
+        } catch (NullPointerException e) {
+            logger.log(Level.SEVERE, "killersTeam: {0}", killersTeam);
+            logger.log(Level.SEVERE, 
+                    "NullPointerException while getting kills:", e);            
+            throw e;
+        }
 
-        int kills = teamKills.get(killersTeam) + 1;
         teamKills.put(killersTeam, kills);
 
         if (kills >= common.getKillLimit()) {
