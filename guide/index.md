@@ -31,6 +31,15 @@ How to get into game
 
 If others can't join your server, make sure that Arkhados isn't blocked by a firewall. If you are behind NAT, you probably need to forward some port to your IP. Visit [portforward.com](http://portforward.com/) for step-by-step port forwarding guides.
 
+Game Modes
+==========
+
+## Deathmatch ##
+In Deathmatch the first player to get certain amount of kills wins. Everyone is your enemy. If you die, you can pick new hero and then wait for respawn.
+
+## Team Deathmatch ##
+Like Deathmatch but players are grouped into teams. The first team to get certain amount of kills wins. Respawning works like in Deathmatch but you have to wait bit longer (unless configured otherwise).
+
 Hero Guides
 ============
 
@@ -65,6 +74,7 @@ Certain spells are divided into **primary** and **secondary spells**. Primary an
 
 - **Stun:** Player can't move or cast spells (there are currently no stuns in game).
 - **Incapacitate:** Like stun, but if player under incapacitate takes damage,  incapacitate is dispelled.
+- **Silence:** Player can't cast spells but can move.
 - **Petrify:** Like stun, but player takes heavily reduced damage. Has damage cap.
 - <img class="spell-icon" src="Images/BuffIcons/skull.png" />**Fear:** Player starts running away from the source of fear. Player can't cast or control their movement during fear. Fear is dispelled on damage (there are exceptions).
 - <img class="spell-icon" src="Images/BuffIcons/Blind.png" /> **Blind:** Player under blind has very short sight range and thus can't see others unless they are very close.
@@ -76,11 +86,17 @@ Certain spells are divided into **primary** and **secondary spells**. Primary an
 - **Damage over time:** Player takes damage over time.
 
 
-### Regeneration ###
-If you stand still, don't use any of your abilities and don't take damage, you will start to regenerate after short period of time. Regeneration gets stronger and stronger as you stand still.
+### Resting ###
+If you stand still, don't use any of your abilities and don't take damage, you will start to regenerate after short period of time. Resting gets stronger and stronger as you stand still.
 
 ### Healing cap ###
-To be implemented soon.
+In Arkhados, every character (unless specified otherwise) has a healing cap. Healing cap prevents characters from healing themselves to high hitpoints if their hitpoints get low at some points.
+
+Healing cap is calculated with the following formula: cap = record\_low\_hp + constant .
+
+For example, suppose Rock Golem's hitpoints drop from full to 1000 and constant is 400. That means that Rock Golem's hitpoints can never be restored to over 1400 through healing.
+
+There is one exception to this rule. *Resting* raises record\_low\_hp exactly as much as it heals you. So if Rock Golem through resting regenerates 200 hitpoints, its healing cap is promoted to 1600.
 
 ### General tips ###
 
@@ -242,7 +258,7 @@ Exactly like Spirit Stone but shorter duration, shorter range of influence but h
 If an player or a Spirit Stone is in (approximately) melee range, tosses it into the target location. Both the tossed enemy and any nearby enemies take damage upon landing. Long cooldown.
 
 #### <img class="spell-icon" src="Images/SpellIcons/MineralArmor.png" />R: Mineral Armor (primary) ####
-Gives the Rock Golem *armor* and *heal over time* buffs for a short period. The power of heal is dependent on how much armor there's left. Long cooldown.
+Gives the Rock Golem *armor* and *heal over time* buffs for a short period. The power of heal is dependent on how much armor there's left. Can be cast on allied players. Long cooldown.
 
 #### <img class="spell-icon" src="Images/SpellIcons/MineralArmor.png" />R: Bedrock (secondary) ####
 Instead of gaining *heal over time*, Rock Golem gains high amount of *armor* that absorbs most the damage received. Also reduces Rock Golem's movement speed considerably for a short period.
@@ -326,10 +342,55 @@ Elite soldier collects ammunition over time.
 - **Rockets:** Required by *Rocket Launcher* and *Rocket Jump*. Long reloading time.
 
 
+## Shadowmancer ##
+
+### Lore ###
+Though goblins are usually considered weak, few mortals can be
+considered as formidable as Buruk, the Shadowmancer. Buruk used to protect
+his tribe from slavers until it was slaughtered in the First Great
+Purge. Buruk now wanders around the realms, occasionally teaching lessons to
+slavers, fanatics and others who have mistaken him for easy prey.
+
+**Description**
+
+Shadowmancer is a ranged support-dps hero. While Shadowmancer has low
+hp and is easily knocked back, his disables and protection spells are
+more than enough to stop most attacks.
+
+### Skills ###
+
+#### <img class="spell-icon" src="Images/SpellIcons/ShadowOrb.png" />M1: Shadow Orb ####
+Shoots a medium range projectile. Very low cooldown.
+
+#### <img class="spell-icon" src="Images/SpellIcons/DarkEnergy.png" />M2: Dark Energy (primary) ####
+Healing spell that gives *Heal over time* to friendly units on the target area and a small amount of armor. Very low cooldown.
+
+#### <img class="spell-icon" src="Images/SpellIcons/DarkEnergy.png" />M2: Dark Energy (secondary) ####
+Like normal Dark Energy, but always throws projectile at Shadowmancer's location.
+
+#### <img class="spell-icon" src="Images/SpellIcons/Drain.png" />Q: Drain (primary) ####
+Shoots a medium range proctile that *Silences* target and gives *Drain* debuff.
+
+*Drain*: When a character has this debuff, it loses health and movement speed over time and gives that to the Shadowmancer who applied the debuff. If character is far enough from the Shadowmancer, drain stops affecting until it's close enough again.
+
+#### <img class="spell-icon" src="Images/SpellIcons/Drain.png" />Q: Drain (secondary) ####
+Like the primary Drain, but with shorter cast time and faster projectile speed. However, duration is much shorter.
+
+#### <img class="spell-icon" src="Images/SpellIcons/VoidSpear.png" />E: Void Spear ####
+Shoots long range projectile that makes the more damage the farther it has flown. Applies a debuff on hit that decreases movement speed if target moves.
+
+#### <img class="spell-icon" src="Images/SpellIcons/Shadow.png" />R: Shadow ####
+Makes a target friendly unit immaterial, meaning that it can't be hit with most spells and it can move through characters but on a flip side can't cast spells during that time.
+
+#### <img class="spell-icon" src="Images/SpellIcons/IntoTheShadows.png" />Space: Into the Shadows ####
+Shadowmancer disappears and after a small delay, appears to target location, damaging and knocking back nearby enemy characters.
+
+#### Passive ####
+No passive.
+
 ### Tips ###
-- Try to use *Like a Pro* <img class="spell-icon" src="Images/SpellIcons/like_a_pro.png" /> whenever you fight. Ability to cast while moving allows you to dodge spells while staying offensive yourself. *Armor* greatly reduces damage whenever you are hit.
-- Rocket Launcher<img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" /> serves multiple purposes. Its *knockback* helps you keep distance to enemy and disrupts them. It has medium damage but also low cooldown.
-- Try to reserve at least one *Rocket* for *Rocket Jump* <img class="spell-icon" src="Images/SpellIcons/rocket_jump.jpeg" /> whenever you use *Rocket Launcher* <img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" />.
-- When you *Rocket Jump*, you can start casting spells even in mid-air. One useful offensive combo is to *Rocket Jump* <img class="spell-icon" src="Images/SpellIcons/rocket_jump.jpeg" /> next to enemy and start casting *Rocket Launcher* <img class="spell-icon" src="Images/SpellIcons/rocket_launcher.png" />before landing. If isn't prepared, you can often avoid taking damage yourself because of Rocket's *knockback*.
-- When dealing with Ember Mage, save M2 for countering *Purifying Flame* <img class="spell-icon" src="Images/SpellIcons/purifying_flame.png" />. M2 is your only attack that isn't absorbed by Purifying Flame's shield.
-- *Blinding Ray's (M2 secondary)* has shorter casting time than *Railgun* <img class="spell-icon" src="Images/SpellIcons/railgun.png" /> and blinds enemies hit. If under pressure, prefer Blinding Ray.
+- As a support hero, you must stay aware of your team mates situations.
+- If you are threatened by a melee character, save *Drain* <img class="spell-icon" src="Images/SpellIcons/Drain.png" /> for defensive purposes.
+- Shadowmancer's small size makes him highly susceptible to knockbacks. Shadowmancer should probably stay far away from lava. *Shadow* <img class="spell-icon" src="Images/SpellIcons/Shadow.png" /> does NOT protect from lava damage.
+- *Into the Shadow*'s<img class="spell-icon" src="Images/SpellIcons/IntoTheShadows.png" /> is great for offensive use because its knockback makes it hard to execute a swift counter attack.
+- It can be hard to hit *Drain*<img class="spell-icon" src="Images/SpellIcons/Drain.png" /> because of its slow speed. If you are on the defensive, one good trick is to run behind a corner and shoot *Drain* immediately if you see the enemy following you.
