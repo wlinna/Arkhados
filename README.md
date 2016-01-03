@@ -23,6 +23,9 @@ In order to compile, you need jMonkeyEngine 3.1 and
 shaderblowlib. You also need to meet all dependencies of jMonkeyEngine
 3.1.
 
+You also need [ArkhadosNet](github.com/TripleSnail/ArkhadosNet). Best way to get it is to
+clone the repository to directory next to Arkhados.
+
 ## ToDos and contribution ideas ##
 
 If you want to contribute, great! Here's big list of ideas I'd love to
@@ -54,7 +57,7 @@ quality of my animations is pretty bad. It would be nice if they were
 replaced, perhaps one by one.
 
 **Find or create good music** In Arkhados every hero uses different
-  set of music. Currently Embermage has only 2 soundtracks.
+  set of music.
 
 You can find good music with good licenses from opengameart.org.
 And remember to use ogg-format because mp3 is patent
@@ -93,7 +96,7 @@ characters.
 
 **Artificial Intelligence**
 
-**Contribute on [ArkhadosNet](github.com/dnyarri/ArkhadosNet)**
+**Contribute on [ArkhadosNet](github.com/TripleSnail/ArkhadosNet)**
 Arkhados uses ArkhadosNet for networking. I'm sure it could be
 improved and having some kind of tests for it would be very good.
 
