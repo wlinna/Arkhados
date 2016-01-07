@@ -5,15 +5,17 @@ permalink: /media/
 ---
 
 <div class="home">
-
+  {% for data in site.data.screenshots.versions %}
+  <h1>{{ data.version }}</h1>
   <div class="thumbnails">
-    {% for image in site.data.screenshots %}
+    {% for image in data.screenshots %}
     <div class="thumbnail">
-      <a href="{{ site.['baseurl'] }}/screenshots/{{ image.src }}">
-        <img class="thumbnail-img" src="{{ site.['baseurl'] }}/screenshots/{{ image.src }}"
+      <a href="{{ site.['baseurl'] }}/screenshots/{{ image }}">
+        <img class="thumbnail-img" src="{{ site.['baseurl'] }}/screenshots/{{ image }}"
              alt="screenshot" />
       </a>
     </div>
     {% endfor %}
   </div>
+  {% endfor %}
 </div>

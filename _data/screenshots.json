@@ -1,0 +1,8 @@
+{
+    "versions": [
+        {"version": "0.6", "screenshots": ["06/action02.png", "06/action03.png", "06/action04.png",
+                                           "06/blood02.png", "06/shadow01.png", "06/shadow02.png", "06/shield01.png",  "06/shield02.png"]},
+        {"version": "0.5", "screenshots": ["05/10.jpeg", "05/1.jpeg",  "05/2.jpeg", "05/3.jpeg", "05/4.jpeg", "05/Mainmenu.png"]}
+    ]
+}
+
