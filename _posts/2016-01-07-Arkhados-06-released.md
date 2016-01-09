@@ -22,7 +22,7 @@ Improvements over 0.5.x:
 - Bug fixes
 
 
-I didn't make a trailer for Arkhados 0.6 so if you haven't seen the trailer for 0.5, I recommend you to check it out.
+I didn't make a trailer for Arkhados 0.6 so if you haven't seen the [trailer for 0.5](https://player.vimeo.com/video/131966456), I recommend you to check it out.
 
 Here are some screenshots:
 
