@@ -32,6 +32,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.Listener;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.math.FastMath;
 import com.jme3.math.Plane;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -87,7 +88,14 @@ public class UserCommandManager extends AbstractAppState {
         world.getWorldRoot().attachChild(camNode);
         CFreeCamera cCamera = new CFreeCamera(cam, inputManager);
         camNode.addControl(cCamera);
-        cCamera.setRelativePosition(new Vector3f(0f, 150f, 30f));
+        float distance = 160f;
+        float angle = (float) Math.toRadians(75);
+        float y = FastMath.sin(angle);
+        float z = FastMath.cos(angle);
+        Vector3f relative = new Vector3f(0f, y, z).multLocal(distance);
+        cam.setLocation(relative);
+        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+        cCamera.setRelativePosition(relative);
     }
     private ActionListener modifierListener = new ActionListener() {
         @Override
