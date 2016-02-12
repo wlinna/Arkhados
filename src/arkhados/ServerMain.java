@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
+import arkhados.master.ServerMasterCommunicator;
 import arkhados.messages.MessageUtils;
 import arkhados.net.DefaultReceiver;
 import com.jme3.app.SimpleApplication;
@@ -71,6 +72,8 @@ public class ServerMain extends SimpleApplication {
     private Sync sync;
     private RecordingServerSender sender;
     private Receiver receiver;
+    private final ServerMasterCommunicator masterCommunicator
+            = new ServerMasterCommunicator();
 
     @Override
     public void simpleInitApp() {
@@ -130,7 +133,7 @@ public class ServerMain extends SimpleApplication {
         // Accuracy should be > 45 or projectiles might "disappear" before
         // exploding. This is because of FogOfWar
         physics.getPhysicsSpace().setAccuracy(1f
-                / Settings.get().General().getPhysicsTicksPerSecond());
+                / Settings.get().General().getPhysicsTicksPerSecond());                
     }
 
     public void startGame() {
@@ -141,6 +144,8 @@ public class ServerMain extends SimpleApplication {
             game.start();
             return null;
         });
+        
+        masterCommunicator.connectToMaster();
     }
 
     @Override

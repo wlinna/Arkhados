@@ -10,6 +10,8 @@ public class SettingsGeneral {
     private float physicsTicksPerSecond;
     private float defaultSyncFrequency;
     
+    private String masterServerAddress;
+    private int masterServerPort;
     private String gameMode;
 
     public int getPort() {
@@ -26,5 +28,13 @@ public class SettingsGeneral {
 
     public String getGameMode() {
         return gameMode;
+    }
+
+    public String getMasterServerAddress() {
+        return masterServerAddress;
+    }
+
+    public int getMasterServerPort() {
+        return masterServerPort;
     }
 }

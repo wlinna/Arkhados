@@ -260,6 +260,12 @@
                         <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
                     </effect>
                 </image>
+                <control name="button" label="View list of games" align="center">
+                    <interact onClick="showGames()"/>
+                    <effect>
+                        <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500" startDelay="250"/>
+                    </effect>
+                </control>
                 <text style="nifty-label" text="Address"/>
                 <control id="server_ip" name="textfield" align="center" valign="center" width="60%" text="localhost">
                 </control>
@@ -290,6 +296,18 @@
                     <effect>
                         <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="1500" startDelay="250"/>
                     </effect>
+                </control>
+            </panel>
+        </layer>
+        <layer id="layer_games" childLayout="center" visible="false">
+            <panel childLayout="vertical" style="nifty-label" width="350px" height="70%">
+                <text style="nifty-label" text="Active games" />
+                <control id="lb_games" name="listBox" vertical="on" horizontal="off" displayItems="10" forceSelection="true" />
+                <control name="button" label="Select" width="200px">
+                    <interact onClick="selectGame()" />
+                </control>
+                <control name="button" label="Cancel" width="200px">
+                    <interact onClick="closeGameSelection()" />
                 </control>
             </panel>
         </layer>

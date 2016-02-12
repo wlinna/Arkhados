@@ -16,6 +16,7 @@ package arkhados.ui;
 
 import arkhados.ClientMain;
 import arkhados.Globals;
+import arkhados.master.ClientMasterCommunicator;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -24,6 +25,8 @@ import de.lessvoid.nifty.screen.Screen;
 public class ConnectionMenu extends Menu {
 
     private TextRenderer statusText;
+    private final ClientMasterCommunicator masterCommunicator
+            = new ClientMasterCommunicator();
 
     public void setStatusText(final String text) {
         Globals.app.enqueue(() -> {
@@ -58,8 +61,13 @@ public class ConnectionMenu extends Menu {
     @Override
     public void bind(Nifty nifty, Screen screen) {
         super.bind(nifty, screen);
-        statusText = screen.findElementByName("status_text")
+        statusText = screen.findElementById("status_text")
                 .getRenderer(TextRenderer.class);
+    }
+
+    public void showGames() {
+        screen.findElementById("layer_games").showWithoutEffects();
+        masterCommunicator.connectToMaster();
     }
 
     @Override
@@ -73,5 +81,6 @@ public class ConnectionMenu extends Menu {
     public void onEndScreen() {
         setStatusText("");
         ((ClientMain) Globals.app).cancelConnectionIfNotDone();
+        masterCommunicator.destroy();
     }
 }
