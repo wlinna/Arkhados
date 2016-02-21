@@ -307,7 +307,7 @@
                     <interact onClick="selectGame()" />
                 </control>
                 <control name="button" label="Cancel" width="200px">
-                    <interact onClick="closeGameSelection()" />
+                    <interact onClick="closeGameList()" />
                 </control>
             </panel>
         </layer>

@@ -17,16 +17,20 @@ package arkhados.ui;
 import arkhados.ClientMain;
 import arkhados.Globals;
 import arkhados.master.ClientMasterCommunicator;
+import arkhados.master.Game;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
+import java.util.List;
 
-public class ConnectionMenu extends Menu {
+public final class ConnectionMenu extends Menu {
 
     private TextRenderer statusText;
     private final ClientMasterCommunicator masterCommunicator
-            = new ClientMasterCommunicator();
+            = new ClientMasterCommunicator();         
 
     public void setStatusText(final String text) {
         Globals.app.enqueue(() -> {
@@ -35,6 +39,37 @@ public class ConnectionMenu extends Menu {
             }
             return null;
         });
+    }
+    
+    public void listGames(List<Game> games) {
+        Element layer = screen.findElementById("layer_games");
+        ListBox listbox = layer.findNiftyControl("lb_games", ListBox.class);
+        
+        listbox.clear();
+        listbox.addAllItems(games);
+    }
+    
+    public void closeGameList() {
+        Element layer = screen.findElementById("layer_games");
+        ListBox listbox = layer.findNiftyControl("lb_games", ListBox.class);
+        listbox.clear();
+        
+        layer.hideWithoutEffect();        
+    }
+    
+    public void selectGame() {
+        ListBox listbox = screen.findNiftyControl("lb_games", ListBox.class);
+        
+        if (listbox.getSelection().isEmpty()) {
+            return;
+        }
+        
+        Game selection = (Game) listbox.getSelection().get(0);
+        screen.findNiftyControl("server_ip", TextField.class)
+                .setText(selection.address);
+        screen.findNiftyControl("server_port", TextField.class)
+                .setText("" + selection.port);
+        closeGameList();
     }
 
     public void connect() {
@@ -67,7 +102,9 @@ public class ConnectionMenu extends Menu {
 
     public void showGames() {
         screen.findElementById("layer_games").showWithoutEffects();
+        masterCommunicator.setConnectionMenu(this);
         masterCommunicator.connectToMaster();
+        masterCommunicator.requestGameList();
     }
 
     @Override

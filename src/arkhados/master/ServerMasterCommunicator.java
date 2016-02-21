@@ -14,14 +14,11 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.master;
 
+import arkhados.master.messages.KryoMessages;
 import arkhados.ServerMain;
-import arkhados.master.messages.RepGameList;
-import arkhados.master.messages.ReqGameList;
 import arkhados.master.messages.ReqRegisterGame;
-import arkhados.master.messages.ReqUnregisterGame;
 import arkhados.settings.server.Settings;
 import arkhados.settings.server.SettingsGeneral;
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Listener;
 import java.io.IOException;
@@ -64,17 +61,13 @@ public class ServerMasterCommunicator extends Listener {
     }
 
     private void init() {
-        Kryo kryo = client.getKryo();
-        kryo.register(Game.class);
-        kryo.register(RepGameList.class);
-        kryo.register(ReqGameList.class);
-        kryo.register(ReqRegisterGame.class);
-        kryo.register(ReqUnregisterGame.class);
+        KryoMessages.register(client.getKryo());
     }
 
     private void register() {
         client.sendTCP(new ReqRegisterGame(new Date().toString(),
-                Settings.get().General().getGameMode()));
+                Settings.get().General().getGameMode(),
+                Settings.get().General().getPort()));
     }
 
     public void destroy() {
