@@ -2,7 +2,7 @@
 port = 12345
 physicsTicksPerSecond = 60.0
 defaultSyncFrequency = 0.05
-masterServerAddress = "localhost"
+masterServerAddress = "52.28.234.119"
 masterServerPort = 12346
 gameMode = "TeamDeathmatch"
 

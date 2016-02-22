@@ -43,7 +43,7 @@ public final class ClientMasterCommunicator extends Listener {
         client.start();
         client.addListener(this);
         try {
-            client.connect(5000, "localhost", 12346, 12346);
+            client.connect(5000, "52.28.234.119", 12346, 12346);
         } catch (IOException ex) {
             Logger.getLogger(ServerMain.class.getName()).
                     log(Level.WARNING, null, ex);

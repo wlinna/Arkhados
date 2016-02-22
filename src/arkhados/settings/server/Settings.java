@@ -104,7 +104,7 @@ public class Settings {
             + "port = 12345%n"
             + "physicsTicksPerSecond = 60.0%n"
             + "defaultSyncFrequency = 0.05%n"
-            + "masterServerAddress = \"localhost\"%n"
+            + "masterServerAddress = \"52.28.234.119\"%n"
             + "masterServerPort = 12346%n"
             + "gameMode = \"TeamDeathmatch\"%n%n"
             + "[GameModes]%n"
