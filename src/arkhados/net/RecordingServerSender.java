@@ -16,10 +16,11 @@ package arkhados.net;
 
 import arkhados.World;
 import arkhados.replay.ReplayData;
+import arkhados.replay.ReplaySerializer;
+import arkhados.settings.server.Settings;
 import arkhados.ui.hud.ServerClientDataStrings;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
-import com.jme3.network.base.MessageProtocol;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,6 +38,8 @@ public class RecordingServerSender extends ServerSender {
     private final ReplayData replayData = new ReplayData();
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+    
+    private final ReplaySerializer replaySerializer = new ReplaySerializer();
 
     public RecordingServerSender(Server server) {
         super(server);
@@ -71,11 +74,21 @@ public class RecordingServerSender extends ServerSender {
         }
 
         ByteBuffer target = ByteBuffer.allocate(314572800);
-        MessageProtocol.messageToBuffer(replayData, target);
+        try {
+            replaySerializer.writeObject(target, replayData);
+            target.flip();
+        } catch (IOException ex) {
+            Logger.getLogger(RecordingServerSender.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
 
         FileOutputStream out = null;
 
-        Date date = new Date();
+        Date date = replayData.getHeader().getDate();
+        replayData.getHeader().setVersion("0.6");
+        replayData.getHeader().setGameMode(
+                Settings.get().General().getGameMode());
+        replayData.getHeader().setArena("Pillar Arena"); // TODO: Read arena
         String name = dateFormat.format(date) + ".rep";
         String path = Paths.get(replayDir.toString(), name).toString();
 

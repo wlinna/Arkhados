@@ -21,7 +21,6 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.FastMath;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
-import com.jme3.network.serializing.Serializer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -36,12 +35,12 @@ public class ReplayReader extends AbstractAppState implements Receiver {
     private ReplayData data;
     private float time = 0f;
     private float speed = 1f;
+    private final ReplaySerializer serializer = new ReplaySerializer();
 
     public void loadReplay(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        buffer.position(2);
-        data = (ReplayData) Serializer.readClassAndObject(buffer);
+        data = serializer.readObject(buffer, ReplayData.class);
     }
 
     public void selectPlayer(int playerId) {

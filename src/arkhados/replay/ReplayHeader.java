@@ -23,6 +23,9 @@ import java.util.Map;
 @Serializable
 public class ReplayHeader {
     private Date date = new Date();
+    private String version;
+    private String gameMode;
+    private String arena;
     private Map<Integer, String> players = new HashMap<>();
 
     public ReplayHeader() {
@@ -38,5 +41,29 @@ public class ReplayHeader {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(String gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public String getArena() {
+        return arena;
+    }
+
+    public void setArena(String arena) {
+        this.arena = arena;
     }
 }
