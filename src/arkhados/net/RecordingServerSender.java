@@ -36,9 +36,9 @@ public class RecordingServerSender extends ServerSender {
 
     private World world;
     private final ReplayData replayData = new ReplayData();
-    private final SimpleDateFormat dateFormat =
-            new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-    
+    private final SimpleDateFormat dateFormat
+            = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+
     private final ReplaySerializer replaySerializer = new ReplaySerializer();
 
     public RecordingServerSender(Server server) {
@@ -57,8 +57,8 @@ public class RecordingServerSender extends ServerSender {
             return;
         }
 
-        Integer playerId =
-                connection.getAttribute(ServerClientDataStrings.PLAYER_ID);
+        Integer playerId
+                = connection.getAttribute(ServerClientDataStrings.PLAYER_ID);
 
         if (playerId == null) {
             return;
@@ -73,6 +73,11 @@ public class RecordingServerSender extends ServerSender {
             replayDir.mkdir();
         }
 
+        replayData.getHeader().setVersion("0.7-dev");
+        replayData.getHeader().setGameMode(
+                Settings.get().General().getGameMode());
+        replayData.getHeader().setArena("Pillar Arena"); // TODO: Read arena
+
         ByteBuffer target = ByteBuffer.allocate(314572800);
         try {
             replaySerializer.writeObject(target, replayData);
@@ -85,10 +90,6 @@ public class RecordingServerSender extends ServerSender {
         FileOutputStream out = null;
 
         Date date = replayData.getHeader().getDate();
-        replayData.getHeader().setVersion("0.6");
-        replayData.getHeader().setGameMode(
-                Settings.get().General().getGameMode());
-        replayData.getHeader().setArena("Pillar Arena"); // TODO: Read arena
         String name = dateFormat.format(date) + ".rep";
         String path = Paths.get(replayDir.toString(), name).toString();
 
