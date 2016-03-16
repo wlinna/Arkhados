@@ -19,11 +19,11 @@ are all awesome!
 ## Designs ##
 
 - William Linna - Hero designs
-- Allexit - Hero designs
+- [Aleksi Talarmo][1] - Hero designs
 
 ## Code contributions ##
 
-- Teemu Salminen
+- [Teemu Salminen][2]
   - added many sound effects (with edits)
   - resting-feature
   - some music (with edits)
@@ -34,7 +34,7 @@ are all awesome!
 ## Documentation ##
 - William Linna
     - How to play -guide
-- Teemu Salminen
+- [Teemu Salminen][2]
     - How to play -guide
 
 ## Announcer ##
@@ -43,8 +43,8 @@ Antti Saari
 ## Early phase testing ##
 
 - William Linna
-- Allexit
-- Teemu Salminen
+- [Aleksi Talarmo][1]
+- [Teemu Salminen][2]
 - Otto Tuominen
 - Iivari Sassi
 - Oskari Saari
@@ -176,7 +176,7 @@ for LavaArena. Original work can be found from [OGA](http://opengameart.org/cont
 djonvincent for LavaArena's wall. Wall-model is licensed under
 CC0. Original model can be found from [OGA](http://opengameart.org/content/wall).
 
-Crack.com for [Fire and Lava texture](http://opengameart.org/node/7763). Fire and Lava -texture is used for Lava. Fire and Lava -texture is licensed under CC0. 
+Crack.com for [Fire and Lava texture](http://opengameart.org/node/7763). Fire and Lava -texture is used for Lava. Fire and Lava -texture is licensed under CC0.
 
 [Ancient Beast](http://AncientBeast.com) -project and Gergő Soós
 (random223) for Rocket Jump's icon. Icon is licensed under CC-BY-SA
@@ -303,3 +303,8 @@ Independent.nu's [squish and and splatter sequences](http://opengameart.org/cont
 [skuax](http://www.blendswap.com/users/view/skuax) for [Cycle Lava Shader](http://www.blendswap.com/blends/view/76979). It is used in Arkhados-logo and 0.5-trailer.
 
 [WillHiccups](http://freesound.org/people/WillHiccups/) for [Rend hit sound effects](http://freesound.org/people/WillHiccups/sounds/104045/). Licensed under CC BY 3.0.
+
+
+
+[1]: https://github.com/Allexit
+[2]: https://github.com/Xatalos
