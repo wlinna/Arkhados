@@ -19,12 +19,15 @@ It's programmed in Java 8 using jMonkeyEngine 3.
 
 ## Dependencies ##
 
-In order to compile, you need jMonkeyEngine 3.1 and
+In order to compile, you need jMonkeyEngine 3.1, kryonet and
 shaderblowlib. You also need to meet all dependencies of jMonkeyEngine
 3.1.
 
-You also need [ArkhadosNet](github.com/TripleSnail/ArkhadosNet). Best way to get it is to
-clone the repository to directory next to Arkhados.
+You also need [ArkhadosNet](github.com/TripleSnail/ArkhadosNet) and [ArkhadosMaster](github.com/TripleSnail/ArkhadosMaster). Best way to get them is to
+clone the repositories to directories next to Arkhados.
+
+Currently getting all the dependencies is too complicated. The situation
+will be improved soonish.
 
 ## ToDos and contribution ideas ##
 
@@ -120,20 +123,6 @@ Here are some requirements for new lobby
 - Possibility to select game mode like deathmatch and team deathmatch.
 - Changing map should be easy. There should be visible preview image
   for every map.
-
-#### Big project: Implement matchmaking server ####
-
-Arkhados needs central server where player can meet and easily join
-another games.
-
-Since Arkhados project won't have money to actually host the games
-themselves, matchmaking server should also pick one player to host the
-game and help the host and other clients to connect to each
-other. Doing this involves NAT hole punching.
-
-One challenge for this matchmaking server and its NAT hole punching
-feature is to actually find server / service that allows listening and
-sending to custom UDP port.
 
 ### Design ###
 
