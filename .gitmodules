@@ -1,0 +1,6 @@
+[submodule "ArkhadosMaster"]
+	path = ArkhadosMaster
+	url = https://github.com/TripleSnail/ArkhadosMaster
+[submodule "ArkhadosNet"]
+	path = ArkhadosNet
+	url = https://github.com/TripleSnail/ArkhadosNet
