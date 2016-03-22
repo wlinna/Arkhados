@@ -19,15 +19,7 @@ It's programmed in Java 8 using jMonkeyEngine 3.
 
 ## Dependencies ##
 
-In order to compile, you need jMonkeyEngine 3.1, kryonet and
-shaderblowlib. You also need to meet all dependencies of jMonkeyEngine
-3.1.
-
-You also need [ArkhadosNet](github.com/TripleSnail/ArkhadosNet) and [ArkhadosMaster](github.com/TripleSnail/ArkhadosMaster). Best way to get them is to
-clone the repositories to directories next to Arkhados.
-
-Currently getting all the dependencies is too complicated. The situation
-will be improved soonish.
+You need jMonkeyEngine 3.1 alpha1 SDK.
 
 ## ToDos and contribution ideas ##
 
