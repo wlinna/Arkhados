@@ -34,7 +34,6 @@ import arkhados.effects.RocketExplosionEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.messages.sync.statedata.StateData;
 import arkhados.spell.Spell;
-import arkhados.spell.spells.elitesoldier.BlindingRay;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
 import arkhados.spell.spells.elitesoldier.Railgun;
 import arkhados.spell.spells.elitesoldier.RocketLauncher;
@@ -152,27 +151,20 @@ public class EliteSoldier extends AbstractNodeBuilder {
         int Qid = InputMapping.getId(InputMapping.Q);
         
         Railgun railgun = (Railgun) Spell.getSpell("Railgun");
-        BlindingRay blind = (BlindingRay) Spell.getSpell("Blinding Ray");
         Plasmagun plasmagun = (Plasmagun) Spell.getSpell("Plasmagun");
         RocketLauncher rocketLauncher = (RocketLauncher) Spell
-                .getSpell("Rocket Launcher");
-        
+                .getSpell("Rocket Launcher");        
         
         spellCastControl.putSpell(Spell.getSpell("Shotgun"),
                 InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(railgun, M2id);
-        spellCastControl.putSpell(blind, -M2id);
         spellCastControl.putSpell(plasmagun, Qid);
-        spellCastControl.putSpell(Spell.getSpell("Plasma Grenades"), -Qid);
         spellCastControl.putSpell(rocketLauncher,
                 InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(Spell.getSpell("Like a Pro"),
                 InputMapping.getId(InputMapping.R));
         spellCastControl.putSpell(Spell.getSpell("Rocket Jump"),
                 InputMapping.getId(InputMapping.SPACE));
-
-        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2id);
-        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -Qid);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -195,10 +187,7 @@ public class EliteSoldier extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation("Shotgun", animationData);
         characterAnimControl.addSpellAnimation("Railgun", animationData);
-        characterAnimControl.addSpellAnimation("Blinding Ray", animationData);
         characterAnimControl.addSpellAnimation("Plasmagun", animationData);
-        characterAnimControl
-                .addSpellAnimation("Plasma Grenades", animationData);
         characterAnimControl
                 .addSpellAnimation("Rocket Launcher", animationData);
         characterAnimControl.addSpellAnimation("Like a Pro", null);
@@ -223,7 +212,6 @@ public class EliteSoldier extends AbstractNodeBuilder {
                     .setIsServer(false);
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putCastEffect(railgun.getId(), railgun.castEffect);
-            actionPlayer.putCastEffect(blind.getId(), blind.castEffect);
             actionPlayer.putCastEffect(plasmagun.getId(), plasmagun.castEffect);
             actionPlayer.putCastEffect(rocketLauncher.getId(), 
                     rocketLauncher.castEffect);

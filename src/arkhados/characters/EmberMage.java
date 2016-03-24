@@ -32,7 +32,6 @@ import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
-import arkhados.spell.spells.embermage.EtherealFlame;
 import arkhados.spell.spells.embermage.Fireball;
 import arkhados.util.AnimationData;
 import arkhados.util.InputMapping;
@@ -102,19 +101,14 @@ public class EmberMage extends AbstractNodeBuilder {
         spellCastControl.putSpell(fireball,
                 InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(Spell.getSpell("Magma Bash"), M2Id);
-        spellCastControl.putSpell(Spell.getSpell("Magma Release"), -M2Id);
         spellCastControl.putSpell(Spell.getSpell("Ember Circle"),
                 InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
                 InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), RId);
-        spellCastControl.putSpell(Spell.getSpell("Ethereal Flame"), -RId);
         spellCastControl.putSpell(Spell.getSpell("Firewalk"),
                 InputMapping.getId(InputMapping.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
-
-        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
-        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         /**
          * Map Spell names to casting animation's name. In this case all spells
@@ -142,11 +136,9 @@ public class EmberMage extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation(fireball.getName(), attackAnim);
         characterAnimControl.addSpellAnimation("Magma Bash", attackAnim);
-        characterAnimControl.addSpellAnimation("Magma Release", attackAnim);
         characterAnimControl.addSpellAnimation("Ember Circle", idleAnim);
         characterAnimControl.addSpellAnimation("Meteor", idleAnim);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
-        characterAnimControl.addSpellAnimation("Ethereal Flame", hitAnim);
         characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
 
         entity.addControl(new CInfluenceInterface());
@@ -167,8 +159,6 @@ public class EmberMage extends AbstractNodeBuilder {
             entity.getControl(CInfluenceInterface.class).setIsServer(false);
             
             CActionPlayer actionPlayer = new CActionPlayer();
-            actionPlayer.putEffect(ACTION_ETHEREAL_FLAME,
-                    new EtherealFlame.Effect());
             actionPlayer.putCastEffect(fireball.getId(), fireball.castEffect);
             entity.addControl(actionPlayer);
         } else {

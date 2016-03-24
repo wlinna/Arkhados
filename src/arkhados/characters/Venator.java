@@ -103,12 +103,10 @@ public class Venator extends AbstractNodeBuilder {
         entity.addControl(spellCastControl);
         Rend rend = (Rend) Spell.getSpell("Rend");
         Spell dagger = Spell.getSpell("Damaging Dagger");
-        Spell numb = Spell.getSpell("Numbing Dagger");
         Spell leap = Spell.getSpell("Leap");
         Spell scream = Spell.getSpell("Feral Scream");
         Spell deepWounds = Spell.getSpell("Deep Wounds");
         Spell survivalInstinct = Spell.getSpell("Survival Instinct");
-        Spell bloodFrenzy = Spell.getSpell("Blood Frenzy");
 
         int M2Id = InputMapping.getId(InputMapping.M2);
         int RId = InputMapping.getId(InputMapping.R);
@@ -116,7 +114,6 @@ public class Venator extends AbstractNodeBuilder {
         spellCastControl.putSpell(rend,
                 InputMapping.getId(InputMapping.M1));
         spellCastControl.putSpell(dagger, M2Id);
-        spellCastControl.putSpell(numb, -M2Id);
         spellCastControl.putSpell(leap,
                 InputMapping.getId(InputMapping.SPACE));
         spellCastControl.putSpell(scream,
@@ -124,10 +121,6 @@ public class Venator extends AbstractNodeBuilder {
         spellCastControl.putSpell(deepWounds,
                 InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(survivalInstinct, RId);
-        spellCastControl.putSpell(bloodFrenzy, -RId);
-
-        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -M2Id);
-        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CCharacterAnimation characterAnimControl
@@ -171,12 +164,10 @@ public class Venator extends AbstractNodeBuilder {
 
         characterAnimControl.addSpellAnimation("Rend", swipeLeftAnim);
         characterAnimControl.addSpellAnimation("Damaging Dagger", throwAnim);
-        characterAnimControl.addSpellAnimation("Numbing Dagger", throwAnim);
         characterAnimControl.addSpellAnimation("Leap", jumpAnim);
         characterAnimControl.addSpellAnimation("Feral Scream", roarAnim);
         characterAnimControl.addSpellAnimation("Deep Wounds", chargeAnim);
         characterAnimControl.addSpellAnimation("Survival Instinct", null);
-        characterAnimControl.addSpellAnimation("Blood Frenzy", null);
 
         AnimationData landAnim
                 = new AnimationData("Land", 1f, LoopMode.DontLoop);

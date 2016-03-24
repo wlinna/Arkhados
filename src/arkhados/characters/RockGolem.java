@@ -112,10 +112,8 @@ public class RockGolem extends AbstractNodeBuilder {
         Spell stoneFist = Spell.getSpell("StoneFist");
         Spell seal = Spell.getSpell("SealingBoulder");
         Spell spirit = Spell.getSpell("Spirit Stone");
-        Spell angrySpirit = Spell.getSpell("Angry Spirit Stone");
         Spell toss = Spell.getSpell("Toss");
         Spell mineral = Spell.getSpell("MineralArmor");
-        Spell bedrock = Spell.getSpell("Bedrock");
         Spell quake = Spell.getSpell("EarthQuake");
 
         int RId = InputMapping.getId(InputMapping.R);
@@ -126,16 +124,11 @@ public class RockGolem extends AbstractNodeBuilder {
         spellCastControl.putSpell(seal,
                 InputMapping.getId(InputMapping.M2));
         spellCastControl.putSpell(spirit, QId);
-        spellCastControl.putSpell(angrySpirit, -QId);
         spellCastControl.putSpell(toss,
                 InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(mineral, RId);
-        spellCastControl.putSpell(bedrock, -RId);
         spellCastControl.putSpell(quake,
                 InputMapping.getId(InputMapping.SPACE));
-
-        spellCastControl.putSecondaryMapping(InputMapping.SEC1, -QId);
-        spellCastControl.putSecondaryMapping(InputMapping.SEC2, -RId);
 
         TossValidator tossValidator = new TossValidator(toss);
         spellCastControl.addCastValidator(tossValidator);
