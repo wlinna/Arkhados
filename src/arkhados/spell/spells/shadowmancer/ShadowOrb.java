@@ -19,12 +19,16 @@ import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
+import arkhados.controls.CSpellCast;
 import arkhados.controls.CTimedExistence;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
@@ -37,6 +41,7 @@ import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -61,12 +66,12 @@ public class ShadowOrb extends Spell {
         final float range = 75f;
         final float castTime = 0.37f;
 
-        final ShadowOrb spell =
-                new ShadowOrb("Shadow Orb", cooldown, range, castTime);
+        final ShadowOrb spell
+                = new ShadowOrb("Shadow Orb", cooldown, range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
-            ACastProjectile castProjectile =
-                    new ACastProjectile(spell, Spell.world);
+            ACastProjectile castProjectile
+                    = new ACastProjectile(spell, Spell.world);
             return castProjectile;
         };
 
@@ -75,6 +80,7 @@ public class ShadowOrb extends Spell {
         return spell;
     }
 }
+
 class OrbBuilder extends AbstractNodeBuilder {
 
     private ParticleEmitter createPurpleEmitter() {
@@ -112,8 +118,8 @@ class OrbBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        Material material =
-                new Material(assets, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material material
+                = new Material(assets, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
@@ -125,9 +131,9 @@ class OrbBuilder extends AbstractNodeBuilder {
         if (world.isClient()) {
             ParticleEmitter purple = createPurpleEmitter();
             node.attachChild(purple);
-            
+
             node.addControl(new CEntityEvent());
-            
+
             AOrbRemoval removalAction = new AOrbRemoval();
             removalAction.setPurpleEmitter(purple);
 
@@ -158,8 +164,46 @@ class OrbBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
+        buffControl.addBuff(new ReduceCooldownBuff.MyBuilder(0));
 
         return node;
+    }
+}
+
+class ReduceCooldownBuff extends AbstractBuff {
+
+    private ReduceCooldownBuff(float duration) {
+        super(duration);
+    }
+
+    @Override
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
+        super.attachToCharacter(targetInterface);
+        CSpellCast c = getOwnerInterface().getSpatial()
+                .getControl(CSpellCast.class);
+        Spell spell = Spell.getSpell("Dark Energy");
+        
+        if (spell == null) {
+            return;
+        }
+        
+        int id = spell.getId();
+        float cooldown = c.getCooldown(id);
+        cooldown = FastMath.clamp(cooldown - 1f, 0, cooldown);
+        c.setCooldown(id, cooldown);
+    }
+
+    public static class MyBuilder extends AbstractBuffBuilder {
+
+        public MyBuilder(float duration) {
+            super(0);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new ReduceCooldownBuff(0));
+        }
+
     }
 }
 

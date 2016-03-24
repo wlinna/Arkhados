@@ -63,7 +63,7 @@ public class DarkEnergy extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 2f;
+        final float cooldown = 7f;
         final float range = 120f;
         final float castTime = 0.4f;
 
@@ -162,8 +162,8 @@ class EnergyBuilder extends AbstractNodeBuilder {
 
         ASplash splash = new ASplash(DarkEnergy.SPLASH_RADIUS)
                 .distanceScaling(DistanceScaling.CONSTANT).heal(0);
-        splash.addBuff(new HealOverTimeBuff.MyBuilder(3f).healPerSec(20f));
-        splash.addBuff(new ArmorBuff.MyBuilder(3f, 20f, 0.5f));
+        splash.addBuff(new HealOverTimeBuff.MyBuilder(3f).healPerSec(30f));
+        splash.addBuff(new ArmorBuff.MyBuilder(4f, 35f, 0.5f));
 
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
