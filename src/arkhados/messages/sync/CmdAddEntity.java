@@ -16,13 +16,13 @@
 package arkhados.messages.sync;
 
 import arkhados.World;
-import arkhados.messages.sync.statedata.StateData;
+import arkhados.net.Command;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 
 @Serializable
-public class CmdAddEntity extends StateData {
+public class CmdAddEntity implements Command {
     private short entityId;
     private short nodeBuilderId;
     private Vector3f loc = new Vector3f();
@@ -48,9 +48,12 @@ public class CmdAddEntity extends StateData {
         this.age = age;
     }
 
-    @Override
-    public void applyData(Object target) {
-        World world = (World) target;
+    public void applyData(World world) {
         world.addEntity(entityId, nodeBuilderId, loc, rot, playerId, age);
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

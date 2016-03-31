@@ -30,6 +30,7 @@ import arkhados.messages.CmdPlayerKill;
 import arkhados.messages.CmdSetPlayersCharacter;
 import arkhados.messages.CmdTopicOnly;
 import arkhados.net.ClientSender;
+import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import arkhados.net.ServerSender;
 import arkhados.ui.hud.ClientHud;
@@ -91,9 +92,7 @@ public class DeathmatchCommon {
         sync = states.getState(Sync.class);
 
         CharacterInteraction.startNewRound();
-
-        sync.addObject(-1, world);
-
+        states.getState(Receiver.class).registerCommandHandler(world);
         firstBloodHappened = false;
 
         if (states.getState(Sender.class).isServer()) {

@@ -44,6 +44,8 @@ import arkhados.controls.CUserInput;
 import arkhados.effects.BuffEffect;
 import arkhados.messages.sync.CmdAddEntity;
 import arkhados.messages.sync.CmdRemoveEntity;
+import arkhados.net.Command;
+import arkhados.net.CommandHandler;
 import arkhados.net.Sender;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.info.BuffInfo;
@@ -62,10 +64,10 @@ import com.jme3.util.IntMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class World extends AbstractAppState {
+public class World extends AbstractAppState implements CommandHandler {
 
-    private final static Logger logger =
-            Logger.getLogger(World.class.getName());
+    private final static Logger logger
+            = Logger.getLogger(World.class.getName());
 
     static {
         logger.setLevel(Level.WARNING);
@@ -134,7 +136,6 @@ public class World extends AbstractAppState {
 //            }
 //            finally {
 //            }
-
 //            app.getStateManager().attach(new BulletDebugAppState(space));
         }
 
@@ -165,7 +166,6 @@ public class World extends AbstractAppState {
 //            groundGeom.addControl(lod);
 //            lod.setTrisPerPixel(0);
 //        }
-
         worldRoot.setName("world-root");
 
         arena.readWorld(this, assetManager);
@@ -193,8 +193,8 @@ public class World extends AbstractAppState {
             fog.createFog(worldRoot);
         }
 
-        UserCommandManager userCommandManager =
-                app.getStateManager().getState(UserCommandManager.class);
+        UserCommandManager userCommandManager
+                = app.getStateManager().getState(UserCommandManager.class);
         if (userCommandManager != null) {
             userCommandManager.createCameraControl();
         }
@@ -251,8 +251,8 @@ public class World extends AbstractAppState {
         CEntityVariable cVariable = new CEntityVariable(this, sender);
         entity.addControl(cVariable);
 
-        boolean isCharacter =
-                entity.getControl(CCharacterPhysics.class) != null;
+        boolean isCharacter
+                = entity.getControl(CCharacterPhysics.class) != null;
 
         if (isCharacter) {
             logger.log(Level.INFO, "Adding entity {0} for player {1}",
@@ -288,8 +288,8 @@ public class World extends AbstractAppState {
         if (isClient()) {
             UserCommandManager userCommandManager = app.getStateManager()
                     .getState(UserCommandManager.class);
-            boolean ownedByMe =
-                    userCommandManager.trySetPlayersCharacter(entity);
+            boolean ownedByMe
+                    = userCommandManager.trySetPlayersCharacter(entity);
 
             if (ownedByMe) {
                 app.getStateManager().getState(ClientFog.class)
@@ -333,8 +333,8 @@ public class World extends AbstractAppState {
             physics.setEnabled(true);
         }
 
-        CSyncInterpolation cInterpolation =
-                spatial.getControl(CSyncInterpolation.class);
+        CSyncInterpolation cInterpolation
+                = spatial.getControl(CSyncInterpolation.class);
         if (cInterpolation != null) {
             cInterpolation.ignoreNext();
         }
@@ -385,8 +385,8 @@ public class World extends AbstractAppState {
 
                 if (reason == RemovalReasons.DISAPPEARED) {
                     logger.log(Level.INFO, "Entity {0} disappeared", id);
-                    UserCommandManager userCommandManager =
-                            app.getStateManager()
+                    UserCommandManager userCommandManager
+                            = app.getStateManager()
                             .getState(UserCommandManager.class);
                     if (id == userCommandManager.getCharacterId()) {
                         userCommandManager.nullifyCharacter();
@@ -491,5 +491,21 @@ public class World extends AbstractAppState {
 
     public AbstractArena getArena() {
         return arena;
+    }
+
+    @Override
+    public void readGuaranteed(Object o, Command cmd) {
+        app.enqueue(() -> {
+            if (cmd instanceof CmdAddEntity) {
+                ((CmdAddEntity) cmd).applyData(this);
+            } else if (cmd instanceof CmdRemoveEntity) {
+                ((CmdRemoveEntity) cmd).applyData(this);
+            }
+            return null;
+        });
+    }
+
+    @Override
+    public void readUnreliable(Object o, Command cmnd) {
     }
 }

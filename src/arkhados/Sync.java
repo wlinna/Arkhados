@@ -35,7 +35,7 @@ public class Sync extends AbstractAppState implements CommandHandler {
     private final Application app;
     private final AppStateManager stateManager;
     private Sender sender;
-    private final IntMap<Object> syncObjects = new IntMap<>();
+    private final IntMap<Spatial> syncObjects = new IntMap<>();
     private float syncTimer = 0.0f;
     private float defaultSyncFrequency;
     private final Queue<StateData> stateDataQueue = new LinkedList<>();
@@ -63,9 +63,9 @@ public class Sync extends AbstractAppState implements CommandHandler {
             for (Iterator<StateData> it = stateDataQueue.iterator();
                     it.hasNext();) {
                 StateData stateData = it.next();
-                Object object = syncObjects.get(stateData.getSyncId());
-                if (object != null) {
-                    stateData.applyData(object);
+                Spatial spatial = syncObjects.get(stateData.getSyncId());
+                if (spatial != null) {
+                    stateData.applyData(spatial);
                 }
 
                 it.remove();
@@ -82,12 +82,8 @@ public class Sync extends AbstractAppState implements CommandHandler {
     private void sendSyncData() {
         ServerFog fog = stateManager.getState(ServerFog.class);
 
-        for (IntMap.Entry<Object> entry : syncObjects) {
-            if (!(entry.getValue() instanceof Spatial)) {
-                continue;
-            }
-
-            Spatial spatial = (Spatial) entry.getValue();
+        for (IntMap.Entry<Spatial> entry : syncObjects) {
+            Spatial spatial = entry.getValue();
 
             CSync syncControl = spatial.getControl(CSync.class);
             if (syncControl != null) {
@@ -100,19 +96,19 @@ public class Sync extends AbstractAppState implements CommandHandler {
     }
 
     private void doMessage(int syncId, Command command) {
-        Object object = syncObjects.get(syncId);
+        Spatial spatial = syncObjects.get(syncId);
 
-        if (object == null) {
+        if (spatial == null) {
             return;
         }
 
         if (command instanceof StateData) {
-            ((StateData) command).applyData(object);
+            ((StateData) command).applyData(spatial);
         }
     }
 
-    public void addObject(int id, Object object) {
-        syncObjects.put(id, object);
+    public void addObject(int id, Spatial spatial) {
+        syncObjects.put(id, spatial);
     }
 
     public void removeEntity(int id) {

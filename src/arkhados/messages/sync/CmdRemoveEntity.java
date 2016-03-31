@@ -17,10 +17,10 @@ package arkhados.messages.sync;
 
 import com.jme3.network.serializing.Serializable;
 import arkhados.World;
-import arkhados.messages.sync.statedata.StateData;
+import arkhados.net.Command;
 
 @Serializable
-public class CmdRemoveEntity extends StateData {
+public class CmdRemoveEntity implements Command {
 
     private short entityId;
     private byte reason;
@@ -29,14 +29,16 @@ public class CmdRemoveEntity extends StateData {
     }
 
     public CmdRemoveEntity(int entityId, int reason) {
-        super(-1);
         this.entityId = (short) entityId;
         this.reason = (byte) reason;
     }
 
-    @Override
-    public void applyData(Object target) {
-        World world = (World) target;
+    public void applyData(World world) {
         world.removeEntity(entityId, reason);
+    }
+
+    @Override
+    public boolean isGuaranteed() {
+        return true;
     }
 }

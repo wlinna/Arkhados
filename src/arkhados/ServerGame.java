@@ -18,6 +18,7 @@ import arkhados.gamemode.DeathMatch;
 import arkhados.gamemode.GameMode;
 import arkhados.gamemode.TeamDeathmatch;
 import arkhados.messages.CmdTopicOnly;
+import arkhados.net.Receiver;
 import arkhados.net.Sender;
 import arkhados.settings.server.Settings;
 import com.jme3.app.Application;
@@ -69,10 +70,11 @@ public class ServerGame extends AbstractAppState {
         }
 
         Sender sender = app.getStateManager().getState(Sender.class);
-
+        Receiver receiver = app.getStateManager().getState(Receiver.class);
+        
         Preloader.loadServer(Globals.assets);
-        app.getStateManager().getState(Sync.class).addObject(-1, world);
-
+        receiver.registerCommandHandler(world);
+        
         running = true;
         sender.addCommand(new CmdTopicOnly(Topic.START_GAME));
 
