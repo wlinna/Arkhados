@@ -51,8 +51,8 @@ public class Leap extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 10f;
-        final float range = 90f;
+        final float cooldown = 8.5f;
+        final float range = 60f;
         final float castTime = 0.2f;
 
         final Leap spell = new Leap("Leap", cooldown, range, castTime);
@@ -154,7 +154,7 @@ class ACastLeap extends EntityAction {
             float damage = 200f * damageFactor;
 
             List<AbstractBuffBuilder> buffs = new ArrayList<>(1);
-            buffs.add(0, new IncapacitateCC.MyBuilder(1f));
+            buffs.add(0, new IncapacitateCC.MyBuilder(1.5f));
 
             AbstractBuffBuilder trigger = Backlash.giveTriggerIfValid(spatial);
             if (trigger != null) {
