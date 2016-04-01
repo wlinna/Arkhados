@@ -86,7 +86,7 @@ public class Venator extends AbstractNodeBuilder {
         }
         entity.setUserData(UserData.DAMAGE_FACTOR, 1f);        
 
-        float lifesteal = 0.3f;
+        float lifesteal = 0.1f;
         entity.setUserData(UserData.LIFE_STEAL_BASE, lifesteal);
         entity.setUserData(UserData.LIFE_STEAL, lifesteal);
 
