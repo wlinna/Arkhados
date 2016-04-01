@@ -156,6 +156,11 @@ class ACastLeap extends EntityAction {
             List<AbstractBuffBuilder> buffs = new ArrayList<>(1);
             buffs.add(0, new IncapacitateCC.MyBuilder(1f));
 
+            AbstractBuffBuilder trigger = Backlash.giveTriggerIfValid(spatial);
+            if (trigger != null) {
+                buffs.add(trigger);
+            }
+
             CInfluenceInterface myInterface
                     = spatial.getControl(CInfluenceInterface.class);
             CInfluenceInterface targetInterface

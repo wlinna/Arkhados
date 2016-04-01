@@ -169,7 +169,7 @@ class TriggerBuff extends AbstractBuff {
 
         ownerSpatial.setUserData(UserData.LIFE_STEAL, lifesteal + 1f);
         CharacterInteraction.harm(getOwnerInterface(),
-                targetInterface, 100f, null, true);
+                targetInterface, 100f, null, false);
         ownerSpatial.setUserData(UserData.LIFE_STEAL, lifesteal);
 
         backlash.destroy();
