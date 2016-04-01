@@ -33,10 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class CAreaEffect extends AbstractControl
         implements PhysicsTickListener, PhysicsControl {
 
