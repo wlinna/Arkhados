@@ -24,8 +24,8 @@ public class BloodFrenzyInfo extends BuffInfo {
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        SurvivalInstinctEffect effect =
-                new SurvivalInstinctEffect(params.duration, false);
+        BacklashEffect effect =
+                new BacklashEffect(params.duration, false);
         effect.addToCharacter(params);
         return effect;
     }

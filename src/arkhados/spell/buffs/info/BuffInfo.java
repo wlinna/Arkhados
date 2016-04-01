@@ -27,7 +27,7 @@ public abstract class BuffInfo {
         addBuff(BuffTypeIds.PURIFYING_FLAME, new PurifyingFlameInfo());
         addBuff(BuffTypeIds.IGNITE, new IgniteInfo());
         addBuff(BuffTypeIds.MAGMA_RELEASE, new MagmaReleaseInfo());
-        addBuff(BuffTypeIds.SURVIVAL_INSTINCT, new SurvivalInstinctInfo());
+        addBuff(BuffTypeIds.BACKLASH, new BacklashInfo());
         addBuff(BuffTypeIds.DEEP_WOUNDS, new DeepWoundsInfo());
         addBuff(BuffTypeIds.FEAR, new FearInfo());
         addBuff(BuffTypeIds.INCAPACITATE, new IncapacitateInfo());

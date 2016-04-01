@@ -30,6 +30,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.collision.CollisionResults;
@@ -42,6 +43,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class Rend extends Spell {
@@ -103,10 +105,25 @@ class ADoubleMeleeAttack extends EntityAction {
         // TODO: Make an attack start with different animation than previous one
         float range = spell.getRange();
         CActionQueue queue = spatial.getControl(CActionQueue.class);
+        
+        CInfluenceInterface cInfluence = spatial
+                .getControl(CInfluenceInterface.class);
+        List<AbstractBuff> buffs = cInfluence.getBuffs();
+        
+        Backlash.Buff backlash = null;        
+        for (AbstractBuff buff : buffs) {
+            if (buff instanceof Backlash.Buff) {
+                backlash = (Backlash.Buff) buff;
+            }
+        }
+        
         final VenatorMeleeAttack action1 = new VenatorMeleeAttack(75f, range);
+        if (backlash != null) {
+            action1.addBuff(new Backlash.TriggerBuffBuilder(backlash));
+        }
         ACastingSpell action2Anim = new ACastingSpell(spell, true);
         VenatorMeleeAttack action2 = new VenatorMeleeAttack(85f, range);
-
+        
         // action1 already has the default spell casting animation
         action2Anim.setTypeId(Venator.ANIM_SWIPE_RIGHT);
         queue.enqueueAction(action1);

@@ -14,12 +14,18 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.venator;
 
+import arkhados.World;
+import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastProjectile;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 public class Dagger extends Spell {
+
     {
         iconName = "damaging_dagger.png";
     }
@@ -36,11 +42,40 @@ public class Dagger extends Spell {
         final Dagger spell = new Dagger("Damaging Dagger", cooldown,
                 range, castTime);
 
-        spell.castSpellActionBuilder = (Node caster, Vector3f vec) ->
-                new ACastProjectile(spell, world);
-
+        spell.castSpellActionBuilder = new CastDagger(spell, world);
         spell.nodeBuilder = new DaggerBuilder(true);
 
         return spell;
+    }
+}
+
+class CastDagger implements CastSpellActionBuilder {
+
+    private final Dagger spell;
+    private final World world;
+
+    public CastDagger(Dagger spell, World world) {
+        this.spell = spell;
+        this.world = world;
+    }
+
+    @Override
+    public EntityAction newAction(Node caster, Vector3f vec) {
+        ACastProjectile action = new ACastProjectile(spell, world);
+        CInfluenceInterface influenceInterface 
+                = caster.getControl(CInfluenceInterface.class);
+
+        Backlash.Buff backlash = null;
+        for (AbstractBuff buff : influenceInterface.getBuffs()) {
+            if (buff instanceof Backlash.Buff) {
+                backlash = (Backlash.Buff) buff;
+            }
+        }
+
+        if (backlash != null) {
+            action.addBuff(new Backlash.TriggerBuffBuilder(backlash));
+        }
+
+        return action;
     }
 }

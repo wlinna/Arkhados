@@ -25,7 +25,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-public class SurvivalInstinctInfo extends BuffInfo {
+public class BacklashInfo extends BuffInfo {
 
     {
         setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
@@ -33,18 +33,18 @@ public class SurvivalInstinctInfo extends BuffInfo {
 
     @Override
     public BuffEffect createBuffEffect(BuffInfoParameters params) {
-        SurvivalInstinctEffect effect =
-                new SurvivalInstinctEffect(params.duration, true);
+        BacklashEffect effect =
+                new BacklashEffect(params.duration, true);
         effect.addToCharacter(params);
         return effect;
     }
 }
-class SurvivalInstinctEffect extends BuffEffect {  
+class BacklashEffect extends BuffEffect {  
 
     private Node characterNode = null;
     private ColorRGBA color;
 
-    public SurvivalInstinctEffect(float timeLeft, boolean primary) {
+    public BacklashEffect(float timeLeft, boolean primary) {
         super(timeLeft);
         float red = primary ? 0.8f : 2f;
         color = new ColorRGBA(red, 0.1f, 0.1f, 1f);

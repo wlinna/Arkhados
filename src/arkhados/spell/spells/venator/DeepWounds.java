@@ -30,7 +30,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-
 public class DeepWounds extends Spell {
 
     {
@@ -78,6 +77,20 @@ class ACastDeepWounds extends EntityAction {
 
         AbstractBuffBuilder bleedBuff = new BleedBuff.MyBuilder(4.2f)
                 .damagePerUnit(2 * damageFactor);
+
+        CInfluenceInterface influenceInterface 
+                = spatial.getControl(CInfluenceInterface.class);
+        
+        Backlash.Buff backlash = null;
+        for (AbstractBuff buff : influenceInterface.getBuffs()) {
+            if (buff instanceof Backlash.Buff) {
+                backlash = (Backlash.Buff) buff;
+            }
+        }
+
+        if (backlash != null) {
+            charge.addBuff(new Backlash.TriggerBuffBuilder(backlash));
+        }
 
         bleedBuff.setOwnerInterface(spatial
                 .getControl(CInfluenceInterface.class));

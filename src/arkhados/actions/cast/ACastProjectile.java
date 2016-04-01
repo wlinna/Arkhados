@@ -51,7 +51,6 @@ public class ACastProjectile extends EntityAction {
         additionalBuffs.add(buff);
     }
 
-
     @Override
     public boolean update(float tpf) {
         CSpellCast cSpellCast = spatial.getControl(CSpellCast.class);

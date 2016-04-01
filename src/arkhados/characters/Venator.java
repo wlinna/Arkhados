@@ -70,7 +70,7 @@ public class Venator extends AbstractNodeBuilder {
     }
 
     @Override
-    public Node build(BuildParameters params) {
+    public Node build(BuildParameters params) {        
         Node entity = (Node) assets.loadModel("Models/Warwolf.j3o");
         float movementSpeed = 37f;
         entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
@@ -84,7 +84,7 @@ public class Venator extends AbstractNodeBuilder {
         if (params.age < 0f) {
             entity.setUserData(UserData.HEALTH_CURRENT, 0f);
         }
-        entity.setUserData(UserData.DAMAGE_FACTOR, 1f);
+        entity.setUserData(UserData.DAMAGE_FACTOR, 1f);        
 
         float lifesteal = 0.3f;
         entity.setUserData(UserData.LIFE_STEAL_BASE, lifesteal);
@@ -106,7 +106,7 @@ public class Venator extends AbstractNodeBuilder {
         Spell leap = Spell.getSpell("Leap");
         Spell scream = Spell.getSpell("Feral Scream");
         Spell deepWounds = Spell.getSpell("Deep Wounds");
-        Spell survivalInstinct = Spell.getSpell("Survival Instinct");
+        Spell backlash = Spell.getSpell("Backlash");
 
         int M2Id = InputMapping.getId(InputMapping.M2);
         int RId = InputMapping.getId(InputMapping.R);
@@ -120,7 +120,7 @@ public class Venator extends AbstractNodeBuilder {
                 InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(deepWounds,
                 InputMapping.getId(InputMapping.E));
-        spellCastControl.putSpell(survivalInstinct, RId);
+        spellCastControl.putSpell(backlash, RId);
 
         AnimControl animControl = entity.getControl(AnimControl.class);
         CCharacterAnimation characterAnimControl
@@ -167,7 +167,7 @@ public class Venator extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Leap", jumpAnim);
         characterAnimControl.addSpellAnimation("Feral Scream", roarAnim);
         characterAnimControl.addSpellAnimation("Deep Wounds", chargeAnim);
-        characterAnimControl.addSpellAnimation("Survival Instinct", null);
+        characterAnimControl.addSpellAnimation("Backlash", null);
 
         AnimationData landAnim
                 = new AnimationData("Land", 1f, LoopMode.DontLoop);
