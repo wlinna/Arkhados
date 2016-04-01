@@ -30,7 +30,7 @@ import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.collision.CollisionResults;
@@ -43,7 +43,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 public class Rend extends Spell {
@@ -106,20 +105,11 @@ class ADoubleMeleeAttack extends EntityAction {
         float range = spell.getRange();
         CActionQueue queue = spatial.getControl(CActionQueue.class);
         
-        CInfluenceInterface cInfluence = spatial
-                .getControl(CInfluenceInterface.class);
-        List<AbstractBuff> buffs = cInfluence.getBuffs();
-        
-        Backlash.Buff backlash = null;        
-        for (AbstractBuff buff : buffs) {
-            if (buff instanceof Backlash.Buff) {
-                backlash = (Backlash.Buff) buff;
-            }
-        }
+        AbstractBuffBuilder trigger = Backlash.giveTriggerIfValid(spatial);
         
         final VenatorMeleeAttack action1 = new VenatorMeleeAttack(75f, range);
-        if (backlash != null) {
-            action1.addBuff(new Backlash.TriggerBuffBuilder(backlash));
+        if (trigger != null) {
+            action1.addBuff(trigger);
         }
         ACastingSpell action2Anim = new ACastingSpell(spell, true);
         VenatorMeleeAttack action2 = new VenatorMeleeAttack(85f, range);

@@ -21,6 +21,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.CastSpellActionBuilder;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -61,19 +62,11 @@ class CastDagger implements CastSpellActionBuilder {
 
     @Override
     public EntityAction newAction(Node caster, Vector3f vec) {
-        ACastProjectile action = new ACastProjectile(spell, world);
-        CInfluenceInterface influenceInterface 
-                = caster.getControl(CInfluenceInterface.class);
-
-        Backlash.Buff backlash = null;
-        for (AbstractBuff buff : influenceInterface.getBuffs()) {
-            if (buff instanceof Backlash.Buff) {
-                backlash = (Backlash.Buff) buff;
-            }
-        }
-
-        if (backlash != null) {
-            action.addBuff(new Backlash.TriggerBuffBuilder(backlash));
+        ACastProjectile action = new ACastProjectile(spell, world);        
+        
+        AbstractBuffBuilder trigger = Backlash.giveTriggerIfValid(caster);        
+        if (trigger != null) {
+            action.addBuff(trigger);
         }
 
         return action;

@@ -77,19 +77,10 @@ class ACastDeepWounds extends EntityAction {
 
         AbstractBuffBuilder bleedBuff = new BleedBuff.MyBuilder(4.2f)
                 .damagePerUnit(2 * damageFactor);
-
-        CInfluenceInterface influenceInterface 
-                = spatial.getControl(CInfluenceInterface.class);
         
-        Backlash.Buff backlash = null;
-        for (AbstractBuff buff : influenceInterface.getBuffs()) {
-            if (buff instanceof Backlash.Buff) {
-                backlash = (Backlash.Buff) buff;
-            }
-        }
-
-        if (backlash != null) {
-            charge.addBuff(new Backlash.TriggerBuffBuilder(backlash));
+        AbstractBuffBuilder trigger = Backlash.giveTriggerIfValid(spatial);
+        if (trigger != null) {
+            charge.addBuff(trigger);
         }
 
         bleedBuff.setOwnerInterface(spatial

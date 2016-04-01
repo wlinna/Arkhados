@@ -28,6 +28,7 @@ import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.List;
 
 public class Backlash extends Spell {
 
@@ -40,8 +41,7 @@ public class Backlash extends Spell {
     static class TriggerBuffBuilder extends AbstractBuffBuilder {
 
         private final Buff backlash;
-        
-        
+
         public TriggerBuffBuilder(Buff backlash) {
             super(0f);
             this.backlash = backlash;
@@ -53,7 +53,7 @@ public class Backlash extends Spell {
         }
     }
 
-    public static class Buff extends AbstractBuff {
+    static class Buff extends AbstractBuff {
 
         private Buff() {
             super(BUFF_DURATION);
@@ -71,6 +71,23 @@ public class Backlash extends Spell {
                 return set(new Buff());
             }
         }
+    }
+
+    public static AbstractBuffBuilder giveTriggerIfValid(Spatial spatial) {
+        CInfluenceInterface cInfluence = spatial
+                .getControl(CInfluenceInterface.class);
+        List<AbstractBuff> buffs = cInfluence.getBuffs();
+
+        Backlash.Buff backlash = null;
+        for (AbstractBuff buff : buffs) {
+            if (buff instanceof Backlash.Buff) {
+                backlash = (Backlash.Buff) buff;
+            }
+        }
+
+        return backlash != null
+                ? new Backlash.TriggerBuffBuilder(backlash)
+                : null;
     }
 
     public Backlash(String name, float cooldown, float range, float castTime) {
