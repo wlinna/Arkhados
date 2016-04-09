@@ -32,7 +32,7 @@ import com.jme3.scene.Spatial;
 
 public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
-    private World world;
+    private final World world;
 
     public ServerWorldCollisionListener(World world) {
         this.world = world;
@@ -55,19 +55,18 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             wallB = event.getNodeB();
         }
 
-        CInfluenceInterface characterA =
-                event.getNodeA().getControl(CInfluenceInterface.class);
-        CInfluenceInterface characterB =
-                event.getNodeB().getControl(CInfluenceInterface.class);
+        CInfluenceInterface characterA
+                = event.getNodeA().getControl(CInfluenceInterface.class);
+        CInfluenceInterface characterB
+                = event.getNodeB().getControl(CInfluenceInterface.class);
 
         CProjectile projectileA = event.getNodeA().getControl(CProjectile.class);
         CProjectile projectileB = event.getNodeB().getControl(CProjectile.class);
 
-        CSpiritStonePhysics ssPhysicsA =
-                event.getNodeA().getControl(CSpiritStonePhysics.class);
-        CSpiritStonePhysics ssPhysicsB =
-                event.getNodeB().getControl(CSpiritStonePhysics.class);
-
+        CSpiritStonePhysics ssPhysicsA
+                = event.getNodeA().getControl(CSpiritStonePhysics.class);
+        CSpiritStonePhysics ssPhysicsB
+                = event.getNodeB().getControl(CSpiritStonePhysics.class);
 
         CSkyDrop skyDrop = event.getNodeA().getControl(CSkyDrop.class);
         if (skyDrop == null) {
@@ -122,6 +121,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
         if (projectile.getHurted().contains(target.getSpatial())) {
             return;
         }
+        
+        projectile.getHurted().add(target.getSpatial());
 
         final float damage = projectile.getSpatial().getUserData(UserData.DAMAGE);
         int removalReason = RemovalReasons.COLLISION;
@@ -129,8 +130,8 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             target.reducePurifyingFlame(damage);
             removalReason = RemovalReasons.ABSORBED;
         } else {
-            CActionQueue actionQueue =
-                    target.getSpatial().getControl(CActionQueue.class);
+            CActionQueue actionQueue
+                    = target.getSpatial().getControl(CActionQueue.class);
             EntityAction currentAction = actionQueue.getCurrent();
 
             if (currentAction instanceof ATrance) {
@@ -148,7 +149,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
             CSpellBuff buffControl = projectile.getSpatial()
                     .getControl(CSpellBuff.class);
 
-            final boolean canBreakCC = damage > 0f ? true : false;
+            final boolean canBreakCC = damage > 0f;
 
             CharacterInteraction.harm(projectile.getOwnerInterface(), target,
                     damage, buffControl.getBuffs(), canBreakCC);
@@ -158,7 +159,7 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
 
             Vector3f impulse = target.getSpatial().getLocalTranslation()
                     .subtract(projectile.getRigidBodyControl()
-                    .getPhysicsLocation().setY(0)).normalizeLocal()
+                            .getPhysicsLocation().setY(0)).normalizeLocal()
                     .multLocal(impulseFactor);
 
             target.getSpatial().getControl(CCharacterPhysics.class)
@@ -174,8 +175,6 @@ public class ServerWorldCollisionListener implements PhysicsCollisionListener {
                 .getUserData(UserData.ENTITY_ID);
         if (projectile.isProjectile()) {
             world.removeEntity(entityId, removalReason);
-        } else {
-            projectile.getHurted().add(target.getSpatial());
         }
     }
 
