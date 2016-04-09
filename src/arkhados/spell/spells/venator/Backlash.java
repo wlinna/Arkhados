@@ -189,7 +189,7 @@ class ABacklash extends EntityAction implements ATrance {
         AbstractBuff backlash = backlashBuilder.build();
         backlash.attachToCharacter(cInfluence);
 
-        SpeedBuff.MyBuilder speedBuilder = new SpeedBuff.MyBuilder(0.3f, 0f,
+        SpeedBuff.MyBuilder speedBuilder = new SpeedBuff.MyBuilder(0.5f, 0f,
                 Backlash.BUFF_DURATION);
         speedBuilder.setTypeId(BuffTypeIds.BACKLASH);
         AbstractBuff speed = speedBuilder.build();
