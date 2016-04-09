@@ -39,6 +39,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
+import java.util.Iterator;
 import java.util.List;
 
 public class Backlash extends Spell {
@@ -185,11 +186,22 @@ class ABacklash extends EntityAction implements ATrance {
     public void activate(Spatial activator) {
         if (activated) {
             return;
-        }
+        }               
 
         activated = true;
         timeLeft = 0f;
 
+        
+        for (Iterator<AbstractBuff> it = cInfluence.getBuffs().iterator();
+                it.hasNext();) {
+            AbstractBuff buff = it.next();
+            if (buff.isFriendly()) { continue; }
+            
+            buff.destroy();
+            it.remove();
+            
+        }
+        
         Backlash.Buff.MyBuilder backlashBuilder = new Backlash.Buff.MyBuilder();
         backlashBuilder.setOwnerInterface(cInfluence);
         AbstractBuff backlash = backlashBuilder.build();
