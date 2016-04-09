@@ -34,6 +34,7 @@ import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
+import arkhados.spell.spells.venator.Backlash;
 import arkhados.spell.spells.venator.FeralScream;
 import arkhados.spell.spells.venator.Rend;
 import arkhados.util.AnimationData;
@@ -54,6 +55,7 @@ public class Venator extends AbstractNodeBuilder {
     public static final int ANIM_SWIPE_LEFT = 3;
     public static final int ACTION_FERALSCREAM = 4;
     public static final int ACTION_REND_HIT = 5;
+    public static final int ACTION_BACKLASH = 6;
     private final WorldEffect rendEffect;
     private final WorldEffect feralScreamEffect = new FeralScream.Effect();
 
@@ -167,7 +169,7 @@ public class Venator extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Leap", jumpAnim);
         characterAnimControl.addSpellAnimation("Feral Scream", roarAnim);
         characterAnimControl.addSpellAnimation("Deep Wounds", chargeAnim);
-        characterAnimControl.addSpellAnimation("Backlash", null);
+        characterAnimControl.addSpellAnimation("Backlash", jumpAnim);
 
         AnimationData landAnim
                 = new AnimationData("Land", 1f, LoopMode.DontLoop);
@@ -207,6 +209,7 @@ public class Venator extends AbstractNodeBuilder {
             CActionPlayer actionPlayer = new CActionPlayer();
             actionPlayer.putEffect(ACTION_FERALSCREAM, feralScreamEffect);
             actionPlayer.putEffect(ACTION_REND_HIT, rend.castEffect);
+            actionPlayer.putEffect(ACTION_BACKLASH, new Backlash.CastEffect());
             entity.addControl(actionPlayer);
         } else {
             CResting restingControl = new CResting();

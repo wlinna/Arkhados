@@ -1,0 +1,13 @@
+MaterialDef Backlash{
+    MaterialParameters {
+    }
+    Technique {
+        VertexShader GLSL100: MatDefs/Backlash/Backlash.vert
+        FragmentShader GLSL100: MatDefs/Backlash/Backlash.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+        }
+    }
+}

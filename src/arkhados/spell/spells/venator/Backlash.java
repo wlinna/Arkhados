@@ -15,19 +15,30 @@
 package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
+import arkhados.Globals;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
+import arkhados.characters.Venator;
 import arkhados.controls.CCharacterMovement;
+import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
+import arkhados.effects.EffectHandle;
+import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.BuffTypeIds;
 import arkhados.util.UserData;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Cylinder;
 import java.util.List;
 
 public class Backlash extends Spell {
@@ -73,6 +84,35 @@ public class Backlash extends Spell {
         }
     }
 
+    public static class CastEffect implements WorldEffect {
+        
+        @Override
+        public EffectHandle execute(Node root, Vector3f loc, String param) {
+            CCharacterPhysics phys = root.getControl(CCharacterPhysics.class);
+            float height = phys.getCapsuleShape().getHeight();
+            float radius = phys.getCapsuleShape().getRadius();
+            
+            Mesh mesh = new Cylinder(2, 32, 1f, 0.1f, true);
+            Geometry geom = new Geometry("backlash-action", mesh);
+            geom.scale(radius * 1.75f, height, radius * 1.75f);
+            geom.setLocalTranslation(0f, 1f, 0f);
+            
+            Material mat = new Material(Globals.assets,
+                    "MatDefs/Backlash/Backlash.j3md");
+            mat.getAdditionalRenderState()
+                    .setBlendMode(RenderState.BlendMode.AlphaAdditive);
+            mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+            geom.setQueueBucket(RenderQueue.Bucket.Transparent);
+            geom.setMaterial(mat);
+
+            root.attachChild(geom);
+            
+            return () -> {
+                geom.removeFromParent();
+            };
+        }
+    }
+
     public static AbstractBuffBuilder giveTriggerIfValid(Spatial spatial) {
         CInfluenceInterface cInfluence = spatial
                 .getControl(CInfluenceInterface.class);
@@ -115,6 +155,10 @@ class ABacklash extends EntityAction implements ATrance {
     private CInfluenceInterface cInfluence;
     private CCharacterMovement cMovement;
 
+    {
+        setTypeId(Venator.ACTION_BACKLASH);
+    }
+
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
@@ -150,6 +194,12 @@ class ABacklash extends EntityAction implements ATrance {
         speedBuilder.setTypeId(BuffTypeIds.BACKLASH);
         AbstractBuff speed = speedBuilder.build();
         speed.attachToCharacter(cInfluence);
+    }
+
+    @Override
+    public void end() {
+        super.end();
+        announceEnd();
     }
 }
 
