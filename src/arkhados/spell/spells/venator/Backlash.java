@@ -154,6 +154,7 @@ class ABacklash extends EntityAction implements ATrance {
     private float timeLeft = 2f;
     private CInfluenceInterface cInfluence;
     private CCharacterMovement cMovement;
+    private boolean activated = false;
 
     {
         setTypeId(Venator.ACTION_BACKLASH);
@@ -182,6 +183,11 @@ class ABacklash extends EntityAction implements ATrance {
 
     @Override
     public void activate(Spatial activator) {
+        if (activated) {
+            return;
+        }
+
+        activated = true;
         timeLeft = 0f;
 
         Backlash.Buff.MyBuilder backlashBuilder = new Backlash.Buff.MyBuilder();
