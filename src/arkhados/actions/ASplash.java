@@ -32,13 +32,13 @@ import java.util.function.Predicate;
 
 public class ASplash extends EntityAction {
 
-    private float radius;
+    private final float radius;
     private float baseDamage;
     private Float customImpulse;
     private DistanceScaling distanceScaling;
     private List<AbstractBuffBuilder> splashBuffs;
     private boolean splashBuffsOnly = false;
-    private List<Spatial> excluded = new ArrayList<>();
+    private final List<Spatial> excluded = new ArrayList<>();
     private Integer excludedTeam = null;
     private CInfluenceInterface casterInterface;
     private float baseHeal;
@@ -217,5 +217,9 @@ public class ASplash extends EntityAction {
 
     public void setCasterInterface(CInfluenceInterface casterInterface) {
         this.casterInterface = casterInterface;
+    }
+
+    public float getRadius() {
+        return radius;
     }
 }

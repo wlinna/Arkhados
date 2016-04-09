@@ -33,7 +33,9 @@ import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
+import java.util.List;
 
 public class EarthQuake extends Spell {
 
@@ -68,12 +70,14 @@ class ACastEarthQuake extends EntityAction {
 
     private static final class AKnockupAround extends EntityAction {
 
-        private final float splashRadius;
+        private final ASplash splash;
         private final int teamId;
+        private final ACharge charge;
 
-        public AKnockupAround(float splashRadius, int teamId) {
-            this.splashRadius = splashRadius;
+        public AKnockupAround(ASplash splash, int teamId, ACharge charge) {
+            this.splash = splash;
             this.teamId = teamId;
+            this.charge = charge;
         }
 
         @Override
@@ -81,11 +85,22 @@ class ACastEarthQuake extends EntityAction {
             ArrayList<SpatialDistancePair> spatialsWithinDistance = Selector
                     .getSpatialsWithinDistance(
                             new ArrayList<>(),
-                            spatial.getLocalTranslation(), splashRadius,
+                            spatial.getLocalTranslation(), splash.getRadius(),
                             new Selector.IsCharacterOfOtherTeam(teamId));
 
+            List<Spatial> hurtUs = new ArrayList<>();
             for (SpatialDistancePair pair : spatialsWithinDistance) {
-                pair.spatial.getControl(CActionQueue.class)
+                if (charge.getSafeSpatials().contains(pair.spatial)) {
+                    splash.excludeSpatial(pair.spatial);
+                    continue;
+                }
+                hurtUs.add(pair.spatial);
+            }
+
+            splash.update(0f);
+
+            for (Spatial hurtMe : hurtUs) {
+                hurtMe.getControl(CActionQueue.class)
                         .enqueueAction(new AKnockup());
             }
 
@@ -114,6 +129,7 @@ class ACastEarthQuake extends EntityAction {
 
         ASplash splash = new ASplash(splashRadius, 180f, 0f,
                 DistanceScaling.CONSTANT, buffs);
+        splash.setSpatial(spatial);
         final int teamId = spatial.getUserData(UserData.TEAM_ID);
         splash.setExcludedTeam(teamId);
         CInfluenceInterface casterInterface
@@ -122,10 +138,10 @@ class ACastEarthQuake extends EntityAction {
 
         CActionQueue queue = spatial.getControl(CActionQueue.class);
         queue.enqueueAction(charge);
-        queue.enqueueAction(splash);
-        splash.setTypeId(RockGolem.ACTION_EARTHQUAKE);
+        AKnockupAround knockAround = new AKnockupAround(splash, teamId, charge);
+        knockAround.setTypeId(RockGolem.ACTION_EARTHQUAKE);
 
-        queue.enqueueAction(new AKnockupAround(splashRadius, teamId));
+        queue.enqueueAction(knockAround);
 
         return false;
     }

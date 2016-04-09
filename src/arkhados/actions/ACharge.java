@@ -32,10 +32,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class ACharge extends EntityAction
-        implements PhysicsCollisionListener {
+public class ACharge extends EntityAction implements PhysicsCollisionListener {
 
     private boolean isCharging = false;
     private float chargeSpeed;
@@ -47,6 +48,7 @@ public class ACharge extends EntityAction
     private final List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private boolean hasCollided = false;
     private Spatial collidedWith = null;
+    private final Set<Spatial> safeSpatials = new HashSet<>();
     private float hitDamage;
 
     public ACharge(float range) {
@@ -126,6 +128,7 @@ public class ACharge extends EntityAction
                 target.getControl(CActionQueue.class).getCurrent();
 
         if (aCurrent instanceof ATrance) {
+            safeSpatials.add(target);
             ((ATrance) aCurrent).activate(spatial);
             return;
         }
@@ -210,5 +213,13 @@ public class ACharge extends EntityAction
 
     public void setHitDamage(float hitDamage) {
         this.hitDamage = hitDamage;
+    }
+
+    public Spatial getCollidedWith() {
+        return collidedWith;
+    }
+
+    public Set<Spatial> getSafeSpatials() {
+        return safeSpatials;
     }
 }
