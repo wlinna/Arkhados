@@ -64,9 +64,7 @@ public class ACharge extends EntityAction implements PhysicsCollisionListener {
         super.setSpatial(spatial);
         CCharacterPhysics physics =
                 spatial.getControl(CCharacterPhysics.class);
-        CapsuleCollisionShape shape = physics.getCapsuleShape();
-        shape.setScale(new Vector3f(1.5f, 1f, 1.5f));
-        ghost = new GhostControl(shape);
+        ghost = new GhostControl(physics.getCapsuleShape());
         ghost.setCollisionGroup(CollisionGroups.NONE);
         ghost.setCollideWithGroups(CollisionGroups.CHARACTERS
                 | CollisionGroups.WALLS | CollisionGroups.SPIRIT_STONE);
