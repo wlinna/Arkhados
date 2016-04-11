@@ -152,7 +152,7 @@ public class Backlash extends Spell {
 
 class ABacklash extends EntityAction implements ATrance {
 
-    private float timeLeft = 2f;
+    private float timeLeft = 1.5f;
     private CInfluenceInterface cInfluence;
     private CCharacterMovement cMovement;
     private boolean activated = false;
@@ -207,7 +207,7 @@ class ABacklash extends EntityAction implements ATrance {
         AbstractBuff backlash = backlashBuilder.build();
         backlash.attachToCharacter(cInfluence);
 
-        SpeedBuff.MyBuilder speedBuilder = new SpeedBuff.MyBuilder(0.5f, 0f,
+        SpeedBuff.MyBuilder speedBuilder = new SpeedBuff.MyBuilder(0.4f, 0f,
                 Backlash.BUFF_DURATION);
         speedBuilder.setTypeId(BuffTypeIds.BACKLASH);
         AbstractBuff speed = speedBuilder.build();
