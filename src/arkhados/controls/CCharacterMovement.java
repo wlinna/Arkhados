@@ -14,6 +14,9 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.controls;
 
+import arkhados.actions.ACastingSpell;
+import arkhados.actions.AChannelingSpell;
+import arkhados.actions.EntityAction;
 import arkhados.util.UserData;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -92,9 +95,14 @@ public class CCharacterMovement extends AbstractControl {
             return;
         }
 
+        CActionQueue cAction = spatial.getControl(CActionQueue.class);
         CUserInput cInput = spatial.getControl(CUserInput.class);
+        EntityAction action = cAction.getCurrent();
+        boolean actionBlocking = action == null ? false 
+                : !(action instanceof ACastingSpell 
+                || action instanceof AChannelingSpell);
 
-        if (cInfluence.canMove() && (cInfluence.isAbleToCastWhileMoving()
+        if (cInfluence.canMove() && !actionBlocking && (cInfluence.isAbleToCastWhileMoving()
                 || (!cSpell.isCasting() && !cSpell.isChanneling()))) {
             if (cInfluence.canControlMovement()) {
                 Vector3f direction = cInput.giveInputDirection();
