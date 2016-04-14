@@ -15,7 +15,6 @@
 package arkhados.spell.spells.embermage;
 
 import arkhados.controls.CInfluenceInterface;
-import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.spell.buffs.DamageOverTimeBuff;
@@ -23,10 +22,6 @@ import arkhados.util.BuffTypeIds;
 import arkhados.util.UserData;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public class Ignite extends Spell {
 
     public Ignite(String name, float cooldown, float range, float castTime) {
@@ -34,7 +29,7 @@ public class Ignite extends Spell {
     }
 
     public static Ignite create() {
-        final float cooldown = 5f;
+        final float cooldown = 0f;
         final float range = 0f;
         final float castTime = 0f;
 
@@ -42,29 +37,20 @@ public class Ignite extends Spell {
         return spell;
     }
 
-    public static AbstractBuffBuilder ifNotCooldownCreateDamageOverTimeBuff(
-            Node caster) {
-        CSpellCast castControl = caster.getControl(CSpellCast.class);
-        if (castControl.isOnCooldown("Ignite")) {
-            // TODO: Check if adding null causes problems
-            return null;
-        }
-
-        float damagePerSecond = 20f;
+    public static AbstractBuffBuilder ifNotCooldownCreateDamageOverTimeBuff(Node caster) {
+        float damagePerSecond = 6f;
         float damageFactor = caster.getUserData(UserData.DAMAGE_FACTOR);
 
         damagePerSecond *= damageFactor;
-        
-        castControl.putOnCooldown(Spell.getSpell("Ignite").getId());
 
-        DamageOverTimeBuff.MyBuilder dotBuff =
-                new DamageOverTimeBuff.MyBuilder(4f).dps(damagePerSecond);
+        DamageOverTimeBuff.MyBuilder dotBuff
+                = new DamageOverTimeBuff.MyBuilder(3f).dps(damagePerSecond);
         dotBuff.setName("Ignite");
         dotBuff.setTypeId(BuffTypeIds.IGNITE);
-        CInfluenceInterface ownerInterface =
-                caster.getControl(CInfluenceInterface.class);
+        CInfluenceInterface ownerInterface
+                = caster.getControl(CInfluenceInterface.class);
         dotBuff.setOwnerInterface(ownerInterface);
-        
+
         return dotBuff;
     }
 }
