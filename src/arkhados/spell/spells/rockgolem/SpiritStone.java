@@ -100,7 +100,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
     private final float duration;
     private final float influenceRadius;
     
-    static final float RADIUS = 5f;
+    static final float RADIUS = 6.5f;
 
     public SpiritStoneBuilder(boolean primary) {
         this.primary = primary;
@@ -114,7 +114,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
 
         for (Spatial childToScale : node.getChildren()) {
-            childToScale.scale(3f);
+            childToScale.scale(4f);
         }
 
         node.setUserData(UserData.SPEED_MOVEMENT, 145f);
