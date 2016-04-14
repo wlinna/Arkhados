@@ -40,8 +40,8 @@ public class CAreaEffect extends AbstractControl
     private PhysicsSpace space;
     private final List<Influence> influences = new ArrayList<>();
     private final List<AbstractBuffBuilder> enterBuffs = new ArrayList<>();
-    private final HashMap<CInfluenceInterface, Boolean> enteredPlayers =
-            new HashMap<>();
+    private final HashMap<CInfluenceInterface, Boolean> enteredPlayers
+            = new HashMap<>();
     private CInfluenceInterface ownerInterface = null;
 
     public CAreaEffect() {
@@ -99,16 +99,16 @@ public class CAreaEffect extends AbstractControl
         }
 
         int myTeamId = spatial.getUserData(UserData.TEAM_ID);
-        List<PhysicsCollisionObject> collisionObjects =
-                ghostControl.getOverlappingObjects();
+        List<PhysicsCollisionObject> collisionObjects
+                = ghostControl.getOverlappingObjects();
 
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (!(collisionObject.getUserObject() instanceof Spatial)) {
                 continue;
             }
             Spatial other = (Spatial) collisionObject.getUserObject();
-            CInfluenceInterface targetInterface =
-                    other.getControl(CInfluenceInterface.class);
+            CInfluenceInterface targetInterface
+                    = other.getControl(CInfluenceInterface.class);
 
             if (targetInterface == null) {
                 continue;
@@ -126,7 +126,8 @@ public class CAreaEffect extends AbstractControl
                 }
             }
 
-            if (!enteredPlayers.containsKey(targetInterface)) {
+            if (!enteredPlayers.containsKey(targetInterface)
+                    && !enterBuffs.isEmpty()) {
                 enteredPlayers.put(targetInterface, false);
                 if (!sameTeam) {
                     CharacterInteraction.harm(ownerInterface, targetInterface,

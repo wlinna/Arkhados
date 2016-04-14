@@ -104,6 +104,7 @@ Horrorpen for following spell and buff icons:
 - Fear
 - Dark Energy
 - Void Spear
+- Mind Poison
 
 Icons are CC-BY 3.0 -licensed and can
 be found from [OGA](http://opengameart.org/content/random-rpg-icons-part-1)
