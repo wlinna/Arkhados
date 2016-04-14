@@ -16,17 +16,12 @@ package arkhados.spell.spells.embermage;
 
 import arkhados.CollisionGroups;
 import arkhados.actions.cast.ACastProjectile;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.AbstractBuff;
-import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.BrimstoneBuff;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
-import arkhados.util.BuffTypeIds;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
@@ -39,7 +34,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
-import java.util.Iterator;
 
 /**
  * Embermage's Magma Bash (M2) spell. Fast flying projectile with no damage or
@@ -141,48 +135,9 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BrimstoneIncapacitate.MyBuilder(1.20f));
+        buffControl.addBuff(new IncapacitateCC.MyBuilder(1.6f));
 
         node.getControl(RigidBodyControl.class).setGravity(Vector3f.ZERO);
         return node;
-    }
-}
-
-class BrimstoneIncapacitate extends IncapacitateCC {
-
-    private BrimstoneIncapacitate(float duration) {
-        super(duration);
-    }
-
-    @Override
-    public void attachToCharacter(CInfluenceInterface influenceInterface) {
-        BrimstoneBuff brimstone = null;
-
-        for (Iterator<AbstractBuff> it =
-                influenceInterface.getBuffs().iterator(); it.hasNext();) {
-            AbstractBuff buff = it.next();
-            if (buff instanceof BrimstoneBuff) {
-                brimstone = (BrimstoneBuff) buff;
-                it.remove();
-            }
-        }
-        if (brimstone != null) {
-            duration += brimstone.getStacks() * 0.3f;
-        }
-
-        super.attachToCharacter(influenceInterface);
-    }
-
-    static class MyBuilder extends AbstractBuffBuilder {
-
-        public MyBuilder(float duration) {
-            super(duration);
-            setTypeId(BuffTypeIds.INCAPACITATE);
-        }
-
-        @Override
-        public BrimstoneIncapacitate build() {
-            return set(new BrimstoneIncapacitate(duration));
-        }
     }
 }

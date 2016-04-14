@@ -15,9 +15,7 @@
 package arkhados.spell.buffs;
 
 import arkhados.CharacterInteraction;
-import arkhados.controls.CInfluenceInterface;
 import arkhados.util.BuffTypeIds;
-import java.util.Iterator;
 
 public class MagmaReleaseBuff extends AbstractBuff {
 
@@ -28,21 +26,6 @@ public class MagmaReleaseBuff extends AbstractBuff {
 
     private MagmaReleaseBuff(float duration) {
         super(duration);
-    }
-
-    @Override
-    public void attachToCharacter(CInfluenceInterface targetInterface) {
-        super.attachToCharacter(targetInterface);
-        for (Iterator<AbstractBuff> it =
-                targetInterface.getBuffs().iterator(); it.hasNext();) {
-            AbstractBuff buff = it.next();
-            if (buff instanceof BrimstoneBuff) {
-                count = ((BrimstoneBuff) buff).getStacks();
-                buff.destroy();
-                it.remove();
-                return;
-            }
-        }
     }
 
     @Override

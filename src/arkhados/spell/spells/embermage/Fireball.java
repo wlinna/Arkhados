@@ -28,7 +28,6 @@ import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
-import arkhados.spell.buffs.BrimstoneBuff;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.RemovalReasons;
@@ -204,7 +203,6 @@ class FireballBuilder extends AbstractNodeBuilder {
         node.addControl(new CProjectile());
         CSpellBuff buffControl = new CSpellBuff();
         node.addControl(buffControl);
-        buffControl.addBuff(new BrimstoneBuff.MyBuilder(8f));
 
         return node;
     }
