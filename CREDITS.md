@@ -92,6 +92,8 @@ pOss for the [Grave models] (http://opengameart.org/content/savinos-cemetery-red
 
 Leinnan for the [Spear model](http://opengameart.org/content/spear). The model has been modified a little bit and is used for the Void Spear -spell. The work is licensed under CC-BY 3.0.
 
+[U.R.U. project](http://opengameart.org/users/uru-project) for [Light Crystal](http://opengameart.org/content/light-crystal). The model's texture has been modified to green and is used in Mineral Armor -spell. The work is licensed under CC-BY 3.0.
+
 Dim for the [ground texture for Pillar Arena] (http://opengameart.org/node/8136) which is licensed under CC-BY 3.0.
 
 Dakal for Ember Circle's texture and Saroman for original texture that Dakal's

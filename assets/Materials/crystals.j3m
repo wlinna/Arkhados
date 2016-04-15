@@ -1,0 +1,22 @@
+Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        Diffuse : 0.8 0.8 0.8 1.0
+        UseMaterialColors : true
+        ParallaxHeight : 0.05
+        Ambient : 1.0 1.0 1.0 1.0
+        Specular : 0.5117647 0.5117647 0.5117647 1.0
+        Shininess : 50.0
+        DiffuseMap : Textures/Crystals/crystals_green.png
+    }
+    AdditionalRenderState {
+      PointSprite Off
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Off
+      Wireframe Off
+    }
+}

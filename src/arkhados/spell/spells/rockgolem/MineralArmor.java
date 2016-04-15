@@ -87,7 +87,8 @@ class MineralArmorBuff extends ArmorBuff {
 
         @Override
         public AbstractBuff build() {
-            return new MineralArmorBuff(amount, protectionPercent, duration);
+            return set(new MineralArmorBuff(
+                    amount, protectionPercent, duration));
         }
     }
 }
