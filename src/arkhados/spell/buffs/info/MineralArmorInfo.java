@@ -14,8 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.buffs.info;
 
-import arkhados.Globals;
-import arkhados.World;
 import arkhados.controls.CRotation;
 import arkhados.controls.CTrackLocation;
 import arkhados.effects.BuffEffect;
@@ -63,7 +61,6 @@ class MineralArmorEffect extends BuffEffect {
         crystals3.setLocalTranslation(0f, 0f, -7.5f);
         crystals4.setLocalTranslation(0f, 0f, 7.5f);
 
-        
         Node world = character.getParent();
         world.attachChild(centralNode);
         
