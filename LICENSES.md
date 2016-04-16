@@ -72,6 +72,7 @@ See CREDITS.md for attributions.
 - DarkEnergy.png
 - Drain.png
 - IntoTheShadows.png
+- HealthBar.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
 - FeralScream.wav
@@ -88,6 +89,7 @@ See CREDITS.md for attributions.
 - All EliteSoldier 3D model related files (includes textures and Weapon)
 - All SealingBoulder related files
 - All Shadowmancer 3D model related files
+- All Crystals related files
 - EliteSoldierPain.wav
 - EliteSoldierDeath.wav
 - DarkHall.ogg

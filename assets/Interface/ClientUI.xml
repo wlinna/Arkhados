@@ -450,12 +450,11 @@
                 <control name="credits_panel" who="Skorpio" for="LavaArena tileset" />
                 <control name="credits_panel" who="djonvincent" for="wall model" />
                 <control name="credits_panel" who="Ancient Beast -project and Gergő Soós" for="Rocket Jump icon" />
+                <control name="credits_panel" who="qupodup and Dakal" for="Healt bar" />
                 <control name="credits_panel" who="Blender Foundation" for="Meteor explosion sound" />
                 <control name="credits_panel" who="TheGoat" for="Venator's dagger" />
                 <control name="credits_panel" who="ReadeOnly" for="Fireball explosion sound" />
                 <control name="credits_panel" who="lensflare8642" for="Shotgun sound" />
-                <control name="credits_panel" who="Ogrebane" for="sound effects" />
-                <control name="credits_panel" who="thebardofblashphemy" for="pain sounds" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
                 <text style="nifty-label" text=""/>
@@ -475,6 +474,8 @@
             <panel id="credits3" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="Ogrebane" for="sound effects" />
+                <control name="credits_panel" who="thebardofblashphemy" for="pain sounds" />
                 <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
                 <control name="credits_panel" who="spookymodem" for="sound effects" />
                 <control name="credits_panel" who="midimagician" for="Ember Circle sound" />
@@ -499,14 +500,55 @@
                 <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
                 <control name="credits_panel" who="Telaron" for="Moleman (music)" />
                 <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
-                <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />                                       
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
+                <text style="nifty-label" text=""/>
+                <panel childLayout="horizontal" align="center">
+                    <control id="previous_button" name="button" label="&lt;---" align="center" width="200px">
+                        <interact onClick="switchElement(credits3, credits2)" />
+                    </control>
+                    <control id="next_button" name="button" label="--->" align="center" width="200px">
+                        <interact onClick="switchElement(credits3, credits4)" />
+                    </control>
+                </panel>
+                <control id="exit_button" name="button" label="Back" align="center" width="200px">
+                    <interact onClick="gotoMenu(main_menu)" />
+                </control>
+            </panel>
+            <panel id="credits4" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+                <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
+                <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />      
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
                 <text style="nifty-label" text=""/>
                 <control id="previous_button" name="button" label="&lt;---" align="center" width="200px">
-                    <interact onClick="switchElement(credits3, credits2)" />
+                    <interact onClick="switchElement(credits4, credits3)" />
                 </control>
                 <control id="exit_button" name="button" label="Back" align="center" width="200px">
                     <interact onClick="gotoMenu(main_menu)" />

@@ -96,7 +96,7 @@ Leinnan for the [Spear model](http://opengameart.org/content/spear). The model h
 
 Dim for the [ground texture for Pillar Arena] (http://opengameart.org/node/8136) which is licensed under CC-BY 3.0.
 
-Dakal for Ember Circle's texture and Saroman for original texture that Dakal's
+[Dakal](http://opengameart.org/users/dakal) for Ember Circle's texture and Saroman for original texture that Dakal's
 texture is based on. Both are CC-BY 3.0 licensed. Dakal's texture can be found
 from [OGA](http://opengameart.org/node/10483)
 
@@ -185,6 +185,10 @@ Crack.com for [Fire and Lava texture](http://opengameart.org/node/7763). Fire an
 (random223) for Rocket Jump's icon. Icon is licensed under CC-BY-SA
 3.0. Original work can be found from random223's
 [DeviantArt-page](http://random223.deviantart.com).
+
+[qupodup](http://opengameart.org/users/qubodup) and [Dakal](http://opengameart.org/users/dakal) for
+[Blood red health bar](http://opengameart.org/content/blood-red-health-bar) and
+[2D Bars](http://opengameart.org/content/2d-bars). Both are licensed under CC-BY 3.0 License.
 
 Blender Foundation for Meteor's explosion sound. Explosion sound was
 made for "Yo Frankie!". It is licensed under CC-BY 3.0. Original work

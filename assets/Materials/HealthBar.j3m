@@ -1,0 +1,8 @@
+Material My Material : MatDefs/HealthBar/HealthBar.j3md {
+     MaterialParameters {
+        HealthTex : Repeat Textures/HealthBar.png
+        Health : 1.0
+     }
+    AdditionalRenderState {
+    }
+}

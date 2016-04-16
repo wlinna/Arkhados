@@ -1,0 +1,15 @@
+MaterialDef HealthBar {
+    MaterialParameters {
+        Texture2D HealthTex
+        Float Health
+    }
+
+    Technique {
+        VertexShader GLSL100: MatDefs/HealthBar/HealthBar.vert
+        FragmentShader GLSL100: MatDefs/HealthBar/HealthBar.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+    }
+}

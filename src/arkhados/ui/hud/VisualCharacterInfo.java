@@ -14,17 +14,26 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
+import arkhados.Globals;
 import arkhados.PlayerData;
+import arkhados.World;
+import arkhados.controls.CCharacterPhysics;
+import arkhados.controls.CFollowCharacter;
+import arkhados.controls.CTrackLocation;
 import arkhados.util.UserData;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.BillboardControl;
+import com.jme3.scene.shape.Quad;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,16 +43,16 @@ public class VisualCharacterInfo {
     private final Node guiNode;
     private final BitmapFont guiFont;
     private final List<Node> characters = new ArrayList<>();
-    private final List<BitmapText> hpBars = new ArrayList<>();
+    private final List<Spatial> hpBars = new ArrayList<>();
     private final List<BitmapText> playerNames = new ArrayList<>();
-    
-    static final ColorRGBA[] TEAM_COLORS = new ColorRGBA[] {
+
+    static final ColorRGBA[] TEAM_COLORS = new ColorRGBA[]{
         ColorRGBA.Blue, ColorRGBA.Red, ColorRGBA.Green, ColorRGBA.Black,
         ColorRGBA.Magenta, ColorRGBA.Yellow, ColorRGBA.Orange,
         ColorRGBA.Pink, ColorRGBA.White, ColorRGBA.Brown, ColorRGBA.Gray
     };
-    
-    static final String[] TEAM_NAMES = new String[] {
+
+    static final String[] TEAM_NAMES = new String[]{
         "Blue", "Red", "Green", "Black",
         "Magenta", "Yellow", "Orange",
         "Pink", "White", "Brown", "Gray"
@@ -60,8 +69,7 @@ public class VisualCharacterInfo {
         createHpBar();
 
         int playerId = character.getUserData(UserData.PLAYER_ID);
-        String name =
-                PlayerData.getStringData(playerId, PlayerData.NAME);
+        String name = PlayerData.getStringData(playerId, PlayerData.NAME);
         int team = PlayerData.getIntData(playerId, PlayerData.TEAM_ID);
         team = Math.abs(team); // If -1 for some reason
 
@@ -72,7 +80,7 @@ public class VisualCharacterInfo {
         int index = characters.indexOf(node);
 
         if (index != -1) {
-            BitmapText hpBar = hpBars.get(index);
+            Spatial hpBar = hpBars.get(index);
             hpBar.removeFromParent();
             hpBars.remove(index);
 
@@ -91,7 +99,7 @@ public class VisualCharacterInfo {
     }
 
     private void clearHpBars() {
-        for (BitmapText hpBar : hpBars) {
+        for (Spatial hpBar : hpBars) {
             hpBar.removeFromParent();
         }
 
@@ -114,16 +122,16 @@ public class VisualCharacterInfo {
     }
 
     private void createHpBar() {
-        BitmapText hpBar = new BitmapText(guiFont);
+        Quad quad = new Quad(80f, 10f);
+        Geometry geom = new Geometry("hpbar", quad);
+        Material mat = Globals.assets.loadMaterial("Materials/HealthBar.j3m");
+        mat.setFloat("Health", 1f);
+        geom.setMaterial(mat);
 
-        hpBar.setSize(guiFont.getCharSet().getRenderedSize());
-        hpBar.setBox(new Rectangle(0, 0, 40, 10));
-        hpBar.setColor(ColorRGBA.Red);
-        hpBar.setAlignment(BitmapFont.Align.Center);
-        hpBar.center();
-        guiNode.attachChild(hpBar);
-        hpBar.setQueueBucket(RenderQueue.Bucket.Gui);
-        hpBars.add(hpBar);
+        guiNode.attachChild(geom);
+        geom.setQueueBucket(RenderQueue.Bucket.Gui);
+
+        hpBars.add(geom);
     }
 
     private void createPlayerName(String name, int teamId) {
@@ -140,28 +148,37 @@ public class VisualCharacterInfo {
         playerNames.add(text);
     }
 
+
     private void updateHpBar(int index) {
         Node character = characters.get(index);
-        BitmapText hpBar = hpBars.get(index);
+        Geometry hpBar = (Geometry) hpBars.get(index);
+        Material mat = hpBar.getMaterial();
         float health = character.getUserData(UserData.HEALTH_CURRENT);
+        float healthMax = character.getUserData(UserData.HEALTH_MAX);
         if (health == 0) {
-            hpBar.setText("");
+            mat.setFloat("Health", 0f);
             return;
         }
-        // TODO: Implement better method to get character's head's location
-        Vector3f hpBarLocation = cam.getScreenCoordinates(
-                character.getLocalTranslation().add(0, 20, 0)).add(-15, 40, 0);
+
+        float altitude = character.getControl(CCharacterPhysics.class)
+                .getCapsuleShape().getHeight();
+        Vector3f hpBarLocation = cam.getScreenCoordinates(character
+                .getLocalTranslation().add(0, altitude, 0)).add(-40, 40, 0);
         hpBar.setLocalTranslation(hpBarLocation);
-        hpBar.setText(String.format("%.0f", health));
+
+        float percent = health / healthMax;
+        mat.setFloat("Health", percent);
     }
 
     private void updateText(int index) {
         Node character = characters.get(index);
         BitmapText name = playerNames.get(index);
         float height = name.getHeight();
-        Vector3f textLocation = cam.getScreenCoordinates(
-                character.getLocalTranslation().add(0, 20, 0))
-                .add(-40, 40 + height, 0);
+        float altitude = character.getControl(CCharacterPhysics.class)
+                .getCapsuleShape().getHeight();
+        Vector3f textLocation = cam.getScreenCoordinates(character
+                .getLocalTranslation().add(0, altitude, 0))
+                .add(-40, 40 + 1.5f * height, 0);
         name.setLocalTranslation(textLocation);
     }
 }
