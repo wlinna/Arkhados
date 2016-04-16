@@ -15,10 +15,12 @@
 
 package arkhados.messages.sync.statedata;
 
+import arkhados.controls.CCharacterHeal;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.util.UserData;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -29,7 +31,8 @@ public class CharacterSyncData extends StateData {
     private Vector3f location = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
     private Vector3f viewDirection = new Vector3f();
-    private float health;
+    private short halfHealth;
+    private short halfRecordLowHealth;
 
     public CharacterSyncData() {        
     }
@@ -40,12 +43,21 @@ public class CharacterSyncData extends StateData {
         CCharacterPhysics body = spatial.getControl(CCharacterPhysics.class);
         walkDirection.set(body.getWalkDirection());
         viewDirection.set(body.getViewDirection());
-        health = spatial.getUserData(UserData.HEALTH_CURRENT);
+        float fHealth = spatial.getUserData(UserData.HEALTH_CURRENT);
+        halfHealth = FastMath.convertFloatToHalf(fHealth);
+        
+        float fRecordLowHealth = spatial.getControl(CCharacterHeal.class)
+                .getRecordLowHealth();
+        halfRecordLowHealth = FastMath.convertFloatToHalf(fRecordLowHealth);
     }
 
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
+        
+        float health = FastMath.convertHalfToFloat(halfHealth);
+        float recLowHealth = FastMath.convertHalfToFloat(halfRecordLowHealth);
+        character.setUserData(UserData.HEALTH_LOW_RECORD, recLowHealth);
         character.getControl(CInfluenceInterface.class).setHealth(health);
         character.getControl(CSyncInterpolation.class).interpolate(location);
         CCharacterPhysics body = character.getControl(CCharacterPhysics.class);

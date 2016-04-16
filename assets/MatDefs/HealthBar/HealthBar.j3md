@@ -1,7 +1,9 @@
 MaterialDef HealthBar {
     MaterialParameters {
         Texture2D HealthTex
+        Texture2D HealTex
         Float Health
+        Float HealthLowRecord
     }
 
     Technique {

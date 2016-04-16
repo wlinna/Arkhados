@@ -16,10 +16,7 @@ package arkhados.ui.hud;
 
 import arkhados.Globals;
 import arkhados.PlayerData;
-import arkhados.World;
 import arkhados.controls.CCharacterPhysics;
-import arkhados.controls.CFollowCharacter;
-import arkhados.controls.CTrackLocation;
 import arkhados.util.UserData;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -32,7 +29,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.shape.Quad;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +62,7 @@ public class VisualCharacterInfo {
 
     void addCharacter(Spatial character) {
         characters.add((Node) character);
-        createHpBar();
+        createHpBar((Node) character);
 
         int playerId = character.getUserData(UserData.PLAYER_ID);
         String name = PlayerData.getStringData(playerId, PlayerData.NAME);
@@ -121,11 +117,19 @@ public class VisualCharacterInfo {
         }
     }
 
-    private void createHpBar() {
+    private void createHpBar(Node character) {
         Quad quad = new Quad(80f, 10f);
         Geometry geom = new Geometry("hpbar", quad);
         Material mat = Globals.assets.loadMaterial("Materials/HealthBar.j3m");
-        mat.setFloat("Health", 1f);
+
+        float health = character.getUserData(UserData.HEALTH_CURRENT);
+        float healthMax = character.getUserData(UserData.HEALTH_MAX);
+        float healthLowRecord = character
+                .getUserData(UserData.HEALTH_LOW_RECORD);
+
+        mat.setFloat("Health", health / healthMax);
+        mat.setFloat("HealthLowRecord", healthLowRecord / healthMax);
+        
         geom.setMaterial(mat);
 
         guiNode.attachChild(geom);
@@ -148,15 +152,17 @@ public class VisualCharacterInfo {
         playerNames.add(text);
     }
 
-
     private void updateHpBar(int index) {
         Node character = characters.get(index);
         Geometry hpBar = (Geometry) hpBars.get(index);
         Material mat = hpBar.getMaterial();
         float health = character.getUserData(UserData.HEALTH_CURRENT);
         float healthMax = character.getUserData(UserData.HEALTH_MAX);
+        float healthLowRecord = character
+                .getUserData(UserData.HEALTH_LOW_RECORD);
         if (health == 0) {
             mat.setFloat("Health", 0f);
+            mat.setFloat("HealthLowRecord", 0f);
             return;
         }
 
@@ -166,8 +172,8 @@ public class VisualCharacterInfo {
                 .getLocalTranslation().add(0, altitude, 0)).add(-40, 40, 0);
         hpBar.setLocalTranslation(hpBarLocation);
 
-        float percent = health / healthMax;
-        mat.setFloat("Health", percent);
+        mat.setFloat("Health", health / healthMax);
+        mat.setFloat("HealthLowRecord", healthLowRecord / healthMax);
     }
 
     private void updateText(int index) {

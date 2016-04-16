@@ -20,6 +20,7 @@ public class UserData {
     public final static String SPEED_MOVEMENT = "speed-movement";
     public final static String HEALTH_CURRENT = "health-current";
     public final static String HEALTH_MAX = "health-max";
+    public final static String HEALTH_LOW_RECORD = "health-low-record";
     public final static String ENTITY_ID = "entity-id";
     public final static String PLAYER_ID = "player-id";
     public final static String RADIUS = "radius";

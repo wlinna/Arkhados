@@ -265,7 +265,9 @@ public class World extends AbstractAppState implements CommandHandler {
                         .getInputState(playerId);
                 inputState.currentActiveSpatial = entity;
                 cUserInput.setInputState(inputState);
-            } else {
+            } else {                
+                entity.setUserData(UserData.HEALTH_LOW_RECORD,
+                        entity.getUserData(UserData.HEALTH_MAX));
                 ClientHud hud = app.getStateManager().getState(ClientHud.class);
                 hud.addCharacter(entity);
             }

@@ -75,4 +75,8 @@ public class CCharacterHeal extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
+
+    public float getRecordLowHealth() {
+        return recordLowHealth;
+    }
 }
