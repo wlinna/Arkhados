@@ -43,21 +43,17 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CFreeCamera extends AbstractControl {
 
     private Spatial spatialToFollow;
-    private Camera cam;
-    private InputManager inputManager;
-    private Vector3f intersectionPoint = new Vector3f();
-    private Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
+    private final Camera cam;
+    private final InputManager inputManager;
+    private final Vector3f intersectionPoint = new Vector3f();
+    private final Plane floorPlane = new Plane(Vector3f.UNIT_Y, 0f);
     private Vector3f relativePosition;
-    private Vector3f targetDestination = new Vector3f();
-    private float timeToReach = 20f;
-    private float timeMoved = timeToReach;
+    private final Vector3f targetDestination = new Vector3f();
+    private final float timeToReach = 20f;
+    private final float timeMoved = timeToReach;
 
     public CFreeCamera(Camera cam, InputManager inputManager) {
         this.cam = cam;

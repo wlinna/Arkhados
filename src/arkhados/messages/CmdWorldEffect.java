@@ -19,11 +19,6 @@ import arkhados.net.Command;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 
-/**
- *
- * @author william
- */
-
 @Serializable
 public class CmdWorldEffect implements Command {
     private short effectId;

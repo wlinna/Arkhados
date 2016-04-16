@@ -16,12 +16,6 @@ package arkhados.spell.influences;
 
 import arkhados.controls.CInfluenceInterface;
 
-/**
- *
- * @author william
- */
-
-
 public abstract class AbstractInfluence implements Influence {
     private CInfluenceInterface owner = null;
 
@@ -29,6 +23,7 @@ public abstract class AbstractInfluence implements Influence {
         return owner;
     }
 
+    @Override
     public void setOwner(CInfluenceInterface owner) {
         this.owner = owner;
     }

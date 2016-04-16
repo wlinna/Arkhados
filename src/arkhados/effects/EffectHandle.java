@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.effects;
 
-/**
- *
- * @author william
- */
 public interface EffectHandle {
     public void end();
 }

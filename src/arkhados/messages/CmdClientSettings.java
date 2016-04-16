@@ -18,11 +18,6 @@ package arkhados.messages;
 import arkhados.net.Command;
 import com.jme3.network.serializing.Serializable;
 
-/**
- *
- * @author william
- */
-
 @Serializable
 public class CmdClientSettings implements Command {
     private boolean commandMoveInterrupts;

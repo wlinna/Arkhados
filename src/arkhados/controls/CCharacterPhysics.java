@@ -23,16 +23,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 
-/**
- *
- * @author william
- */
 public class CCharacterPhysics extends BetterCharacterControl {
 
     private static final float BASE_DAMPING = 1 / 30f;
     private Vector3f impulseToApply = null;
     private Vector3f queuedLinearVelocity = null;
-    private Vector3f targetLocation = new Vector3f();
+    private final Vector3f targetLocation = new Vector3f();
     private Vector3f dictatedDirection = new Vector3f();
     private boolean motionControlled = false;
     private int defaultCollideWithGroups;

@@ -22,13 +22,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CFollowCharacter extends AbstractControl {
-    private Node character;
-    private Camera cam;
+    private final Node character;
+    private final Camera cam;
 
     private Vector3f relativePosition;
 
@@ -50,7 +46,6 @@ public class CFollowCharacter extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-
     }
 
     public void setRelativePosition(Vector3f relativePosition) {

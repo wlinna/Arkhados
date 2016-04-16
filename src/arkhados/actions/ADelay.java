@@ -14,10 +14,6 @@
     along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.actions;
 
-/**
- *
- * @author william
- */
 public class ADelay extends EntityAction {
     private float delay;
 
@@ -28,10 +24,6 @@ public class ADelay extends EntityAction {
     @Override
     public boolean update(float tpf) {
         this.delay -= tpf;
-        if (this.delay <= 0f) {
-            return false;
-        }
-        return true;
+        return this.delay > 0f;
     }
-
 }

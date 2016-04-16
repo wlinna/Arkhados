@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados;
 
-/**
- *
- * @author william
- */
 public interface CollisionGroups {
     public static final int NONE = 0x00000000;
     public static final int TERRAIN = 0x00000001;

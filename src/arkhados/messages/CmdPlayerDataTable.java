@@ -19,10 +19,7 @@ import com.jme3.network.serializing.Serializable;
 import java.util.List;
 import arkhados.PlayerData;
 import arkhados.net.Command;
-/**
- *
- * @author william
- */
+
 @Serializable
 public class CmdPlayerDataTable implements Command {    
     private List<PlayerData> playerDataList;

@@ -21,10 +21,6 @@ import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class FearCC extends CrowdControlBuff {
 
     private Vector3f initialDirection = new Vector3f();

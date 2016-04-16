@@ -16,10 +16,6 @@ package arkhados.actions;
 
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public interface ATrance {
     public void activate(Spatial activator);
 }

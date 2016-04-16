@@ -22,10 +22,6 @@ import arkhados.spell.Spell;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class ACastingSpell extends EntityAction {
 
     private float delay;

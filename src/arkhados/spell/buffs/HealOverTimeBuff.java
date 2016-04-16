@@ -16,10 +16,6 @@ package arkhados.spell.buffs;
 
 import arkhados.CharacterInteraction;
 
-/**
- *
- * @author william
- */
 public class HealOverTimeBuff extends AbstractBuff {
     private float healPerSec;
     private float time;

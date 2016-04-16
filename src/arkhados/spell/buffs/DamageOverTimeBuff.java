@@ -16,10 +16,6 @@ package arkhados.spell.buffs;
 
 import arkhados.CharacterInteraction;
 
-/**
- *
- * @author william
- */
 public class DamageOverTimeBuff extends AbstractBuff {
     /**
      * Damage per second

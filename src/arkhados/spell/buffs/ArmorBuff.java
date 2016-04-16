@@ -17,14 +17,10 @@ package arkhados.spell.buffs;
 import arkhados.controls.CInfluenceInterface;
 import com.jme3.math.FastMath;
 
-/**
- *
- * @author william
- */
 public class ArmorBuff extends AbstractBuff {
 
     private float amount;
-    private float protectionPercent;
+    private final float protectionPercent;
 
     protected ArmorBuff(float amount, float protectionPercent, float duration) {
         super(duration);

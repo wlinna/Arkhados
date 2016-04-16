@@ -14,12 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
-/**
- *
- * @author william
- */
-
-
 public interface ServerClientDataStrings {
     public static final String PLAYER_ID = "player-id";
 }

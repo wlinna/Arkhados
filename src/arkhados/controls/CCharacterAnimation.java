@@ -31,12 +31,10 @@ import java.util.HashMap;
 /**
  * Original animation control for Mage. Most likely each character needs its own
  * custom character animation control and this will be changed to abstract class
- *
- * @author william
  */
 public class CCharacterAnimation extends AbstractControl {
 
-    private AnimControl animControl;
+    private final AnimControl cAnim;
     private CCharacterPhysics cPhysics;
     private CCharacterMovement cMovement;
     private AnimChannel channel;
@@ -49,8 +47,8 @@ public class CCharacterAnimation extends AbstractControl {
     private AnimationData walkAnimation;
     private AnimationData deathAnimation;
 
-    public CCharacterAnimation(AnimControl animControl) {
-        this.animControl = animControl;
+    public CCharacterAnimation(AnimControl cAnim) {
+        this.cAnim = cAnim;
     }
 
     @Override
@@ -58,7 +56,7 @@ public class CCharacterAnimation extends AbstractControl {
         super.setSpatial(spatial);
         cPhysics = spatial.getControl(CCharacterPhysics.class);
         cMovement = spatial.getControl(CCharacterMovement.class);
-        channel = animControl.createChannel();
+        channel = cAnim.createChannel();
         float health = spatial.getUserData(UserData.HEALTH_CURRENT);
         if (health > 0f) {
             channel.setAnim(walkAnimation.getName());
@@ -157,7 +155,7 @@ public class CCharacterAnimation extends AbstractControl {
     }
 
     public AnimControl getAnimControl() {
-        return animControl;
+        return cAnim;
     }
 
     public float getActionTime() {

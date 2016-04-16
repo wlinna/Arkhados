@@ -20,10 +20,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
 public class CSyncInterpolation extends AbstractControl {
 
     private Vector3f oldLocation = new Vector3f();

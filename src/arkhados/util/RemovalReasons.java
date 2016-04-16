@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-/**
- *
- * @author william
- */
 public class RemovalReasons {    
     public static final int COLLISION = 0;
     public static final int EXPIRED = 1;

@@ -18,10 +18,6 @@ import arkhados.actions.EntityAction;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
 public interface CastSpellActionBuilder {
     public EntityAction newAction(Node caster, Vector3f vec);
 }

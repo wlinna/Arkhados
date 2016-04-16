@@ -37,10 +37,6 @@ import arkhados.net.OneTrueMessage;
 import arkhados.net.OtmIdCommandListPair;
 import arkhados.util.PlayerRoundStats;
 
-/**
- *
- * @author william
- */
 public class MessageUtils {
 
     public static void registerDataClasses() {

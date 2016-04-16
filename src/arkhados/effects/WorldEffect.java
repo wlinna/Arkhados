@@ -17,11 +17,6 @@ package arkhados.effects;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author william
- */
-
 public interface WorldEffect {
     public EffectHandle execute(Node root, Vector3f location, String parameter);       
 }

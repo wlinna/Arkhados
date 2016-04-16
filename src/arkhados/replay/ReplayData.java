@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * Has all data that is needed to allow players to replay game. First version is
  * implemented as Message for easiness.
- *
- * @author william
  */
 @Serializable
 public class ReplayData implements Message {

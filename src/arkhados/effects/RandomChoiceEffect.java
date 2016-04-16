@@ -20,14 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- *
- * @author william
- */
 public class RandomChoiceEffect implements WorldEffect {
 
-    private List<WorldEffect> choices = new ArrayList<>();
-    private Random random = new Random();
+    private final List<WorldEffect> choices = new ArrayList<>();
+    private final Random random = new Random();
 
     public void add(WorldEffect alternative) {
         choices.add(alternative);

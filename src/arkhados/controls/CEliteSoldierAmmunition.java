@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * Controls the amount of EliteSoldiers ammo. Replenishes Elite Soldiers
  * ammunition and checks that Elite Soldier has enough ammo to cast spell
- *
- * @author william
  */
 public class CEliteSoldierAmmunition extends AbstractControl
         implements SpellCastValidator, SpellCastListener {

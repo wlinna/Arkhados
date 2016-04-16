@@ -17,12 +17,9 @@ package arkhados.spell.influences;
 import arkhados.CharacterInteraction;
 import arkhados.controls.CInfluenceInterface;
 
-/**
- * @author william
- */
 public class DamageOverTimeInfluence extends AbstractInfluence {
 
-    private float dps;
+    private final float dps;
     private boolean breaksCrowdControl = true;
 
     public DamageOverTimeInfluence(float dps) {

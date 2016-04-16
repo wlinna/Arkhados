@@ -18,8 +18,6 @@ package arkhados.spell.buffs;
  * Base class for all buffs that somehow restricts or limits the entity that is
  * carrying the buff. Some examples of crowd control buffs are stun, silence,
  * incapacitate, slow, snare etc.
- *
- * @author william
  */
 public abstract class CrowdControlBuff extends AbstractBuff {
 

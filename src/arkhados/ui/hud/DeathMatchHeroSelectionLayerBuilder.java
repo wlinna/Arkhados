@@ -17,10 +17,6 @@ package arkhados.ui.hud;
 import arkhados.ui.HeroSelectionBuilder;
 import de.lessvoid.nifty.builder.LayerBuilder;
 
-/**
- *
- * @author william
- */
 public class DeathMatchHeroSelectionLayerBuilder extends LayerBuilder {
     public DeathMatchHeroSelectionLayerBuilder() {
         childLayoutCenter();        

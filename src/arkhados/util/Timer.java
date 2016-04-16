@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-/**
- *
- * @author william
- */
 public class Timer {
 
     private float original;

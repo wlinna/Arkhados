@@ -15,10 +15,6 @@
 
 package arkhados.util;
 
-/**
- *
- * @author william
- */
 public class UserData {
     public final static String SPEED_MOVEMENT_BASE = "speed-movement-base";
     public final static String SPEED_MOVEMENT = "speed-movement";

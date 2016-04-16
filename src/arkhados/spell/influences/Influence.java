@@ -16,10 +16,6 @@ package arkhados.spell.influences;
 
 import arkhados.controls.CInfluenceInterface;
 
-/**
- *
- * @author william
- */
 public  interface Influence {
 
     public boolean isFriendly();

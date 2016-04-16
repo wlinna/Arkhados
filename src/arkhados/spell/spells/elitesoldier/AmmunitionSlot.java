@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.elitesoldier;
 
-/**
- *
- * @author william
- */
 public enum AmmunitionSlot {
     SHOTGUN(0),
     PLASMAGUN(1),

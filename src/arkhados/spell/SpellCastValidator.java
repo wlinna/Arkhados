@@ -16,12 +16,6 @@ package arkhados.spell;
 
 import arkhados.controls.CSpellCast;
 
-/**
- *
- * @author william
- */
-
-
 public interface SpellCastValidator {
     public boolean validateSpellCast(CSpellCast castControl, Spell spell);
 }

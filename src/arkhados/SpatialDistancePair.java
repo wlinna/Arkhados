@@ -16,10 +16,6 @@ package arkhados;
 
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class SpatialDistancePair {
     public Spatial spatial;
     public float distance;

@@ -14,10 +14,6 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.util;
 
-/**
- *
- * @author william
- */
 public interface Builder<T> {
     public T build();
 }

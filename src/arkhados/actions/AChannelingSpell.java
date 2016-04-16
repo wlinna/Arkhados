@@ -21,18 +21,14 @@ import arkhados.controls.CSpellCast;
 import arkhados.spell.Spell;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class AChannelingSpell extends EntityAction {
 
-    private Spell spell;
+    private final Spell spell;
     private float timer = 0;
     private float timeLeft;
     private int repeatsLeft;
-    private float actionFrequency;
-    private EntityAction action;
+    private final float actionFrequency;
+    private final EntityAction action;
     private CCharacterMovement cMovement;
     private CInfluenceInterface inluenceControl;
     private CActionQueue actionQueue;

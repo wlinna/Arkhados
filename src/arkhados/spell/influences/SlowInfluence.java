@@ -15,13 +15,7 @@
 package arkhados.spell.influences;
 
 import arkhados.controls.CInfluenceInterface;
-import arkhados.util.UserData;
-import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class SlowInfluence extends AbstractInfluence {
 
     private float slowFactor = 1;

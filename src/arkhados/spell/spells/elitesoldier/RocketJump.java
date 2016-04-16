@@ -27,16 +27,11 @@ import arkhados.util.DistanceScaling;
 import arkhados.util.PathCheck;
 import arkhados.util.UserData;
 import com.jme3.cinematic.MotionPath;
-import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-/**
- *
- * @author william
- */
 public class RocketJump extends Spell {
 
     {

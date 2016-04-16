@@ -21,13 +21,9 @@ import com.jme3.scene.control.AbstractControl;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author william
- */
 public class CSpellBuff extends AbstractControl {
 
-    private List<AbstractBuffBuilder> buffs = new ArrayList<>();
+    private final List<AbstractBuffBuilder> buffs = new ArrayList<>();
     private CInfluenceInterface ownerInterface;
 
     public void addBuff(AbstractBuffBuilder buff) {

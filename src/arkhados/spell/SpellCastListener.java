@@ -17,12 +17,6 @@ package arkhados.spell;
 
 import arkhados.controls.CSpellCast;
 
-/**
- *
- * @author william
- */
-
-
 public interface SpellCastListener {
     public void spellCasted(CSpellCast castControl, Spell spell);
 }

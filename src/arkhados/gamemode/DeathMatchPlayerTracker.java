@@ -17,15 +17,11 @@ package arkhados.gamemode;
 
 import arkhados.util.Timer;
 
-/**
- *
- * @author william
- */
 public class DeathMatchPlayerTracker {
-    private Timer spawnTimer = new Timer(0f);
+    private final Timer spawnTimer = new Timer(0f);
     private int killingSpree = 0;
     private int combo = 0;
-    private Timer comboTimer = new Timer(0f);
+    private final Timer comboTimer = new Timer(0f);
 
     public DeathMatchPlayerTracker(float spawnDelay) {
         spawnTimer.setTimeLeft(spawnDelay);

@@ -31,12 +31,6 @@
  */
 package arkhados.util;
 
-/**
- *
- * @author william
- */
-
-
 public class ValueWrapper<T> {
     private T wrapped;
 

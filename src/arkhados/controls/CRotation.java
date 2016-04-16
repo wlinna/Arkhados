@@ -18,11 +18,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
-/**
- *
- * @author william
- */
-
 public class CRotation extends AbstractControl {
     private float x;
     private float y;
