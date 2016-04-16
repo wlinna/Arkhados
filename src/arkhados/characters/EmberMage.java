@@ -62,7 +62,6 @@ public class EmberMage extends AbstractNodeBuilder {
         float movementSpeed = 35.8f;
         entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
         entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
-        entity.setUserData(UserData.SPEED_ROTATION, 0f);
         float radius = 5f;
         entity.setUserData(UserData.RADIUS, radius);
         float health = 1700f;

@@ -18,8 +18,6 @@ package arkhados.util;
 public class UserData {
     public final static String SPEED_MOVEMENT_BASE = "speed-movement-base";
     public final static String SPEED_MOVEMENT = "speed-movement";
-    // NOTE: SPEED_ROTATION has no functionality yet
-    public final static String SPEED_ROTATION = "speed-rotation";
     public final static String HEALTH_CURRENT = "health-current";
     public final static String HEALTH_MAX = "health-max";
     public final static String ENTITY_ID = "entity-id";
