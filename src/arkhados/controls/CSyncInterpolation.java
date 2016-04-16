@@ -15,6 +15,7 @@
 package arkhados.controls;
 
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -22,8 +23,11 @@ import com.jme3.scene.control.AbstractControl;
 
 public class CSyncInterpolation extends AbstractControl {
 
-    private Vector3f oldLocation = new Vector3f();
-    private Vector3f targetLocation = new Vector3f();
+    private final Vector3f oldLocation = new Vector3f();
+    private final Vector3f targetLocation = new Vector3f();
+    
+    private final Quaternion oldRotation = new Quaternion();
+    private final Quaternion targetRotation = new Quaternion();
 //    private Vector3f velocity;
     private float timeBetween = 0f;
     private float timeSinceLast = 0f;
@@ -42,19 +46,27 @@ public class CSyncInterpolation extends AbstractControl {
         Vector3f trans = spatial.getLocalTranslation()
                 .interpolateLocal(oldLocation, targetLocation, factor);
         spatial.setLocalTranslation(trans);
+        
+        Quaternion rot = spatial.getLocalRotation()
+                .slerp(oldRotation, targetRotation, factor);
+        spatial.setLocalRotation(rot);
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public void interpolate(Vector3f newLocation) {
+    public void interpolate(Vector3f newLocation, Quaternion newRotation) {
         if (ignoreNext) {
             oldLocation.set(newLocation);
+            oldRotation.set(newRotation);
         } else {
             oldLocation.set(spatial.getLocalTranslation());
+            oldRotation.set(spatial.getLocalRotation());
         }
+ 
         targetLocation.set(newLocation);
+        targetRotation.set(newRotation);
 
         timeBetween = timeSinceLast;
         timeSinceLast = 0f;

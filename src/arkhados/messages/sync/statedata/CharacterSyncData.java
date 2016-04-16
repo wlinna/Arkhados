@@ -21,6 +21,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.util.UserData;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
@@ -59,7 +60,12 @@ public class CharacterSyncData extends StateData {
         float recLowHealth = FastMath.convertHalfToFloat(halfRecordLowHealth);
         character.setUserData(UserData.HEALTH_LOW_RECORD, recLowHealth);
         character.getControl(CInfluenceInterface.class).setHealth(health);
-        character.getControl(CSyncInterpolation.class).interpolate(location);
+        
+        Quaternion newRotation = new Quaternion();
+        newRotation.lookAt(viewDirection, Vector3f.UNIT_Y);
+        
+        character.getControl(CSyncInterpolation.class)
+                .interpolate(location, newRotation);
         CCharacterPhysics body = character.getControl(CCharacterPhysics.class);
         body.warp(location);
         body.setViewDirection(viewDirection);

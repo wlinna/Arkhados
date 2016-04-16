@@ -40,11 +40,11 @@ public class GenericSyncData extends StateData {
         Spatial spatial = (Spatial) target;
         CSyncInterpolation syncInterpolation = spatial.getControl(CSyncInterpolation.class);
         if (syncInterpolation != null) {
-            syncInterpolation.interpolate(this.location);
+            syncInterpolation.interpolate(location, rotation);
         } else {
-            spatial.setLocalTranslation(this.location);
+            spatial.setLocalTranslation(location);
         }
-        spatial.setLocalRotation(this.rotation);
+        spatial.setLocalRotation(rotation);
     }
 
     @Override
