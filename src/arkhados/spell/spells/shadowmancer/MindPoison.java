@@ -54,7 +54,7 @@ public class MindPoison extends Spell {
     }
 
     public static MindPoison create() {
-        final float cooldown = 6f;
+        final float cooldown = 7.5f;
         final float range = 100f;
         final float castTime = 0.4f;
 
@@ -109,11 +109,11 @@ class NewDrainBuilder extends AbstractNodeBuilder {
         purple.setImagesY(2);
         purple.setSelectRandomImage(true);
         purple.setStartColor(new ColorRGBA(0.8f, 0.015f, 0.8f, 0.6f));
-        purple.setEndColor(new ColorRGBA(0.8f, 0.015f, 0.8f, 0.6f));
+        purple.setEndColor(new ColorRGBA(0.8f, 0.015f, 0.8f, 0.05f));
         purple.getParticleInfluencer()
                 .setInitialVelocity(Vector3f.UNIT_Y.mult(2f));
         purple.setStartSize(6.5f);
-        purple.setEndSize(1.5f);
+        purple.setEndSize(2.5f);
         purple.setGravity(Vector3f.ZERO);
         purple.setLowLife(remainTime * 0.9f);
         purple.setHighLife(remainTime);
@@ -139,15 +139,15 @@ class NewDrainBuilder extends AbstractNodeBuilder {
         purple.setImagesX(2);
         purple.setImagesY(2);
         purple.setSelectRandomImage(true);
-        purple.setStartColor(new ColorRGBA(0.8f, 0.8f, 0.8f, 0.6f));
-        purple.setEndColor(new ColorRGBA(0.8f, 0.8f, 0.8f, 0.6f));
+        purple.setStartColor(new ColorRGBA(0.8f, 0.8f, 0.8f, 0.8f));
+        purple.setEndColor(new ColorRGBA(0.8f, 0.8f, 0.8f, 0.05f));
         purple.getParticleInfluencer()
                 .setInitialVelocity(Vector3f.UNIT_Y.mult(2f));
         purple.setStartSize(4.5f);
-        purple.setEndSize(0.5f);
+        purple.setEndSize(4.5f);
         purple.setGravity(Vector3f.ZERO);
-        purple.setLowLife(remainTime * 0.8f);
-        purple.setHighLife(remainTime);
+        purple.setLowLife(remainTime * 0.2f);
+        purple.setHighLife(remainTime * 0.3f);
         purple.setParticlesPerSec(0);
         purple.getParticleInfluencer().setVelocityVariation(0.2f);
         purple.setRandomAngle(true);
