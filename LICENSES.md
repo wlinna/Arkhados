@@ -112,6 +112,7 @@ See CREDITS.md for attributions.
 - PredatorAttack.ogg
 - Transylvania.ogg
 - WelcomeToGrimwoods.ogg
+- BattleOfTheSomme.ogg
 
 ## GPL 2.0 ##
 - EmberMagePain.wav

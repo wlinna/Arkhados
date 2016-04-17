@@ -141,6 +141,7 @@ public class MusicManager extends AbstractAppState {
                 music.add(generateHeroMusicPath(category, "MyDarkPassenger"));
                 music.add(generateHeroMusicPath(category,
                         "WelcomeToGrimwoods"));
+                music.add(generateHeroMusicPath(category, "BattleOfTheSomme"));
                 break;
             default:
                 break;

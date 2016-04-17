@@ -265,6 +265,7 @@ are licensed under CC-BY-SA 3.0.
 - [Anti-gravity](https://www.jamendo.com/en/track/1103297/anti-gravity) (Elite Soldier)
 - [Transylvania](https://www.jamendo.com/en/track/1188993/transylvania)(Shadowmancer)
 - [Mutant rises](https://www.jamendo.com/en/list/a116374/cinematic-volume-2) (Menu)
+- [Battle of the Somme](https://www.jamendo.com/album/157914/1914-1918-never-forget) (Shadowmancer)
 
 [Kondi](https://www.jamendo.com/en/artist/362508/kondi) for multiple soundtracks. All Kondi's music used in Arkhados are licensed under CC-BY-SA 3.0:
 - [The Time of Blood](https://www.jamendo.com/en/track/637256/the-time-of-blood)
