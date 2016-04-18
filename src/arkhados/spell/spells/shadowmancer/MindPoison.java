@@ -255,7 +255,7 @@ class NewDrainBuilder extends AbstractNodeBuilder {
                     white.emitAllParticles();
                     
                     AudioNode sound = new AudioNode(assets,
-                            "Effects/Sound/FireballExplosion.wav");
+                            "Effects/Sound/MindPoison.wav");
                     ((Node) spatial).attachChild(sound);
                     sound.setPositional(true);
                     sound.setReverbEnabled(false);

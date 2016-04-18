@@ -79,6 +79,7 @@ See CREDITS.md for attributions.
 - Railgun.wav
 - LikeAPro.wav
 - PlasmagunLaunch.wav
+- MindDrain.wav
 - Carmack.ogg
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg
