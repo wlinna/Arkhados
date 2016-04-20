@@ -37,6 +37,7 @@ import arkhados.util.UserData;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -54,12 +55,13 @@ import com.jme3.scene.shape.Sphere;
  * moderate damage and small amout of splash damage. Slows on hit.
  */
 public class Plasmagun extends Spell {
+
     public static final float COOLDOWN = 1.5f;
     public static final float RANGE = 80f;
     public static final float CAST_TIME = 0.4f;
 
-    public final WorldEffect castEffect = new PlasmaCastEffect(); 
-    
+    public final WorldEffect castEffect = new PlasmaCastEffect();
+
     {
         iconName = "plasma.png";
         setMoveTowardsTarget(false);
@@ -70,12 +72,12 @@ public class Plasmagun extends Spell {
     }
 
     public static Spell create() {
-        final Plasmagun spell =
-                new Plasmagun("Plasmagun", COOLDOWN, RANGE, CAST_TIME);
+        final Plasmagun spell
+                = new Plasmagun("Plasmagun", COOLDOWN, RANGE, CAST_TIME);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
-            ACastProjectile projectileAction =
-                    new ACastProjectile(spell, world);
+            ACastProjectile projectileAction
+                    = new ACastProjectile(spell, world);
             projectileAction.setTypeId(EliteSoldier.ACTION_PLASMAGUN);
             AChannelingSpell channel = new AChannelingSpell(spell,
                     3, 0.12f, projectileAction, true);
@@ -145,8 +147,8 @@ class PlasmaBuilder extends AbstractNodeBuilder {
              * Here we specify what happens on client side when plasmaball is
              * removed. In this case we want explosion effect.
              */
-            APlasmaRemoval removalAction =
-                    new APlasmaRemoval(assets);
+            APlasmaRemoval removalAction
+                    = new APlasmaRemoval(assets);
             removalAction.setPlasmaEmitter(plasma);
 
             node.getControl(CEntityEvent.class)
@@ -154,6 +156,12 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(5);
+
+        GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        node.addControl(characterCollision);
+        
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
         /**
@@ -163,11 +171,6 @@ class PlasmaBuilder extends AbstractNodeBuilder {
          */
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-
-        /**
-         * Add collision group of characters
-         */
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
 
         node.addControl(physicsBody);
 
@@ -185,7 +188,8 @@ class PlasmaBuilder extends AbstractNodeBuilder {
     }
 }
 
-class PlasmaCastEffect implements WorldEffect {   
+class PlasmaCastEffect implements WorldEffect {
+
     @Override
     public EffectHandle execute(Node root, Vector3f loc, String p) {
         Node weapon = (Node) root.getChild("weapon");
@@ -201,6 +205,7 @@ class PlasmaCastEffect implements WorldEffect {
 }
 
 class APlasmaRemoval implements ARemovalEvent {
+
     private ParticleEmitter plasma;
     private AudioNode sound;
 

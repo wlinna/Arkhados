@@ -25,6 +25,7 @@ import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -45,8 +46,8 @@ public class SealingBoulder extends Spell {
         final float range = 120f;
         final float castTime = 0.5f;
 
-        final SealingBoulder spell =
-                new SealingBoulder("SealingBoulder", cooldown, range, castTime);
+        final SealingBoulder spell
+                = new SealingBoulder("SealingBoulder", cooldown, range, castTime);
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastProjectile action = new ACastProjectile(spell, world);
             return action;
@@ -82,12 +83,16 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(4);
+        
+        GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        node.addControl(characterCollision);
+        
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
-                | CollisionGroups.WALLS);
         node.addControl(physicsBody);
 
         node.addControl(new CProjectile());

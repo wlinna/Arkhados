@@ -35,6 +35,7 @@ import arkhados.util.UserData;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -56,6 +57,7 @@ public class RocketLauncher extends Spell {
 
     public static final float SPLASH_RADIUS = 25f;
     public final WorldEffect castEffect = new RocketCastEffect();
+
     {
         iconName = "rocket_launcher.png";
         setMoveTowardsTarget(false);
@@ -75,8 +77,8 @@ public class RocketLauncher extends Spell {
                 cooldown, range, castTime);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f location) -> {
-            ACastProjectile castProjectile =
-                    new ACastProjectile(spell, world);
+            ACastProjectile castProjectile
+                    = new ACastProjectile(spell, world);
             castProjectile.setTypeId(EliteSoldier.ACTION_ROCKET_LAUNCHER);
             return castProjectile;
         };
@@ -198,12 +200,17 @@ class RocketBuilder extends AbstractNodeBuilder {
             removalAction.setFireEmitter(fire);
             removalAction.setSmokeTrail(smokeTrail);
 
-
             node.getControl(CEntityEvent.class)
                     .setOnRemoval(removalAction);
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(6f);
+
+        GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        node.addControl(characterCollision);
+        
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
         /**
@@ -214,17 +221,13 @@ class RocketBuilder extends AbstractNodeBuilder {
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.setCollideWithGroups(CollisionGroups.NONE);
 
-        /**
-         * Add collision group of characters
-         */
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS);
 
         node.addControl(physicsBody);
 
         CProjectile projectileControl = new CProjectile();
 
-        ASplash splash =
-                new ASplash(25f, 120f, DistanceScaling.LINEAR, null);
+        ASplash splash
+                = new ASplash(25f, 120f, DistanceScaling.LINEAR, null);
         splash.setSpatial(node);
         projectileControl.setSplashAction(splash);
 
@@ -235,7 +238,8 @@ class RocketBuilder extends AbstractNodeBuilder {
     }
 }
 
-class RocketCastEffect implements WorldEffect {   
+class RocketCastEffect implements WorldEffect {
+
     @Override
     public EffectHandle execute(Node root, Vector3f loc, String p) {
         Node weapon = (Node) root.getChild("weapon");

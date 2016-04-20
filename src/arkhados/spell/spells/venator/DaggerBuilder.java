@@ -23,6 +23,7 @@ import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Node;
 
@@ -36,8 +37,8 @@ public class DaggerBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Node node =
-                (Node) assets.loadModel("Models/DamagingDagger.j3o");
+        Node node
+                = (Node) assets.loadModel("Models/DamagingDagger.j3o");
         node.setLocalTranslation(params.location);
 
         node.setUserData(UserData.SPEED_MOVEMENT, 170f);
@@ -46,15 +47,16 @@ public class DaggerBuilder extends AbstractNodeBuilder {
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(4);
+
+        GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        node.addControl(characterCollision);
+
         RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
                 (float) node.getUserData(UserData.MASS));
-
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
-                | CollisionGroups.WALLS);
-
         node.addControl(physicsBody);
 
         node.addControl(new CProjectile());

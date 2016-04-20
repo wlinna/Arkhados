@@ -125,15 +125,16 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(3);
-        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
-                (float) node.getUserData(UserData.MASS));
-        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
-        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        
+
         GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
         characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
         node.addControl(characterCollision);
+        
+        RigidBodyControl physicsBody = new RigidBodyControl(collisionShape,
+                (float) node.getUserData(UserData.MASS));
+        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
+        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
         
         node.addControl(physicsBody);
 
