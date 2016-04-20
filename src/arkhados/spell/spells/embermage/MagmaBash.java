@@ -26,6 +26,7 @@ import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
@@ -128,8 +129,12 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
                 (float) node.getUserData(UserData.MASS));
         physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
         physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        physicsBody.addCollideWithGroup(CollisionGroups.CHARACTERS
-                | CollisionGroups.WALLS);
+        
+        GhostControl characterCollision = new GhostControl(collisionShape);
+        characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
+        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        node.addControl(characterCollision);
+        
         node.addControl(physicsBody);
 
         node.addControl(new CProjectile());
