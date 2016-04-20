@@ -108,7 +108,7 @@ public class Firewalk extends Spell {
                         + "for buff collection");
             }
             additionalBuffs.add(buff);
-        }       
+        }
 
         private void motion() {
             Vector3f startLocation
@@ -132,11 +132,11 @@ public class Firewalk extends Spell {
 
             float room = spatial.getControl(CCharacterPhysics.class)
                     .getCapsuleShape().getRadius();
-            
+
             CSpellCast castControl = spatial.getControl(CSpellCast.class);
             Spatial walls = world.getWorldRoot().getChild("Walls");
             final Vector3f finalLocation = PathCheck.closestNonColliding(walls,
-                    startLocation, 
+                    startLocation,
                     castControl.getClosestPointToTarget(spell).add(0, 1f, 0),
                     room);
 
@@ -223,10 +223,9 @@ public class Firewalk extends Spell {
             node.addControl(new CGenericSync());
 
             if (world.isServer()) {
-                SphereCollisionShape collisionShape
-                        = new SphereCollisionShape(8f);
+                SphereCollisionShape shape = new SphereCollisionShape(8f);
 
-                GhostControl ghost = new GhostControl(collisionShape);
+                GhostControl ghost = new GhostControl(shape);
                 ghost.setCollisionGroup(CollisionGroups.NONE);
                 ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
 
@@ -261,8 +260,7 @@ class CFirewalkCollisionHandler extends AbstractControl {
         for (PhysicsCollisionObject collisionObject : collisionObjects) {
             if (collisionObject.getUserObject() instanceof Spatial) {
                 Spatial spatial = (Spatial) collisionObject.getUserObject();
-                Integer entityId
-                        = spatial.getUserData(UserData.ENTITY_ID);
+                Integer entityId = spatial.getUserData(UserData.ENTITY_ID);
                 if (collidedWith.contains(entityId)) {
                     continue;
                 }
@@ -277,6 +275,11 @@ class CFirewalkCollisionHandler extends AbstractControl {
         CInfluenceInterface targetInterface
                 = target.getControl(CInfluenceInterface.class);
         if (targetInterface == null) {
+            return;
+        }
+        
+        int myTeam = spatial.getUserData(UserData.TEAM_ID);
+        if (target.getUserData(UserData.TEAM_ID).equals(myTeam)) {
             return;
         }
 
