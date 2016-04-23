@@ -59,10 +59,8 @@ public class PurifyingFlame extends Spell {
             Node aoeContainer = new Node("purifying-flame");
             
             if (world.isServer()) {
-                int playerId =
-                        caster.getUserData(UserData.PLAYER_ID);
-                aoeContainer
-                        .setUserData(UserData.PLAYER_ID, playerId);
+                int playerId = caster.getUserData(UserData.PLAYER_ID);
+                aoeContainer.setUserData(UserData.PLAYER_ID, playerId);
                 
                 int teamId = caster.getUserData(UserData.TEAM_ID);
                 aoeContainer.setUserData(UserData.TEAM_ID, teamId);
@@ -73,8 +71,7 @@ public class PurifyingFlame extends Spell {
                 ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
                 aoeContainer.addControl(ghost);
                 
-                CAreaEffect areaEffectControl =
-                        new CAreaEffect(ghost);
+                CAreaEffect areaEffectControl = new CAreaEffect(ghost);
                 areaEffectControl.setOwnerInterface(caster
                         .getControl(CInfluenceInterface.class));
                 AbstractBuffBuilder ignite = Ignite
@@ -104,8 +101,7 @@ public class PurifyingFlame extends Spell {
             }
             
             aoeContainer.setLocalTranslation(0f, 0f, 0f);
-            CTimedExistence timedExistence =
-                    new CTimedExistence(duration);
+            CTimedExistence timedExistence = new CTimedExistence(duration);
             aoeContainer.addControl(timedExistence);
             
             PhysicsSpace physicsSpace = caster.getControl(
