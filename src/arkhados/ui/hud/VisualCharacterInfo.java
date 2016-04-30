@@ -161,6 +161,7 @@ public class VisualCharacterInfo {
         float healthLowRecord = character
                 .getUserData(UserData.HEALTH_LOW_RECORD);
         if (health == 0) {
+            hpBar.setCullHint(Spatial.CullHint.Always);
             mat.setFloat("Health", 0f);
             mat.setFloat("HealthLowRecord", 0f);
             return;
