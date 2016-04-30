@@ -65,7 +65,7 @@ public class IntoTheShadows extends Spell {
 
     public static IntoTheShadows create() {
         final float cooldown = 9f;
-        final float range = 90f;
+        final float range = 80f;
         final float castTime = 0.15f;
         final IntoTheShadows spell = new IntoTheShadows("Into the Shadows",
                 cooldown, range, castTime);
@@ -116,7 +116,7 @@ public class IntoTheShadows extends Spell {
             ASplash splash = new ASplash(IntoTheShadows.RADIUS, 120f,
                     DistanceScaling.CONSTANT, null);
 
-            cloudActions.enqueueAction(new ADelay(0.4f));
+            cloudActions.enqueueAction(new ADelay(0.6f));
             cloudActions.enqueueAction(splash);
             cloudActions.enqueueAction(
                     new ARestoreEntity(world, playerEntityId, endLocation));
