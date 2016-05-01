@@ -41,7 +41,7 @@ public class SpiritStone extends Spell {
 
     static final float COOLDOWN = 8f;
     static final float RANGE = 80f;
-    static final float CAST_TIME = 0.3f;
+    static final float CAST_TIME = 0.4f;
 
     {
         iconName = "SpiritStone.png";
