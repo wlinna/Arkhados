@@ -16,6 +16,7 @@ package arkhados.spell.spells.venator;
 
 import arkhados.CharacterInteraction;
 import arkhados.Globals;
+import arkhados.SpatialDistancePair;
 import arkhados.actions.ATrance;
 import arkhados.actions.EntityAction;
 import arkhados.characters.Venator;
@@ -27,8 +28,10 @@ import arkhados.effects.WorldEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
+import arkhados.spell.buffs.FearCC;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.BuffTypeIds;
+import arkhados.util.Selector;
 import arkhados.util.UserData;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -39,6 +42,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -86,18 +90,18 @@ public class Backlash extends Spell {
     }
 
     public static class CastEffect implements WorldEffect {
-        
+
         @Override
         public EffectHandle execute(Node root, Vector3f loc, String param) {
             CCharacterPhysics phys = root.getControl(CCharacterPhysics.class);
             float height = phys.getCapsuleShape().getHeight();
             float radius = phys.getCapsuleShape().getRadius();
-            
+
             Mesh mesh = new Cylinder(2, 32, 1f, 0.1f, true);
             Geometry geom = new Geometry("backlash-action", mesh);
             geom.scale(radius * 1.75f, height, radius * 1.75f);
             geom.setLocalTranslation(0f, 1f, 0f);
-            
+
             Material mat = new Material(Globals.assets,
                     "MatDefs/Backlash/Backlash.j3md");
             mat.getAdditionalRenderState()
@@ -107,7 +111,7 @@ public class Backlash extends Spell {
             geom.setMaterial(mat);
 
             root.attachChild(geom);
-            
+
             return () -> {
                 geom.removeFromParent();
             };
@@ -186,22 +190,40 @@ class ABacklash extends EntityAction implements ATrance {
     public void activate(Spatial activator) {
         if (activated) {
             return;
-        }               
+        }
 
         activated = true;
         timeLeft = 0f;
 
-        
         for (Iterator<AbstractBuff> it = cInfluence.getBuffs().iterator();
                 it.hasNext();) {
             AbstractBuff buff = it.next();
-            if (buff.isFriendly()) { continue; }
-            
+            if (buff.isFriendly()) {
+                continue;
+            }
+
             buff.destroy();
             it.remove();
-            
         }
         
+        ArrayList<SpatialDistancePair> targets = new ArrayList<>();
+        Selector.getSpatialsWithinDistance(targets, spatial, 20f,
+                new Selector.IsCharacterOfOtherTeam(
+                        spatial.getUserData(UserData.TEAM_ID)));
+        
+        FearCC.MyBuilder fearBuilder = new FearCC.MyBuilder(0.6f);
+        fearBuilder.setOwnerInterface(cInfluence);
+        
+        for (SpatialDistancePair pair : targets) {
+            Vector3f dir = pair.spatial.getLocalTranslation()
+                    .subtract(spatial.getLocalTranslation()).setY(0f);
+            
+            FearCC fear = fearBuilder.build();
+            fear.setInitialDirection(dir);
+            fear.attachToCharacter(pair.spatial
+                    .getControl(CInfluenceInterface.class));
+        }
+
         Backlash.Buff.MyBuilder backlashBuilder = new Backlash.Buff.MyBuilder();
         backlashBuilder.setOwnerInterface(cInfluence);
         AbstractBuff backlash = backlashBuilder.build();
