@@ -22,4 +22,5 @@ public class ServerInputState {
     public int previousRight = 0;
     public int previousDown = 0;
     public Vector3f mouseTarget = null;
+    public int input = Byte.MAX_VALUE; // No active spell
 }

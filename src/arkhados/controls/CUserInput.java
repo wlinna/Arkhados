@@ -29,12 +29,26 @@ public class CUserInput extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        if (inputState == null) {
+            return;
+        }
+        if (inputState.input < Byte.MAX_VALUE) {
+            CSpellCast cSpell = spatial.getControl(CSpellCast.class);
+            if (cSpell != null) {
+                cSpell.castIfDifferentSpell(
+                        inputState.input, inputState.mouseTarget);
+            }
+        }
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
+    public void setCastInput(byte input) {
+        inputState.input = input;
+    }
+    
     public void updateDirection() {
         CInfluenceInterface influenceInterface =
                 spatial.getControl(CInfluenceInterface.class);

@@ -18,6 +18,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.scene.Spatial;
 import arkhados.controls.CSpellCast;
+import arkhados.controls.CUserInput;
 import arkhados.messages.sync.statedata.StateData;
 
 @Serializable
@@ -37,8 +38,13 @@ public class CmdUcCastSpell extends StateData {
     @Override
     public void applyData(Object target) {
         Spatial character = (Spatial) target;
-        character.getControl(CSpellCast.class)
-                .castIfDifferentSpell(input, direction);
+        character.getControl(CSpellCast.class).castIfDifferentSpell(
+                input, direction);
+
+        CUserInput cInput = character.getControl(CUserInput.class);
+        if (cInput != null) {
+            cInput.setCastInput(input);
+        }
     }
 
     public int getInput() {
@@ -47,5 +53,5 @@ public class CmdUcCastSpell extends StateData {
 
     public Vector3f getLocation() {
         return direction;
-    }    
+    }
 }

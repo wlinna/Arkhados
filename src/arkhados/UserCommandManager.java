@@ -106,12 +106,14 @@ public class UserCommandManager extends AbstractAppState {
     private ActionListener actionCastSpell = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
-            CInfluenceInterface influenceInterface =
-                    getCharacterInterface();
+            CInfluenceInterface influenceInterface = getCharacterInterface();
             if (influenceInterface == null || influenceInterface.isDead()) {
                 return;
             }
-            if (isPressed) {
+            if (!isPressed) {
+                CmdUcCastSpell uc = new CmdUcCastSpell(Byte.MAX_VALUE,
+                        false, mouseGroundPosition);
+                app.getStateManager().getState(Sender.class).addCommand(uc);
                 return;
             }
 
