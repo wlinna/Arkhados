@@ -35,6 +35,7 @@ import arkhados.messages.usercommands.CmdUcWalkDirection;
 import arkhados.net.Ack;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.OtmIdCommandListPair;
+import arkhados.net.connection.ConnectionMessageContainer;
 import arkhados.util.PlayerRoundStats;
 
 public class MessageUtils {
@@ -89,6 +90,8 @@ public class MessageUtils {
         Serializer.registerClass(BattleStatisticsResponse.class);
         Serializer.registerClass(CmdPlayerKill.class);
         Serializer.registerClass(CmdWorldEffect.class);        
-        // </Other>
+        // </Other>        
+
+        Serializer.registerClass(ConnectionMessageContainer.class);
     }
 }

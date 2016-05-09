@@ -27,6 +27,7 @@ import arkhados.net.DefaultReceiver;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.net.Sender;
+import arkhados.net.connection.NetworkUdpClient;
 import arkhados.replay.FakeSender;
 import arkhados.replay.ReplayCmdData;
 import arkhados.replay.ReplayData;
@@ -39,7 +40,6 @@ import arkhados.ui.ReplayMenu;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.network.Network;
 import com.jme3.network.NetworkClient;
 import com.jme3.network.serializing.Serializer;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -203,7 +203,7 @@ public class ClientMain extends SimpleApplication {
     public void connect(String username, final String address, final int port) {
         cancelConnectionIfNotDone();
 
-        client = Network.createClient();
+        client = new NetworkUdpClient("Arkhados", 42);
 
         ClientNetListener listenerManager
                 = stateManager.getState(ClientNetListener.class);

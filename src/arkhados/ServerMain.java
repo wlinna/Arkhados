@@ -19,7 +19,6 @@ import arkhados.messages.MessageUtils;
 import arkhados.net.DefaultReceiver;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
@@ -30,6 +29,8 @@ import java.util.logging.Logger;
 import arkhados.net.OneTrueMessage;
 import arkhados.net.Receiver;
 import arkhados.net.RecordingServerSender;
+import arkhados.net.connection.MyUdpKernel;
+import arkhados.net.connection.UdpServer;
 import arkhados.replay.ReplayCmdData;
 import arkhados.replay.ReplayData;
 import arkhados.replay.ReplayHeader;
@@ -99,7 +100,7 @@ public class ServerMain extends SimpleApplication {
         }
 
         try {
-            server = Network.createServer(port, port);
+            server = new UdpServer("Arkhados", 42, new MyUdpKernel(port));
             server.start();
         } catch (IOException ex) {
             System.exit(1);
