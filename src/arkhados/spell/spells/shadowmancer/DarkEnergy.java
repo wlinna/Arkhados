@@ -127,7 +127,7 @@ class EnergyBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 180f);
+        node.setUserData(UserData.SPEED, 180f);
         node.setUserData(UserData.MASS, 0.1f);
         node.setUserData(UserData.DAMAGE, 0f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

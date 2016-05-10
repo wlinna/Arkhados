@@ -153,7 +153,7 @@ class MagmaReleaseBuilder extends AbstractNodeBuilder {
         m.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(m);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 180f);
+        node.setUserData(UserData.SPEED, 180f);
         node.setUserData(UserData.MASS, 10f);
         node.setUserData(UserData.DAMAGE, 220f);
         node.setUserData(UserData.IMPULSE_FACTOR, 25000f);                

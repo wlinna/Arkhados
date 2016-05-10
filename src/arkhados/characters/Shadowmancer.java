@@ -53,9 +53,9 @@ public class Shadowmancer extends AbstractNodeBuilder {
     @Override
     public Node build(BuildParameters params) {
         Node entity = (Node) assets.loadModel("Models/Shadowmancer.j3o");
-        float movementSpeed = 36.1f;
-        entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
-        entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
+        float speed = 36.1f;
+        entity.setUserData(UserData.SPEED, speed);
+        entity.setUserData(UserData.SPEED_BASE, speed);
         float radius = 4.1f;
         entity.setUserData(UserData.RADIUS, radius);
         float health = 1600f;

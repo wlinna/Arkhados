@@ -122,7 +122,7 @@ class DrainBuilder extends AbstractNodeBuilder {
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, primary ? 100f : 150f);
+        node.setUserData(UserData.SPEED, primary ? 100f : 150f);
         node.setUserData(UserData.MASS, 30f);
         node.setUserData(UserData.DAMAGE, 0f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

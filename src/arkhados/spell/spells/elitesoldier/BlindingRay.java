@@ -116,7 +116,7 @@ class RayBuilder extends AbstractNodeBuilder {
         m.setColor("Color", ColorRGBA.Cyan);
         node.setMaterial(m);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 200f);
+        node.setUserData(UserData.SPEED, 200f);
         node.setUserData(UserData.MASS, 0.30f);
         node.setUserData(UserData.DAMAGE, 150f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

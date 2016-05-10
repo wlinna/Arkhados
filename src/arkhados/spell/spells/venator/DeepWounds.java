@@ -122,7 +122,7 @@ class BleedBuff extends AbstractBuff {
             return;
         }
 
-        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED);
         float dmg = speed * time * dmgPerUnit;
         CharacterInteraction.harm(getOwnerInterface(), targetInterface, dmg,
                 null, false);

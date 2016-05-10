@@ -74,9 +74,9 @@ public class Venator extends AbstractNodeBuilder {
     @Override
     public Node build(BuildParameters params) {        
         Node entity = (Node) assets.loadModel("Models/Warwolf.j3o");
-        float movementSpeed = 37f;
-        entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
-        entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
+        float speed = 37f;
+        entity.setUserData(UserData.SPEED, speed);
+        entity.setUserData(UserData.SPEED_BASE, speed);
         float radius = 4f;
         entity.setUserData(UserData.RADIUS, radius);
         float health = 1900f;

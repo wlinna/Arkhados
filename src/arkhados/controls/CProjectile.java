@@ -49,7 +49,7 @@ public class CProjectile extends AbstractControl implements CSync {
     private final Set<Spatial> hurtList = new HashSet<>();
 
     public void setTarget(Vector3f target) {
-        float speedMovement = getSpatial().getUserData(UserData.SPEED_MOVEMENT);
+        float speedMovement = getSpatial().getUserData(UserData.SPEED);
         direction = target.subtract(rigidBodyControl.getPhysicsLocation())
                 .setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
@@ -71,7 +71,7 @@ public class CProjectile extends AbstractControl implements CSync {
      */
     public void setDirection(Vector3f direction) {
         float speedMovement
-                = getSpatial().getUserData(UserData.SPEED_MOVEMENT);
+                = getSpatial().getUserData(UserData.SPEED);
         this.direction
                 = direction.setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();

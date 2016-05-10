@@ -59,9 +59,9 @@ public class EmberMage extends AbstractNodeBuilder {
     @Override
     public Node build(BuildParameters params) {
         Node entity = (Node) assets.loadModel("Models/Mage.j3o");
-        float movementSpeed = 35.8f;
-        entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
-        entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
+        float speed = 35.8f;
+        entity.setUserData(UserData.SPEED, speed);
+        entity.setUserData(UserData.SPEED_BASE, speed);
         float radius = 5f;
         entity.setUserData(UserData.RADIUS, radius);
         float health = 1700f;

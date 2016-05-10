@@ -48,7 +48,7 @@ public class CCharacterMovement extends AbstractControl {
             return;
         }
 
-        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED);
         Vector3f scaledDirection = direction.normalize().multLocal(speed);
 
         cPhysics.setWalkDirection(scaledDirection);
@@ -59,7 +59,7 @@ public class CCharacterMovement extends AbstractControl {
             return;
         }
 
-        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED);
 
         Vector3f scaledDirection
                 = getWalkDirection().normalize().multLocal(speed);
@@ -77,9 +77,8 @@ public class CCharacterMovement extends AbstractControl {
 
     public void setSpeedToBase() {
         if (!isSpeedConstant()) {
-            float msBase
-                    = spatial.getUserData(UserData.SPEED_MOVEMENT_BASE);
-            spatial.setUserData(UserData.SPEED_MOVEMENT, msBase);
+            float msBase = spatial.getUserData(UserData.SPEED_BASE);
+            spatial.setUserData(UserData.SPEED, msBase);
         }
     }
 

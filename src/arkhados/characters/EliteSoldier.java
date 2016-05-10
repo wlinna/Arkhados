@@ -108,9 +108,9 @@ public class EliteSoldier extends AbstractNodeBuilder {
         yQuat.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y);
         weapon.setLocalRotation(yQuat.add(zQuat));
 
-        float movementSpeed = 36f;
-        entity.setUserData(UserData.SPEED_MOVEMENT, movementSpeed);
-        entity.setUserData(UserData.SPEED_MOVEMENT_BASE, movementSpeed);
+        float speed = 36f;
+        entity.setUserData(UserData.SPEED, speed);
+        entity.setUserData(UserData.SPEED_BASE, speed);
         float radius = 5f;
         entity.setUserData(UserData.RADIUS, radius);
         float health = 1675f;

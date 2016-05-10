@@ -85,7 +85,7 @@ class MagmaBashBuilder extends AbstractNodeBuilder {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
-        node.setUserData(UserData.SPEED_MOVEMENT, 180f);
+        node.setUserData(UserData.SPEED, 180f);
         node.setUserData(UserData.MASS, 10f);
         node.setUserData(UserData.DAMAGE, 80f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

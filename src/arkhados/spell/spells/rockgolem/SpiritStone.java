@@ -117,7 +117,7 @@ class SpiritStoneBuilder extends AbstractNodeBuilder {
             childToScale.scale(4f);
         }
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 145f);
+        node.setUserData(UserData.SPEED, 145f);
         node.setUserData(UserData.MASS, 600f);
         node.setUserData(UserData.DAMAGE, 0f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

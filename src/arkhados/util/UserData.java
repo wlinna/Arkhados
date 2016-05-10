@@ -16,8 +16,8 @@
 package arkhados.util;
 
 public class UserData {
-    public final static String SPEED_MOVEMENT_BASE = "speed-movement-base";
-    public final static String SPEED_MOVEMENT = "speed-movement";
+    public final static String SPEED_BASE = "speed-movement-base";
+    public final static String SPEED = "speed-movement";
     public final static String HEALTH_CURRENT = "health-current";
     public final static String HEALTH_MAX = "health-max";
     public final static String HEALTH_LOW_RECORD = "health-low-record";

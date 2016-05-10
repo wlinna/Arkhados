@@ -209,7 +209,7 @@ public class Firewalk extends Spell {
             material.setColor("Color", ColorRGBA.Yellow);
             node.setMaterial(material);
 
-            node.setUserData(UserData.SPEED_MOVEMENT, 100f);
+            node.setUserData(UserData.SPEED, 100f);
             node.setUserData(UserData.MASS, 0f);
             node.setUserData(UserData.DAMAGE, 50f);
             node.setUserData(UserData.IMPULSE_FACTOR, 0f);

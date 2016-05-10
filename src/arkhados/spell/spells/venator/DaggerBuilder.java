@@ -41,7 +41,7 @@ public class DaggerBuilder extends AbstractNodeBuilder {
                 = (Node) assets.loadModel("Models/DamagingDagger.j3o");
         node.setLocalTranslation(params.location);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 170f);
+        node.setUserData(UserData.SPEED, 170f);
         node.setUserData(UserData.MASS, 30f);
         node.setUserData(UserData.DAMAGE, 150f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

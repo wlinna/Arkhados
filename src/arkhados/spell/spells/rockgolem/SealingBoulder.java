@@ -66,7 +66,7 @@ class SealingBoulderBuilder extends AbstractNodeBuilder {
         Node node = (Node) assets.loadModel("Models/SealingBoulder.j3o");
         node.setLocalTranslation(params.location);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 145f);
+        node.setUserData(UserData.SPEED, 145f);
         node.setUserData(UserData.MASS, 10f);
         node.setUserData(UserData.DAMAGE, 120f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

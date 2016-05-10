@@ -247,10 +247,9 @@ public class CInfluenceInterface extends AbstractControl {
 
             speedInfluences.clear();
 
-            float msCurrent
-                    = spatial.getUserData(UserData.SPEED_MOVEMENT);
+            float msCurrent = spatial.getUserData(UserData.SPEED);
 
-            spatial.setUserData(UserData.SPEED_MOVEMENT,
+            spatial.setUserData(UserData.SPEED,
                     msCurrent * speedFactor + constantSpeedAddition);
         }
     }

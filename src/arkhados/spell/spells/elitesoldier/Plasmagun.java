@@ -133,7 +133,7 @@ class PlasmaBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Yellow);
         node.setMaterial(material);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 140f);
+        node.setUserData(UserData.SPEED, 140f);
         node.setUserData(UserData.MASS, 0.30f);
         node.setUserData(UserData.DAMAGE, 60f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

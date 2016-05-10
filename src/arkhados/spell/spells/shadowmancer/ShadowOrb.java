@@ -123,7 +123,7 @@ class OrbBuilder extends AbstractNodeBuilder {
         material.setColor("Color", ColorRGBA.Black);
         node.setMaterial(material);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 150f);
+        node.setUserData(UserData.SPEED, 150f);
         node.setUserData(UserData.MASS, 0.30f);
         node.setUserData(UserData.DAMAGE, 140f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);

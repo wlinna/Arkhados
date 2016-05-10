@@ -168,7 +168,7 @@ public class IntoTheShadows extends Spell {
             material.setColor("Color", ColorRGBA.Black);
             node.setMaterial(material);
 
-            node.setUserData(UserData.SPEED_MOVEMENT, 0f);
+            node.setUserData(UserData.SPEED, 0f);
             node.setUserData(UserData.MASS, 0f);
             node.setUserData(UserData.DAMAGE, 50f);
             node.setUserData(UserData.IMPULSE_FACTOR, 26000f);

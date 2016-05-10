@@ -89,7 +89,7 @@ class SpearBuilder extends AbstractNodeBuilder {
         node.getChild(0).scale(3f);
         node.setLocalTranslation(params.location);
 
-        node.setUserData(UserData.SPEED_MOVEMENT, 140f);
+        node.setUserData(UserData.SPEED, 140f);
         node.setUserData(UserData.MASS, 30f);
         node.setUserData(UserData.DAMAGE, 200f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
@@ -151,7 +151,7 @@ class SpeedBleedBuff extends SlowCC {
             return;
         }
 
-        float speed = spatial.getUserData(UserData.SPEED_MOVEMENT);
+        float speed = spatial.getUserData(UserData.SPEED);
         currentFactor = FastMath.clamp(
                 currentFactor - speed * time * SLOW_PER_UNIT, 0, 1f);
     }
