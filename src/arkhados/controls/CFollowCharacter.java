@@ -19,7 +19,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 public class CFollowCharacter extends AbstractControl {
@@ -31,11 +30,6 @@ public class CFollowCharacter extends AbstractControl {
     public CFollowCharacter(Node character, Camera cam) {
         this.character = character;
         this.cam = cam;
-    }
-
-    @Override
-    public void setSpatial(Spatial spatial) {
-        super.setSpatial(spatial);
     }
 
     @Override
