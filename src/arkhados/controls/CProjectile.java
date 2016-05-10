@@ -49,8 +49,7 @@ public class CProjectile extends AbstractControl implements CSync {
     private final Set<Spatial> hurtList = new HashSet<>();
 
     public void setTarget(Vector3f target) {
-        float speedMovement =
-                getSpatial().getUserData(UserData.SPEED_MOVEMENT);
+        float speedMovement = getSpatial().getUserData(UserData.SPEED_MOVEMENT);
         direction = target.subtract(rigidBodyControl.getPhysicsLocation())
                 .setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
@@ -60,8 +59,7 @@ public class CProjectile extends AbstractControl implements CSync {
         rigidBodyControl.setLinearVelocity(direction);
         speed = direction.length();
         rigidBodyControl.setGravity(Vector3f.ZERO);
-        range =
-                rigidBodyControl.getPhysicsLocation().distance(target);
+        range = rigidBodyControl.getPhysicsLocation().distance(target);
         range = FastMath.clamp(range, 0.001f, range);
     }
 
@@ -72,10 +70,10 @@ public class CProjectile extends AbstractControl implements CSync {
      * ownerships.
      */
     public void setDirection(Vector3f direction) {
-        float speedMovement =
-                getSpatial().getUserData(UserData.SPEED_MOVEMENT);
-        this.direction =
-                direction.setY(0f).normalizeLocal().multLocal(speedMovement);
+        float speedMovement
+                = getSpatial().getUserData(UserData.SPEED_MOVEMENT);
+        this.direction
+                = direction.setY(0f).normalizeLocal().multLocal(speedMovement);
         Quaternion rotation = new Quaternion();
         rotation.lookAt(direction, Vector3f.UNIT_Y);
         rigidBodyControl.setPhysicsRotation(rotation);
@@ -87,6 +85,10 @@ public class CProjectile extends AbstractControl implements CSync {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
+        if (spatial == null) {
+            return;
+        }
+
         rigidBodyControl = spatial.getControl(RigidBodyControl.class);
 
         // This is default behaviour and can be overridden

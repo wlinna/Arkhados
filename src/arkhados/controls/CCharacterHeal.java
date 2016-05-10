@@ -29,6 +29,9 @@ public class CCharacterHeal extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
+        if (spatial == null) {
+            return;
+        }
         recordLowHealth = spatial.getUserData(UserData.HEALTH_MAX);
     }
 

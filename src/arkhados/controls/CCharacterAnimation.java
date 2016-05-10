@@ -54,6 +54,10 @@ public class CCharacterAnimation extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
+        if (spatial == null) {
+            return;
+        }
+
         cPhysics = spatial.getControl(CCharacterPhysics.class);
         cMovement = spatial.getControl(CCharacterMovement.class);
         channel = cAnim.createChannel();

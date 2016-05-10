@@ -33,8 +33,8 @@ import java.util.logging.Logger;
 
 public class CCharacterBuff extends AbstractControl {
 
-    private static final Logger logger =
-            Logger.getLogger(CCharacterBuff.class.getName());
+    private static final Logger logger
+            = Logger.getLogger(CCharacterBuff.class.getName());
     private final IntMap<BuffEffect> effects = new IntMap<>();
     private final IntMap<Element> buffIcons = new IntMap<>();
     private final IntMap<FakeBuff> buffs = new IntMap<>();
@@ -46,9 +46,7 @@ public class CCharacterBuff extends AbstractControl {
         super.setSpatial(spatial);
 
         if (spatial == null) {
-            for (IntMap.Entry<BuffEffect> effect : effects) {                
-                effect.getValue().destroy();
-            }
+            clear();
         }
     }
 
@@ -57,8 +55,8 @@ public class CCharacterBuff extends AbstractControl {
 
         buffs.put(buffId, new FakeBuff(buffTypeId));
 
-        BuffInfo buffInfo =
-                BuffInfo.getBuffInfo(buffTypeId);
+        BuffInfo buffInfo
+                = BuffInfo.getBuffInfo(buffTypeId);
         if (buffInfo == null) {
             logger.log(Level.FINE,
                     "No buffinfo for type {0} . BuffId is {1}",
@@ -66,8 +64,8 @@ public class CCharacterBuff extends AbstractControl {
             return;
         }
 
-        BuffInfoParameters infoParams =
-                new BuffInfoParameters(this, duration, justCreated);
+        BuffInfoParameters infoParams
+                = new BuffInfoParameters(this, duration, justCreated);
 
         BuffEffect buff = buffInfo.createBuffEffect(infoParams);
 
@@ -102,7 +100,7 @@ public class CCharacterBuff extends AbstractControl {
             buff.stacks = stacks;
         }
     }
-    
+
     public void removeBuff(int buffId) {
         buffs.remove(buffId);
         BuffEffect buffEffect = effects.remove(buffId);
@@ -131,7 +129,7 @@ public class CCharacterBuff extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        for (IntMap.Entry<BuffEffect> entry : effects) {                    
+        for (IntMap.Entry<BuffEffect> entry : effects) {
             BuffEffect buffEffect = entry.getValue();
             buffEffect.update(tpf);
 
@@ -142,8 +140,8 @@ public class CCharacterBuff extends AbstractControl {
             float cooldown = buffEffect.getTimeLeft();
             // FIXME: java.lang.IndexOutOfBoundsException
             // Workaroud:
-            List<Element> cooldownChildren =
-                    buffIcons.get(entry.getKey()).getChildren();
+            List<Element> cooldownChildren
+                    = buffIcons.get(entry.getKey()).getChildren();
             if (cooldownChildren.isEmpty()) {
                 logger.warning("cooldown element is empty");
                 continue;
@@ -170,19 +168,29 @@ public class CCharacterBuff extends AbstractControl {
     void setHud(ClientHud hud) {
         this.hud = hud;
         buffPanel = hud.getScreen().findElementByName("panel_buffs");
-    }    
+    }
 
     public boolean hasBuff(int typeId) {
-        for (IntMap.Entry<FakeBuff> fakeBuff : buffs) {                    
+        for (IntMap.Entry<FakeBuff> fakeBuff : buffs) {
             if (fakeBuff.getValue().typeId == typeId) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public IntMap<FakeBuff> getBuffs() {
         return buffs;
+    }
+
+    private void clear() {
+        for (IntMap.Entry<BuffEffect> effect : effects) {
+            effect.getValue().destroy();
+        }
+        
+        effects.clear();
+        buffIcons.clear();
+        buffs.clear();
     }
 }

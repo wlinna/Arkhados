@@ -21,14 +21,23 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.util.IntMap;
 
-public class CActionPlayer extends AbstractControl {
+public class CActionPlayer extends AbstractControl {    
 
     private final IntMap<WorldEffect> actionEffects = new IntMap<>();
     private final IntMap<WorldEffect> castEffects = new IntMap<>();
     private EffectHandle effectHandle;
+
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial);
+        if (spatial == null) {
+            endEffect();
+        }
+    }
 
     public void putEffect(int id, WorldEffect effect) {
         actionEffects.put(id, effect);

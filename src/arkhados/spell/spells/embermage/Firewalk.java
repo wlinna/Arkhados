@@ -250,6 +250,9 @@ class CFirewalkCollisionHandler extends AbstractControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
+        if (spatial == null) {
+            return;
+        }
         ghost = spatial.getControl(GhostControl.class);
     }
 

@@ -40,6 +40,10 @@ public class CCharacterPhysics extends BetterCharacterControl {
     @Override
     public void setSpatial(Spatial spatial) {
         super.setSpatial(spatial);
+        if (spatial == null) {
+            return;
+        }
+
         rigidBody.setUserObject(spatial);
         rigidBody.setCollisionGroup(CollisionGroups.CHARACTERS);
         rigidBody.setCollideWithGroups(CollisionGroups.TERRAIN

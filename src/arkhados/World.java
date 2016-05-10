@@ -442,6 +442,14 @@ public class World extends AbstractAppState implements CommandHandler {
             space.removeAll(worldRoot);
             rootNode.detachChild(worldRoot);
         }
+        
+        for (IntMap.Entry<Spatial> entry : entities) {
+            Spatial entity = entry.getValue();
+            for (int i = 0; i < entity.getNumControls(); ++i) {
+                entity.getControl(i).setSpatial(null);
+            }
+        }
+        
         entities.clear();
         sync.clear();
 
