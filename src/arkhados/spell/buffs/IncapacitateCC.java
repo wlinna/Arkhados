@@ -18,8 +18,8 @@ import arkhados.util.BuffTypeIds;
 
 /**
  * Crow Control buff that causes entity to not be able to move or cast spells.
- * Damage from outside removes incapacitate however. Note: CC is acronym for
- * Crowd Control
+ * If sensitive is set to false, Incapacitate is called Stun instead.
+ * Note: CC is stands for Crowd Control
  */
 public class IncapacitateCC extends CrowdControlBuff {
 
@@ -27,8 +27,11 @@ public class IncapacitateCC extends CrowdControlBuff {
         name = "Incapacitate";
     }
 
-    protected IncapacitateCC(float duration) {
+    private final boolean sensitive;
+
+    protected IncapacitateCC(float duration, boolean sensitive) {
         super(duration);
+        this.sensitive = sensitive;
     }
 
     @Override
@@ -43,19 +46,26 @@ public class IncapacitateCC extends CrowdControlBuff {
 
     @Override
     public boolean isDamageSensitive() {
-        return true;
+        return sensitive;
     }
 
     public static class MyBuilder extends AbstractBuffBuilder {
+
+        private boolean sensitive = true;
 
         public MyBuilder(float duration) {
             super(duration);
             setTypeId(BuffTypeIds.INCAPACITATE);
         }
 
+        public MyBuilder setSensitive(boolean sensitive) {
+            this.sensitive = sensitive;
+            return this;
+        }
+
         @Override
         public AbstractBuff build() {
-            return set(new IncapacitateCC(duration));
+            return set(new IncapacitateCC(duration, sensitive));
         }
     }
 }

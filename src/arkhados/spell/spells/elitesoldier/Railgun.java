@@ -29,6 +29,7 @@ import arkhados.effects.WorldEffect;
 import arkhados.effects.particle.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
@@ -199,11 +200,12 @@ class RailgunBuilder extends AbstractNodeBuilder {
         node.addControl(characterCollision);
 
         node.addControl(physicsBody);
-        CProjectile projectileControl = new CProjectile();
-        projectileControl.setIsProjectile(false);
-        node.addControl(projectileControl);
-        final CSpellBuff buffControl = new CSpellBuff();
-        node.addControl(buffControl);
+        CProjectile cProjectile = new CProjectile();
+        cProjectile.setIsProjectile(false);
+        node.addControl(cProjectile);
+        final CSpellBuff cBuff = new CSpellBuff();
+        node.addControl(cBuff);
+        cBuff.addBuff(new IncapacitateCC.MyBuilder(0.4f).setSensitive(false));
 
         return node;
     }
