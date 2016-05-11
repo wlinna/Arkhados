@@ -7,6 +7,15 @@
             <onCustom name="updateScrollpanelPositionToDisplayElement" target="listBoxStatic" oneShot="true" />
         </effect>
     </style>
+    
+    <style id="main-panel-style">
+        <attributes backgroundImage="Interface/Images/Box.png"
+                    imageMode="resize:32,511,32,32,32,511,32,285,32,511,32,32"
+                    paddingTop="40px"
+                    paddingLeft="30px"
+                    paddingRight="30px"
+                    paddingBottom="30px" />
+    </style>
 
     ￼<controlDefinition name="credits_panel"
                         inputMapping="de.lessvoid.nifty.input.mapping.MenuInputMapping">
@@ -40,7 +49,7 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel width="400px" height="400px" align="center" valign="center" style="main-panel-style" childLayout="vertical">
                 <effect>
                     <onStartScreen name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
@@ -77,7 +86,7 @@
         
     <screen id="replay" controller="arkhados.ui.ReplayMenu">
         <layer childLayout="center">
-            <panel childLayout="vertical" style="nifty-panel" width="400px" height="70%">
+            <panel childLayout="vertical" style="main-panel-style" width="400px" height="70%">
                 <text style="nifty-label" text="Select replay"/>
                 <control id="replay_list" name="listBox" vertical="on" horizontal="off" displayItems="15" forceSelection="true" />                    
 
@@ -97,7 +106,8 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel id="root_panel" height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="root_panel" height="400px" width="350px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
                 <effect>
                     <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
@@ -133,7 +143,8 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel height="400px" width="420px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel height="400px" width="420px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
@@ -216,7 +227,8 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel height="400px" width="350px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
@@ -244,7 +256,8 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel height="400px" width="350px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel height="500px" width="350px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
                 <effect>
                     <onStartScreen  name="fade" startColor="#0000" endColor="#000f" length="500"/>
                     <onEndScreen name="move" mode="out" direction="bottom" length="300" startDelay="0" inherit="true"/>
@@ -345,7 +358,8 @@
             </panel>
         </layer>
         <layer id="layer_statistics" childLayout="center" valign="center" visible="false">
-            <panel id="panel_statistics" valign="center" align="center" childLayout="vertical" style="nifty-panel" width="700px" height="500px">
+            <panel id="panel_statistics" valign="center" align="center" childLayout="vertical"
+                    width="700px" height="500px" style="main-panel-style">
                 <panel valign="top" align="left" childLayout="horizontal">
                     <!-- TODO: Replace labels with images -->
                     <text style="nifty-label" text="Name" marginLeft="80px" width="70px" textHAlign="left" />
@@ -375,7 +389,8 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel id="credits1" visible="true" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="credits1" visible="true" height="680px" width="600px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Programming" />
                 <text style="nifty-label" text="William Linna (main programmer)" />
                 <text style="nifty-label" text="Teemu Salminen (contributions)" />                
@@ -415,7 +430,8 @@
                 </control>
             </panel>
         
-            <panel id="credits2" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="credits2" visible="false" height="680px" width="600px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to" >
                 </text>
                 <text style="nifty-label" text=""/>
@@ -430,6 +446,7 @@
                 <control name="credits_panel" who="U.R.U. project" for="Mineral Armor model" />
                 <control name="credits_panel" who="Dakal and Saroman" for="Ember Circle texture" />
                 <control name="credits_panel" who="StrumpyStrust" for="Spell Bar UI" />
+                <control name="credits_panel" who="kindland" for="UI components" />
                 <control name="credits_panel" who="Horrorpen" for="skull icon" />
                 <control name="credits_panel" who="J. W. Bjerk (eleazzaar)" for="spell icons" />
                 <control name="credits_panel" who="Paulius Jurgelevičius" for="spell icons" />
@@ -452,9 +469,6 @@
                 <control name="credits_panel" who="Ancient Beast -project and Gergő Soós" for="Rocket Jump icon" />
                 <control name="credits_panel" who="qupodup and Dakal" for="Healt bar" />
                 <control name="credits_panel" who="Blender Foundation" for="Meteor explosion sound" />
-                <control name="credits_panel" who="TheGoat" for="Venator's dagger" />
-                <control name="credits_panel" who="ReadeOnly" for="Fireball explosion sound" />
-                <control name="credits_panel" who="lensflare8642" for="Shotgun sound" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
                 <text style="nifty-label" text=""/>
@@ -471,9 +485,13 @@
                 </control>
             </panel>
     
-            <panel id="credits3" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="credits3" visible="false" height="680px" width="600px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="TheGoat" for="Venator's dagger" />
+                <control name="credits_panel" who="ReadeOnly" for="Fireball explosion sound" />
+                <control name="credits_panel" who="lensflare8642" for="Shotgun sound" />
                 <control name="credits_panel" who="Ogrebane" for="sound effects" />
                 <control name="credits_panel" who="thebardofblashphemy" for="pain sounds" />
                 <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
@@ -495,11 +513,6 @@
                 <control name="credits_panel" who="lolamadeus" for="Petrify sound" />
                 <control name="credits_panel" who="Independent.nu" for="Deep Wounds and Stone Fist sounds" />
                 <control name="credits_panel" who="Savino and pOss" for="Grave models for Pillar Arena" />
-                <control name="credits_panel" who="Dim" for="Ground texture for Pillar Arena" />
-                <control name="credits_panel" who="WillHiccups" for="Rend hit sounds for Venator" />
-                <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
-                <control name="credits_panel" who="Telaron" for="Moleman (music)" />
-                <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
                 <text style="nifty-label" text=""/>
@@ -515,15 +528,16 @@
                     <interact onClick="gotoMenu(main_menu)" />
                 </control>
             </panel>
-            <panel id="credits4" visible="false" height="680px" width="600px" align="center" valign="center" style="nifty-panel" childLayout="vertical">
+            <panel id="credits4" visible="false" height="680px" width="600px" align="center" valign="center" 
+                   style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="Dim" for="Ground texture for Pillar Arena" />
+                <control name="credits_panel" who="WillHiccups" for="Rend hit sounds for Venator" />
+                <control name="credits_panel" who="Darren-Curtis" for="My Dark Passenger (music)" />
+                <control name="credits_panel" who="Telaron" for="Moleman (music)" />
+                <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
                 <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />      
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>

@@ -102,6 +102,8 @@ from [OGA](http://opengameart.org/node/10483)
 
 [StrumpyStrust](http://opengameart.org/users/stumpystrust) for [Fantasy UI box](http://opengameart.org/content/fantasy-ui-box). Fantasy UI box has been modified and is used as Spell bar. Fantasy UI box is licensed under CC-BY 3.0.
 
+[kindland](http://opengameart.org/users/kindland) for [Info-Box](http://opengameart.org/content/info-box). Info-Box is CC0-licensed.
+
 Horrorpen for following spell and buff icons:
 - Fear
 - Dark Energy

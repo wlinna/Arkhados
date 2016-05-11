@@ -13,6 +13,8 @@ See CREDITS.md for attributions.
 - feral_scream.png
 - rend.png
 - Toss.png
+- Box.png
+- InfoTab.png
 - Incapacitate.png
 - noise3.png
 - lava.jpg

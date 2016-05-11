@@ -14,10 +14,8 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.ui.hud;
 
-import com.jme3.math.ColorRGBA;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.TextBuilder;
-import de.lessvoid.nifty.tools.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +26,10 @@ public class PlayerStatisticsPanelBuilder extends PanelBuilder {
         alignLeft();
         valignTop();
         childLayoutHorizontal();
-        style("nifty-panel");
-        height("70px");
+        height("50px");
         width("100%");
+        backgroundImage("Interface/Images/InfoTab.png");
+        imageMode("resize");
 
         List<TextBuilder> textBuilders = new ArrayList<>();
         
