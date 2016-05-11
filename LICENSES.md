@@ -15,6 +15,7 @@ See CREDITS.md for attributions.
 - Toss.png
 - Box.png
 - InfoTab.png
+- InfoTabLight.png
 - Incapacitate.png
 - noise3.png
 - lava.jpg

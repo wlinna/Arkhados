@@ -28,7 +28,7 @@ public class PlayerStatisticsPanelBuilder extends PanelBuilder {
         childLayoutHorizontal();
         height("50px");
         width("100%");
-        backgroundImage("Interface/Images/InfoTab.png");
+        backgroundImage("Interface/Images/InfoTabLight.png");
         imageMode("resize");
 
         List<TextBuilder> textBuilders = new ArrayList<>();
