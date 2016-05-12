@@ -37,6 +37,7 @@ import com.jme3.export.JmeImporter;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.system.Annotations;
+import com.jme3.util.clone.Cloner;
 import java.io.IOException;
 
 public class EmitterArcShape implements EmitterShape {
@@ -97,5 +98,15 @@ public class EmitterArcShape implements EmitterShape {
     @Override
     public void getRandomPointAndNormal(Vector3f store, Vector3f normal) {
         this.getRandomPoint(store);
+    }
+
+    @Override
+    public Object jmeClone() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

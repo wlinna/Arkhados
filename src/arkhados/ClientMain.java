@@ -129,6 +129,7 @@ public class ClientMain extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        stateManager.getState(AudioListenerState.class).setEnabled(false);
         File replayDir = new File("replays");
         if (!replayDir.exists()) {
             replayDir.mkdir();
@@ -168,7 +169,7 @@ public class ClientMain extends SimpleApplication {
 
         Serializer.registerClass(ReplayHeader.class);
         Serializer.registerClass(ReplayCmdData.class);
-        Serializer.registerClass(ReplayData.class);
+        Serializer.registerClass(ReplayData.class);                
     }
 
     @Override

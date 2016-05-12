@@ -38,6 +38,7 @@ import com.jme3.export.InputCapsule;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.util.clone.Cloner;
 import java.io.IOException;
 
 public class EmitterCircleShape implements EmitterShape {
@@ -112,5 +113,15 @@ public class EmitterCircleShape implements EmitterShape {
     @Override
     public void getRandomPointAndNormal(Vector3f store, Vector3f normal) {
         this.getRandomPoint(store);
+    }
+
+    @Override
+    public Object jmeClone() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
