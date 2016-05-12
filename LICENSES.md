@@ -47,6 +47,9 @@ See CREDITS.md for attributions.
 - Splash.png (Modification of Background)
 - JoinIcon.png
 - SpellBar.png
+- Attack.png
+- Status.png
+- Potion.png
 - mage.blend and all its derivatives
 - EmberCircle.png and all its derivatives
 - skull.png and all its derivatives

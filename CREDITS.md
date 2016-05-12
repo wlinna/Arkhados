@@ -104,6 +104,8 @@ from [OGA](http://opengameart.org/node/10483)
 
 [kindland](http://opengameart.org/users/kindland) for [Info-Box](http://opengameart.org/content/info-box). Info-Box is CC0-licensed.
 
+[Ironthunder](http://opengameart.org/users/ironthunder) for [Markeus B UI buttons](http://opengameart.org/content/markeus-b-ui-buttons). They have been slightly modified and are used in the statistics panel. Markeus B UI buttons are licensed under CC-BY 3.0.
+
 Horrorpen for following spell and buff icons:
 - Fear
 - Dark Energy
