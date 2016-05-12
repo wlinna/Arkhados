@@ -369,8 +369,7 @@
             </panel>
         </layer>
         <layer id="layer_settings" childLayout="center" valign="center" visible="false">
-            <panel width="400px" align="center" valign="center" style="nifty-panel" childLayout="vertical">                              
-                <text style="nifty-label" text=""/>
+            <panel width="400px" align="center" valign="center" style="main-panel-style" childLayout="vertical">
                 <control id="continue-game" name="button" label="Continue" align="center">
                     <interact onClick="continueGame()" />
                 </control>
