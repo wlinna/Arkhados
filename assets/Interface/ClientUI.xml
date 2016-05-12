@@ -143,12 +143,12 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel height="400px" width="420px" align="center" valign="center" 
+            <panel height="500px" width="420px" align="center" valign="center" 
                    style="main-panel-style" childLayout="vertical">
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
-                    <panel height="700px" width="150px" align="left" childLayout="vertical">
+                    <panel height="700px" width="140px" align="left" childLayout="vertical">
                         <text style="nifty-label" text="Up" align="center" />
                         <text style="nifty-label" text="Down" align="center" />
                         <text style="nifty-label" text="Left" align="center" />
@@ -232,11 +232,11 @@
 
                 <text style="nifty-label" text=""/>
                 <panel height="*" width="*" align="center" childLayout="horizontal">
-                    <panel height="700px" width="100px" align="left" childLayout="vertical">
+                    <panel height="700px" width="120px" align="center" childLayout="vertical">
                         <text style="nifty-label" text="Free camera speed" align="center" />
 
                     </panel>
-                    <panel height="700px" width="300px" align="center" childLayout="vertical">
+                    <panel height="700px" width="200px" align="center" childLayout="vertical">
                         <control id="free_camera_speed" name="textfield" align="center" width="120px" text="500"></control>
                     </panel>
                 </panel>
@@ -359,7 +359,7 @@
         </layer>
         <layer id="layer_statistics" childLayout="center" valign="center" visible="false">
             <panel id="panel_statistics" valign="center" align="center" childLayout="vertical"
-                    width="700px" height="500px" style="main-panel-style">
+                   width="700px" height="500px" style="main-panel-style">
                 <panel valign="top" align="left" childLayout="horizontal">
                     <!-- TODO: Replace labels with images -->
                     <text style="nifty-label" text="Name" marginLeft="80px" width="70px" textHAlign="left" />
@@ -389,7 +389,7 @@
             <panel width="100%" height="100%" backgroundImage="Interface/Images/Background.png"></panel>
         </layer>
         <layer childLayout="center">
-            <panel id="credits1" visible="true" height="680px" width="600px" align="center" valign="center" 
+            <panel id="credits1" visible="true" height="620px" width="600px" align="center" valign="center" 
                    style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Programming" />
                 <text style="nifty-label" text="William Linna (main programmer)" />
@@ -411,14 +411,25 @@
                 <text style="nifty-label" text="Teemu Salminen" />       
                 <text style="nifty-label" text=""/>         
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Early phase testing" />
-                <text style="nifty-label" text="William Linna" />
-                <text style="nifty-label" text="Allexit" />
-                <text style="nifty-label" text="Teemu Salminen" />
-                <text style="nifty-label" text="Otto Tuominen" />
-                <text style="nifty-label" text="Iivari Sassi" />
-                <text style="nifty-label" text="Oskari Saari" />
-                <text style="nifty-label" text="Ilkka Wirkkala" />
-                <text style="nifty-label" text="Kim Seppänen" />
+                <panel childLayout="horizontal" align="center">
+                    <panel childLayout="vertical" >
+                        <text style="nifty-label" text="William Linna" />
+                        <text style="nifty-label" text="Allexit" />
+                        <text style="nifty-label" text="Teemu Salminen" />
+                    </panel>
+                    <panel childLayout="vertical" paddingLeft="20px" paddingRight="20px">                                    
+                        <text style="nifty-label" text="Otto Tuominen" />
+                        <text style="nifty-label" text="Iivari Sassi" />
+                        <text style="nifty-label" text="Oskari Saari" />
+                    </panel>
+                    <panel childLayout="vertical">
+                        <text style="nifty-label" text="Ilkka Wirkkala" />
+                        <text style="nifty-label" text="Kim Seppänen" />
+                    </panel>
+                </panel>
+
+
+
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
 
                 <text style="nifty-label" text=""/>
@@ -430,7 +441,7 @@
                 </control>
             </panel>
         
-            <panel id="credits2" visible="false" height="680px" width="600px" align="center" valign="center" 
+            <panel id="credits2" visible="false" height="710px" width="600px" align="center" valign="center" 
                    style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to" >
                 </text>
@@ -485,7 +496,7 @@
                 </control>
             </panel>
     
-            <panel id="credits3" visible="false" height="680px" width="600px" align="center" valign="center" 
+            <panel id="credits3" visible="false" height="710px" width="600px" align="center" valign="center" 
                    style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
@@ -528,7 +539,7 @@
                     <interact onClick="gotoMenu(main_menu)" />
                 </control>
             </panel>
-            <panel id="credits4" visible="false" height="680px" width="600px" align="center" valign="center" 
+            <panel id="credits4" visible="false" height="380px" width="600px" align="center" valign="center" 
                    style="main-panel-style" childLayout="vertical">
                 <text style="nifty-label" font="Interface/Fonts/DejaVu-Serif-21.fnt" text="Also thanks to (continued)" />
                 <text style="nifty-label" text=""/>
@@ -542,24 +553,10 @@
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
-                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
+                <text style="nifty-label" text=""/>
+                <text style="nifty-label" text=""/>
+                                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <control id="previous_button" name="button" label="&lt;---" align="center" width="200px">
                     <interact onClick="switchElement(credits4, credits3)" />
