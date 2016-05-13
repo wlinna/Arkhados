@@ -30,8 +30,6 @@ import com.jme3.util.IntMap;
  * @author Teemu
  */
 public class CCharacterSound extends AbstractControl {
-
-    private float suffering = 0;
     private String deathPath;
     
     private final IntMap<WorldEffect> castSounds = new IntMap<>();
@@ -39,16 +37,14 @@ public class CCharacterSound extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        suffering += tpf;
     }
 
     public void suffer(float damage) {
-        if (suffering <= 2) {
+        if (damage < 180f) {
             return;
-        }       
-
+        }
+        
         sufferSfx.execute((Node) spatial, spatial.getLocalTranslation(), "");
-        suffering = 0;
     }
 
     public void death() {
