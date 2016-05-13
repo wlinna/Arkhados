@@ -35,6 +35,7 @@ See CREDITS.md for attributions.
 - DrainHit.wav
 - All Wall related files
 - SpiritStone 3D-model
+- EmberMagePain.wav
 - VenatorDeath.wav
 - VenatorPain.wav
 - RockGolemPain.wav
@@ -122,7 +123,6 @@ See CREDITS.md for attributions.
 - BattleOfTheSomme.ogg
 
 ## GPL 2.0 ##
-- EmberMagePain.wav
 - EmberMageDeath.wav
 - Moleman.ogg
 
