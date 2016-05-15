@@ -36,6 +36,7 @@ See CREDITS.md for attributions.
 - All Wall related files
 - SpiritStone 3D-model
 - EmberMagePain.wav
+- EmberMageDeath.wav
 - VenatorDeath.wav
 - VenatorPain.wav
 - RockGolemPain.wav
@@ -123,7 +124,6 @@ See CREDITS.md for attributions.
 - BattleOfTheSomme.ogg
 
 ## GPL 2.0 ##
-- EmberMageDeath.wav
 - Moleman.ogg
 
 ## Bitstream Vera Copyright ##

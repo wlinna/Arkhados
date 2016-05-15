@@ -213,8 +213,6 @@ used in Arkhados are CC0-licensed. Here are the Ogrebane's sounds used:
 - [Venator sounds](http://opengameart.org/content/monster-sound-effects-pack)
 - [Dark sounds](http://opengameart.org/content/dark-ambiences)
 
-thebardofblashphemy for [male pain sounds](http://opengameart.org/content/grunts-male-death-and-pain). Those pain sounds are licensed under GPL 2.0.
-
 [Marcus Dellicompagni](http://www.redaudiouk.com/) for Monster Roar,
 which is used for spell Feral Scream (FeralScream.wav). Monster Roar
 is licensed under CC-BY 3.0 and can be found from [freesound](http://freesound.org/people/dingo1/sounds/235259/)

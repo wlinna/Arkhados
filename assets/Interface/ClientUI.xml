@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+d<?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
@@ -503,7 +503,6 @@
                 <control name="credits_panel" who="ReadeOnly" for="Fireball explosion sound" />
                 <control name="credits_panel" who="lensflare8642" for="Shotgun sound" />
                 <control name="credits_panel" who="Ogrebane" for="sound effects" />
-                <control name="credits_panel" who="thebardofblashphemy" for="pain sounds" />
                 <control name="credits_panel" who="Marcus Dellicompagni" for="Feral Scream sound" />
                 <control name="credits_panel" who="spookymodem" for="sound effects" />
                 <control name="credits_panel" who="midimagician" for="Ember Circle sound" />
@@ -522,6 +521,7 @@
                 <control name="credits_panel" who="Olivier Girardot" for="Dwarves Gathering (music)" />
                 <control name="credits_panel" who="lolamadeus" for="Petrify sound" />
                 <control name="credits_panel" who="Independent.nu" for="Deep Wounds and Stone Fist sounds" />
+                <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text="(Full credits at https://github.com/TripleSnail/Arkhados/blob/master/CREDITS.md)" />
                 <text style="nifty-label" text=""/>
