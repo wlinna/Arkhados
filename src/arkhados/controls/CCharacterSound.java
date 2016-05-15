@@ -31,16 +31,18 @@ import com.jme3.util.IntMap;
  */
 public class CCharacterSound extends AbstractControl {
     private String deathPath;
+    private float timeSinceCreation = 0f;
     
     private final IntMap<WorldEffect> castSounds = new IntMap<>();
     private final RandomChoiceEffect sufferSfx = new RandomChoiceEffect();
 
     @Override
     protected void controlUpdate(float tpf) {
+        timeSinceCreation += tpf;
     }
 
     public void suffer(float damage) {
-        if (damage < 180f) {
+        if (damage < 180f || timeSinceCreation < 0.08f) {
             return;
         }
         
