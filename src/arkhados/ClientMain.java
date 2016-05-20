@@ -38,8 +38,8 @@ import arkhados.ui.ConnectionMenu;
 import arkhados.ui.MainMenu;
 import arkhados.ui.ReplayMenu;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
-import com.jme3.audio.AudioListenerState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.network.NetworkClient;
 import com.jme3.network.serializing.Serializer;
@@ -128,9 +128,12 @@ public class ClientMain extends SimpleApplication {
     private Future connectionFuture;
     private ScheduledThreadPoolExecutor threadPoolExecutor;
 
+    public ClientMain() {
+        super(new StatsAppState());
+    }    
+
     @Override
     public void simpleInitApp() {
-        stateManager.getState(AudioListenerState.class).setEnabled(false);
         File replayDir = new File("replays");
         if (!replayDir.exists()) {
             replayDir.mkdir();
@@ -157,7 +160,6 @@ public class ClientMain extends SimpleApplication {
         stateManager.attach(hud);
         stateManager.attach(bulletState);
         bulletState.getPhysicsSpace().setAccuracy(1f / 30f);
-        flyCam.setEnabled(false);
         startNifty();
 
         MusicManager musicManager  = new MusicManager(this, getInputManager());
@@ -278,8 +280,6 @@ public class ClientMain extends SimpleApplication {
     }
 
     public void startGame() {
-        flyCam.setEnabled(false);
-
         enqueue(() -> {
             gameMode.setRunning(true);
             Preloader.loadClient(assetManager);
