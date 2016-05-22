@@ -108,6 +108,10 @@ public class ASplash extends EntityAction {
                 spatial, radius, predicate);
 
         int myTeam = spatial.getUserData(UserData.TEAM_ID);
+        if (getCasterInterface() != null) {
+            myTeam = getCasterInterface().getSpatial()
+                    .getUserData(UserData.TEAM_ID);
+        }
 
         for (SpatialDistancePair pair : spatialsOnDistance) {
             CInfluenceInterface targetInterface =
