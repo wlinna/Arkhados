@@ -255,11 +255,20 @@ public class CInfluenceInterface extends AbstractControl {
     }
 
     private void applyBuffs(float tpf) {
-        for (Iterator<AbstractBuff> it = buffs.iterator(); it.hasNext();) {
-            AbstractBuff buff = it.next();
+        // Use C-style for-loop in case that update / destroy adds a new buff
+        int size = buffs.size();
+        for (int i = 0; i < size; ++i) {
+            AbstractBuff buff = buffs.get(i);
             buff.update(tpf);
             if (!buff.shouldContinue()) {
                 buff.destroy();
+            }
+        }
+
+        // Same reason for removing in a separate loop
+        for (Iterator<AbstractBuff> it = buffs.iterator(); it.hasNext();) {
+            AbstractBuff buff = it.next();
+            if (!buff.shouldContinue()) {
                 it.remove();
             }
         }
