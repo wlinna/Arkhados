@@ -18,6 +18,8 @@ import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
+import arkhados.spell.spells.electrobot.ElectricBomb;
+import arkhados.spell.spells.electrobot.Zap;
 import arkhados.spell.spells.shadowmancer.ShadowOrb;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
 import arkhados.spell.spells.elitesoldier.Plasmagun;
@@ -128,8 +130,8 @@ public abstract class Spell {
         addSpell(entityFactory, Shadow.create());      
         addSpell(entityFactory, IntoTheShadows.create());
         
-        addSpell(entityFactory, Maim.create());
-        addSpell(entityFactory, CrushingBlow.create());
+        addSpell(entityFactory, Zap.create());
+        addSpell(entityFactory, ElectricBomb.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

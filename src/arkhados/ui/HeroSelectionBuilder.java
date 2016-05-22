@@ -77,7 +77,8 @@ class CategoryPanelBuilder extends PanelBuilder {
         panel(new HeroCategoryBuilder("Melee",
                 new HeroButtonBuilder("Venator", "Venator")));
         panel(new HeroCategoryBuilder("Tank",
-                new HeroButtonBuilder("RockGolem", "Rock Golem")));
+                new HeroButtonBuilder("RockGolem", "Rock Golem"),
+                new HeroButtonBuilder("ElectroBot", "ElectroBot")));
         panel(new HeroCategoryBuilder("Support",
                 new HeroButtonBuilder("Shadowmancer", "Shadowmancer")));
     }

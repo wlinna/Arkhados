@@ -15,10 +15,10 @@
 package arkhados.util;
 
 import arkhados.EffectHandler;
+import arkhados.characters.ElectroBot;
 import arkhados.characters.Shadowmancer;
 import arkhados.characters.EliteSoldier;
 import arkhados.characters.EmberMage;
-import arkhados.characters.Madblow;
 import arkhados.characters.RockGolem;
 import arkhados.characters.Venator;
 import arkhados.effects.EffectBox;
@@ -65,7 +65,7 @@ public class EntityFactory {
         int soldierId = addNodeBuilder(new EliteSoldier());
         int golemId = addNodeBuilder(new RockGolem());
         int shadowmancerId = addNodeBuilder(new Shadowmancer());
-        int madblowId = addNodeBuilder(new Madblow());
+        int electroBotId = addNodeBuilder(new ElectroBot());
 
         NodeBuilderIdHeroNameMatcher mappings =
                 NodeBuilderIdHeroNameMatcher.get();
@@ -74,7 +74,7 @@ public class EntityFactory {
         mappings.addMapping("EliteSoldier", soldierId);
         mappings.addMapping("RockGolem", golemId);
         mappings.addMapping("Shadowmancer", shadowmancerId);
-        mappings.addMapping("Madblow", madblowId);
+        mappings.addMapping("ElectroBot", electroBotId);
     }
 
     private int newNodeBuilderId() {
