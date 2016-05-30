@@ -16,7 +16,7 @@ package arkhados.effects;
 
 import arkhados.Globals;
 import arkhados.controls.CRotation;
-import arkhados.effects.particle.ParticleEmitter;
+import com.jme3.effect.ParticleEmitter;
 import arkhados.spell.buffs.info.BuffInfoParameters;
 import arkhados.util.UserData;
 import com.jme3.effect.ParticleMesh;

@@ -22,7 +22,7 @@ import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.effects.ParticleInfluencerWithAngleSetting;
-import arkhados.effects.particle.ParticleEmitter;
+import com.jme3.effect.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.util.AbstractNodeBuilder;

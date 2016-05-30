@@ -28,7 +28,7 @@ import arkhados.effects.EffectHandle;
 import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.effects.WorldEffect;
-import arkhados.effects.particle.ParticleEmitter;
+import com.jme3.effect.ParticleEmitter;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.Selector;

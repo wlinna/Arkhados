@@ -18,7 +18,7 @@ import arkhados.CollisionGroups;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
-import arkhados.effects.particle.ParticleEmitter;
+import com.jme3.effect.ParticleEmitter;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.IncapacitateCC;
 import arkhados.util.AbstractNodeBuilder;

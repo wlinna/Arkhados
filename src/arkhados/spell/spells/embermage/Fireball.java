@@ -24,7 +24,7 @@ import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
 import arkhados.effects.EffectHandle;
 import arkhados.effects.WorldEffect;
-import arkhados.effects.particle.ParticleEmitter;
+import com.jme3.effect.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuffBuilder;
