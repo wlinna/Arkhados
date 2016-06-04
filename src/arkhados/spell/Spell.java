@@ -19,6 +19,7 @@ import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
 import arkhados.spell.spells.electrobot.ElectricBomb;
+import arkhados.spell.spells.electrobot.ElectricPull;
 import arkhados.spell.spells.electrobot.Zap;
 import arkhados.spell.spells.shadowmancer.ShadowOrb;
 import arkhados.spell.spells.elitesoldier.LikeAPro;
@@ -34,8 +35,6 @@ import arkhados.spell.spells.embermage.Ignite;
 import arkhados.spell.spells.embermage.MagmaBash;
 import arkhados.spell.spells.embermage.Meteor;
 import arkhados.spell.spells.embermage.PurifyingFlame;
-import arkhados.spell.spells.madblow.CrushingBlow;
-import arkhados.spell.spells.madblow.Maim;
 import arkhados.spell.spells.rockgolem.EarthQuake;
 import arkhados.spell.spells.rockgolem.MineralArmor;
 import arkhados.spell.spells.rockgolem.SealingBoulder;
@@ -132,6 +131,7 @@ public abstract class Spell {
         
         addSpell(entityFactory, Zap.create());
         addSpell(entityFactory, ElectricBomb.create());
+        addSpell(entityFactory, ElectricPull.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {

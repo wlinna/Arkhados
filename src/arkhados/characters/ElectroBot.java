@@ -99,8 +99,8 @@ public class ElectroBot extends AbstractNodeBuilder {
         Zap zap = (Zap) Spell.getSpell("Zap");
         spellCastControl.putSpell(zap,
                 InputMapping.getId(InputMapping.M1));
-        spellCastControl.putSpell(Spell.getSpell("Magma Bash"), M2Id);
-        spellCastControl.putSpell(Spell.getSpell("Electric Bomb"),
+        spellCastControl.putSpell(Spell.getSpell("Electric Bomb"), M2Id);
+        spellCastControl.putSpell(Spell.getSpell("Electric Pull"),
                 InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(Spell.getSpell("Meteor"),
                 InputMapping.getId(InputMapping.E));
@@ -134,8 +134,8 @@ public class ElectroBot extends AbstractNodeBuilder {
                 new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation(zap.getName(), attackAnim);
-        characterAnimControl.addSpellAnimation("Magma Bash", attackAnim);
         characterAnimControl.addSpellAnimation("Electric Bomb", idleAnim);
+        characterAnimControl.addSpellAnimation("Electric Pull", idleAnim);
         characterAnimControl.addSpellAnimation("Meteor", idleAnim);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
         characterAnimControl.addSpellAnimation("Firewalk", idleAnim);

@@ -78,6 +78,10 @@ public class CAreaEffect extends AbstractControl
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
+    public CInfluenceInterface getOwnerInterface() {
+        return ownerInterface;
+    }
+    
     public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         if (ownerInterface == null) {
             throw new IllegalArgumentException("Null cannot be ownerInterface");
