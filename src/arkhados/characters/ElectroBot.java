@@ -105,7 +105,7 @@ public class ElectroBot extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Paralyze"),
                 InputMapping.getId(InputMapping.E));
         spellCastControl.putSpell(Spell.getSpell("Purifying Flame"), RId);
-        spellCastControl.putSpell(Spell.getSpell("Firewalk"),
+        spellCastControl.putSpell(Spell.getSpell("Electro Charge"),
                 InputMapping.getId(InputMapping.SPACE));
         spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
 
@@ -138,7 +138,7 @@ public class ElectroBot extends AbstractNodeBuilder {
         characterAnimControl.addSpellAnimation("Electric Pull", idleAnim);
         characterAnimControl.addSpellAnimation("Paralyze", idleAnim);
         characterAnimControl.addSpellAnimation("Purifying Flame", null);
-        characterAnimControl.addSpellAnimation("Firewalk", idleAnim);
+        characterAnimControl.addSpellAnimation("Electro Charge", idleAnim);
 
         entity.addControl(new CInfluenceInterface());
         entity.addControl(new CCharacterDamage());
