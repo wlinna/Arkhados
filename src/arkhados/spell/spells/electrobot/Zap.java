@@ -14,10 +14,12 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.electrobot;
 
+import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
@@ -25,6 +27,8 @@ import arkhados.effects.ParticleInfluencerWithAngleSetting;
 import com.jme3.effect.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuff;
+import arkhados.spell.buffs.AbstractBuffBuilder;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
 import arkhados.util.UserData;
@@ -42,11 +46,12 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
+import java.util.Iterator;
+import java.util.List;
 
 public class Zap extends Spell {
 
     static final float CAST_TIME = 0.4f;
-
 
     {
         iconName = "railgun.png";
@@ -64,14 +69,29 @@ public class Zap extends Spell {
         Zap spell = new Zap("Zap", cooldown, range, CAST_TIME);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
+            boolean hadBuff = false;
+            List<AbstractBuff> buffs = caster
+                    .getControl(CInfluenceInterface.class).getBuffs();
+            for (Iterator<AbstractBuff> it = buffs.iterator(); it.hasNext();) {
+                AbstractBuff buff = it.next();
+                if (buff instanceof PowerBuff) {
+                    hadBuff = true;
+                    it.remove();
+                    break;
+                }
+            }
+
             ACastProjectile action = new ACastProjectile(spell, world);
+            if (hadBuff) {
+                action.addBuff(new TriggerBuff.TriggerBuffBuilder());
+            }
             return action;
         };
 
         spell.nodeBuilder = new ZapBuilder();
 
         return spell;
-    }        
+    }
 }
 
 class ZapBuilder extends AbstractNodeBuilder {
@@ -227,5 +247,31 @@ class AZapRemoval implements ARemovalEvent {
 
     public void setSmokeTrail(ParticleEmitter smoke) {
         trail = smoke;
+    }
+}
+
+class TriggerBuff extends AbstractBuff {
+
+    public TriggerBuff() {
+        super(0f);
+    }
+
+    @Override
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
+        // TODO: Add debuff        
+        CharacterInteraction.harm(getOwnerInterface(),
+                targetInterface, 100f, null, false);
+    }
+
+    static class TriggerBuffBuilder extends AbstractBuffBuilder {
+
+        public TriggerBuffBuilder() {
+            super(0f);
+        }
+
+        @Override
+        public AbstractBuff build() {
+            return set(new TriggerBuff());
+        }
     }
 }

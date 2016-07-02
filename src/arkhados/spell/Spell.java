@@ -21,6 +21,7 @@ import arkhados.controls.CProjectile;
 import arkhados.spell.spells.electrobot.ElectricBomb;
 import arkhados.spell.spells.electrobot.ElectricPull;
 import arkhados.spell.spells.electrobot.ElectroCharge;
+import arkhados.spell.spells.electrobot.ElectronOrbit;
 import arkhados.spell.spells.electrobot.Paralyze;
 import arkhados.spell.spells.electrobot.Zap;
 import arkhados.spell.spells.shadowmancer.ShadowOrb;
@@ -136,6 +137,7 @@ public abstract class Spell {
         addSpell(entityFactory, ElectricPull.create());
         addSpell(entityFactory, Paralyze.create());
         addSpell(entityFactory, ElectroCharge.create());
+        addSpell(entityFactory, ElectronOrbit.create());
     }
 
     private static void addSpell(EntityFactory entityFactory, Spell spell) {
