@@ -52,7 +52,7 @@ public abstract class AbstractBuffBuilder implements Builder<AbstractBuff> {
         return typeId;
     }
 
-    public void setTypeId(int typeId) {
+    public final void setTypeId(int typeId) {
         this.typeId = typeId;
     }
 
