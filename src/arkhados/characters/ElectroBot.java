@@ -49,7 +49,7 @@ public class ElectroBot extends AbstractNodeBuilder {
 
     public static final int ACTION_FIREWALK = 0;
     public static final int ACTION_ETHEREAL_FLAME = 1;
-    
+
     public ElectroBot() {
         setEffectBox(new EffectBox());
         getEffectBox().addActionEffect(ACTION_FIREWALK,
@@ -107,31 +107,29 @@ public class ElectroBot extends AbstractNodeBuilder {
         spellCastControl.putSpell(Spell.getSpell("Electron Orbit"), RId);
         spellCastControl.putSpell(Spell.getSpell("Electro Charge"),
                 InputMapping.getId(InputMapping.SPACE));
-        spellCastControl.putSpell(Spell.getSpell("Ignite"), null);
-
         /**
          * Map Spell names to casting animation's name. In this case all spells
          * use same animation.
          */
         AnimControl animControl = entity.getControl(AnimControl.class);
 
-        CCharacterAnimation characterAnimControl =
-                new CCharacterAnimation(animControl);
-        AnimationData deathAnim =
-                new AnimationData("Die", 1f, LoopMode.DontLoop);
-        AnimationData walkAnim =
-                new AnimationData("Walk", 1f, LoopMode.DontLoop);
+        CCharacterAnimation characterAnimControl
+                = new CCharacterAnimation(animControl);
+        AnimationData deathAnim
+                = new AnimationData("Die", 1f, LoopMode.DontLoop);
+        AnimationData walkAnim
+                = new AnimationData("Walk", 1f, LoopMode.DontLoop);
 
         characterAnimControl.setDeathAnimation(deathAnim);
         characterAnimControl.setWalkAnimation(walkAnim);
         entity.addControl(characterAnimControl);
 
-        AnimationData idleAnim =
-                new AnimationData("Idle", 1f, LoopMode.Loop);
+        AnimationData idleAnim
+                = new AnimationData("Idle", 1f, LoopMode.Loop);
 
         AnimationData hitAnim = new AnimationData("Hit", 1f, LoopMode.DontLoop);
-        AnimationData attackAnim =
-                new AnimationData("Attack", 1f, LoopMode.DontLoop);
+        AnimationData attackAnim
+                = new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation(zap.getName(), attackAnim);
         characterAnimControl.addSpellAnimation("Electric Bomb", idleAnim);
@@ -156,7 +154,7 @@ public class ElectroBot extends AbstractNodeBuilder {
 
             entity.addControl(new CSyncInterpolation());
             entity.getControl(CInfluenceInterface.class).setIsServer(false);
-            
+
             CActionPlayer actionPlayer = new CActionPlayer();
 //            actionPlayer.putCastEffect(zap.getId(), zap.castEffect);
             entity.addControl(actionPlayer);
