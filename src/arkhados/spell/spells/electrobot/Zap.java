@@ -23,6 +23,7 @@ import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CTimedExistence;
+import arkhados.effects.Lightning;
 import arkhados.effects.ParticleInfluencerWithAngleSetting;
 import com.jme3.effect.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
@@ -37,12 +38,14 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
@@ -157,40 +160,41 @@ class ZapBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Sphere sphere = new Sphere(32, 32, 0.5f);
-
-        Geometry projectileGeom = new Geometry("zap-geom", sphere);
+        Mesh mesh = Lightning.createGeometry(0f, 0.05f);
+        
+        Geometry projectileGeom = new Geometry("zap-geom", mesh);
+        projectileGeom.scale(4f);
 
         Node node = new Node("rail");
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(assets,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Cyan);
+        Material material = assets.loadMaterial("Materials/ZapLightning.j3m");
+        material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+//        material.getAdditionalRenderState().setWireframe(true);
         node.setMaterial(material);
 
-        node.setUserData(UserData.SPEED, 200f);
+        node.setUserData(UserData.SPEED, 140f);
         node.setUserData(UserData.MASS, 0.30f);
         node.setUserData(UserData.DAMAGE, 150f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
 
         if (world.isClient()) {
-            final ParticleEmitter smoke = createTrailEmitter();
-            node.attachChild(smoke);
+//            final ParticleEmitter smoke = createTrailEmitter();
+//            node.attachChild(smoke);
 
-            node.addControl(new CEntityEvent());
+//            node.addControl(new CEntityEvent());
             /**
              * Here we specify what happens on client side when fireball is
              * removed. In this case we want explosion effect.
              */
-            AZapRemoval removalAction = new AZapRemoval();
-            removalAction.setBullet(node);
-            removalAction.setSmokeTrail(smoke);
+//            AZapRemoval removalAction = new AZapRemoval();
+//            removalAction.setBullet(node);
+//            removalAction.setSmokeTrail(smoke);
 
-            node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
-            node.addControl(new CParticleDirector(smoke));
+//            node.getControl(CEntityEvent.class).setOnRemoval(removalAction);
+//            node.addControl(new CParticleDirector(smoke));
         }
 
         SphereCollisionShape collisionShape = new SphereCollisionShape(2.5f);

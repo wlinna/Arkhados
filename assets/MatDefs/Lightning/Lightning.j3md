@@ -1,0 +1,50 @@
+MaterialDef Simple {
+    MaterialParameters {
+        Float FactorWeight
+        Texture2D Texture
+    }
+    Technique {
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Time
+            WorldMatrix
+        }
+        VertexShaderNodes {
+            ShaderNode Wave {
+                Definition : Wave : MatDefs/Lightning/Wave.j3sn
+                InputMappings {
+                    factor = WorldParam.Time
+                    pos = Global.position.xyz
+                    factorWeight = MatParam.FactorWeight
+                    WorldMatrix = WorldParam.WorldMatrix
+                }
+                OutputMappings {
+                    Global.position.xyz = newPos
+                }
+            }
+            ShaderNode CommonVert {
+                Definition : CommonVert : Common/MatDefs/ShaderNodes/Common/CommonVert.j3sn
+                InputMappings {
+                    worldViewProjectionMatrix = WorldParam.WorldViewProjectionMatrix
+                    modelPosition = Global.position.xyz
+                    texCoord1 = Attr.inTexCoord
+                }
+                OutputMappings {
+                    Global.position = projPosition
+                }
+            }
+        }
+        FragmentShaderNodes {
+            ShaderNode TextureFetch {
+                Definition : TextureFetch : Common/MatDefs/ShaderNodes/Basic/TextureFetch.j3sn
+                InputMappings {
+                    textureMap = MatParam.Texture
+                    texCoord = CommonVert.texCoord1
+                }
+                OutputMappings {
+                    Global.color = outColor
+                }
+            }
+        }
+    }
+}

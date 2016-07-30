@@ -1,0 +1,24 @@
+ShaderNodeDefinitions{ 
+    ShaderNodeDefinition Wave {      
+        Type: Vertex
+
+        Shader GLSL100: MatDefs/Lightning/Wave100.vert
+        
+        Documentation{
+            Waves X coordinates based on z-coordinate     
+            @input mat4 WorldMatrix The world matrix
+            @input vec3 pos Vertex position
+            @input float factor Time for example
+            @output vec3 newPos New position for the vertex
+        }
+        Input {
+            mat4 WorldMatrix;
+            vec3 pos
+            float factor
+            float factorWeight;
+        }
+        Output {
+             vec3 newPos
+        }
+    }
+}

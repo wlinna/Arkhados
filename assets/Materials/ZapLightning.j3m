@@ -1,0 +1,8 @@
+Material ZapLightning : MatDefs/Lightning/Lightning.j3md {
+     MaterialParameters {
+        FactorWeight : 0.01
+        Texture : Textures/LavaArena/Dirt_dark_nor3.png
+     }
+    AdditionalRenderState {
+    }
+}
