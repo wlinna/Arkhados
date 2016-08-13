@@ -15,6 +15,7 @@
 package arkhados.effects;
 
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -25,40 +26,63 @@ import com.jme3.util.BufferUtils;
 import com.jme3.util.TempVars;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import jme3tools.optimize.GeometryBatchFactory;
 
 public class Lightning {
-
-    private static List<Segment> generateSegments(float jitter) {
+    private static List<Segment> generateSegments(float jitter, float branchProbability) {
+        return generateSegments(jitter, branchProbability, 3);
+    }
+    private static List<Segment> generateSegments(
+            float jitter, float branchProbability, int generations) {
         List<Segment> segments = new ArrayList<>();
         segments.add(new Segment(Vector3f.ZERO.clone(), Vector3f.UNIT_Z.clone()));
 
         List<Segment> aux = new ArrayList<>();
 
-        Vector3f mid = new Vector3f();
         Vector3f perpendicular = new Vector3f();
+        Vector3f direction = new Vector3f();
+        Quaternion rotation = new Quaternion();
 
-        for (int gen = 0; gen < 3; gen++) {
+        for (int gen = 0; gen < generations; gen++) {
             aux.addAll(segments);
             segments.clear();
             for (Segment seg : aux) {
+                Vector3f mid = new Vector3f();
+                seg.second.subtract(seg.first, direction).normalizeLocal();
                 FastMath.interpolateLinear(0.5f, seg.first, seg.second, mid);
-                perpendicular.set(seg.second).subtractLocal(seg.first)
-                        .normalizeLocal();
+                perpendicular.set(direction);
+                
                 float tempX = perpendicular.x;
                 perpendicular.x = perpendicular.z;
                 perpendicular.z = -tempX;
 
                 // Now perpendicular IS perpendicular
                 perpendicular.multLocal(
-                        (FastMath.rand.nextFloat() - 0.5f) * 2f * jitter
-                );
+                        (FastMath.rand.nextFloat() - 0.5f) * 2f * jitter);
                 mid.addLocal(perpendicular);
-
-                segments.add(new Segment(seg.first, mid.clone()));
-                segments.add(new Segment(mid.clone(), seg.second));
+                              
+                Segment begin = new Segment(seg.first, mid);
+                segments.add(begin);
+                segments.add(new Segment(mid, seg.second));
+                
+                // Branch. Prevent branching inside branches
+                if (FastMath.rand.nextFloat() 
+                        < branchProbability && begin.strength == 1f) {
+                    float branchLength = seg.first.distance(mid) * 0.7f;
+                    float angle = FastMath.rand.nextFloat() 
+                            * FastMath.QUARTER_PI * 0.7f;
+                    rotation.fromAngles(0f, angle, 0f);
+                    rotation.multLocal(direction);
+                    Segment branch = new Segment(mid,
+                            mid.add(direction.multLocal(branchLength)));
+                    branch.strength = 0.7f * begin.strength;
+                    segments.add(branch);
+                }
             }
 
             aux.clear();
@@ -67,10 +91,11 @@ public class Lightning {
         return segments;
     }
 
+    // TODO: Remove this when the current lightning implementation proves
+    // itself ready
     private static Mesh createMesh(List<Segment> segments) {
         List<Geometry> geoms = new ArrayList<>();
-        for (Segment segment : segments) {
-//            
+        for (Segment segment : segments) {      
             Quad quad = new Quad(0.5f, segment.first.distance(segment.second));
             Geometry geom = new Geometry("lightning-part", quad);
             float angle = FastMath.atan2(segment.second.z - segment.first.z,
@@ -84,30 +109,39 @@ public class Lightning {
         return outMesh;
     }
 
-    public static Mesh createGeometry(float jitter, float widthFactor) {
-        List<Segment> segments = generateSegments(jitter);
+    public static Mesh createGeometry(float jitter, float widthFactor,
+            float branchProbability) {
+        List<Segment> segments = generateSegments(jitter, branchProbability);
+        
+        Map<Vector3f, SegmentBufferData> points = new IdentityHashMap<>();
+        
         Mesh mesh = new Mesh();
 
         Segment first = segments.get(0);
 
-        SegmentBufferData firstSbData
-                = createSegmentBufferData(Vector3f.ZERO, first.second, widthFactor);
+        SegmentBufferData firstSbData = createSegmentBufferData(
+                first.first, first.second, widthFactor, points);
 
         Vector3f[] positions = new Vector3f[(segments.size() + 1) * 2];
-        positions[0] = firstSbData.leftPos;
-        positions[1] = firstSbData.rightPos;
+        
+        firstSbData.leftIndex = 0;
+        firstSbData.rightIndex = 1;
+        positions[firstSbData.leftIndex] = firstSbData.leftPos;
+        positions[firstSbData.rightIndex] = firstSbData.rightPos;
 
         short posIdx = 2;
 
         for (int i = 0; i < segments.size(); i++) {
             Segment segment = segments.get(i);
-            Vector3f directionGiver = i < segments.size() - 1 
-                    ? segments.get(i + 1).second
-                    : segment.second.subtract(segment.first).normalizeLocal().addLocal(segment.second);
+            Vector3f directionGiver = segment.second.subtract(segment.first)
+                    .normalizeLocal().addLocal(segment.second);
             SegmentBufferData sbData = createSegmentBufferData(
-                    segment.second, directionGiver, widthFactor);
-            positions[posIdx++] = sbData.leftPos;
-            positions[posIdx++] = sbData.rightPos;
+                    segment.second, directionGiver, widthFactor, points);
+
+            sbData.leftIndex = posIdx++;
+            positions[sbData.leftIndex] = sbData.leftPos;
+            sbData.rightIndex = posIdx++;
+            positions[sbData.rightIndex] = sbData.rightPos;
         }
 
         Vector2f[] textureCoords = new Vector2f[positions.length];
@@ -116,34 +150,23 @@ public class Lightning {
             float xTexCoord = positions[i].x;
             textureCoords[i] = new Vector2f(xTexCoord, yTexCoord);
         }
-
-        // Each 'quad' requires 2 triangles. Each triangle requires 3 positions.
-        // Thus, 6 positions per quad
-        short[] indices = new short[segments.size() * 6];
-        int greatestIndex = positions.length - 1;
-        short indexIdx = 0;
-        short i = 0;
-        for (;;) {
-            // The greatest possible index for a left side triangle is 
-            // greatestIndex - 1
-            if (indexIdx == greatestIndex - 1) {
-                break;
-            }
-            indices[i++] = indexIdx;
-            indices[i++] = ++indexIdx;
-            indices[i++] = ++indexIdx;
-
-        }
         
-        for (indexIdx = (short) greatestIndex;;) {
+        short[] indices = new short[segments.size() * 6];
+        short indexIdx = 0;
+        
+        for (int i = 0; i < segments.size(); i++) {
+            Segment segment = segments.get(i);
             
-            // The smallest possible index for a right triangle is 1
-            if (indexIdx == 1) {
-                break;
-            }
-            indices[i++] = indexIdx;
-            indices[i++] = --indexIdx;
-            indices[i++] = --indexIdx;
+            SegmentBufferData start = points.get(segment.first);
+            SegmentBufferData end = points.get(segment.second);
+
+            indices[indexIdx++] = end.leftIndex;
+            indices[indexIdx++] = start.leftIndex;
+            indices[indexIdx++] = start.rightIndex;
+            
+            indices[indexIdx++] = start.rightIndex;
+            indices[indexIdx++] = end.rightIndex;
+            indices[indexIdx++] = end.leftIndex;
         }
 
         mesh.setBuffer(VertexBuffer.Type.Position, 3,
@@ -159,7 +182,17 @@ public class Lightning {
     }
 
     private static SegmentBufferData createSegmentBufferData(
-            Vector3f first, Vector3f second, float widthFactor) {
+            Vector3f first, Vector3f second, float widthFactor,
+            Map<Vector3f, SegmentBufferData> existingData) {
+        SegmentBufferData data = existingData.get(first);
+        if (data != null) {
+            return data;
+        }
+        
+        data = new SegmentBufferData();
+        data.leftPos = new Vector3f();
+        data.rightPos = new Vector3f();
+        
         TempVars vars = TempVars.get();
         Vector3f dir = vars.vect1;
         Vector3f perpendicular = vars.vect2;
@@ -172,19 +205,21 @@ public class Lightning {
         perpendicular.z = -tempX;
         perpendicular.multLocal(widthFactor);
 
-        SegmentBufferData data = new SegmentBufferData();
         first.add(perpendicular, data.leftPos);
         first.add(perpendicular.negateLocal(), data.rightPos);
         vars.release();
 
+        existingData.put(first, data);
         return data;
     }
 }
 
 class SegmentBufferData {
 
-    public Vector3f leftPos = new Vector3f();
-    public Vector3f rightPos = new Vector3f();
+    public Vector3f leftPos;
+    public Vector3f rightPos;
+    public short leftIndex;
+    public short rightIndex;
     public Vector3f leftBitangent = new Vector3f();
     public Vector3f rightBitangent = new Vector3f();
 }
@@ -193,6 +228,7 @@ class Segment {
 
     Vector3f first;
     Vector3f second;
+    float strength = 1f;
 
     public Segment(Vector3f first, Vector3f second) {
         this.first = first;

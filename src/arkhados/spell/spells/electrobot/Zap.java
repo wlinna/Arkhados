@@ -16,6 +16,7 @@ package arkhados.spell.spells.electrobot;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
+import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CEntityEvent;
@@ -160,10 +161,10 @@ class ZapBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Mesh mesh = Lightning.createGeometry(0f, 0.05f);
+        Mesh mesh = Lightning.createGeometry(0.0f, 0.03f, 0.3f); 
         
         Geometry projectileGeom = new Geometry("zap-geom", mesh);
-        projectileGeom.scale(4f);
+        projectileGeom.scale(4.5f);
 
         Node node = new Node("rail");
         node.setLocalTranslation(params.location);
@@ -171,8 +172,6 @@ class ZapBuilder extends AbstractNodeBuilder {
 
         // TODO: Give at least bit better material
         Material material = assets.loadMaterial("Materials/ZapLightning.j3m");
-        material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
-//        material.getAdditionalRenderState().setWireframe(true);
         node.setMaterial(material);
 
         node.setUserData(UserData.SPEED, 140f);
