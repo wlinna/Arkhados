@@ -73,9 +73,9 @@ public class Lightning {
                 // Branch. Prevent branching inside branches
                 if (FastMath.rand.nextFloat() 
                         < branchProbability && begin.strength == 1f) {
-                    float branchLength = seg.first.distance(mid) * 0.7f;
-                    float angle = FastMath.rand.nextFloat() 
-                            * FastMath.QUARTER_PI * 0.7f;
+                    float branchLength = seg.first.distance(mid) * 0.9f;
+                    float angle = (FastMath.rand.nextFloat() * FastMath.HALF_PI 
+                            - FastMath.QUARTER_PI ) * 0.7f;
                     rotation.fromAngles(0f, angle, 0f);
                     rotation.multLocal(direction);
                     Segment branch = new Segment(mid,
