@@ -207,6 +207,8 @@ public class Lightning {
 
         first.add(perpendicular, data.leftPos);
         first.add(perpendicular.negateLocal(), data.rightPos);
+        data.leftPos.z = first.z;
+        data.rightPos.z = first.z;
         vars.release();
 
         existingData.put(first, data);
