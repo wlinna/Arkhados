@@ -23,12 +23,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.shape.Quad;
 import com.jme3.util.BufferUtils;
-import com.jme3.util.TempVars;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import jme3tools.optimize.GeometryBatchFactory;
@@ -120,7 +116,7 @@ public class Lightning {
         Segment first = segments.get(0);
 
         SegmentBufferData firstSbData = createSegmentBufferData(
-                first.first, first.second, widthFactor, points);
+                first.first, widthFactor, points);
 
         Vector3f[] positions = new Vector3f[(segments.size() + 1) * 2];
         
@@ -133,10 +129,8 @@ public class Lightning {
 
         for (int i = 0; i < segments.size(); i++) {
             Segment segment = segments.get(i);
-            Vector3f directionGiver = segment.second.subtract(segment.first)
-                    .normalizeLocal().addLocal(segment.second);
             SegmentBufferData sbData = createSegmentBufferData(
-                    segment.second, directionGiver, widthFactor, points);
+                    segment.second, widthFactor, points);
 
             sbData.leftIndex = posIdx++;
             positions[sbData.leftIndex] = sbData.leftPos;
@@ -182,7 +176,7 @@ public class Lightning {
     }
 
     private static SegmentBufferData createSegmentBufferData(
-            Vector3f first, Vector3f second, float widthFactor,
+            Vector3f first, float widthFactor,
             Map<Vector3f, SegmentBufferData> existingData) {
         SegmentBufferData data = existingData.get(first);
         if (data != null) {
@@ -190,27 +184,12 @@ public class Lightning {
         }
         
         data = new SegmentBufferData();
-        data.leftPos = new Vector3f();
-        data.rightPos = new Vector3f();
+        data.leftPos = new Vector3f(first);
+        data.rightPos = new Vector3f(first);
         
-        TempVars vars = TempVars.get();
-        Vector3f dir = vars.vect1;
-        Vector3f perpendicular = vars.vect2;
-
-        second.subtract(first, dir).normalizeLocal();
-        perpendicular.set(dir);
-
-        float tempX = perpendicular.x;
-        perpendicular.x = perpendicular.z;
-        perpendicular.z = -tempX;
-        perpendicular.multLocal(widthFactor);
-
-        first.add(perpendicular, data.leftPos);
-        first.add(perpendicular.negateLocal(), data.rightPos);
-        data.leftPos.z = first.z;
-        data.rightPos.z = first.z;
-        vars.release();
-
+        data.leftPos.x = first.x + widthFactor;
+        data.rightPos.x = first.x - widthFactor;
+        
         existingData.put(first, data);
         return data;
     }
