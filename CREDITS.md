@@ -261,7 +261,7 @@ be found from
 
 [Grégoire Lourme](https://www.jamendo.com/en/artist/560/gregoire-lourme) for
 multiple soundtracks. All music Grégoire Lourme's music that I use in this project
-are licensed under CC-BY-SA 3.0.
+are licensed under CC-BY-SA 3.0. (NOTE: Grégoire Lourme currently distributes his music under CC-BY-ND license, but they were CC-BY-SA licensed when I downloaded the soundtracks).
 - [Gods War](https://www.jamendo.com/en/track/989064/gods-war-finale) (Rock Golem)
 - [Olympus](https://www.jamendo.com/en/track/1063183/olympus) (Rock Golem)
 - [Anti-gravity](https://www.jamendo.com/en/track/1103297/anti-gravity) (Elite Soldier)
