@@ -22,6 +22,7 @@ import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.SpeedBuff;
+import arkhados.util.BuffTypeIds;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -45,11 +46,11 @@ public class ElectroCharge extends Spell {
         final float range = 0f;
         final float castTime = 0f;
 
-        final ElectroCharge spell
-                = new ElectroCharge("Electro Charge", cooldown, range,
-                        castTime);
+        final ElectroCharge spell = new ElectroCharge("Electro Charge",
+                cooldown, range, castTime);
         final SpeedBuff.MyBuilder speedBuilder
                 = new SpeedBuff.MyBuilder(0.5f, 0, 2.5f);
+        speedBuilder.setTypeId(BuffTypeIds.ELECTRO_CHARGE);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastSelfBuff buffAction = new ACastSelfBuff();

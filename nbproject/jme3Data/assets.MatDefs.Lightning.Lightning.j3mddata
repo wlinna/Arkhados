@@ -1,16 +1,18 @@
 #
-#Sat Jul 30 11:18:12 EEST 2016
+#Mon Sep 19 21:20:13 EEST 2016
 Default/Default/AttributeToVarying=662,332
 Default/WorldParam.WorldViewProjectionMatrix=312,338
-Default/MatParam.FactorWeight=122,299
+Default/MatParam.FactorWeight=127,364
+Default/MatParam.GlowColor=129,7
 Default/Default/TextureFetch=860,337
-Default/Default/CommonVert=580,143
+Default/Default/CommonVert=574,153
 Default/WorldParam.WorldMatrix=145,156
 Default/Default/ColorMult=996,377
-Default/Default/Wave=354,192
+Default/Default/Wave=346,174
 Default/Attr.inTexCoord=437,406
 Default/Attr.inPosition=91,190
+Default/MatParam.LateralFactor=112,223
 Default/MatParam.Color=755,319
-Default/WorldParam.Time=71,216
-Default/MatParam.Texture=727,233
+Default/WorldParam.Time=93,284
+Default/MatParam.Texture=733,223
 Default/position=0,77

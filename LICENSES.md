@@ -41,6 +41,7 @@ See CREDITS.md for attributions.
 - VenatorPain.wav
 - RockGolemPain.wav
 - All Rend cast sounds
+- Lightning/Glow.png
 - All Stone Fist hit sounds
 - All ShadowmancerPain-sounds
 

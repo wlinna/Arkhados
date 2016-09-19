@@ -35,4 +35,5 @@ public class BuffTypeIds {
     public static final int VOID_SPEAR = 17;
     public static final int DRAIN = 18;
     public static final int BACKLASH = 19;
+    public static final int ELECTRO_CHARGE = 20;
 }

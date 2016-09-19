@@ -2,6 +2,7 @@ MaterialDef Simple {
     MaterialParameters {
         Float FactorWeight
         Texture2D Texture
+        Float LateralFactor
     }
     Technique {
         WorldParameters {
@@ -15,8 +16,8 @@ MaterialDef Simple {
                 InputMappings {
                     factor = WorldParam.Time
                     pos = Global.position.xyz
-                    factorWeight = MatParam.FactorWeight
                     WorldMatrix = WorldParam.WorldMatrix
+                    lateralFactor = MatParam.LateralFactor
                 }
                 OutputMappings {
                     Global.position.xyz = newPos

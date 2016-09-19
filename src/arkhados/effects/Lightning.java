@@ -119,6 +119,7 @@ public class Lightning {
                 first.first, widthFactor, points);
 
         Vector3f[] positions = new Vector3f[(segments.size() + 1) * 2];
+        Vector2f[] textureCoords = new Vector2f[positions.length];
         
         firstSbData.leftIndex = 0;
         firstSbData.rightIndex = 1;
@@ -132,17 +133,17 @@ public class Lightning {
             SegmentBufferData sbData = createSegmentBufferData(
                     segment.second, widthFactor, points);
 
+            float y = -(1f - segment.strength) * 0.1f;
+            
             sbData.leftIndex = posIdx++;
             positions[sbData.leftIndex] = sbData.leftPos;
+            sbData.leftPos.y = y;
+            float z = sbData.leftPos.z;
+            textureCoords[sbData.leftIndex] = new Vector2f(0f, z);
             sbData.rightIndex = posIdx++;
             positions[sbData.rightIndex] = sbData.rightPos;
-        }
-
-        Vector2f[] textureCoords = new Vector2f[positions.length];
-        for (int i = 0; i < textureCoords.length; ++i) {
-            float yTexCoord = positions[i].z;
-            float xTexCoord = positions[i].x;
-            textureCoords[i] = new Vector2f(xTexCoord, yTexCoord);
+            sbData.rightPos.y = y;
+            textureCoords[sbData.rightIndex] = new Vector2f(1f, z);
         }
         
         short[] indices = new short[segments.size() * 6];
@@ -185,7 +186,7 @@ public class Lightning {
         
         data = new SegmentBufferData();
         data.leftPos = new Vector3f(first);
-        data.rightPos = new Vector3f(first);
+        data.rightPos = new Vector3f(first);        
         
         data.leftPos.x = first.x + widthFactor;
         data.rightPos.x = first.x - widthFactor;

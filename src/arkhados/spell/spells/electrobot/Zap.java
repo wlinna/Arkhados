@@ -16,10 +16,8 @@ package arkhados.spell.spells.electrobot;
 
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
-import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
-import arkhados.controls.CEntityEvent;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -45,11 +43,11 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.shape.Sphere;
 import java.util.Iterator;
 import java.util.List;
 
@@ -161,17 +159,19 @@ class ZapBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Mesh mesh = Lightning.createGeometry(0.0f, 0.03f, 0.3f); 
+        Mesh mesh = Lightning.createGeometry(0f, 0.3f, 0.3f); 
         
         Geometry projectileGeom = new Geometry("zap-geom", mesh);
-        projectileGeom.scale(4.5f);
+        projectileGeom.scale(5f);
 
         Node node = new Node("rail");
         node.setLocalTranslation(params.location);
         node.attachChild(projectileGeom);
 
-        // TODO: Give at least bit better material
-        Material material = assets.loadMaterial("Materials/ZapLightning.j3m");
+        Material material = assets.loadMaterial("Materials/ZapLightning.j3m");        
+        material.setFloat("LateralFactor", 0.4f);
+        material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.AlphaAdditive);
+        projectileGeom.setQueueBucket(RenderQueue.Bucket.Translucent);
         node.setMaterial(material);
 
         node.setUserData(UserData.SPEED, 140f);

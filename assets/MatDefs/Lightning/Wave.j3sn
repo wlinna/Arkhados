@@ -8,14 +8,15 @@ ShaderNodeDefinitions{
             Waves X coordinates based on z-coordinate     
             @input mat4 WorldMatrix The world matrix
             @input vec3 pos Vertex position
+            @input float lateralFactor How much the position varies laterally
             @input float factor Time for example
             @output vec3 newPos New position for the vertex
         }
         Input {
             mat4 WorldMatrix;
             vec3 pos
+            float lateralFactor;
             float factor
-            float factorWeight;
         }
         Output {
              vec3 newPos

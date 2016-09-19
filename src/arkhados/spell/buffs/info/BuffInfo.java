@@ -40,6 +40,7 @@ public abstract class BuffInfo {
         addBuff(BuffTypeIds.SHADOW, new ShadowInfo());
         addBuff(BuffTypeIds.VOID_SPEAR, new VoidSpearInfo());
         addBuff(BuffTypeIds.DRAIN, new DrainInfo());
+        addBuff(BuffTypeIds.ELECTRO_CHARGE, new ElectroChargeInfo());
     }
 
     public static BuffInfo getBuffInfo(int typeId) {
