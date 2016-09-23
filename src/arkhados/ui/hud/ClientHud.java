@@ -46,6 +46,7 @@ public class ClientHud extends AbstractAppState
     private final VisualStatistics statistics = new VisualStatistics();
     private final VisualCharacterInfo characterInfo;
     private final HudMenu hudMenu = new HudMenu();
+    private final Debug debug = new Debug();
 
     public ClientHud(Camera cam, Node guiNode, BitmapFont guiFont) {
         characterInfo = new VisualCharacterInfo(cam, guiNode, guiFont);
@@ -63,6 +64,8 @@ public class ClientHud extends AbstractAppState
         hudMenu.initialize(nifty, screen);
         Globals.app.getInputManager().addListener(hudMenu,
                 InputMapping.HUD_TOGGLE_MENU);
+//        Globals.app.getInputManager().addListener(debug,
+//                InputMapping.CHANGE_MAT);
     }
 
     @Override
@@ -73,7 +76,7 @@ public class ClientHud extends AbstractAppState
 
     public void newOwnCharacter(Spatial newCharacter, boolean differentEntity) {
         playerCharacter = newCharacter;
-
+        debug.setCharacter((Node) newCharacter);
         spellBar.setPlayerCharacter(newCharacter);
         if (differentEntity) {
             spellBar.clean();
@@ -207,7 +210,7 @@ public class ClientHud extends AbstractAppState
     public void exitProgram() {
         Globals.app.stop();
     }
-    
+
     public void setGameMode(GameMode gameMode) {
         statistics.setTeamGame(gameMode instanceof TeamDeathmatch);
     }
