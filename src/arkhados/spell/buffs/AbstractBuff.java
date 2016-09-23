@@ -66,6 +66,10 @@ public abstract class AbstractBuff {
     public void update(float time) {
         duration -= time;
     }
+    
+    public void dispel() {
+        duration = 0f;
+    }
 
     /**
      * Method for checking from buff's internal state whether it should be
