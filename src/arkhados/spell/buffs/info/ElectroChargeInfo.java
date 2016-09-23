@@ -74,7 +74,7 @@ class ElectroChargeEffect extends BuffEffect {
 
         int bolts = 20;
         for (int i = 0; i < bolts; i++) {
-            Mesh mesh = Lightning.createGeometry(0.0f, 0.2f, 0.1f);
+            Mesh mesh = Lightning.createGeometry(0.0f, 0.1f, 0.1f);
             Geometry geom = new Geometry("electricity-" + i, mesh);
             geom.setQueueBucket(RenderQueue.Bucket.Translucent);
 
