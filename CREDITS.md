@@ -240,6 +240,9 @@ is licensed under CC0.
 
 KibblesBob for [Missle Launch](http://soundbible.com/1794-Missle-Launch.html). Missle Launch was modified little bit and used as RocketLauncher sound. Missle Launch is in Public Domain.
 
+[qupodup](http://opengameart.org/users/qubodup) for [Ice & Electricity Magic](http://opengameart.org/content/ice-electricity-magic).
+Ice & Electricity magic is used as Zap's launch effect. Ice & Electricity is CC-BY 3.0 licensed, and uses multiple CC0-licensed samples.
+
 [Joe Reynolds – Professorlamp](jrtheories.webs.com) for music
 Carmack. Music is licensed under CC-BY 3.0. Original work can be found
 from [OGA](http://opengameart.org/content/carmack)

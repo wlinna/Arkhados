@@ -30,6 +30,7 @@ import arkhados.controls.CResting;
 import arkhados.controls.CSpellCast;
 import arkhados.controls.CSyncInterpolation;
 import arkhados.effects.EffectBox;
+import arkhados.effects.RandomChoiceEffect;
 import arkhados.effects.SimpleSoundEffect;
 import arkhados.spell.Spell;
 import arkhados.spell.spells.electrobot.Zap;
@@ -47,13 +48,16 @@ import com.jme3.scene.Node;
  */
 public class ElectroBot extends AbstractNodeBuilder {
 
-    public static final int ACTION_FIREWALK = 0;
+    public static final int ACTION_ZAP = 0;
     public static final int ACTION_ETHEREAL_FLAME = 1;
 
     public ElectroBot() {
         setEffectBox(new EffectBox());
-        getEffectBox().addActionEffect(ACTION_FIREWALK,
-                new SimpleSoundEffect("Effects/Sound/Firewalk.wav"));
+
+        RandomChoiceEffect zap = new RandomChoiceEffect();
+        zap.add(new SimpleSoundEffect("Effects/Sound/Zap2.wav"));
+        zap.add(new SimpleSoundEffect("Effects/Sound/Zap1.wav"));        
+        getEffectBox().addActionEffect(ACTION_ZAP, zap);
     }
 
     @Override

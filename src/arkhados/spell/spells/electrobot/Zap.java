@@ -18,6 +18,7 @@ import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
+import arkhados.characters.ElectroBot;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -84,6 +85,7 @@ public class Zap extends Spell {
             }
 
             ACastProjectile action = new ACastProjectile(spell, world);
+            action.setTypeId(ElectroBot.ACTION_ZAP);
             if (hadBuff) {
                 action.addBuff(new TriggerBuff.TriggerBuffBuilder());
             }
