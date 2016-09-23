@@ -1,6 +1,6 @@
 Material ZapLightning : MatDefs/Lightning/Lightning.j3md {
      MaterialParameters {
-        Texture : Textures/Lightning/Glow.png
+        Texture : Textures/Lightning/Glow1.png
         LateralFactor : 0.5
      }
     AdditionalRenderState {

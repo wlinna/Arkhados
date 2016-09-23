@@ -188,8 +188,10 @@ public class Lightning {
         data.leftPos = new Vector3f(first);
         data.rightPos = new Vector3f(first);        
         
-        data.leftPos.x = first.x + widthFactor;
-        data.rightPos.x = first.x - widthFactor;
+        float capFactor = FastMath.clamp(10f - 10f * first.z, 0f, 1f);
+//        capFactor = 1f;
+        data.leftPos.x = (first.x + widthFactor) * capFactor;
+        data.rightPos.x = (first.x - widthFactor) * capFactor;
         
         existingData.put(first, data);
         return data;
