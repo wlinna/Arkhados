@@ -55,11 +55,11 @@ class FlameShield extends BuffEffect {
         Sphere sphere = new Sphere(32, 32, radius);
         Geometry geometry = new Geometry("shield-geom", sphere);
 
-        Material mat = new Material(assetManager, "MatDefs/Lava/Lava.j3md");
+        Material mat = new Material(assets, "MatDefs/Lava/Lava.j3md");
         mat.setFloat("Speed", 30f);
 
-        Texture tex = assetManager.loadTexture("Textures/Fire6.png");
-        Texture noise = assetManager.loadTexture("Textures/noise3.png");
+        Texture tex = assets.loadTexture("Textures/Fire6.png");
+        Texture noise = assets.loadTexture("Textures/noise3.png");
         tex.setWrap(Texture.WrapMode.MirroredRepeat);
         noise.setWrap(Texture.WrapMode.MirroredRepeat);
         mat.setTexture("Color", tex);
@@ -85,7 +85,7 @@ class FlameShield extends BuffEffect {
         characterNode.getParent().attachChild(node);
         node.addControl(new CTrackLocation(characterNode, RELATIVE_POS));
 
-        sound = new AudioNode(BuffEffect.assetManager,
+        sound = new AudioNode(BuffEffect.assets,
                 "Effects/Sound/PurifyingFlame.wav");
         node.attachChild(sound);
         sound.setLooping(true);

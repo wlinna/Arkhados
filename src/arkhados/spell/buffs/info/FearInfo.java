@@ -48,9 +48,8 @@ class FearEffect extends BuffEffect {
         Quad blanket = new Quad(8, 8, true);
         fearIcon = new Geometry("fear-icon", blanket);
         fearIcon.scale(1f);
-        Material skullMaterial =
-                assetManager.loadMaterial("Materials/FearMaterial.j3m");
-        fearIcon.setMaterial(skullMaterial);
+        Material mat = assets.loadMaterial("Materials/FearMaterial.j3m");
+        fearIcon.setMaterial(mat);
         fearIcon.setQueueBucket(RenderQueue.Bucket.Transparent);
 
 

@@ -45,10 +45,10 @@ class MineralArmorEffect extends BuffEffect {
 
     public void addToCharacter(BuffInfoParameters params) {
         Node character = (Node) params.buffControl.getSpatial();
-        Spatial crystals1 = assetManager.loadModel("Models/crystals.j3o");
-        Spatial crystals2 = assetManager.loadModel("Models/crystals.j3o");
-        Spatial crystals3 = assetManager.loadModel("Models/crystals.j3o");
-        Spatial crystals4 = assetManager.loadModel("Models/crystals.j3o");
+        Spatial crystals1 = assets.loadModel("Models/crystals.j3o");
+        Spatial crystals2 = assets.loadModel("Models/crystals.j3o");
+        Spatial crystals3 = assets.loadModel("Models/crystals.j3o");
+        Spatial crystals4 = assets.loadModel("Models/crystals.j3o");
 
         centralNode = new Node("mineral-armor-node");
         centralNode.attachChild(crystals1);

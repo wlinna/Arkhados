@@ -65,7 +65,7 @@ class MagmaReleaseEffect extends BuffEffect {
         @Override
         public boolean update(float tpf) {
             fire.emitAllParticles();
-            AudioNode sound = new AudioNode(assetManager,
+            AudioNode sound = new AudioNode(assets,
                     "Effects/Sound/FireballExplosion.wav");
             sound.setVolume(0.8f);
             sound.setPositional(true);
@@ -108,10 +108,10 @@ class MagmaReleaseEffect extends BuffEffect {
     private ParticleEmitter createFireEmitter() {
         ParticleEmitter fire = new ParticleEmitter("fire-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material materialRed = new Material(assetManager,
+        Material materialRed = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         materialRed.setTexture("Texture",
-                assetManager.loadTexture("Effects/flame.png"));
+                assets.loadTexture("Effects/flame.png"));
         fire.setMaterial(materialRed);
         fire.setImagesX(2);
         fire.setImagesY(2);

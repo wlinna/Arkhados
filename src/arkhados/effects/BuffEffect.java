@@ -20,10 +20,10 @@ import com.jme3.renderer.ViewPort;
 
 public class BuffEffect {
 
-    protected static AssetManager assetManager = null;
+    protected static AssetManager assets = null;
 
-    public static void setAssetManager(AssetManager aAssetManager) {
-        assetManager = aAssetManager;
+    public static void setAssetManager(AssetManager assetManager) {
+        assets = assetManager;
     }
 
     // TODO: Get this from some central place

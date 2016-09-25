@@ -21,11 +21,8 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 
 public class ElectronOrbitInfo extends BuffInfo {
@@ -52,15 +49,15 @@ class ElectronOrbitEffect extends BuffEffect {
 
     public void addToCharacter(BuffInfoParameters params) {
         Node character = (Node) params.buffControl.getSpatial();
-        Spatial crystals1 = assetManager.loadModel("Models/crystals.j3o");
-        Spatial crystals2 = assetManager.loadModel("Models/crystals.j3o");
-        Spatial crystals3 = assetManager.loadModel("Models/crystals.j3o");
+        Spatial crystals1 = assets.loadModel("Models/crystals.j3o");
+        Spatial crystals2 = assets.loadModel("Models/crystals.j3o");
+        Spatial crystals3 = assets.loadModel("Models/crystals.j3o");
                 
-        Material mat = new Material(assetManager, "MatDefs/Lava/Lava.j3md");
+        Material mat = new Material(assets, "MatDefs/Lava/Lava.j3md");
         mat.setFloat("Speed", 80f);
 
-        Texture tex = assetManager.loadTexture("Textures/Plasma1.png");
-        Texture noise = assetManager.loadTexture("Textures/noise3.png");
+        Texture tex = assets.loadTexture("Textures/Plasma1.png");
+        Texture noise = assets.loadTexture("Textures/noise3.png");
         tex.setWrap(Texture.WrapMode.MirroredRepeat);
         noise.setWrap(Texture.WrapMode.MirroredRepeat);
         mat.setTexture("Color", tex);

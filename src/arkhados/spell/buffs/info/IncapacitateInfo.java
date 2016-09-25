@@ -48,7 +48,7 @@ class IncapacitateEffect extends BuffEffect {
 
         Geometry geom1 = new Geometry("sphere", sphere);
 
-        Material material = new Material(assetManager,
+        Material material = new Material(assets,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", ColorRGBA.White);
         geom1.setMaterial(material);

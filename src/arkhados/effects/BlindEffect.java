@@ -41,9 +41,9 @@ public class BlindEffect extends BuffEffect {
     private ParticleEmitter createEmitter() {
         ParticleEmitter spark = new ParticleEmitter("sparkle-emitter",
                 ParticleMesh.Type.Triangle, 200);
-        Material mat = new Material(assetManager,
+        Material mat = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("Texture", assetManager.loadTexture("Effects/flame.png"));
+        mat.setTexture("Texture", assets.loadTexture("Effects/flame.png"));
         spark.setMaterial(mat);
         spark.setImagesX(2);
         spark.setImagesY(2);

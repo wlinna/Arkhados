@@ -53,12 +53,11 @@ class DeepWoundsEffect extends BuffEffect {
         emitter = new ParticleEmitter("blood-emitter",
                 ParticleMesh.Type.Triangle, 100);
 
-        Material bloodMat = new Material(assetManager,
+        Material mat = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         // TODO: Change blood texture!
-        bloodMat.setTexture("Texture",
-                assetManager.loadTexture("Effects/debris.png"));
-        emitter.setMaterial(bloodMat);
+        mat.setTexture("Texture", assets.loadTexture("Effects/debris.png"));
+        emitter.setMaterial(mat);
         emitter.setImagesX(3);
         emitter.setImagesY(3);
         emitter.setSelectRandomImage(true);

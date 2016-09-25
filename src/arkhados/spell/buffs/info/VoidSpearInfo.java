@@ -54,7 +54,7 @@ class VoidSpearEffect extends BuffEffect {
         emitter = new ParticleEmitter("black-emitter",
                 ParticleMesh.Type.Triangle, 100);
 
-        Material mat = new Material(assetManager,
+        Material mat = new Material(assets,
                 "Common/MatDefs/Misc/Particle.j3md");
         // TODO: Change blood texture!       
         mat.setTexture("Texture",
