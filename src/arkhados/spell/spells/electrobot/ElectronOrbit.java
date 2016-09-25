@@ -88,7 +88,7 @@ class ElectronArmorBuff extends ArmorBuff {
 
         MyBuilder(float amount, float protectionPercent, float duration) {
             super(duration);
-            setTypeId(BuffTypeIds.MINERAL_ARMOR);
+            setTypeId(BuffTypeIds.ELECTRON_ORBIT);
             this.amount = amount;
             this.protectionPercent = protectionPercent;
         }
