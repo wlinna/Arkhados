@@ -18,6 +18,7 @@ See CREDITS.md for attributions.
 - InfoTabLight.png
 - Incapacitate.png
 - noise3.png
+- Textures/Plasma.png
 - lava.jpg
 - FireballExplosion.wav
 - Shotgun.wav

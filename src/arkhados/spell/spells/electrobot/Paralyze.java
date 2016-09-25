@@ -34,15 +34,18 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 public class Paralyze extends Spell {
 
@@ -121,15 +124,15 @@ class ParalysisBuilder extends AbstractNodeBuilder {
         trail.setImagesX(1);
         trail.setImagesY(3);
         trail.setSelectRandomImage(true);
-        trail.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.9f, 1f));
+        trail.setStartColor(new ColorRGBA(0.3f, 0.3f, 0.9f, 0.6f));
         trail.setParticleInfluencer(new ParticleInfluencerWithAngleSetting());
         trail.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO);
         trail.getParticleInfluencer().setVelocityVariation(0f);
-        trail.setStartSize(2f);
-        trail.setEndSize(2f);
+        trail.setStartSize(1f);
+        trail.setEndSize(1f);
         trail.setGravity(Vector3f.ZERO);
-        trail.setLowLife(0.3f);
-        trail.setHighLife(0.3f);
+        trail.setLowLife(0.2f);
+        trail.setHighLife(0.2f);
         trail.setParticlesPerSec(2000);
         trail.setFaceNormal(Vector3f.UNIT_Y);
         return trail;
@@ -137,21 +140,37 @@ class ParalysisBuilder extends AbstractNodeBuilder {
 
     @Override
     public Node build(BuildParameters params) {
-        Sphere sphere = new Sphere(32, 32, 3.5f);
+        Sphere sphere = new Sphere(32, 32, 4f);
 
-        Geometry projectileGeom = new Geometry("zap-geom", sphere);
+        Geometry geom = new Geometry("paralyze-geom", sphere);
 
         Node node = new Node("rail");
         node.setLocalTranslation(params.location);
-        node.attachChild(projectileGeom);
+        node.attachChild(geom);
 
         // TODO: Give at least bit better material
-        Material material = new Material(assets,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Cyan);
-        node.setMaterial(material);
+//        Material material = new Material(assets,
+//                "Common/MatDefs/Misc/Unshaded.j3md");
+//        material.setColor("Color", ColorRGBA.Cyan);
+//        node.setMaterial(material);
+        
+                Material mat = new Material(assets, "MatDefs/Lava/Lava.j3md");
+        mat.setFloat("Speed", 30f);
 
-        node.setUserData(UserData.SPEED, 200f);
+        Texture tex = assets.loadTexture("Textures/Plasma.png");
+        Texture noise = assets.loadTexture("Textures/noise3.png");
+        tex.setWrap(Texture.WrapMode.MirroredRepeat);
+        noise.setWrap(Texture.WrapMode.MirroredRepeat);
+        mat.setTexture("Color", tex);
+        mat.setTexture("Noise", noise);
+
+        mat.getAdditionalRenderState()
+                .setBlendMode(RenderState.BlendMode.Additive);
+
+        geom.setQueueBucket(RenderQueue.Bucket.Transparent);
+        geom.setMaterial(mat);
+
+        node.setUserData(UserData.SPEED, 180f);
         node.setUserData(UserData.MASS, 0.30f);
         node.setUserData(UserData.DAMAGE, 200f);
         node.setUserData(UserData.IMPULSE_FACTOR, 0f);
