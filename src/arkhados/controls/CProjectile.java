@@ -110,6 +110,7 @@ public class CProjectile extends AbstractControl implements CSync {
 
             int entityId = spatial.getUserData(UserData.ENTITY_ID);
             world.removeEntity(entityId, RemovalReasons.EXPIRED);
+            return;
         }
 
         if (age > CProjectile.timeToLive) {
