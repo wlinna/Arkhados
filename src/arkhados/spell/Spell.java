@@ -18,7 +18,7 @@ import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.EntityAction;
 import arkhados.controls.CProjectile;
-import arkhados.spell.spells.electrobot.ElectricBomb;
+import arkhados.spell.spells.electrobot.Disc;
 import arkhados.spell.spells.electrobot.ElectricPull;
 import arkhados.spell.spells.electrobot.ElectroCharge;
 import arkhados.spell.spells.electrobot.ElectronOrbit;
@@ -133,7 +133,7 @@ public abstract class Spell {
         addSpell(entityFactory, IntoTheShadows.create());
         
         addSpell(entityFactory, Zap.create());
-        addSpell(entityFactory, ElectricBomb.create());
+        addSpell(entityFactory, Disc.create());
         addSpell(entityFactory, ElectricPull.create());
         addSpell(entityFactory, Paralyze.create());
         addSpell(entityFactory, ElectroCharge.create());

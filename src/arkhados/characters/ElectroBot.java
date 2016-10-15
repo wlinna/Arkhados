@@ -103,7 +103,7 @@ public class ElectroBot extends AbstractNodeBuilder {
         Zap zap = (Zap) Spell.getSpell("Zap");
         spellCastControl.putSpell(zap,
                 InputMapping.getId(InputMapping.M1));
-        spellCastControl.putSpell(Spell.getSpell("Electric Bomb"), M2Id);
+        spellCastControl.putSpell(Spell.getSpell("Disc"), M2Id);
         spellCastControl.putSpell(Spell.getSpell("Electric Pull"),
                 InputMapping.getId(InputMapping.Q));
         spellCastControl.putSpell(Spell.getSpell("Paralyze"),
