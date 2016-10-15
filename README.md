@@ -19,7 +19,7 @@ It's programmed in Java 8 using jMonkeyEngine 3.
 
 ## Dependencies ##
 
-You need jMonkeyEngine 3.1 alpha1 SDK.
+You need jMonkeyEngine 3.1-beta1-b002-SNAPSHOT.
 
 ## ToDos and contribution ideas ##
 

@@ -61,4 +61,7 @@ public class DeathMatchHeroSelectionLayerController implements Controller {
     @Override
     public void init(Parameters prmtrs) {
     }
+
+    public void onEndScreen() {
+    }
 }

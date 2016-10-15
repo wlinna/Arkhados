@@ -60,4 +60,8 @@ public class TeamSelectionController implements Controller {
                 .addCommand(new CmdSelectTeam(team));
         nifty.removeElement(screen, element);
     }
+
+    @Override
+    public void onEndScreen() {        
+    }
 }
