@@ -15,6 +15,7 @@
 package arkhados.controls;
 
 import arkhados.effects.BuffEffect;
+import arkhados.messages.sync.CmdBuff;
 import arkhados.spell.buffs.info.BuffInfoParameters;
 import arkhados.spell.buffs.info.BuffInfo;
 import arkhados.spell.buffs.info.FakeBuff;
@@ -50,16 +51,18 @@ public class CCharacterBuff extends AbstractControl {
         }
     }
 
-    public void addBuff(int buffId, int buffTypeId, float duration,
-            boolean justCreated) {
+    public void addBuff(CmdBuff cBuff) {
+        int buffId = cBuff.buffId;
+        int buffTypeId = cBuff.buffTypeId;
+        float duration = cBuff.duration;
+        int stacks = cBuff.stacks;
+        boolean justCreated = cBuff.getJustCreated();
 
         buffs.put(buffId, new FakeBuff(buffTypeId));
 
-        BuffInfo buffInfo
-                = BuffInfo.getBuffInfo(buffTypeId);
+        BuffInfo buffInfo = BuffInfo.getBuffInfo(buffTypeId);
         if (buffInfo == null) {
-            logger.log(Level.FINE,
-                    "No buffinfo for type {0} . BuffId is {1}",
+            logger.log(Level.FINE, "No buffinfo for type {0} . BuffId is {1}",
                     new Object[]{buffTypeId, buffId});
             return;
         }
@@ -98,6 +101,11 @@ public class CCharacterBuff extends AbstractControl {
         FakeBuff buff = buffs.get(buffId);
         if (buff != null) {
             buff.stacks = stacks;
+        }
+
+        BuffEffect fx = effects.get(buffId);
+        if (fx != null) {
+            fx.setStacks(stacks);
         }
     }
 
@@ -188,7 +196,7 @@ public class CCharacterBuff extends AbstractControl {
         for (IntMap.Entry<BuffEffect> effect : effects) {
             effect.getValue().destroy();
         }
-        
+
         effects.clear();
         buffIcons.clear();
         buffs.clear();

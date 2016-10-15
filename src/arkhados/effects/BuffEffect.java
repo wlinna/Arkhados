@@ -39,6 +39,9 @@ public class BuffEffect {
 
     public void updateRender(RenderManager rm, ViewPort vp) {
     }
+    
+    public void setStacks(int stacks) {        
+    }
 
     public void destroy() {
     }

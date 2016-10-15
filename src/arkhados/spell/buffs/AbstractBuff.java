@@ -59,8 +59,8 @@ public abstract class AbstractBuff {
     public CmdBuff generateBuffCommand(boolean added) {
         int entityId = targetInterface.getSpatial()
                 .getUserData(UserData.ENTITY_ID);
-        return typeId == -1 ? null
-                : new CmdBuff(entityId, typeId, buffId, duration, added);
+        return typeId == -1 ? null : new CmdBuff(
+                entityId, typeId, buffId, duration, stacks, added);
     }
 
     public void update(float time) {

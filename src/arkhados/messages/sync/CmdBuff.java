@@ -22,20 +22,22 @@ import com.jme3.scene.Node;
 @Serializable
 public class CmdBuff extends StateData {
 
-    private short buffTypeId;
-    private int buffId;
-    private float duration;
-    private byte flags = 0;    
+    public short buffTypeId;
+    public int buffId;
+    public float duration;    
+    public byte stacks;
+    private byte flags = 0;
 
     public CmdBuff() {
     }
 
     public CmdBuff(int entityId, int buffTypeId, int buffId,
-            float duration, boolean added) {
+            float duration, int stacks, boolean added) {
         super(entityId);
         this.buffTypeId = (short) buffTypeId;
         this.buffId = buffId;
         this.duration = duration;
+        this.stacks = (byte) stacks;
         setAdded(added);
         setJustCreated(true);
     }
@@ -46,21 +48,21 @@ public class CmdBuff extends StateData {
         CCharacterBuff cBuff = node.getControl(CCharacterBuff.class);
 
         if (getAdded()) {
-            cBuff.addBuff(buffId, buffTypeId, duration, getJustCreated());
+            cBuff.addBuff(this);
         } else {
             cBuff.removeBuff(buffId);
         }
     }
 
-    private boolean getAdded() {
+    public boolean getAdded() {
         return (flags & 1) == 1;
     }
 
-    private void setAdded(boolean value) {
+    public final void setAdded(boolean value) {
         flags = (byte) (value ? (flags | 1) : (flags & ~1));
     }
 
-    private boolean getJustCreated() {
+    public boolean getJustCreated() {
         return (flags & 2) == 2;
     }
     
