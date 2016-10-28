@@ -16,6 +16,7 @@ package arkhados.util;
 
 import arkhados.SpatialDistancePair;
 import arkhados.World;
+import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import com.jme3.math.FastMath;
 import com.jme3.math.Plane;
@@ -80,6 +81,18 @@ public class Selector {
         return getSpatialsWithinDistance(collection,
                 spatial.getWorldTranslation(), distance, predicate);
     }
+    
+    private static float determineRadDistanceTo(Spatial spatial, Vector3f loc) {
+        CCharacterPhysics character = 
+                spatial.getControl(CCharacterPhysics.class);
+        if (character != null) {
+            float dist = spatial.getLocalTranslation().distance(loc);
+            float radius = character.getCapsuleShape().getRadius();
+            return Math.max(dist - radius, 0f);
+        }
+        
+        return spatial.getWorldBound().distanceToEdge(loc);
+    }
 
     public static <T extends Collection<SpatialDistancePair>> T getSpatialsWithinDistance(
             T collection,
@@ -89,8 +102,7 @@ public class Selector {
         Node worldRoot = world.getWorldRoot();
 
         for (Spatial child : worldRoot.getChildren()) {
-            float distanceBetween = child.getWorldTranslation()
-                    .distance(location);
+            float distanceBetween = determineRadDistanceTo(child, location);       
             if (distanceBetween > distance) {
                 continue;
             }
