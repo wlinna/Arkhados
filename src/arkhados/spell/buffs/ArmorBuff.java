@@ -22,10 +22,14 @@ public class ArmorBuff extends AbstractBuff {
     private float amount;
     private final float protectionPercent;
 
-    protected ArmorBuff(float amount, float protectionPercent, float duration) {
-        super(duration);
+    protected ArmorBuff(float amount, float protectionPercent, float duration, 
+            int stacks) {
+        super(duration, stacks);
         this.amount = amount;
         this.protectionPercent = protectionPercent;
+    }    
+    protected ArmorBuff(float amount, float protectionPercent, float duration) {
+        this(amount, protectionPercent, duration, 1);
     }
 
     @Override
