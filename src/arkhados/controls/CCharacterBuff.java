@@ -68,7 +68,7 @@ public class CCharacterBuff extends AbstractControl {
         }
 
         BuffInfoParameters infoParams
-                = new BuffInfoParameters(this, duration, justCreated);
+                = new BuffInfoParameters(this, duration, justCreated, stacks);
 
         BuffEffect buff = buffInfo.createBuffEffect(infoParams);
 

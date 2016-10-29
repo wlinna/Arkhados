@@ -22,12 +22,13 @@ public class BuffInfoParameters {
     public final CCharacterBuff buffControl;
     public final float duration;
     public final boolean justCreated;
+    public final int stacks;
 
     public BuffInfoParameters(CCharacterBuff buffControl, float duration,
-            boolean justCreated) {
+            boolean justCreated, int stacks) {
         this.buffControl = buffControl;
         this.duration = duration;
         this.justCreated = justCreated;
+        this.stacks = stacks;
     }
-            
 }
