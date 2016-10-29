@@ -19,11 +19,13 @@ import arkhados.controls.CTrackLocation;
 import arkhados.effects.BuffEffect;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
+import java.util.List;
 
 public class ElectronOrbitInfo extends BuffInfo {
 
@@ -49,10 +51,7 @@ class ElectronOrbitEffect extends BuffEffect {
 
     public void addToCharacter(BuffInfoParameters params) {
         Node character = (Node) params.buffControl.getSpatial();
-        Spatial crystals1 = assets.loadModel("Models/crystals.j3o");
-        Spatial crystals2 = assets.loadModel("Models/crystals.j3o");
-        Spatial crystals3 = assets.loadModel("Models/crystals.j3o");
-                
+
         Material mat = new Material(assets, "MatDefs/Lava/Lava.j3md");
         mat.setFloat("Speed", 80f);
 
@@ -66,27 +65,41 @@ class ElectronOrbitEffect extends BuffEffect {
         mat.getAdditionalRenderState()
                 .setBlendMode(RenderState.BlendMode.Additive);
 
-        crystals1.setMaterial(mat);
-        crystals2.setMaterial(mat);
-        crystals3.setMaterial(mat);
-
         centralNode = new Node("mineral-armor-node");
-        centralNode.setQueueBucket(RenderQueue.Bucket.Transparent);        
+        centralNode.setQueueBucket(RenderQueue.Bucket.Transparent);
 
-        centralNode.attachChild(crystals1);        
-        centralNode.attachChild(crystals2);
-        centralNode.attachChild(crystals3);
+        Spatial[] crystals = new Spatial[params.stacks];
+        float radius = 7.5f;
+        float deltaAngle = FastMath.TWO_PI / crystals.length;
 
-        crystals1.setLocalTranslation(0f, 0f, -7.5f);
-        crystals2.setLocalTranslation(6.5f, 0f, 3.75f);
-        crystals3.setLocalTranslation(-6.5f, 0f, 3.75f);
+        for (int i = 0; i < crystals.length; i++) {
+            crystals[i] = assets.loadModel("Models/crystals.j3o");
+            crystals[i].setMaterial(mat);
+            centralNode.attachChild(crystals[i]);
+
+            float x = radius * FastMath.cos(i * deltaAngle);
+            float z = radius * FastMath.sin(i * deltaAngle);
+            crystals[i].setLocalTranslation(x, 0f, z);
+        }
 
         Node world = character.getParent();
         world.attachChild(centralNode);
-        
+
         centralNode.addControl(
-                new CTrackLocation(character, new Vector3f(0f, 10f, 0f)));        
+                new CTrackLocation(character, new Vector3f(0f, 10f, 0f)));
         centralNode.addControl(new CRotation(0f, 4f, 0f));
+    }
+
+    @Override
+    public void setStacks(int stacks) {
+        List<Spatial> children = centralNode.getChildren();
+        int diff = children.size() - stacks;
+        if (diff > 0) {
+            int sentinel = children.size() - diff - 1;
+            for (int i = children.size() - 1; i > sentinel; i--) {
+                children.get(i).removeFromParent();
+            }
+        }        
     }
 
     @Override

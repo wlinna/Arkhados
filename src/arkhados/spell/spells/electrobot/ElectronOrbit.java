@@ -15,6 +15,9 @@
 package arkhados.spell.spells.electrobot;
 
 import arkhados.actions.cast.ACastBuff;
+import arkhados.controls.CEntityVariable;
+import arkhados.controls.CInfluenceInterface;
+import arkhados.messages.sync.CmdBuff;
 import arkhados.spell.Spell;
 import arkhados.spell.buffs.AbstractBuff;
 import arkhados.spell.buffs.AbstractBuffBuilder;
@@ -22,6 +25,7 @@ import arkhados.spell.buffs.ArmorBuff;
 import arkhados.util.BuffTypeIds;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 public class ElectronOrbit extends Spell {
 
@@ -62,7 +66,23 @@ class ElectronArmorBuff extends ArmorBuff {
 
     private ElectronArmorBuff(float amount, float protectionPercent,
             float duration) {
-        super(amount, protectionPercent, duration);
+        super(amount, protectionPercent, duration, 3);
+    }
+
+    @Override
+    public void attachToCharacter(CInfluenceInterface targetInterface) {
+        // Copy pasted from AbstractBuff, because we don't want to combine
+        // ElectronArmorBuffs
+        // TODO: Consider hiding this behavior behind a flag in ArmorBuff
+        this.targetInterface = targetInterface;
+        targetInterface.addBuff(this);
+
+        CmdBuff buffCommand = generateBuffCommand(true);
+        if (buffCommand != null) {
+            Spatial spatial = targetInterface.getSpatial();
+            spatial.getControl(CEntityVariable.class).getAwareness()
+                    .getFog().addCommand(spatial, buffCommand);
+        }
     }
 
     @Override
@@ -72,8 +92,10 @@ class ElectronArmorBuff extends ArmorBuff {
         }
 
         --chargesLeft;
-        if (chargesLeft == 0) {
+        if (chargesLeft <= 0) {
             setAmount(0f);
+        } else {
+            changeStackAmount(chargesLeft);
         }
 
         new PowerBuff(3f).attachToCharacter(getOwnerInterface());
