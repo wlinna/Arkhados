@@ -40,6 +40,11 @@ public abstract class AbstractBuff {
     protected boolean friendly = false;
     private final int buffId = ++currentBuffId;
 
+    protected AbstractBuff(float duration, int stacks) {
+        this(duration);
+        this.stacks = stacks;
+    }
+    
     protected AbstractBuff(float duration) {
         this.duration = duration;
     }
