@@ -53,6 +53,8 @@ public class DeathMatch extends GameMode implements CommandHandler {
         stateManager = app.getStateManager();
         world = stateManager.getState(World.class);
         sync = stateManager.getState(Sync.class);
+        // TODO: Create a proxy CommandHandler and add it before connecting.
+        // Otherwise this can cause a race condition
         stateManager.getState(Receiver.class).registerCommandHandler(this);
         common.initialize(app);
 
