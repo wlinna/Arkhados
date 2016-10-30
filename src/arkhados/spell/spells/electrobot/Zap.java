@@ -79,6 +79,7 @@ public class Zap extends Spell {
                 AbstractBuff buff = it.next();
                 if (buff instanceof PowerBuff) {
                     hadBuff = true;
+                    buff.destroy();
                     it.remove();
                     break;
                 }

@@ -14,6 +14,7 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.electrobot;
 
+import arkhados.Globals;
 import arkhados.actions.cast.ACastBuff;
 import arkhados.controls.CEntityVariable;
 import arkhados.controls.CInfluenceInterface;
@@ -98,7 +99,11 @@ class ElectronArmorBuff extends ArmorBuff {
             changeStackAmount(chargesLeft);
         }
 
-        new PowerBuff(3f).attachToCharacter(getOwnerInterface());
+        if (getAmount() > 0f) {
+            Globals.app.enqueue(() -> {
+                new PowerBuff(3f).attachToCharacter(getOwnerInterface());
+            });
+        }
 
         return super.mitigate(damage);
     }
@@ -127,6 +132,7 @@ class PowerBuff extends AbstractBuff {
 
     public PowerBuff(float duration) {
         super(duration);
+        setTypeId(BuffTypeIds.ELECTRON_CHARGE);
     }
 
     static class MyBuilder extends AbstractBuffBuilder {

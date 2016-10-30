@@ -42,6 +42,7 @@ public abstract class BuffInfo {
         addBuff(BuffTypeIds.DRAIN, new DrainInfo());
         addBuff(BuffTypeIds.ELECTRO_CHARGE, new ElectroChargeInfo());
         addBuff(BuffTypeIds.ELECTRON_ORBIT, new ElectronOrbitInfo());
+        addBuff(BuffTypeIds.ELECTRON_CHARGE, new ElectronChargeInfo());
     }
 
     public static BuffInfo getBuffInfo(int typeId) {
