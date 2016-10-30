@@ -14,21 +14,20 @@
  along with Arkhados.  If not, see <http://www.gnu.org/licenses/>. */
 package arkhados.spell.spells.electrobot;
 
+import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
 import arkhados.World;
 import arkhados.actions.EntityAction;
-import arkhados.actions.cast.ACastProjectile;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CEntityEvent;
-import arkhados.controls.CProjectile;
+import arkhados.controls.CInfluenceInterface;
 import arkhados.controls.CSpellBuff;
 import arkhados.controls.CSync;
 import arkhados.controls.CTimedExistence;
 import arkhados.effects.ParticleInfluencerWithAngleSetting;
 import com.jme3.effect.ParticleEmitter;
 import arkhados.entityevents.ARemovalEvent;
-import arkhados.messages.sync.statedata.GenericSyncData;
 import arkhados.messages.sync.statedata.ProjectileSyncData;
 import arkhados.messages.sync.statedata.StateData;
 import arkhados.spell.Spell;
@@ -58,7 +57,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Torus;
 import com.jme3.texture.Texture;
 
@@ -152,7 +150,10 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
         // destroyed if it has caught an enemy, or if it has lived long enough
         if (age > 3.5f || (enemy != null && distanceSq < 100f)) {
             if (enemy != null) {
-                // Punish
+                CharacterInteraction.harm(
+                        owner.getControl(CInfluenceInterface.class),
+                        enemy.getControl(CInfluenceInterface.class),
+                        50f, null, false);
             }
 
             // Remove
@@ -169,13 +170,9 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
         Vector3f velocity = body.getLinearVelocity();
         velocity.addLocal(gravity.multLocal(tpf));
         body.setLinearVelocity(velocity);
-//        body.setGravity(gravity);
 
         if (enemy != null) {
             enemy.getControl(CCharacterPhysics.class).warp(bodyLoc);
-//            Vector3f enemyLoc = enemy.getLocalTranslation();
-//            enemyLoc.x = bodyLoc.x;
-//            enemyLoc.z = bodyLoc.z;
         }
     }
 
@@ -215,8 +212,6 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
             Spatial otherSpatial = (Spatial) otherObject.getUserObject();
             if (!spatial.getUserData(UserData.TEAM_ID).equals(otherSpatial.getUserData(UserData.TEAM_ID))) {
                 enemy = otherSpatial;
-//                CCharacterPhysics physics = enemy.getControl(CCharacterPhysics.class);
-//                physics.setMotionControlled(true);
             }      
         }
     }
