@@ -56,13 +56,12 @@ public class CInfluenceInterface extends AbstractControl {
 
     public float mitigateDamage(float damage) {
         // TODO: Generic damage mitigation by shields, petrify etc.
+        // TODO: Perhaps ALL armors and Petrifies should apply
         for (AbstractBuff buff : buffs) {
             if (buff instanceof ArmorBuff) {
                 damage = ((ArmorBuff) buff).mitigate(damage);
-                break;
             } else if (buff instanceof PetrifyCC) {
                 damage = ((PetrifyCC) buff).damage(damage);
-                break;
             }
         }
 
