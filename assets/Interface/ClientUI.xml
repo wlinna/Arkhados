@@ -472,6 +472,7 @@
                     <text style="nifty-label" width="*" text="spell icons" >
                     </text>
                 </panel>
+                <control name="credits_panel" who="yinakoSGA" for="spell icons" />
                 <control name="credits_panel" who="Lorc" for='"Crossed Axes" icon' />
                 <control name="credits_panel" who="Crack.com" for="Fire and Lava texture" />
                 <control name="credits_panel" who="Skorpio" for="LavaArena tileset" />

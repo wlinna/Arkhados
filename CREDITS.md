@@ -175,6 +175,9 @@ These Lorc's icons are licensed under CC-BY 3.0.
 pbmojART for SpiritStone's icon. Icon is licensed under CC-BY 3.0. Original model can be found
 from [OGA](http://opengameart.org/content/fantasy-rpg-icons)
 
+[yinakoSGA](http://opengameart.org/users/yinakosga) for Electric Crystals. The icon is licensed under CC-BY 3.0. 
+Original icon can be found from [OGA](http://opengameart.org/content/fantasy-rpg-consumable-item-icons).
+
 Skorpio for LavaArena's tileset. LavaArena's tileset uses Skorpio's 3D
 Dungeon Tileset that is made for OpenDungeons. 3D Dungeon Tileset is
 licensed under multiple licenses, including CC-BY-SA 3.0, which I used

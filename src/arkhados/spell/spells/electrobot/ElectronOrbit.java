@@ -31,7 +31,7 @@ import com.jme3.scene.Spatial;
 public class ElectronOrbit extends Spell {
 
     {
-        iconName = "MineralArmor.png";
+        iconName = "ElectricCrystals.png";
     }
 
     public ElectronOrbit(String name, float cooldown, float range,

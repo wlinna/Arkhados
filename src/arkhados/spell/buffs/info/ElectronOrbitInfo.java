@@ -30,7 +30,7 @@ import java.util.List;
 public class ElectronOrbitInfo extends BuffInfo {
 
     {
-        setIconPath("Interface/Images/SpellIcons/MineralArmor.png");
+        setIconPath("Interface/Images/SpellIcons/ElectricCrystals.png");
     }
 
     @Override

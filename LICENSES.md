@@ -83,6 +83,7 @@ See CREDITS.md for attributions.
 - DarkEnergy.png
 - Drain.png
 - IntoTheShadows.png
+- ElectricCrystals.png
 - HealthBar.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
