@@ -550,7 +550,7 @@
                 <control name="credits_panel" who="Andrea Giordano" for="Welcome to Grimwoods (music)" />
                 <control name="credits_panel" who="artisticdude" for="Goblins Sound Pack" />
                 <control name="credits_panel" who="qupodup" for="Zap SFX" />
-                <text style="nifty-label" text=""/>
+                <control name="credits_panel" who="Little Robot Sound Factory" for="Sci-fi SFX" />                
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>
                 <text style="nifty-label" text=""/>

@@ -49,7 +49,7 @@ import com.jme3.scene.Node;
 public class ElectroBot extends AbstractNodeBuilder {
 
     public static final int ACTION_ZAP = 0;
-    public static final int ACTION_ETHEREAL_FLAME = 1;
+    public static final int ACTION_PARALYZE = 1;
 
     public ElectroBot() {
         setEffectBox(new EffectBox());
@@ -58,6 +58,8 @@ public class ElectroBot extends AbstractNodeBuilder {
         zap.add(new SimpleSoundEffect("Effects/Sound/Zap2.wav"));
         zap.add(new SimpleSoundEffect("Effects/Sound/Zap1.wav"));        
         getEffectBox().addActionEffect(ACTION_ZAP, zap);
+        getEffectBox().addActionEffect(ACTION_PARALYZE,
+                new SimpleSoundEffect("Effects/Sound/ParalyzeLaunch1.wav"));
     }
 
     @Override

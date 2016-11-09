@@ -92,6 +92,7 @@ See CREDITS.md for attributions.
 - LikeAPro.wav
 - PlasmagunLaunch.wav
 - MindDrain.wav
+- ParalyzeLaunch.wav
 - Carmack.ogg
 - ElectricQuake.ogg
 - SteepsOfDestiny.ogg

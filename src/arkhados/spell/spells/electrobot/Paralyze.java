@@ -17,6 +17,7 @@ package arkhados.spell.spells.electrobot;
 import arkhados.CollisionGroups;
 import arkhados.World;
 import arkhados.actions.cast.ACastProjectile;
+import arkhados.characters.ElectroBot;
 import arkhados.controls.CEntityEvent;
 import arkhados.controls.CProjectile;
 import arkhados.controls.CSpellBuff;
@@ -68,6 +69,7 @@ public class Paralyze extends Spell {
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastProjectile action = new ACastProjectile(spell, world);
+            action.setTypeId(ElectroBot.ACTION_PARALYZE);
             return action;
         };
 

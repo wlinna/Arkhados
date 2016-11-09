@@ -246,6 +246,9 @@ KibblesBob for [Missle Launch](http://soundbible.com/1794-Missle-Launch.html). M
 [qupodup](http://opengameart.org/users/qubodup) for [Ice & Electricity Magic](http://opengameart.org/content/ice-electricity-magic).
 Ice & Electricity magic is used as Zap's launch effect. Ice & Electricity is CC-BY 3.0 licensed, and uses multiple CC0-licensed samples.
 
+[Little Robot Sound Factory](http://www.littlerobotsoundfactory.com/) for [Sci-Fi Sound Effects Library](http://opengameart.org/content/sci-fi-sound-effects-library).
+ElectroBot's Paralyze uses one of its Laser sounds. The library is CC-BY 3.0 licensed.
+
 [Joe Reynolds – Professorlamp](jrtheories.webs.com) for music
 Carmack. Music is licensed under CC-BY 3.0. Original work can be found
 from [OGA](http://opengameart.org/content/carmack)
