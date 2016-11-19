@@ -59,7 +59,7 @@ public class ElectroBot extends AbstractNodeBuilder {
         zap.add(new SimpleSoundEffect("Effects/Sound/Zap1.wav"));        
         getEffectBox().addActionEffect(ACTION_ZAP, zap);
         getEffectBox().addActionEffect(ACTION_PARALYZE,
-                new SimpleSoundEffect("Effects/Sound/ParalyzeLaunch1.wav"));
+                new SimpleSoundEffect("Effects/Sound/ParalyzeLaunch.wav"));
     }
 
     @Override
