@@ -37,6 +37,8 @@ import arkhados.util.BuildParameters;
 import arkhados.util.CastSpawn;
 import arkhados.util.RemovalReasons;
 import arkhados.util.UserData;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -334,16 +336,24 @@ class DiscBuilder extends AbstractNodeBuilder {
             final ParticleEmitter smoke = createTrailEmitter();
             node.attachChild(smoke);
 
-            node.addControl(new CEntityEvent());
-            /**
-             * Here we specify what happens on client side when fireball is
-             * removed. In this case we want explosion effect.
-             */
-            AParalysisRemoval aRemoval = new AParalysisRemoval();
+            CEntityEvent cEvent = new CEntityEvent();
+            node.addControl(cEvent);
+
+            AudioNode audio = new AudioNode(assets,
+                    "Effects/Sound/ElectricDisc.wav",
+                    AudioData.DataType.Buffer);
+            audio.setName("buzz");
+            audio.setLooping(true);
+            audio.setVolume(1.8f);
+            audio.play();
+            node.attachChild(audio);
+
+            ADiscRemoval aRemoval = new ADiscRemoval(audio);
             aRemoval.setBullet(node);
             aRemoval.setSmokeTrail(smoke);
 
-            node.getControl(CEntityEvent.class).setOnRemoval(aRemoval);
+            cEvent.setOnRemoval(aRemoval);
+            cEvent.setOnDisappear(aRemoval);
             node.addControl(new CParticleDirector(smoke));
         }
 
@@ -388,6 +398,11 @@ class ADiscRemoval implements ARemovalEvent {
 
     private Node bullet;
     private ParticleEmitter trail;
+    private final AudioNode audio;
+
+    public ADiscRemoval(AudioNode audio) {
+        this.audio = audio;
+    }        
 
     public void setBullet(Node bullet) {
         this.bullet = bullet;
@@ -398,6 +413,7 @@ class ADiscRemoval implements ARemovalEvent {
         worldRoot.attachChild(trail);
         trail.setLocalTranslation(worldTranslation);
         trail.addControl(new CTimedExistence(5f));
+        audio.stop();
     }
 
     @Override

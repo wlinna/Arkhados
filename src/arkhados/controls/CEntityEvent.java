@@ -21,6 +21,7 @@ import arkhados.entityevents.ARemovalEvent;
 
 public class CEntityEvent extends AbstractControl {
     private ARemovalEvent onRemoval = null;
+    private ARemovalEvent onDisappear;
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -36,5 +37,13 @@ public class CEntityEvent extends AbstractControl {
 
     public void setOnRemoval(ARemovalEvent onRemoval) {
         this.onRemoval = onRemoval;
+    }
+
+    public ARemovalEvent getOnDisappear() {
+        return onDisappear;
+    }
+
+    public void setOnDisappear(ARemovalEvent onDisappear) {
+        this.onDisappear = onDisappear;
     }
 }

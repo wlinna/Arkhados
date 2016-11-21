@@ -35,6 +35,9 @@ See CREDITS.md for attributions.
 - Shadow.wav
 - IntoTheShadows.wav
 - DrainHit.wav
+- Zap1.wav
+- Zap2.wav
+- ElectricDisc.wav
 - All Wall related files
 - SpiritStone 3D-model
 - EmberMagePain.wav

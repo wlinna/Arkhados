@@ -244,7 +244,7 @@ is licensed under CC0.
 KibblesBob for [Missle Launch](http://soundbible.com/1794-Missle-Launch.html). Missle Launch was modified little bit and used as RocketLauncher sound. Missle Launch is in Public Domain.
 
 [qupodup](http://opengameart.org/users/qubodup) for [Ice & Electricity Magic](http://opengameart.org/content/ice-electricity-magic).
-Ice & Electricity magic is used as Zap's launch effect. Ice & Electricity is CC-BY 3.0 licensed, and uses multiple CC0-licensed samples.
+Ice & Electricity magic is used as Zap's launch effect and as Disc's buzzing effect. Ice & Electricity is CC-BY 3.0 licensed, and uses multiple CC0-licensed samples.
 
 [Little Robot Sound Factory](http://www.littlerobotsoundfactory.com/) for [Sci-Fi Sound Effects Library](http://opengameart.org/content/sci-fi-sound-effects-library).
 ElectroBot's Paralyze uses one of its Laser sounds. The library is CC-BY 3.0 licensed.
