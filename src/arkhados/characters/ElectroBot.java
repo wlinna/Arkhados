@@ -138,7 +138,7 @@ public class ElectroBot extends AbstractNodeBuilder {
                 = new AnimationData("Attack", 1f, LoopMode.DontLoop);
 
         characterAnimControl.addSpellAnimation(zap.getName(), attackAnim);
-        characterAnimControl.addSpellAnimation("Electric Bomb", idleAnim);
+        characterAnimControl.addSpellAnimation("Disc", idleAnim);
         characterAnimControl.addSpellAnimation("Electric Pull", idleAnim);
         characterAnimControl.addSpellAnimation("Paralyze", idleAnim);
         characterAnimControl.addSpellAnimation("Electron Orbit", null);
