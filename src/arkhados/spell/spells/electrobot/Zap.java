@@ -57,7 +57,7 @@ public class Zap extends Spell {
     static final float CAST_TIME = 0.4f;
 
     {
-        iconName = "railgun.png";
+        iconName = "Zap.png";
         setMoveTowardsTarget(false);
     }
 
