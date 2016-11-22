@@ -105,7 +105,7 @@ And the hero must be compatible with Arkhados' philosophy too, so there
 can't be any random elements like dodge chance and no instant hit
 spells.
 
-**Create custom UI style for Arkhados**
+**Create a custom UI style for Arkhados**
 
 ## License ##
 
