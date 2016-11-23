@@ -13,6 +13,8 @@ See CREDITS.md for attributions.
 - feral_scream.png
 - rend.png
 - Toss.png
+- Zap.png
+- ElectricDisc.png
 - Box.png
 - InfoTab.png
 - InfoTabLight.png
@@ -47,7 +49,6 @@ See CREDITS.md for attributions.
 - RockGolemPain.wav
 - All Rend cast sounds
 - Lightning/Glow.png
-- Zap.png
 - All Stone Fist hit sounds
 - All ShadowmancerPain-sounds
 

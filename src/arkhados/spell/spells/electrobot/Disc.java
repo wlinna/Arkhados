@@ -67,7 +67,7 @@ public class Disc extends Spell {
     static final float CAST_TIME = 0.7f;
 
     {
-        iconName = "railgun.png";
+        iconName = "ElectricDisc.png";
         setMoveTowardsTarget(false);
     }
 
