@@ -143,6 +143,10 @@ public class MusicManager extends AbstractAppState {
                         "WelcomeToGrimwoods"));
                 music.add(generateHeroMusicPath(category, "BattleOfTheSomme"));
                 break;
+            case "ElectroBot":
+                music.add(generateHeroMusicPath(category, "EnemySpotted"));
+                music.add(generateHeroMusicPath(category, "AreYouWithUs"));
+                break;
             default:
                 break;
         }

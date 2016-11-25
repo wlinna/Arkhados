@@ -262,6 +262,7 @@ following music. They are licensed under CC-BY 3.0:
 - [SteepsOfDestiny](http://opengameart.org/content/steeps-of-destiny)
 - [DarkHall](http://opengameart.org/content/north-wind-more-music-inside)
 - [GreyLand](http://opengameart.org/content/post-apocalypse-more-music-inside)
+- [Enemy spotted](http://opengameart.org/content/enemy-spotted)
 
 [Matthew Pablo](http://www.matthewpablo.com/) for music The Dark
 Amulet. The Dark Amulet is licensed under CC-BY 3.0. Original work can
@@ -288,6 +289,9 @@ are licensed under CC-BY-SA 3.0. (NOTE: Grégoire Lourme currently distributes h
 
 [Darren Curtis – Darren-Curtis](https://soundcloud.com/desperate-measurez) for music
 [My Dark Passenger](https://soundcloud.com/desperate-measurez/my-dark-passenger-royalty-free-dark-music). Music is licensed under CC-BY 3.0.
+
+[Wontolla](https://soundcloud.com/iamwontolla) for a  music [Are You With Us](http://opengameart.org/content/are-you-with-us).
+The music is licensed under CC-BY-SA 3.0.
 
 [Michael Baradari](apollo-music.de) for following sound effects:
 - [Projectile launches](http://opengameart.org/content/4-projectile-launches) (Railgun and Plasmagun)

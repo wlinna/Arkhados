@@ -103,7 +103,8 @@ See CREDITS.md for attributions.
 - SteepsOfDestiny.ogg
 - TheDarkAmulet.ogg
 - SantaF_ckedUp.ogg
-- All DamagingDagger related files
+- EnemySpotted.ogg
+ All DamagingDagger related files
 - All Rock Golem 3D model related files
 - All EliteSoldier 3D model related files (includes textures and Weapon)
 - All SealingBoulder related files
@@ -132,6 +133,7 @@ See CREDITS.md for attributions.
 - Transylvania.ogg
 - WelcomeToGrimwoods.ogg
 - BattleOfTheSomme.ogg
+- AreYouWithUs.ogg
 
 ## GPL 2.0 ##
 - Moleman.ogg
