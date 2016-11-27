@@ -169,12 +169,13 @@ following Spell icon collection pages:
 Crossed axes icon is used in Join Game -menu.
 - [Snail](http://game-icons.net/lorc/originals/snail.html)
 Snail is used as slow buff icon
-- [Electric](http://game-icons.net/icons/sbed/originals/png/electric.png)
-Electric is used in ElectroCharge
 - [Energise](http://game-icons.net/lorc/originals/energise.html)
-Energise is used in ElectroCharge
 
-These Lorc's icons are licensed under CC-BY 3.0.
+[sbed](http://opengameart.org/users/sbed) for
+- [Electric](http://game-icons.net/sbed/originals/electric.html)
+Electric is used in ElectroCharge
+
+These Lorc's and sbed's icons are licensed under CC-BY 3.0
 
 pbmojART for SpiritStone's icon. Icon is licensed under CC-BY 3.0. Original model can be found
 from [OGA](http://opengameart.org/content/fantasy-rpg-icons)
