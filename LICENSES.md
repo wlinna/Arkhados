@@ -15,6 +15,7 @@ See CREDITS.md for attributions.
 - Toss.png
 - Zap.png
 - ElectricDisc.png
+- Paralyze.png
 - Box.png
 - InfoTab.png
 - InfoTabLight.png

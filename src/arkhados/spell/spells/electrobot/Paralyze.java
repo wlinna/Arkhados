@@ -53,7 +53,7 @@ public class Paralyze extends Spell {
     static final float CAST_TIME = 0.7f;
 
     {
-        iconName = "railgun.png";
+        iconName = "Paralyze.png";
         setMoveTowardsTarget(false);
     }
 
