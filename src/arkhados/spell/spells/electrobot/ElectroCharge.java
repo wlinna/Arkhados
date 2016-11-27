@@ -34,7 +34,7 @@ import com.jme3.scene.Spatial;
 public class ElectroCharge extends Spell {
 
     {
-        iconName = "like_a_pro.png";
+        iconName = "ElectroCharge.png";
     }
 
     public ElectroCharge(String name, float cooldown, float range, float castTime) {

@@ -90,6 +90,7 @@ See CREDITS.md for attributions.
 - Drain.png
 - IntoTheShadows.png
 - ElectricCrystals.png
+- ElectroCharge.png
 - HealthBar.png
 - MeteorBoom.wav
 - PurifyingFlame.wav
