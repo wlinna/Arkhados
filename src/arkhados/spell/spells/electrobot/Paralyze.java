@@ -204,7 +204,7 @@ class ParalysisBuilder extends AbstractNodeBuilder {
          */
         GhostControl characterCollision = new GhostControl(collisionShape);
         characterCollision.setCollideWithGroups(CollisionGroups.CHARACTERS);
-        characterCollision.setCollisionGroup(CollisionGroups.PROJECTILES);
+        characterCollision.setCollisionGroup(CollisionGroups.NONE);
         node.addControl(characterCollision);
 
         node.addControl(physicsBody);
@@ -217,9 +217,8 @@ class ParalysisBuilder extends AbstractNodeBuilder {
          * their own collision group and prevent them from colliding with that
          * group.
          */
-        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
-        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
-        physicsBody.removeCollideWithGroup(CollisionGroups.WALLS);
+        physicsBody.setCollisionGroup(CollisionGroups.NONE);
+        physicsBody.setCollideWithGroups(0);
         
         CSpellBuff cBuff = new CSpellBuff();
         node.addControl(cBuff);
