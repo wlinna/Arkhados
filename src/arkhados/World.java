@@ -132,7 +132,7 @@ public class World extends AbstractAppState implements CommandHandler {
 //                bf.setBloomIntensity(1f);
 //                bf.setDownSamplingFactor(2f);
 //                fpp.addFilter(bf);
-//                this.viewPort.addProcessor(fpp);
+//                app.getViewPort().addProcessor(fpp);
 //            }
 //            finally {
 //            }
@@ -381,6 +381,7 @@ public class World extends AbstractAppState implements CommandHandler {
             if (reason != -1) {
                 CEntityEvent cEvent = spatial.getControl(CEntityEvent.class);
                 if (cEvent != null
+                        && cEvent.getOnRemoval() != null
                         && reason != RemovalReasons.DISAPPEARED) {
                     cEvent.getOnRemoval().exec(this, reason);
                 }
@@ -392,6 +393,10 @@ public class World extends AbstractAppState implements CommandHandler {
                             .getState(UserCommandManager.class);
                     if (id == userCommandManager.getCharacterId()) {
                         userCommandManager.nullifyCharacter();
+                    }
+                    
+                    if (cEvent != null && cEvent.getOnDisappear() != null) {
+                        cEvent.getOnDisappear().exec(this, reason);
                     }
                 }
             }
