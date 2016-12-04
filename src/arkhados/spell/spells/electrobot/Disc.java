@@ -382,7 +382,7 @@ class DiscBuilder extends AbstractNodeBuilder {
          * their own collision group and prevent them from colliding with that
          * group.
          */
-        physicsBody.setCollisionGroup(CollisionGroups.PROJECTILES);
+        physicsBody.setCollisionGroup(CollisionGroups.NONE);
 //        physicsBody.removeCollideWithGroup(CollisionGroups.PROJECTILES);
 //        physicsBody.removeCollideWithGroup(CollisionGroups.WALLS);
         physicsBody.setCollideWithGroups(0);
