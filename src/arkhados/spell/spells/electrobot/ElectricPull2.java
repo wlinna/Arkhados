@@ -27,7 +27,6 @@ import arkhados.controls.CCircleVisibility;
 import arkhados.controls.CTimedExistence;
 import arkhados.effects.EmitterCircleShape;
 import arkhados.spell.Spell;
-import arkhados.spell.buffs.DamageOverTimeBuff;
 import arkhados.spell.buffs.SlowCC;
 import arkhados.util.AbstractNodeBuilder;
 import arkhados.util.BuildParameters;
@@ -105,7 +104,7 @@ class ElectricPull2Builder extends AbstractNodeBuilder {
                         .applyImpulse(dir);
             }
 
-            cAreaEffect.addEnterBuff(new SlowCC.MyBuilder(1.5f, 0.5f));
+            cAreaEffect.addEnterBuff(new SlowCC.MyBuilder(1.5f, 0.6f));
             node.addControl(new CTimedExistence(0f, true));
             return false;
         }

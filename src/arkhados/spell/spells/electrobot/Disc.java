@@ -64,7 +64,7 @@ import com.jme3.texture.Texture;
 
 public class Disc extends Spell {
 
-    static final float CAST_TIME = 0.7f;
+    static final float CAST_TIME = 0.5f;
 
     {
         iconName = "ElectricDisc.png";
@@ -76,7 +76,7 @@ public class Disc extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 7f;
+        final float cooldown = 8f;
         final float range = 60f;
 
         Disc spell = new Disc("Disc", cooldown, range, CAST_TIME);
@@ -106,7 +106,7 @@ class ACastDisc extends EntityAction {
         Spatial disc = spawn.spatial;
         CDisc cDisc = disc.getControl(CDisc.class);
         cDisc.setOwner(spatial);
-        cDisc.getBody().setLinearVelocity(spawn.viewDirection.mult(120f));
+        cDisc.getBody().setLinearVelocity(spawn.viewDirection.mult(135f));
         cDisc.getBody().getPhysicsSpace().addCollisionListener(cDisc);
         return false;
     }
@@ -155,7 +155,7 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
                 CharacterInteraction.harm(
                         owner.getControl(CInfluenceInterface.class),
                         enemy.getControl(CInfluenceInterface.class),
-                        50f, null, false);
+                        80f, null, false);
             }
 
             // Remove

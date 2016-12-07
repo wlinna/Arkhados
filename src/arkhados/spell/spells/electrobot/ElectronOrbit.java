@@ -40,7 +40,7 @@ public class ElectronOrbit extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 13f;
+        final float cooldown = 10f;
         final float range = 100f;
         final float castTime = 0f;
 
@@ -49,7 +49,7 @@ public class ElectronOrbit extends Spell {
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
             ACastBuff action = new ACastBuff(spell, range);
             AbstractBuffBuilder armor
-                    = new ElectronArmorBuff.MyBuilder(2000f, 0.5f, 4f);
+                    = new ElectronArmorBuff.MyBuilder(2000f, 0.75f, 6f);
             action.addBuff(armor);
 
             return action;
@@ -101,7 +101,7 @@ class ElectronArmorBuff extends ArmorBuff {
 
         if (getAmount() > 0f) {
             Globals.app.enqueue(() -> {
-                new PowerBuff(3f).attachToCharacter(getOwnerInterface());
+                new PowerBuff(6f).attachToCharacter(getOwnerInterface());
             });
         }
 

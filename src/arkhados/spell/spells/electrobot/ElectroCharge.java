@@ -42,14 +42,14 @@ public class ElectroCharge extends Spell {
     }
 
     public static ElectroCharge create() {
-        final float cooldown = 10f;
+        final float cooldown = 8f;
         final float range = 0f;
         final float castTime = 0f;
 
         final ElectroCharge spell = new ElectroCharge("Electro Charge",
                 cooldown, range, castTime);
         final SpeedBuff.MyBuilder speedBuilder
-                = new SpeedBuff.MyBuilder(0.5f, 0, 2.5f);
+                = new SpeedBuff.MyBuilder(0.6f, 0, 2.8f);
         speedBuilder.setTypeId(BuffTypeIds.ELECTRO_CHARGE);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
@@ -123,7 +123,7 @@ class ElectroChargeCollisionHandler implements PhysicsCollisionListener {
 
         Vector3f impulse = collidedWith.getLocalTranslation()
                 .subtract(spatial.getLocalTranslation()).setY(0f)
-                .normalizeLocal().multLocal(20000f);
+                .normalizeLocal().multLocal(25000f);
 
         collidedWith.getControl(CCharacterPhysics.class).applyImpulse(impulse);
         CharacterInteraction.harm(spatial.getControl(CInfluenceInterface.class),

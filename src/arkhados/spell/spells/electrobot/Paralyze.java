@@ -50,7 +50,7 @@ import com.jme3.texture.Texture;
 
 public class Paralyze extends Spell {
 
-    static final float CAST_TIME = 0.7f;
+    static final float CAST_TIME = 0.45f;
 
     {
         iconName = "Paralyze.png";
@@ -63,7 +63,7 @@ public class Paralyze extends Spell {
 
     public static Spell create() {
         final float cooldown = 7f;
-        final float range = 60f;
+        final float range = 70f;
 
         Paralyze spell = new Paralyze("Paralyze", cooldown, range, CAST_TIME);
 

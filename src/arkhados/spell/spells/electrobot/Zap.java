@@ -54,7 +54,7 @@ import java.util.List;
 
 public class Zap extends Spell {
 
-    static final float CAST_TIME = 0.4f;
+    static final float CAST_TIME = 0.3f;
 
     {
         iconName = "Zap.png";
