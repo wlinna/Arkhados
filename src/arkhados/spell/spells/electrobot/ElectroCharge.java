@@ -17,7 +17,10 @@ package arkhados.spell.spells.electrobot;
 import arkhados.CharacterInteraction;
 import arkhados.CollisionGroups;
 import arkhados.Globals;
+import arkhados.actions.ATrance;
+import arkhados.actions.EntityAction;
 import arkhados.actions.cast.ACastSelfBuff;
+import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.Spell;
@@ -30,6 +33,7 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 
 public class ElectroCharge extends Spell {
 
@@ -81,6 +85,7 @@ public class ElectroCharge extends Spell {
 
 class ElectroChargeCollisionHandler implements PhysicsCollisionListener {
 
+    private final ArrayList<Spatial> safeSpatials = new ArrayList<>();
     private final GhostControl ghost;
     private boolean hasCollided;
 
@@ -117,9 +122,21 @@ class ElectroChargeCollisionHandler implements PhysicsCollisionListener {
             }
         }
 
-        hasCollided = true;
-
         Spatial collidedWith = (Spatial) otherObject.getUserObject();
+        EntityAction aCurrent
+                = collidedWith.getControl(CActionQueue.class).getCurrent();
+
+        if (aCurrent instanceof ATrance) {
+            safeSpatials.add(collidedWith);
+            ((ATrance) aCurrent).activate(spatial);
+            return;
+        }
+        
+        if (safeSpatials.contains(collidedWith)) {
+            return;
+        }
+
+        hasCollided = true;
 
         Vector3f impulse = collidedWith.getLocalTranslation()
                 .subtract(spatial.getLocalTranslation()).setY(0f)
