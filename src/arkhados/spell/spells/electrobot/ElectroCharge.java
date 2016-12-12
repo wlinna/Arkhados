@@ -24,8 +24,10 @@ import arkhados.controls.CActionQueue;
 import arkhados.controls.CCharacterPhysics;
 import arkhados.controls.CInfluenceInterface;
 import arkhados.spell.Spell;
+import arkhados.spell.buffs.AbstractBuffBuilder.EndListenerBuilder.Predefined;
 import arkhados.spell.buffs.SpeedBuff;
 import arkhados.util.BuffTypeIds;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -75,17 +77,31 @@ public class ElectroCharge extends Spell {
                     = new ElectroChargeCollisionHandler(ghost);
             cPhysics.getPhysicsSpace().addCollisionListener(collisionHandler);
 
+            speedBuilder.addEndListenerBuilder(new Predefined(() -> {
+                end(caster, cPhysics.getPhysicsSpace(),
+                        collisionHandler, ghost);
+            }));
+
             return buffAction;
         };
 
         spell.nodeBuilder = null;
         return spell;
     }
+
+    static void end(Spatial owner, PhysicsSpace space,
+            ElectroChargeCollisionHandler collisionHandler,
+            GhostControl ghost) {
+        Globals.app.enqueue(() -> {
+            space.removeCollisionListener(collisionHandler);
+            space.remove(ghost);
+            owner.removeControl(ghost);
+        });
+    }
 }
 
 class ElectroChargeCollisionHandler implements PhysicsCollisionListener {
 
-    private final ArrayList<Spatial> safeSpatials = new ArrayList<>();
     private final GhostControl ghost;
     private boolean hasCollided;
 
@@ -127,12 +143,8 @@ class ElectroChargeCollisionHandler implements PhysicsCollisionListener {
                 = collidedWith.getControl(CActionQueue.class).getCurrent();
 
         if (aCurrent instanceof ATrance) {
-            safeSpatials.add(collidedWith);
             ((ATrance) aCurrent).activate(spatial);
-            return;
-        }
-        
-        if (safeSpatials.contains(collidedWith)) {
+            ElectroCharge.end(spatial, ghost.getPhysicsSpace(), this, ghost);
             return;
         }
 
@@ -147,10 +159,6 @@ class ElectroChargeCollisionHandler implements PhysicsCollisionListener {
                 collidedWith.getControl(CInfluenceInterface.class),
                 100f, null, true);
 
-        Globals.app.enqueue(() -> {
-            ghost.getPhysicsSpace().removeCollisionListener(this);
-            ghost.getPhysicsSpace().remove(ghost);
-            spatial.removeControl(ghost);
-        });
+        ElectroCharge.end(spatial, ghost.getPhysicsSpace(), this, ghost);
     }
 }

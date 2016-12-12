@@ -16,13 +16,33 @@ package arkhados.spell.buffs;
 
 import arkhados.controls.CInfluenceInterface;
 import arkhados.util.Builder;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractBuffBuilder implements Builder<AbstractBuff> {
+    public static interface EndListenerBuilder {
+        public AbstractBuff.EndEventListener build(AbstractBuff buff);
+        
+        public static class Predefined implements EndListenerBuilder {
+            private final AbstractBuff.EndEventListener listener;
+
+            public Predefined(AbstractBuff.EndEventListener listener) {
+                this.listener = listener;
+            }
+
+            @Override
+            public AbstractBuff.EndEventListener build(AbstractBuff buff) {
+                return listener;
+            }
+        }
+    }
 
     public float duration;
     private int typeId = -1;
     private CInfluenceInterface ownerInterface;
     private String name;
+    private final List<EndListenerBuilder> endListeners 
+            = new ArrayList<>();
 
     public AbstractBuffBuilder(float duration) {
         this.duration = duration;
@@ -37,7 +57,16 @@ public abstract class AbstractBuffBuilder implements Builder<AbstractBuff> {
         buff.setOwnerInterface(ownerInterface);
         buff.setTypeId(typeId);
         buff.name =  name;
+
+        for (EndListenerBuilder endListener : endListeners) {
+            buff.addEndListener(endListener.build(buff));
+        }
+        
         return buff;
+    }
+    
+    public void addEndListenerBuilder(EndListenerBuilder listenerBuilder) {
+        endListeners.add(listenerBuilder);
     }
 
     public String getName() {

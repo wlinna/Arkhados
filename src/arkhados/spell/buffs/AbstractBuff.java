@@ -22,11 +22,28 @@ import arkhados.messages.sync.CmdBuffStacks;
 import arkhados.net.Sender;
 import arkhados.util.UserData;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for all buffs, negative or positive.
  */
 public abstract class AbstractBuff {
+    public static interface EndEventListener {
+        public void buffEnded();
+        public static class Simple implements EndEventListener {
+            private final Runnable runnable;
+
+            public Simple(Runnable runnable) {
+                this.runnable = runnable;
+            }
+
+            @Override
+            public void buffEnded() {
+                runnable.run();
+            }
+        }
+    }
 
     private static int currentBuffId = 0;
     // TODO: Consider removing this. If there's going to be way to
@@ -39,6 +56,9 @@ public abstract class AbstractBuff {
     private CInfluenceInterface ownerInterface = null;
     protected boolean friendly = false;
     private final int buffId = ++currentBuffId;
+    
+    private final List<EndEventListener> buffEndHandlers 
+            = new ArrayList<>();
 
     protected AbstractBuff(float duration, int stacks) {
         this(duration);
@@ -109,6 +129,10 @@ public abstract class AbstractBuff {
                     .getControl(CEntityVariable.class).getAwareness().getFog();
             fog.addCommand(spatial, buffCommand);
         }
+        
+        for (EndEventListener endHandler : buffEndHandlers) {
+            endHandler.buffEnded();
+        }
     }
 
     public CInfluenceInterface getOwnerInterface() {
@@ -149,5 +173,9 @@ public abstract class AbstractBuff {
 
     public boolean isDamageSensitive() {
         return false;
+    }
+    
+    public void addEndListener(EndEventListener listener) {
+        buffEndHandlers.add(listener);
     }
 }
