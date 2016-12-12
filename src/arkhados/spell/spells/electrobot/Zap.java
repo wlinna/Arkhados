@@ -54,7 +54,7 @@ import java.util.List;
 
 public class Zap extends Spell {
 
-    static final float CAST_TIME = 0.3f;
+    static final float CAST_TIME = 0.21f;
 
     {
         iconName = "Zap.png";
@@ -66,7 +66,7 @@ public class Zap extends Spell {
     }
 
     public static Spell create() {
-        final float cooldown = 0.9f;
+        final float cooldown = 0.6f;
         final float range = 60f;
 
         Zap spell = new Zap("Zap", cooldown, range, CAST_TIME);
