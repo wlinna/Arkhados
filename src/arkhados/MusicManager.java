@@ -35,7 +35,7 @@ public class MusicManager extends AbstractAppState {
     private final List<String> music = new ArrayList<>(2);
     private AudioNode musicPlayer = null;
     private int heroMusicIndex = 0;
-    private float volume = 0.4f;
+    private float volume = 0.3f;
     private boolean playing = false;
     private final Application app;
     private final InputManager inputManager;
