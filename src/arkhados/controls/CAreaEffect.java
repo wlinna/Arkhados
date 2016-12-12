@@ -81,7 +81,7 @@ public class CAreaEffect extends AbstractControl
     public CInfluenceInterface getOwnerInterface() {
         return ownerInterface;
     }
-    
+
     public void setOwnerInterface(CInfluenceInterface ownerInterface) {
         if (ownerInterface == null) {
             throw new IllegalArgumentException("Null cannot be ownerInterface");
@@ -133,7 +133,10 @@ public class CAreaEffect extends AbstractControl
             if (!enteredPlayers.containsKey(targetInterface)
                     && !enterBuffs.isEmpty()) {
                 enteredPlayers.put(targetInterface, false);
-                if (!sameTeam) {
+                if (sameTeam) {
+                    CharacterInteraction.help(ownerInterface, targetInterface,
+                            0f, enterBuffs);
+                } else {
                     CharacterInteraction.harm(ownerInterface, targetInterface,
                             0f, enterBuffs, false);
                 }
