@@ -24,6 +24,7 @@ public class SpeedBuff extends AbstractBuff {
 
         factor = 1 + percent;
         this.constant = constant;
+        friendly = true;
     }
 
     public float getFactor() {
