@@ -139,6 +139,7 @@ class PowerBuff extends AbstractBuff {
 
         public MyBuilder(float duration) {
             super(duration);
+            setTypeId(BuffTypeIds.ELECTRON_CHARGE);
         }
 
         @Override
