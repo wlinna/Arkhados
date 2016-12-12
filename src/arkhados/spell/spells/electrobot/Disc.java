@@ -77,7 +77,7 @@ public class Disc extends Spell {
 
     public static Spell create() {
         final float cooldown = 8f;
-        final float range = 60f;
+        final float range = 80f;
 
         Disc spell = new Disc("Disc", cooldown, range, CAST_TIME);
 
@@ -105,6 +105,8 @@ class ACastDisc extends EntityAction {
         CastSpawn.SpawnInfo spawn = CastSpawn.spawn(spatial, spell);
         Spatial disc = spawn.spatial;
         CDisc cDisc = disc.getControl(CDisc.class);
+        cDisc.setTarget(spawn.viewDirection.mult(spell.getRange())
+                .addLocal(spawn.spatial.getLocalTranslation()));
         cDisc.setOwner(spatial);
         cDisc.getBody().setLinearVelocity(spawn.viewDirection.mult(135f));
         cDisc.getBody().getPhysicsSpace().addCollisionListener(cDisc);
@@ -122,8 +124,11 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
 
     private Spatial enemy;
     private GhostControl ghost;
+    private Vector3f targetLoc;
+    private boolean targetReached = false;
 
     private float accelFactor = 90f;
+    private static final float SPEED = 140f;
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -145,12 +150,14 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
         // 3. Check for collision with an enemy characters
 
         age += tpf;
-        float distanceSq = spatial.getLocalTranslation()
-                .distanceSquared(owner.getLocalTranslation());
 
-        // TODO: The must NOT be destroyed at beginning, but it MUST be
-        // destroyed if it has caught an enemy, or if it has lived long enough
-        if (age > 3.5f || (enemy != null && distanceSq < 100f)) {
+        Vector3f bodyLoc = body.getPhysicsLocation();
+        Vector3f ownerLoc = owner.getLocalTranslation();
+
+        // I don't really know why this if works, but it does
+        if (!targetReached && bodyLoc.distanceSquared(targetLoc) <= 5f) {
+            targetReached = true;
+        } else if (targetReached && bodyLoc.distanceSquared(ownerLoc) <= 105f) {
             if (enemy != null) {
                 CharacterInteraction.harm(
                         owner.getControl(CInfluenceInterface.class),
@@ -164,13 +171,17 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
                     RemovalReasons.EXPIRED);
             return;
         }
-        Vector3f bodyLoc = body.getPhysicsLocation();
+
         body.setGravity(Vector3f.ZERO);
-        Vector3f gravity = owner.getLocalTranslation()
+
+        Vector3f currentTarget = targetReached
+                ? ownerLoc
+                : targetLoc;
+
+        Vector3f velocity = currentTarget
                 .subtract(bodyLoc).setY(0f)
-                .normalizeLocal().multLocal(accelFactor);
-        Vector3f velocity = body.getLinearVelocity();
-        velocity.addLocal(gravity.multLocal(tpf));
+                .normalizeLocal().multLocal(SPEED);
+
         body.setLinearVelocity(velocity);
 
         if (enemy != null) {
@@ -214,7 +225,7 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
             Spatial otherSpatial = (Spatial) otherObject.getUserObject();
             if (!spatial.getUserData(UserData.TEAM_ID).equals(otherSpatial.getUserData(UserData.TEAM_ID))) {
                 enemy = otherSpatial;
-            }      
+            }
         }
     }
 
@@ -231,6 +242,10 @@ class CDisc extends AbstractControl implements PhysicsCollisionListener, CSync {
 
     public RigidBodyControl getBody() {
         return body;
+    }
+
+    void setTarget(Vector3f target) {
+        targetLoc = target;
     }
 }
 
@@ -402,7 +417,7 @@ class ADiscRemoval implements ARemovalEvent {
 
     public ADiscRemoval(AudioNode audio) {
         this.audio = audio;
-    }        
+    }
 
     public void setBullet(Node bullet) {
         this.bullet = bullet;
