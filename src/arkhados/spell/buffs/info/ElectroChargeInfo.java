@@ -36,7 +36,7 @@ import java.util.List;
 public class ElectroChargeInfo extends BuffInfo {
 
     {
-        setIconPath("Interface/Images/SpellIcons/survival_instinct.png");
+        setIconPath("Interface/Images/SpellIcons/ElectroCharge.png");
     }
 
     @Override
