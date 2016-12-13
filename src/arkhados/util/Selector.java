@@ -102,6 +102,11 @@ public class Selector {
         Node worldRoot = world.getWorldRoot();
 
         for (Spatial child : worldRoot.getChildren()) {
+            // This filters out camNode and maybe other useless ones
+            if (child.getWorldBound() == null) {
+                continue;
+            }
+
             float distanceBetween = determineRadDistanceTo(child, location);       
             if (distanceBetween > distance) {
                 continue;
