@@ -108,7 +108,7 @@ class EnergizeBuilder extends AbstractNodeBuilder {
         @Override
         public boolean update(float tpf) {
             cAreaEffect.addEnterBuff(
-                    new HealOverTimeBuff.MyBuilder(3f).healPerSec(33.3f));
+                    new HealOverTimeBuff.MyBuilder(3f).healPerSec(20.3f));
             cAreaEffect.addEnterBuff(new SpeedBuff.MyBuilder(0.33f, 0f, 3f));
             node.addControl(new CTimedExistence(remainTime, true));
             return false;

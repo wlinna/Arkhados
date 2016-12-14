@@ -55,7 +55,7 @@ public class ElectroCharge extends Spell {
         final ElectroCharge spell = new ElectroCharge("Electro Charge",
                 cooldown, range, castTime);
         final SpeedBuff.MyBuilder speedBuilder
-                = new SpeedBuff.MyBuilder(0.6f, 0, 2.8f);
+                = new SpeedBuff.MyBuilder(0.6f, 0, 2.1f);
         speedBuilder.setTypeId(BuffTypeIds.ELECTRO_CHARGE);
 
         spell.castSpellActionBuilder = (Node caster, Vector3f vec) -> {
@@ -71,15 +71,15 @@ public class ElectroCharge extends Spell {
             ghost.setCollisionGroup(CollisionGroups.NONE);
             ghost.setCollideWithGroups(CollisionGroups.CHARACTERS);
             caster.addControl(ghost);
-            cPhysics.getPhysicsSpace().add(ghost);
-
+            PhysicsSpace space = cPhysics.getPhysicsSpace();
+            space.add(ghost);
+            
             ElectroChargeCollisionHandler collisionHandler
                     = new ElectroChargeCollisionHandler(ghost);
             cPhysics.getPhysicsSpace().addCollisionListener(collisionHandler);
 
             speedBuilder.addEndListenerBuilder(new Predefined(() -> {
-                end(caster, cPhysics.getPhysicsSpace(),
-                        collisionHandler, ghost);
+                end(caster, space, collisionHandler, ghost);
             }));
 
             return buffAction;
