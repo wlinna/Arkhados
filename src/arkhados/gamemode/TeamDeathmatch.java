@@ -145,15 +145,13 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
 
         int killersTeam = PlayerData.getIntData(killersPlayerId,
                 PlayerData.TEAM_ID);
-        int kills;
-        try { // TODO: Fix NPE that happens here.
-            kills = teamKills.get(killersTeam) + 1;
-        } catch (NullPointerException e) {
-            logger.log(Level.SEVERE, "killersTeam: {0}", killersTeam);
-            logger.log(Level.SEVERE, 
-                    "NullPointerException while getting kills:", e);            
-            throw e;
+        // if killersTeam = -1, the killer has already left the game.
+        // In that case, ignore the rest
+        if (!teamKills.containsKey(killersTeam)) {
+            return;
         }
+
+        int kills = teamKills.get(killersTeam) + 1;
 
         teamKills.put(killersTeam, kills);
 
@@ -161,7 +159,6 @@ public class TeamDeathmatch extends GameMode implements CommandHandler {
             Sender sender = stateManager.getState(ServerSender.class);
             sender.addCommand(new CmdTopicOnly(Topic.GAME_ENDED));
         }
-
     }
 
     @Override
